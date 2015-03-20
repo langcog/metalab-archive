@@ -18,16 +18,24 @@ shinyUI(fluidPage(
     
     mainPanel(
       width = 8,
+      tags$style(type="text/css",
+                 ".shiny-output-error { visibility: hidden; }",
+                 ".shiny-output-error:before { visibility: hidden; }"),
       tabsetPanel(
         tabPanel("Scatter Plot", plotOutput("scatter")),
-        tabPanel("Violin Plot", plotOutput("violin"))
-#         tabPanel("Power Analysis",
-#                  br(),
-#                  fluidRow(
-#                    column(3, renderUI("method"))#,
-#                    #column(3, )
-#                  )
-#         )
+        tabPanel("Violin Plot", plotOutput("violin")),
+        tabPanel("Power Analysis",
+                 br(),
+                 fluidRow(
+                   column(3, uiOutput("method")),
+                   column(3, numericInput("sig.level", "Significance Level",
+                                          value = 0.05, step = 0.01)),
+                   column(3, numericInput("power", "Power",
+                                          value = 0.8, step = 0.1))
+                 ),
+                 uiOutput("effect_size"),
+                 uiOutput("sample_size")
+        )
       )
     )
   )

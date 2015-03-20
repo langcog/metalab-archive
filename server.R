@@ -2,9 +2,9 @@ library(shiny)
 library(tidyr)
 library(dplyr)
 library(ggplot2)
-library(readr)
+library(pwr)
 
-input <- list(dataset = "inworddb")
+input <- list(dataset = "inworddb", method = "HPP", sig.level = 0.05, power = 0.8)
 
 map_fields <- function(dataset, df) {
   if (dataset == "inphondb") {
@@ -29,13 +29,30 @@ shinyServer(function(input, output) {
       select(method, effect_size, n, mean_age)
   })
   
-#   mean.effect <- reactive({
-#     data %>%
-#       select(method, EffectSize) %>%
-#       filter(method == input$method, !is.na(EffectSize)) %>%
-#       summarise(mean.effect = mean(EffectSize))
-#   })
+  output$method <- renderUI({
+    selectizeInput("method", "Method", choices = levels(unique(data()$method)))
+  })
   
+  effect_size <- reactive({
+    summary <- data() %>%
+      filter(method == input$method) %>%
+      summarise(mean.effect = mean(effect_size))
+    summary[[1]]
+  })
+
+  output$effect_size <- renderText({
+    sprintf("Estimated effect size is %s.", round(effect_size(), 2))
+  })
+
+  sample_size <- reactive({
+    pwr.t.test(d = effect_size(), sig.level = input$sig.level,
+               power = input$power, type = c("two.sample", "one.sample", "paired"))$n
+  })
+
+  output$sample_size <- renderText({
+    sprintf("Estimated sample size is %s subjects in each group.", ceiling(sample_size()))
+  })
+
   output$scatter <- renderPlot({
     ggplot(data(), aes(x = mean_age, y = effect_size, colour = method)) +
       geom_point(aes(size = n)) +
