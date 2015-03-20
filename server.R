@@ -1,4 +1,5 @@
 library(shiny)
+library(shinyapps)
 library(tidyr)
 library(dplyr)
 library(ggplot2)
