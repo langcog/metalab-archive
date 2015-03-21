@@ -10,14 +10,15 @@ shinyUI(fluidPage(
   
   sidebarLayout(
     sidebarPanel(
-      width = 4,
+      width = 3,
       selectInput("dataset", h4("Dataset"),
                   choices = list("Phonetic Discrimination" = "inphondb",
-                                 "Word Segmentation" = "inworddb"))
+                                 "Word Segmentation" = "inworddb",
+                                 "Mutual Exclusivity" = "mutual_exclusivity"))
     ),
     
     mainPanel(
-      width = 8,
+      width = 9,
       tags$style(type="text/css",
                  ".shiny-output-error { visibility: hidden; }",
                  ".shiny-output-error:before { visibility: hidden; }"),
