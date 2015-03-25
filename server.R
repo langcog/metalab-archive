@@ -15,32 +15,34 @@ map_fields <- function(dataset) {
   df <- read.csv(paste0('data/', dataset, '.csv')) 
   
   if (dataset == "inphondb") {
-    df <- df %>% rename(method = method,
-                  effect_size = EffectSize,
-                  ns = nb.included,
-                  paper = bibliographical.reference,
-                  mean_age = mean.age.days)
+    df <- df %>%
+      rename(expt_method = method,
+             effect_size = EffectSize,
+             ns = nb.included,
+             paper = bibliographical.reference,
+             mean_age = mean.age.days)
   } else if (dataset == "inworddb") {
     df <- df %>% 
       mutate(paper = str_c(Authors,as.character(JnlYear))) %>%
-      rename(method = Method,
+      rename(expt_method = Method,
              effect_size = ES,
              ns = Included,
              paper = paper, 
              mean_age = meanAge)
   } else if (dataset == "mutual_exclusivity") {
-    df <- df %>% rename(method = DV.type,
-                  effect_size = d,
-                  ns = N,
-                  paper = paper_key,
-                  mean_age = age_mean..months.) %>%
-      mutate(mean_age = mean_age * 30)
+    df <- df %>% 
+      rename(expt_method = DV.type,
+             ns = N,
+             effect_size = d,
+             paper = paper_key,
+             mean_age = age_mean..months.) %>%
+      mutate(mean_age = mean_age * 30.3)
   } 
       
   df <- df %>% 
-    select(method, effect_size, ns, mean_age, paper) %>%
-    mutate(id = 1:length(method)) %>%
-    filter(!is.na(effect_size))
+    select(expt_method, effect_size, ns, mean_age, paper) %>%
+    mutate(id = 1:length(expt_method)) %>%
+    filter(!is.na(effect_size), !is.infinite(effect_size))
 
   return(df)
 }
@@ -62,23 +64,23 @@ shinyServer(function(input, output) {
     }
     
     data() %>% 
-      ggvis(x = ~mean_age, y = ~effect_size, key := ~id,
-            stroke = ~method, fill= ~method) %>%
-      layer_points(size = ~ns) %>%
-      add_relative_scales() %>%
+      ggvis(x = ~mean_age, y = ~effect_size, stroke = ~expt_method) %>%
+      group_by(expt_method) %>%
+      layer_model_predictions(model = "lm", 
+                              formula = effect_size ~ log(mean_age),
+                              se = TRUE) %>%
+      ungroup() %>%
+      layer_points(fill= ~expt_method, size = ~ns, key := ~id) %>%
       add_legend(c("stroke",  "fill")) %>%
-      hide_legend("size") %>% # can't figure out add legend for a different position
+      hide_legend("size") %>%
+      add_axis("x", title = "Mean age (days)") %>%
+      add_axis("y", title = "Effect size (SDs)") %>%
       add_tooltip(all_values, on=c("hover","click")) 
-#     %>%
-# #       group_by(method) %>%
-#       layer_model_predictions(model = "lm", 
-#                               formula = effect_size ~ log(mean_age), 
-#                               se = TRUE)
   }) %>% bind_shiny("scatter")
   
   ################# REACTIVES FOR VIOLIN PLOT #################
   output$violin <- renderPlot({
-    ggplot(data(), aes(x = factor(method), y = effect_size, colour = method)) +
+    ggplot(data(), aes(x = factor(expt_method), y = effect_size, colour = expt_method)) +
       geom_jitter(height = 0) +
       geom_violin() +
       scale_colour_brewer(name = "", palette = "Set1") +
