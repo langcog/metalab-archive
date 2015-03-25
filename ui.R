@@ -23,7 +23,7 @@ shinyUI(fluidPage(
                  ".shiny-output-error { visibility: hidden; }",
                  ".shiny-output-error:before { visibility: hidden; }"),
       tabsetPanel(
-        tabPanel("Scatter Plot", plotOutput("scatter")),
+        tabPanel("Scatter Plot", ggvisOutput("scatter")),
         tabPanel("Violin Plot", plotOutput("violin")),
         tabPanel("Power Analysis",
                  br(),
