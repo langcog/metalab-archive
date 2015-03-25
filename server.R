@@ -39,6 +39,7 @@ map_fields <- function(dataset) {
       
   df <- df %>% 
     select(method, effect_size, ns, mean_age, paper) %>%
+    mutate(id = 1:length(method)) %>%
     filter(!is.na(effect_size))
 
   return(df)
@@ -54,22 +55,25 @@ shinyServer(function(input, output) {
   reactive({
     print(data())
     
+    all_values <- function(x) {
+      if(is.null(x)) return(NULL)
+      row <- data()[data()$id == x$id, ]
+      paste0(names(row), ": ", format(row), collapse = "<br />")
+    }
+    
     data() %>% 
-      ggvis(x = ~mean_age, y = ~effect_size, 
+      ggvis(x = ~mean_age, y = ~effect_size, key := ~id,
             stroke = ~method, fill= ~method) %>%
       layer_points(size = ~ns) %>%
       add_relative_scales() %>%
       add_legend(c("stroke",  "fill")) %>%
       hide_legend("size") %>% # can't figure out add legend for a different position
-      group_by(method) %>%
-      layer_model_predictions(model = "lm", 
-                              formula = effect_size ~ log(mean_age), 
-                              se = TRUE) %>%
-      add_tooltip(function(x) {
-        print(x)
-        if (is.null(x)) return(NULL)
-        paste0("citation:",x$paper, collapse="<br />")
-      }, on=c("hover","click"))
+      add_tooltip(all_values, on=c("hover","click")) 
+#     %>%
+# #       group_by(method) %>%
+#       layer_model_predictions(model = "lm", 
+#                               formula = effect_size ~ log(mean_age), 
+#                               se = TRUE)
   }) %>% bind_shiny("scatter")
   
   ################# REACTIVES FOR VIOLIN PLOT #################
