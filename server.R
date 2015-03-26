@@ -55,7 +55,7 @@ shinyServer(function(input, output) {
   })
   
   reactive({
-    print(data())
+#    print(data())
     
     all_values <- function(x) {
       if(is.null(x)) return(NULL)
@@ -93,11 +93,12 @@ shinyServer(function(input, output) {
   
   ################# REACTIVES FOR POWER ANALYSIS #################
   method <- reactive({
-    ifelse(is.na(input$method), "All", input$method)
+    ifelse(is.null(input$method), "All", input$method)
   })
   
   output$method <- renderUI({    
-    selectizeInput("method", "Method", choices = c("All", levels(unique(data()$method))),
+    selectizeInput("method", "Method", choices = c("All",
+                                                   levels(unique(data()$expt_method))),
                    select = "All")
   })
   
@@ -105,7 +106,7 @@ shinyServer(function(input, output) {
     filtered <- data()
     
     if (method() != "All") {
-      filtered %<>% filter(method == input$method)
+      filtered %<>% filter(expt_method == method())
     }
     summarise(filtered, mean.effect = mean(effect_size))[[1]]
   })
@@ -113,10 +114,10 @@ shinyServer(function(input, output) {
   output$effect_size <- renderText({
     sprintf("Estimated effect size is %s.", round(effect_size(), 2))
   })
-  
+
   sample_size <- reactive({
     pwr.t.test(d = effect_size(), sig.level = input$sig.level,
-               power = input$power, type = c("two.sample", "one.sample", "paired"))$ns
+               power = input$power, type = c("two.sample", "one.sample", "paired"))$n
   })
   
   output$sample_size <- renderText({
