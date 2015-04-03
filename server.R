@@ -5,6 +5,7 @@ library(dplyr)
 library(ggplot2)
 library(pwr)
 library(magrittr)
+#TEST
 
 #input <- list(dataset = "inphondb", method = "AEM", sig.level = 0.05, power = 0.8)
 
