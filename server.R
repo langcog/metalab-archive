@@ -5,7 +5,8 @@ library(dplyr)
 library(ggplot2)
 library(pwr)
 library(magrittr)
-#TEST
+library(metafor)
+source('meta_helper.R')
 
 #input <- list(dataset = "inphondb", method = "AEM", sig.level = 0.05, power = 0.8)
 
@@ -14,20 +15,23 @@ map_fields <- function(dataset, df) {
     df %>% rename(method = method,
                   effect_size = EffectSize,
                   n = nb.included,
-                  mean_age = mean.age.days)
+                  mean_age = mean.age.days) %>%
+      mutate(d_var = NA)
   } else if (dataset == "inworddb") {
     df %>% rename(method = Method,
                   effect_size = ES,
                   n = Included,
-                  mean_age = meanAge)
+                  mean_age = meanAge) %>%
+        mutate(d_var = NA)
   } else if (dataset == "mutual_exclusivity") {
     df %>% rename(method = DV.type,
-                  effect_size = d,
+                  effect_size = d_calculate,
                   n = N,
                   mean_age = age_mean..months.) %>%
       mutate(mean_age = mean_age * 30)
   }
 }
+
 
 shinyServer(function(input, output) {
   
@@ -39,9 +43,11 @@ shinyServer(function(input, output) {
     read.csv(paste0('data/', input$dataset, '.csv')) %>%
       map_fields(input$dataset, .) %>%
       filter(!is.na(effect_size)) %>%
-      select(method, effect_size, n, mean_age)
+      select(method, effect_size, n, mean_age, d_var)
   })
   
+  moderator <- reactive({input$moderator})
+
   output$method <- renderUI({
     selectizeInput("method", "Method", choices = c("All", levels(unique(data()$method))),
                    select = "All")
@@ -91,4 +97,19 @@ shinyServer(function(input, output) {
       theme(text = element_text(family = "Open Sans"))
   })
   
+  output$forest <- renderPlot({
+    # get model
+    if (moderator() == "none") {
+      model = rma(effect_size, vi = d_var, data = data(), method = "REML")      
+    } else {
+      model = rma(effect_size ~ eval(parse(text=moderator())), vi = d_var, data = data(), method = "REML")     
+    }
+    
+    # plot
+    forest(model,
+           mlab = "Grand effect size",
+           xlab ="Effect size estimate",
+           annotate = F)
+  }, height = 800, width = 600)
+
 })
