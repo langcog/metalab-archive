@@ -6,22 +6,28 @@ library(ggplot2)
 library(pwr)
 library(magrittr)
 
-#input <- list(dataset = "inphondb", method = "AEM", sig.level = 0.05, power = 0.8)
+input <- list(dataset = "inworddb", method = "HPP", sig.level = 0.05, power = 0.8)
 
 map_fields <- function(dataset, df) {
   if (dataset == "inphondb") {
     df %>% rename(method = method,
                   effect_size = EffectSize,
+                  effect_size_se = ES.SE,
+                  effect_size_weight = ES.w,
                   n = nb.included,
                   mean_age = mean.age.days)
   } else if (dataset == "inworddb") {
     df %>% rename(method = Method,
                   effect_size = ES,
+                  effect_size_se = ES.SE,                  
+                  effect_size_weight = ES.W,                  
                   n = Included,
                   mean_age = meanAge)
   } else if (dataset == "mutual_exclusivity") {
     df %>% rename(method = DV.type,
                   effect_size = d,
+                  effect_size_se = NA,                  
+                  effect_size_weight = 1.0,
                   n = N,
                   mean_age = age_mean..months.) %>%
       mutate(mean_age = mean_age * 30)
@@ -38,7 +44,7 @@ shinyServer(function(input, output) {
     read.csv(paste0('data/', input$dataset, '.csv')) %>%
       map_fields(input$dataset, .) %>%
       filter(!is.na(effect_size)) %>%
-      select(method, effect_size, n, mean_age)
+      select(method, effect_size, effect_size_weight, n, mean_age)
   })
   
   output$method <- renderUI({
@@ -51,7 +57,7 @@ shinyServer(function(input, output) {
     if (method() != "All") {
       filtered %<>% filter(method == input$method)
     }
-    summarise(filtered, mean.effect = mean(effect_size))[[1]]
+    summarise(filtered, mean.effect = weighted.mean(effect_size, effect_size_weight))[[1]]
   })
   
   output$effect_size <- renderText({
@@ -77,7 +83,7 @@ shinyServer(function(input, output) {
       theme_bw(base_size=14) +
       theme(text = element_text(family = "Open Sans"))
   })
-  
+
   output$violin <- renderPlot({
     ggplot(data(), aes(x = factor(method), y = effect_size, colour = method)) +
       geom_jitter(height = 0) +
