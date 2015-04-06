@@ -29,7 +29,7 @@ shinyUI(fluidPage(
         tabPanel("Power Analysis",
                  br(),
                  fluidRow(
-                   column(3, uiOutput("method")),
+                   column(5, uiOutput("method")),
                    column(3, numericInput("sig.level", "Significance Level",
                                           value = 0.05, step = 0.01)),
                    column(3, numericInput("power", "Power",
