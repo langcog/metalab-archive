@@ -96,4 +96,15 @@ shinyServer(function(input, output) {
       theme(text = element_text(family = "Open Sans"))
   })
   
+  output$funnel <- renderPlot({
+    ggplot(data(), aes(x = effect_size, y = n, colour = method)) +
+      geom_point() +
+      facet_wrap(~ method) +
+      scale_colour_brewer(name = "Method", palette = "Set1") +
+      xlab("\nEffect Size") +
+      ylab("Sample Size\n") +
+      theme_bw(base_size=14) +
+      theme(text = element_text(family = "Open Sans"))
+  })
+  
 })
