@@ -10,7 +10,7 @@ shinyUI(fluidPage(
   
   sidebarLayout(
     sidebarPanel(
-      width = 3,
+      width = 4,
       selectInput("dataset", h4("Dataset"),
                   choices = list("Phonetic Discrimination" = "inphondb",
                                  "Word Segmentation" = "inworddb",
@@ -21,7 +21,7 @@ shinyUI(fluidPage(
     ), 
     
     mainPanel(
-      width = 9,
+      width = 8,
       tags$style(type="text/css",
                  ".shiny-output-error { visibility: hidden; }",
                  ".shiny-output-error:before { visibility: hidden; }"),
@@ -29,11 +29,11 @@ shinyUI(fluidPage(
         tabPanel("Scatter Plot", plotOutput("scatter")),
         tabPanel("Violin Plot", plotOutput("violin")),
         tabPanel("Forest Plot", plotOutput("forest", height = "150%")),
-        
+        tabPanel("Funnel Plot", plotOutput("funnel")),        
         tabPanel("Power Analysis",
                  br(),
                  fluidRow(
-                   column(3, uiOutput("method")),
+                   column(5, uiOutput("method")),
                    column(3, numericInput("sig.level", "Significance Level",
                                           value = 0.05, step = 0.01)),
                    column(3, numericInput("power", "Power",

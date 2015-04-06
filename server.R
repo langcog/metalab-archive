@@ -8,27 +8,46 @@ library(magrittr)
 library(metafor)
 source('meta_helper.R')
 
-#input <- list(dataset = "inphondb", method = "AEM", sig.level = 0.05, power = 0.8)
+input <- list(dataset = "mutual_exclusivity", method = "All", sig.level = 0.05, power = 0.8)
 
 map_fields <- function(dataset, df) {
   if (dataset == "inphondb") {
     df %>% rename(method = method,
                   effect_size = EffectSize,
+                  effect_size_se = ES.SE,
+                  effect_size_weight = ES.w,
                   n = nb.included,
                   mean_age = mean.age.days) %>%
       mutate(d_var = NA)
+      rowwise() %>%
+      mutate(method_name = switch(method,
+                                  "AEM" = "Anticipatory Eye Movement",
+                                  "CF-HAB" = "Central Fixation & Habituation",
+                                  "CF-SA" = "Central Fixation & Stimulus Alternation",                                  
+                                  "CHT" = "Conditioned Head-Turn",
+                                  "HAS" = "High Amplitude Sucking",
+                                  "HPP-FAM" = "Head-Turn Preference & Familiarization"))
   } else if (dataset == "inworddb") {
     df %>% rename(method = Method,
                   effect_size = ES,
+                  effect_size_se = ES.SE,
+                  effect_size_weight = ES.W,
                   n = Included,
                   mean_age = meanAge) %>%
         mutate(d_var = NA)
+      rowwise() %>%
+      mutate(method_name = switch(method,
+                                  "HPP-FAM" = "Head-Turn Preference",
+                                  "Other" = "Other"))
   } else if (dataset == "mutual_exclusivity") {
     df %>% rename(method = DV.type,
                   effect_size = d_calculate,
                   n = N,
                   mean_age = age_mean..months.) %>%
-      mutate(mean_age = mean_age * 30)
+      mutate(mean_age = mean_age * 30,
+             effect_size_se = NA,
+             effect_size_weight = 1.0,
+             method_name = method)
   }
 }
 
@@ -36,29 +55,31 @@ map_fields <- function(dataset, df) {
 shinyServer(function(input, output) {
   
   method <- reactive({
-    ifelse(is.na(input$method), "All", input$method)
+    print(input$method)
+    ifelse(is.null(input$method), "All", input$method)
   })
   
   data <- reactive({
     read.csv(paste0('data/', input$dataset, '.csv')) %>%
       map_fields(input$dataset, .) %>%
       filter(!is.na(effect_size)) %>%
-      select(method, effect_size, n, mean_age, d_var)
+      select(method, method_name, effect_size, effect_size_weight, d_var, n, mean_age)
   })
   
   moderator <- reactive({input$moderator})
 
   output$method <- renderUI({
-    selectizeInput("method", "Method", choices = c("All", levels(unique(data()$method))),
+    selectizeInput("method", "Method", choices = c("All", unique(data()$method_name)),
                    select = "All")
   })
   
   effect_size <- reactive({
-    filtered <- data()
+    filtered <- data() %>%
+      filter(!is.na(effect_size_weight))
     if (method() != "All") {
-      filtered %<>% filter(method == input$method)
+      filtered %<>% filter(method_name == input$method)
     }
-    summarise(filtered, mean.effect = mean(effect_size))[[1]]
+    summarise(filtered, mean.effect = weighted.mean(effect_size, effect_size_weight))[[1]]
   })
   
   output$effect_size <- renderText({
@@ -84,7 +105,7 @@ shinyServer(function(input, output) {
       theme_bw(base_size=14) +
       theme(text = element_text(family = "Open Sans"))
   })
-  
+
   output$violin <- renderPlot({
     ggplot(data(), aes(x = factor(method), y = effect_size, colour = method)) +
       geom_jitter(height = 0) +
@@ -112,4 +133,15 @@ shinyServer(function(input, output) {
            annotate = F)
   }, height = 800, width = 600)
 
+  output$funnel <- renderPlot({
+    ggplot(data(), aes(x = effect_size, y = n, colour = method)) +
+      geom_point() +
+      facet_wrap(~ method_name, ncol = 2) +
+      scale_colour_brewer(name = "Method", palette = "Set1") +
+      xlab("\nEffect Size") +
+      ylab("Sample Size\n") +
+      theme_bw(base_size=14) +
+      theme(text = element_text(family = "Open Sans"))
+  }, height = 650)
+  
 })
