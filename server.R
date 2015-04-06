@@ -19,18 +19,18 @@ map_fields <- function(dataset, df) {
   } else if (dataset == "inworddb") {
     df %>% rename(method = Method,
                   effect_size = ES,
-                  effect_size_se = ES.SE,                  
-                  effect_size_weight = ES.W,                  
+                  effect_size_se = ES.SE,
+                  effect_size_weight = ES.W,
                   n = Included,
                   mean_age = meanAge)
   } else if (dataset == "mutual_exclusivity") {
     df %>% rename(method = DV.type,
                   effect_size = d,
-                  effect_size_se = NA,                  
-                  effect_size_weight = 1.0,
                   n = N,
                   mean_age = age_mean..months.) %>%
-      mutate(mean_age = mean_age * 30)
+      mutate(mean_age = mean_age * 30,
+             effect_size_se = NA,
+             effect_size_weight = 1.0)
   }
 }
 
