@@ -6,9 +6,9 @@ library(ggplot2)
 library(pwr)
 library(magrittr)
 library(metafor)
-source('meta_helper.R')
 
-input <- list(dataset = "mutual_exclusivity", method = "All", sig.level = 0.05, power = 0.8)
+#input <- list(dataset = "inphondb", method = "All", sig.level = 0.05, power = 0.8,
+#              moderator = "none")
 
 map_fields <- function(dataset, df) {
   if (dataset == "inphondb") {
@@ -18,7 +18,7 @@ map_fields <- function(dataset, df) {
                   effect_size_weight = ES.w,
                   n = nb.included,
                   mean_age = mean.age.days) %>%
-      mutate(d_var = NA)
+      mutate(effect_size_var = effect_size_se ^ 2) %>%
       rowwise() %>%
       mutate(method_name = switch(method,
                                   "AEM" = "Anticipatory Eye Movement",
@@ -34,7 +34,7 @@ map_fields <- function(dataset, df) {
                   effect_size_weight = ES.W,
                   n = Included,
                   mean_age = meanAge) %>%
-        mutate(d_var = NA)
+      mutate(effect_size_var = effect_size_se ^2) %>%
       rowwise() %>%
       mutate(method_name = switch(method,
                                   "HPP-FAM" = "Head-Turn Preference",
@@ -42,11 +42,12 @@ map_fields <- function(dataset, df) {
   } else if (dataset == "mutual_exclusivity") {
     df %>% rename(method = DV.type,
                   effect_size = d_calculate,
+                  effect_size_var = d_var,
                   n = N,
                   mean_age = age_mean..months.) %>%
       mutate(mean_age = mean_age * 30,
-             effect_size_se = NA,
-             effect_size_weight = 1.0,
+             effect_size_se = sqrt(effect_size_var),
+             effect_size_weight = 1.0/effect_size_var,
              method_name = method)
   }
 }
@@ -55,7 +56,6 @@ map_fields <- function(dataset, df) {
 shinyServer(function(input, output) {
   
   method <- reactive({
-    print(input$method)
     ifelse(is.null(input$method), "All", input$method)
   })
   
@@ -63,7 +63,7 @@ shinyServer(function(input, output) {
     read.csv(paste0('data/', input$dataset, '.csv')) %>%
       map_fields(input$dataset, .) %>%
       filter(!is.na(effect_size)) %>%
-      select(method, method_name, effect_size, effect_size_weight, d_var, n, mean_age)
+      select(method, method_name, effect_size, effect_size_weight, effect_size_var, n, mean_age)
   })
   
   moderator <- reactive({input$moderator})
@@ -121,9 +121,9 @@ shinyServer(function(input, output) {
   output$forest <- renderPlot({
     # get model
     if (moderator() == "none") {
-      model = rma(effect_size, vi = d_var, data = data(), method = "REML")      
+      model = rma(effect_size, vi = effect_size_var, data = data(), method = "REML")      
     } else {
-      model = rma(effect_size ~ eval(parse(text=moderator())), vi = d_var, data = data(), method = "REML")     
+      model = rma(effect_size ~ eval(parse(text=moderator())), vi = effect_size_var, data = data(), method = "REML")     
     }
     
     # plot
