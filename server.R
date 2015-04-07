@@ -7,7 +7,7 @@ library(pwr)
 library(magrittr)
 library(metafor)
 
-input <- list(dataset = "inphondb", method = "All", sig.level = 0.05, power = 0.8,
+input <- list(dataset = "inworddb", method = "All", sig.level = 0.05, power = 0.8,
               moderator = "none")
 
 map_fields <- function(dataset, df) {
@@ -38,7 +38,7 @@ map_fields <- function(dataset, df) {
     
     map_method <- function(method) {
       switch(as.character(method),
-             "HPP-FAM" = "Head-Turn Preference",
+             "HPP" = "Head-Turn Preference",
              "Other" = "Other")
     }
     
