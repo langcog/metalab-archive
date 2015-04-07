@@ -119,6 +119,7 @@ shinyServer(function(input, output, session) {
   output$scatter <- renderPlot({
     ggplot(data(), aes(x = mean_age, y = effect_size, colour = method)) +
       geom_point(aes(size = n)) +
+      geom_smooth(method = "lm", formula = y ~ log(x)) +
       scale_colour_brewer(name = "Method", palette = "Set1") +
       scale_size_continuous(name = "n") +
       xlab("\nMean Subject Age (Days)") +
