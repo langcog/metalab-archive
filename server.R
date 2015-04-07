@@ -7,7 +7,7 @@ library(pwr)
 library(magrittr)
 library(metafor)
 
-input <- list(dataset = "inworddb", method = "All", sig.level = 0.05, power = 0.8,
+input <- list(dataset = "inphondb", method = "All", sig.level = 0.05, power = 0.8,
               moderator = "none")
 
 map_fields <- function(dataset, df) {
@@ -120,6 +120,7 @@ shinyServer(function(input, output, session) {
     ggplot(data(), aes(x = mean_age, y = effect_size, colour = method)) +
       geom_point(aes(size = n)) +
       geom_smooth(method = "lm", formula = y ~ log(x)) +
+      geom_hline(yintercept = 0, linetype = "dotted", color = "grey") +
       scale_colour_brewer(name = "Method", palette = "Set1") +
       scale_size_continuous(name = "n") +
       xlab("\nMean Subject Age (Days)") +
@@ -132,6 +133,7 @@ shinyServer(function(input, output, session) {
     ggplot(data(), aes(x = factor(method), y = effect_size, colour = method)) +
       geom_jitter(height = 0) +
       geom_violin() +
+      geom_hline(yintercept = 0, linetype = "dotted", color = "grey") +      
       scale_colour_brewer(name = "", palette = "Set1") +
       #      scale_size_continuous(name = "n") +
       xlab("\nMethod") +
@@ -164,6 +166,7 @@ shinyServer(function(input, output, session) {
   output$funnel <- renderPlot({
     ggplot(data(), aes(x = effect_size, y = n, colour = method)) +
       geom_point() +
+      geom_vline(xintercept = 0, linetype = "dotted", color = "grey") +      
       facet_wrap(~ method_name, ncol = 2) +
       scale_colour_brewer(name = "Method", palette = "Set1") +
       xlab("\nEffect Size") +
