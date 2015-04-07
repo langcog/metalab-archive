@@ -14,10 +14,7 @@ shinyUI(fluidPage(
       selectInput("dataset", h4("Dataset"),
                   choices = list("Phonetic Discrimination" = "inphondb",
                                  "Word Segmentation" = "inworddb",
-                                 "Mutual Exclusivity" = "mutual_exclusivity")),
-      selectInput("moderator", h4("Moderator"),
-                  choices = list("None" = "none",
-                                 "Age" = "mean_age"))
+                                 "Mutual Exclusivity" = "mutual_exclusivity"))
     ), 
     
     mainPanel(
@@ -28,7 +25,13 @@ shinyUI(fluidPage(
       tabsetPanel(
         tabPanel("Scatter Plot", plotOutput("scatter")),
         tabPanel("Violin Plot", plotOutput("violin")),
-        tabPanel("Forest Plot", plotOutput("forest", height = "150%")),
+        tabPanel("Forest Plot",
+                 br(),
+                 fluidRow(
+                   column(3, selectInput("moderator", "Moderator",
+                                         choices = list("None" = "none",
+                                                        "Age" = "mean_age")))),
+                 plotOutput("forest", width = "100%", height = "auto")),
         tabPanel("Funnel Plot", plotOutput("funnel")),        
         tabPanel("Power Analysis",
                  br(),

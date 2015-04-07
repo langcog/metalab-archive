@@ -7,53 +7,75 @@ library(pwr)
 library(magrittr)
 library(metafor)
 
-#input <- list(dataset = "inphondb", method = "All", sig.level = 0.05, power = 0.8,
-#              moderator = "none")
+input <- list(dataset = "inphondb", method = "All", sig.level = 0.05, power = 0.8,
+              moderator = "none")
 
 map_fields <- function(dataset, df) {
+  
   if (dataset == "inphondb") {
-    df %>% rename(method = method,
-                  effect_size = EffectSize,
-                  effect_size_se = ES.SE,
-                  effect_size_weight = ES.w,
-                  n = nb.included,
-                  mean_age = mean.age.days) %>%
-      mutate(effect_size_var = effect_size_se ^ 2) %>%
-      rowwise() %>%
-      mutate(method_name = switch(method,
-                                  "AEM" = "Anticipatory Eye Movement",
-                                  "CF-HAB" = "Central Fixation & Habituation",
-                                  "CF-SA" = "Central Fixation & Stimulus Alternation",                                  
-                                  "CHT" = "Conditioned Head-Turn",
-                                  "HAS" = "High Amplitude Sucking",
-                                  "HPP-FAM" = "Head-Turn Preference & Familiarization"))
-  } else if (dataset == "inworddb") {
-    df %>% rename(method = Method,
-                  effect_size = ES,
-                  effect_size_se = ES.SE,
-                  effect_size_weight = ES.W,
-                  n = Included,
-                  mean_age = meanAge) %>%
-      mutate(effect_size_var = effect_size_se ^2) %>%
-      rowwise() %>%
-      mutate(method_name = switch(method,
-                                  "HPP-FAM" = "Head-Turn Preference",
-                                  "Other" = "Other"))
+
+    map_method <- function(method) {
+      switch(as.character(method),
+           "AEM" = "Anticipatory Eye Movement",
+           "CF-HAB" = "Central Fixation & Habituation",
+           "CF-SA" = "Central Fixation & Stimulus Alternation",                                  
+           "CHT" = "Conditioned Head-Turn",
+           "HAS" = "High Amplitude Sucking",
+           "HPP-FAM" = "Head-Turn Preference & Familiarization")
+    }
+    
+    df %>% transmute(method = method,
+                     effect_size = EffectSize,
+                     effect_size_se = ES.SE,
+                     effect_size_weight = ES.w,
+                     n = nb.included,
+                     mean_age = mean.age.days,
+                     effect_size_var = effect_size_se ^ 2,
+                     method_name = sapply(method, map_method),
+                     citation = paste(author1, year, sep = ", "))
+
+    } else if (dataset == "inworddb") {
+    
+    map_method <- function(method) {
+      switch(as.character(method),
+             "HPP-FAM" = "Head-Turn Preference",
+             "Other" = "Other")
+    }
+    
+    df %>% transmute(method = Method,
+                     effect_size = ES,
+                     effect_size_se = ES.SE,
+                     effect_size_weight = ES.W,
+                     n = Included,
+                     mean_age = meanAge,
+                     effect_size_var = effect_size_se ^2,
+                     method_name = sapply(method, map_method),
+                     citation = paste(Authors, JnlYear, sep = ", "))
+    
   } else if (dataset == "mutual_exclusivity") {
-    df %>% rename(method = DV.type,
-                  effect_size = d_calculate,
-                  effect_size_var = d_var,
-                  n = N,
-                  mean_age = age_mean..months.) %>%
-      mutate(mean_age = mean_age * 30,
-             effect_size_se = sqrt(effect_size_var),
-             effect_size_weight = 1.0/effect_size_var,
-             method_name = method)
+
+    map_method <- function(method) {
+      switch(as.character(method),
+             "FC" = "FC",
+             "ET" = "ET",
+             "search" = "search")
+    }
+    
+    df %>% transmute(method = DV.type,
+                     effect_size = d_calculate,
+                     effect_size_var = d_var,
+                     n = N,
+                     mean_age = age_mean..months.,
+                     mean_age = mean_age * 30,
+                     effect_size_se = sqrt(effect_size_var),
+                     effect_size_weight = 1.0/effect_size_var,
+                     method_name = sapply(method, map_method),
+                     citation = paper_key)  
   }
 }
 
 
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
   
   method <- reactive({
     ifelse(is.null(input$method), "All", input$method)
@@ -62,8 +84,7 @@ shinyServer(function(input, output) {
   data <- reactive({
     read.csv(paste0('data/', input$dataset, '.csv')) %>%
       map_fields(input$dataset, .) %>%
-      filter(!is.na(effect_size)) %>%
-      select(method, method_name, effect_size, effect_size_weight, effect_size_var, n, mean_age)
+      filter(!is.na(effect_size))
   })
   
   moderator <- reactive({input$moderator})
@@ -121,17 +142,23 @@ shinyServer(function(input, output) {
   output$forest <- renderPlot({
     # get model
     if (moderator() == "none") {
-      model = rma(effect_size, vi = effect_size_var, data = data(), method = "REML")      
+      model = rma(effect_size, vi = effect_size_var, slab = as.character(citation),
+                  data = data(), method = "REML")      
     } else {
-      model = rma(effect_size ~ eval(parse(text=moderator())), vi = effect_size_var, data = data(), method = "REML")     
+      model = rma(effect_size ~ eval(parse(text=moderator())), vi = effect_size_var,
+                  slab = as.character(citation), data = data(), method = "REML")
     }
-    
+ 
     # plot
+    par(mar = c(5, 4, 0, 2))
     forest(model,
            mlab = "Grand effect size",
-           xlab ="Effect size estimate",
+           xlab = "Effect size estimate",
+           ylim = c(0, model$k + 3),
            annotate = F)
-  }, height = 800, width = 600)
+  }, height = function() {
+    session$clientData$output_forest_width * 5
+  })
 
   output$funnel <- renderPlot({
     ggplot(data(), aes(x = effect_size, y = n, colour = method)) +
