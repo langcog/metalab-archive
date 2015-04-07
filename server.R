@@ -56,9 +56,9 @@ map_fields <- function(dataset, df) {
 
     map_method <- function(method) {
       switch(as.character(method),
-             "FC" = "FC",
-             "ET" = "ET",
-             "search" = "search")
+             "FC" = "Forced Choice",
+             "ET" = "Eye-Tracking",
+             "search" = "Search")
     }
     
     df %>% transmute(method = DV.type,
