@@ -9,8 +9,11 @@ library(metafor)
 library(readr)
 library(RCurl)
 library(jsonlite)
+font <- "Open Sans"
 
-#input <- list(dataset_name = "Word Segmentation", moderator = c("method", "procedure"))
+input <- list(dataset_name = "Word Segmentation", #moderator = c("method", "procedure"),
+              mod_method = FALSE, mod_procedure = FALSE, mod_mean_age = FALSE,
+              method = "Behavioral", procedure = "Familiarization (HPP)", mean_age = 20)
 
 map_procedure <- function(procedure) {  
   switch(as.character(procedure),
@@ -57,33 +60,127 @@ shinyServer(function(input, output, session) {
       filter(!is.na(d))
   })
   
-  moderator_opts <- reactive({
-    Filter(function(moderator) {length(unique(data()[[moderator]])) > 1},
-           list("Age" = "mean_age", "Method" = "method",
-                "Procedure" = "procedure"))
-  })
+  #   moderator_opts <- reactive({
+  #     Filter(function(moderator) {length(unique(data()[[moderator]])) > 1},
+  #            list("Age" = "mean_age",
+  #                 "Method" = "method",
+  #                 "Procedure" = "procedure"))
+  #   })
   
-  output$moderators <- renderUI({
-    selectInput("moderator", label = h4("Moderator"), choices = moderator_opts(),
-                multiple = TRUE)
+  #   output$moderators <- renderUI({
+  #     selectInput("moderator", label = h4("Moderator"), choices = moderator_opts(),
+  #                 multiple = TRUE)
+  #   })
+  
+  moderators <- reactive({
+    mod_opts <- c("method", "procedure", "mean_age")
+    mod_opts[c(input$mod_method, input$mod_procedure, input$mod_mean_age)]
   })
   
   model <- reactive({
-    if (is.null(input$moderator)) {
+    if (length(moderators()) == 0) {
       rma(d, vi = d_var, slab = as.character(short_cite), data = data(), method = "REML")
     } else {
-      rma(as.formula(paste("d ~", paste(input$moderator, collapse = "+"))),
+      rma(as.formula(paste("d ~", paste(moderators(), collapse = "+"))),
           vi = d_var, slab = as.character(short_cite), data = data(), method = "REML")
     }
   })
   
-#   effect_size <- reactive({
-#     model$
+  output$method <- renderUI({
+    selectInput("method", label = h5("Method"), choices = c(unique(data()$method)))
+  })
+  
+  output$procedure <- renderUI({
+    selectInput("procedure", label = h5("Procedure"), choices = c(unique(data()$procedure)))
+  })
+  
+  output$mean_age <- renderUI({
+    sliderInput("mean_age", label = h5("Mean Age (months)"),
+                min = round(min(data()$mean_age)/30), max = round(max(data()$mean_age)/30),
+                value = mean(round(min(data()$mean_age)/30), round(max(data()$mean_age))/30))
+  })
+  
+#   method <- reactive({
+#     if (input$mod_method) input$method else NULL
+#   })
+#   
+#   procedure <- reactive({
+#     if (input$mod_procedure) input$procedure else NULL
+#   })
+#   
+#   mean_age <- reactive({
+#     if (input$mod_mean_age) input$mean_age else NULL
 #   })
   
-#   output$effect_size <- renderText({
-#     sprintf("Estimated effect size is %s.", round(effect_size(), 2))
-#   })
+  effect_size <- reactive({
+    filtered_data <- data()
+    if (input$mod_method) {
+      filtered_data %<>% filter(method == input$method)
+    }
+    if (input$mod_procedure) {
+      filtered_data %<>% filter(procedure == input$procedure)
+    }
+    if (input$mod_mean_age) {
+      model <- rma(d ~ mean_age, vi = d_var, slab = as.character(short_cite),
+                   data = filtered_data, method = "REML")
+      predict(model, newmods = input$mean_age)  
+    } else {
+      model <- rma(d, vi = d_var, slab = as.character(short_cite),
+                   data = filtered_data, method = "REML")
+      predict(model)
+    }
+  })
+  
+  output$effect_size <- renderText({
+    sprintf("Estimated effect size is %.2f, 95%% confidence interval (%.2f, %.2f).",
+            effect_size()$pred, effect_size()$ci.lb, effect_size()$ci.ub)
+  })
+  
+  output$power_plot <- renderPlot({
+    ns <- seq(5, 120, 5)
+    es <- effect_size()$pred
+    pwrs <- data.frame(
+      ns = ns,
+      Experimental = pwr.p.test(h = es, n = ns, sig.level = .05)$power,
+      Control = pwr.p.test(h = 0, n = ns, sig.level = .05)$power#,
+      #      Interaction = pwr.2p.test(h = es, n = ns, sig.level = .05)$power
+    ) %>%
+      gather(condition, ps, Experimental, Control) #Interaction,
+    
+    #       this.pwr <- data.frame(ns = rep(input$N, 3),  
+    #                              ps = c(pwr.p.test(h = input$d,
+    #                                                n = input$N, 
+    #                                                sig.level = .05)$power,
+    #                                     pwr.p.test(h = 0,
+    #                                                n = input$N, 
+    #                                                sig.level = .05)$power,
+    #                                     pwr.2p.test(h = input$d,
+    #                                                 n = input$N, 
+    #                                                 sig.level = .05)$power),
+    #                              condition = c("Experimental", "Interaction",
+    #                                            "Control"))
+    #      qplot(ns, ps, colour = condition, 
+    #            geom = c("point","line"),
+    #            data = pwrs) + 
+    ggplot(pwrs, aes(x = ns, y = ps, colour = condition)) +
+      geom_point() +
+      geom_line() +
+      #geom_point(data = this.pwr,
+      #           col = "red", size = 6) + 
+      geom_hline(yintercept = 0.8, linetype = "dashed") + 
+      geom_vline(
+        xintercept=pwr.p.test(h = es, sig.level = 0.05, power = 0.8)$n,
+        linetype = "dashed"
+      ) + 
+      #        geom_vline(xintercept=pwr.2p.test(h = es, 
+      #                                          sig.level = .05, 
+      #                                          power = .8)$n, lty=2) +         
+      ylim(c(0,1)) + 
+      ylab("Power to reject the null at p < .05\n") +
+      xlab("\nSample size") +
+      theme_bw() +
+      theme(text = element_text(family = font))
+  })
   
   #   sample_size <- reactive({
   #     pwr.t.test(d = effect_size(), sig.level = input$sig.level,
@@ -95,13 +192,13 @@ shinyServer(function(input, output, session) {
   #   })
   
   output$scatter <- renderPlot({
-    mod_group <- if (is.null(input$moderator)) {
+    mod_group <- if (length(moderators()) == 0) {
       NULL
-    } else if ("method" %in% input$moderator & "procedure" %in% input$moderator) {
+    } else if (input$mod_method & input$mod_procedure) {
       "method_procedure"
-    } else if ("method" %in% input$moderator) {
+    } else if (input$mod_method) {
       "method"
-    } else if ("procedure" %in% input$moderator) {
+    } else if (input$mod_procedure) {
       "procedure"
     }
     ggplot(data(), aes_string(x = "mean_age", y = "d", colour = mod_group)) +
@@ -113,7 +210,7 @@ shinyServer(function(input, output, session) {
       xlab("\nMean Subject Age (Days)") +
       ylab("Effect Size\n") +
       theme_bw(base_size=14) +
-      theme(text = element_text(family = "Open Sans"))
+      theme(text = element_text(family = font))
   })
   
   #   output$violin <- renderPlot({
@@ -125,7 +222,7 @@ shinyServer(function(input, output, session) {
   #       xlab("\nMethod") +
   #       ylab("Effect Size\n") +
   #       theme_bw(base_size=14) +
-  #       theme(text = element_text(family = "Open Sans"))
+  #       theme(text = element_text(family = font))
   #   })
   
   output$forest <- renderPlot({
@@ -140,7 +237,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$funnel <- renderPlot({
-    if (is.null(input$moderator)) {
+    if (length(moderators()) == 0) {
       d = data.frame(se = sqrt(model()$vi), es = model()$yi)
       center = mean(d$es)
       xlabel = "\nEffect Size"
@@ -168,7 +265,7 @@ shinyServer(function(input, output, session) {
       xlab(xlabel) +
       ylab("Standard error\n") +
       theme_bw(base_size=14) +
-      theme(text = element_text(family = "Open Sans"), 
+      theme(text = element_text(family = font), 
             panel.background = element_rect(fill = "grey"),
             panel.grid.major =  element_line(colour = "darkgrey", size = 0.2),
             panel.grid.minor =  element_line(colour = "darkgrey", size = 0.5))

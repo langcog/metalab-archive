@@ -10,43 +10,48 @@ shinyUI(fluidPage(
   
   sidebarLayout(
     sidebarPanel(
-      width = 4,
-#       selectInput("dataset", h4("Dataset"),
-#                   choices = list("Phonetic Discrimination" = "inphondb",
-#                                  "Word Segmentation" = "inworddb",
-#                                  "Mutual Exclusivity" = "mutual_exclusivity")),
+      width = 3,
       uiOutput("datasets"),
-      uiOutput("moderators")
-#       selectInput("moderator", "Moderator",
-#                   choices = list("Age" = "mean_age",
-#                                  "Method" = "method",
-#                                  "Procedure" = "procedure"),
-#                   multiple = TRUE)
+      br(),
+      h4("Moderators"),
+      checkboxInput("mod_method", label = "Method"),
+      checkboxInput("mod_procedure", label = "Procedure"),
+      checkboxInput("mod_mean_age", label = "Mean Age")
+#      uiOutput("moderators")
     ), 
     
     mainPanel(
-      width = 8,
+      width = 9,
       tags$style(type="text/css",
                  ".shiny-output-error { visibility: hidden; }",
                  ".shiny-output-error:before { visibility: hidden; }"),
       tabsetPanel(
         tabPanel("Scatter Plot", plotOutput("scatter")),
-#        tabPanel("Violin Plot", plotOutput("violin")),
+        #        tabPanel("Violin Plot", plotOutput("violin")),
         tabPanel("Forest Plot", plotOutput("forest", width = "100%", height = "auto")),
         tabPanel("Funnel Plot", plotOutput("funnel")),        
         tabPanel("Power Analysis",
                  br(),
                  fluidRow(
-                   column(5, uiOutput("method")),
-                   column(3, numericInput("sig.level", "Significance Level",
-                                          value = 0.05, step = 0.01)),
-                   column(3, numericInput("power", "Power",
-                                          value = 0.8, step = 0.1))
+                   column(4,
+                          conditionalPanel(
+                            condition = "input.mod_method",
+                            uiOutput("method"))),
+                   column(4,
+                          conditionalPanel(
+                            condition = "input.mod_procedure",
+                            uiOutput("procedure"))),
+                   column(4,
+                          conditionalPanel(
+                            condition = "input.mod_mean_age",
+                            uiOutput("mean_age")))
                  ),
                  uiOutput("effect_size"),
-                 uiOutput("sample_size")
+                 plotOutput("power_plot")
+                 #                 uiOutput("sample_size")
         )
       )
     )
   )
-))
+)
+)
