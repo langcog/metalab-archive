@@ -15,11 +15,12 @@ shinyUI(fluidPage(
                   choices = list("Phonetic Discrimination" = "inphondb",
                                  "Word Segmentation" = "inworddb",
                                  "Mutual Exclusivity" = "mutual_exclusivity")),
-      selectInput("moderator", "Moderator",
-                  choices = list("Age" = "mean_age",
-                                 "Method" = "method",
-                                 "Procedure" = "procedure"),
-                  multiple = TRUE)
+      uiOutput("moderator")
+#       selectInput("moderator", "Moderator",
+#                   choices = list("Age" = "mean_age",
+#                                  "Method" = "method",
+#                                  "Procedure" = "procedure"),
+#                   multiple = TRUE)
     ), 
     
     mainPanel(
