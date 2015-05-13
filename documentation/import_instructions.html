@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<title></title>
+
+<xmp theme="cosmo" style="display:none;">
+
+How to add a meta-analysis dataset
+==================================
+
+- Put all of its data in a google spreadsheet, naming the columns according to the codebook:
+
+	`https://docs.google.com/document/d/1szXxrv75qTVx-4adlLrwmjWSDIBJfMH09dzh9733mog/edit`
+
+- Make the sharing settings on the spreadsheet `Anyone with link can view`.
+
+- Go to `File` > `Publish to the web` and click on `Publish`.
+
+- This gives you a link. Copy the key part of the link (the part in between `d/` and `/pubhtml`).
+
+- Add en entry in the file `datasets.json` with the dataset's name and key, such as:
+	    {
+	        "name": "Word Segmentation",
+	        "key": "1XN6VaYRs7CStrINct_rr2d6rh6WN28xFiIGB5T1vkzY"
+	    }
+
+</xmp>
+
+<script src="strapdown/strapdown.js"></script>
+</html>

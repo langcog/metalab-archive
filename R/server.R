@@ -7,9 +7,10 @@ library(pwr)
 library(magrittr)
 library(metafor)
 library(readr)
+library(RCurl)
+library(jsonlite)
 
-# input <- list(dataset = "inworddb", method = "All", sig.level = 0.05, power = 0.8,
-#               moderator = c("method", "procedure"))
+#input <- list(dataset_name = "Word Segmentation", moderator = c("method", "procedure"))
 
 map_procedure <- function(procedure) {  
   switch(as.character(procedure),
@@ -27,15 +28,22 @@ map_method <- function(method) {
          "EEG" = "EEG")  
 }
 
+datasets <- fromJSON(txt = "../datasets.json")
 
 shinyServer(function(input, output, session) {
   
-  method <- reactive({
-    ifelse(is.null(input$method), "All", input$method)
+  output$datasets <- renderUI({
+    selectInput("dataset_name", label = h4("Dataset"), choices = datasets$name)
+  })
+  
+  dataset <- reactive({
+    filter(datasets, name == input$dataset_name)
   })
   
   data <- reactive({
-    read_csv(paste0('data/', input$dataset, '.csv')) %>%
+    dataset_url <- sprintf("https://docs.google.com/spreadsheets/d/%s/export?gid=0&format=csv",
+                           dataset()$key)
+    read_csv(getURL(dataset_url)) %>%
       rowwise() %>%
       mutate(method = map_method(method),
              procedure = map_procedure(procedure),
@@ -49,49 +57,33 @@ shinyServer(function(input, output, session) {
       filter(!is.na(d))
   })
   
-  moderator <- reactive({input$moderator})
-  
   moderator_opts <- reactive({
     Filter(function(moderator) {length(unique(data()[[moderator]])) > 1},
            list("Age" = "mean_age", "Method" = "method",
                 "Procedure" = "procedure"))
   })
   
-  output$moderator <- renderUI({
+  output$moderators <- renderUI({
     selectInput("moderator", label = h4("Moderator"), choices = moderator_opts(),
                 multiple = TRUE)
   })
   
   model <- reactive({
-    if (is.null(moderator())) {
+    if (is.null(input$moderator)) {
       rma(d, vi = d_var, slab = as.character(short_cite), data = data(), method = "REML")
     } else {
-      rma(as.formula(paste("d ~", paste(moderator(), collapse = "+"))),
+      rma(as.formula(paste("d ~", paste(input$moderator, collapse = "+"))),
           vi = d_var, slab = as.character(short_cite), data = data(), method = "REML")
     }
   })
   
-  effect_size <- reactive({
-    model$
-  })
+#   effect_size <- reactive({
+#     model$
+#   })
   
-  #   output$method <- renderUI({
-  #     selectizeInput("method", "Method", choices = c("All", unique(data()$method)),
-  #                    select = "All")
-  #   })
-  
-  #   effect_size <- reactive({
-  #     filtered <- data() %>%
-  #       filter(!is.na(effect_size_weight))
-  #     if (method() != "All") {
-  #       filtered %<>% filter(method_name == input$method)
-  #     }
-  #     summarise(filtered, mean.effect = weighted.mean(effect_size, effect_size_weight))[[1]]
-  #   })
-  
-    output$effect_size <- renderText({
-      sprintf("Estimated effect size is %s.", round(effect_size(), 2))
-    })
+#   output$effect_size <- renderText({
+#     sprintf("Estimated effect size is %s.", round(effect_size(), 2))
+#   })
   
   #   sample_size <- reactive({
   #     pwr.t.test(d = effect_size(), sig.level = input$sig.level,
@@ -103,14 +95,13 @@ shinyServer(function(input, output, session) {
   #   })
   
   output$scatter <- renderPlot({
-    print(moderator())
-    mod_group <- if (is.null(moderator())) {
+    mod_group <- if (is.null(input$moderator)) {
       NULL
-    } else if ("method" %in% moderator() & "procedure" %in% moderator()) {
+    } else if ("method" %in% input$moderator & "procedure" %in% input$moderator) {
       "method_procedure"
-    } else if ("method" %in% moderator()) {
+    } else if ("method" %in% input$moderator) {
       "method"
-    } else if ("procedure" %in% moderator()) {
+    } else if ("procedure" %in% input$moderator) {
       "procedure"
     }
     ggplot(data(), aes_string(x = "mean_age", y = "d", colour = mod_group)) +
@@ -149,7 +140,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$funnel <- renderPlot({
-    if (is.null(moderator())) {
+    if (is.null(input$moderator)) {
       d = data.frame(se = sqrt(model()$vi), es = model()$yi)
       center = mean(d$es)
       xlabel = "\nEffect Size"

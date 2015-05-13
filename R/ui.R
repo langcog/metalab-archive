@@ -11,11 +11,12 @@ shinyUI(fluidPage(
   sidebarLayout(
     sidebarPanel(
       width = 4,
-      selectInput("dataset", h4("Dataset"),
-                  choices = list("Phonetic Discrimination" = "inphondb",
-                                 "Word Segmentation" = "inworddb",
-                                 "Mutual Exclusivity" = "mutual_exclusivity")),
-      uiOutput("moderator")
+#       selectInput("dataset", h4("Dataset"),
+#                   choices = list("Phonetic Discrimination" = "inphondb",
+#                                  "Word Segmentation" = "inworddb",
+#                                  "Mutual Exclusivity" = "mutual_exclusivity")),
+      uiOutput("datasets"),
+      uiOutput("moderators")
 #       selectInput("moderator", "Moderator",
 #                   choices = list("Age" = "mean_age",
 #                                  "Method" = "method",
