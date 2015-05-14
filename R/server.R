@@ -60,7 +60,7 @@ shinyServer(function(input, output, session) {
              procedure = if(is.na(procedure_secondary)) procedure else sprintf('%s (%s)', procedure, procedure_secondary),
              method_procedure = paste(method, procedure, sep = ": "),
              d = d, #TODO: calculate effect size
-             d_var = 0.5, # TODO: calculate effect size variance
+             d_var = d_var, # TODO: calculate effect size variance
              mean_age = weighted.mean(c(mean_age_1, mean_age_2), c(n_1, n_2),
                                       na.rm = TRUE),
              n = mean(c(n_1, n_2), na.rm = TRUE)) %>%
