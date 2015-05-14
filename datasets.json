@@ -1,10 +1,14 @@
 [
 	{
+		"name": "Phonemic Discrimination",
+		"key": "1XzSDQhwT8qv6wkvihvoo_6LGWBlM62vQFkK3b-JXMzM"
+	},
+	{
 		"name": "Word Segmentation",
 		"key": "1XN6VaYRs7CStrINct_rr2d6rh6WN28xFiIGB5T1vkzY"
 	},
 	{
-		"name": "Phonemic Discrimination",
-		"key": "1XzSDQhwT8qv6wkvihvoo_6LGWBlM62vQFkK3b-JXMzM"
+		"name": "Mutual Exclusivity",
+		"key": "14WdgHLcizDz7vjpxPkNlBkYi8s6yO3tnSTs69SSG7yY"
 	}
 ]
