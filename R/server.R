@@ -11,16 +11,19 @@ library(RCurl)
 library(jsonlite)
 font <- "Open Sans"
 
-input <- list(dataset_name = "Phoneme Discrimination",
-              mod_method = FALSE, mod_procedure = FALSE, mod_mean_age = FALSE,
-              method = NULL, procedure = NULL, mean_age = NULL)
+# input <- list(dataset_name = "Phonemic Discrimination",
+#               mod_method = FALSE, mod_procedure = FALSE, mod_mean_age = FALSE,
+#               method = NULL, procedure = NULL, mean_age = NULL)
 
 map_procedure <- function(procedure) {  
   switch(as.character(procedure),
          "FC" = "Forced choice",
          "CHT" = "Conditioned head-turn",
          "HAB" = "Habituation",
-         "FAM" = "Familiarization", 
+         "FAM" = "Familiarization",
+         "SA" = "Stimulus Alternation",
+         "Oddball" = "Other",
+         "AEM" = "Anticipatory Eye Movement",
          "OTHER" = "Other")
 }
 
@@ -28,7 +31,9 @@ map_method <- function(method) {
   switch(as.character(method),
          "ET" = "Eyetracking",
          "B" = "Behavioral",
-         "EEG" = "EEG")  
+         "EEG" = "Electroencephalography",
+         "PHY" = "PHY?",
+         "NIRS" = "Near-infrared spectroscopy")  
 }
 
 datasets <- fromJSON(txt = "../datasets.json")
@@ -46,12 +51,12 @@ shinyServer(function(input, output, session) {
   data <- reactive({
     dataset_url <- sprintf("https://docs.google.com/spreadsheets/d/%s/export?id=%s&format=csv",
                            dataset()$key, dataset()$key)
-    read_csv(getURL(dataset_url)) %>%
+    read.csv(textConnection(getURL(dataset_url)), stringsAsFactors = FALSE) %>%
       rowwise() %>%
       mutate(method = map_method(method),
              procedure = map_procedure(procedure),
-             procedure = sprintf('%s (%s)', procedure, procedure_secondary),
-             method_procedure = paste(method, procedure),
+             procedure = if(is.na(procedure_secondary)) procedure else sprintf('%s (%s)', procedure, procedure_secondary),
+             method_procedure = paste(method, procedure, sep = ": "),
              d = d, #TODO: calculate effect size
              d_var = 0.5, # TODO: calculate effect size variance
              mean_age = weighted.mean(c(mean_age_1, mean_age_2), c(n_1, n_2),
@@ -59,18 +64,6 @@ shinyServer(function(input, output, session) {
              n = mean(c(n_1, n_2), na.rm = TRUE)) %>%
       filter(!is.na(d))
   })
-  
-  #   moderator_opts <- reactive({
-  #     Filter(function(moderator) {length(unique(data()[[moderator]])) > 1},
-  #            list("Age" = "mean_age",
-  #                 "Method" = "method",
-  #                 "Procedure" = "procedure"))
-  #   })
-  
-  #   output$moderators <- renderUI({
-  #     selectInput("moderator", label = h4("Moderator"), choices = moderator_opts(),
-  #                 multiple = TRUE)
-  #   })
   
   moderators <- reactive({
     mod_opts <- c("method", "procedure", "mean_age")
@@ -100,18 +93,6 @@ shinyServer(function(input, output, session) {
                 value = mean(round(min(data()$mean_age)/30), round(max(data()$mean_age))/30))
   })
   
-#   method <- reactive({
-#     if (input$mod_method) input$method else NULL
-#   })
-#   
-#   procedure <- reactive({
-#     if (input$mod_procedure) input$procedure else NULL
-#   })
-#   
-#   mean_age <- reactive({
-#     if (input$mod_mean_age) input$mean_age else NULL
-#   })
-  
   effect_size <- reactive({
     filtered_data <- data()
     if (input$mod_method) {
@@ -136,7 +117,7 @@ shinyServer(function(input, output, session) {
             effect_size()$pred, effect_size()$ci.lb, effect_size()$ci.ub)
   })
   
-  output$power_plot <- renderPlot({
+  output$power <- renderPlot({
     ns <- seq(5, 120, 5)
     es <- effect_size()$pred
     pwrs <- data.frame(
@@ -153,7 +134,7 @@ shinyServer(function(input, output, session) {
              pwr.p.test(h = 0, n = input$N, sig.level = 0.05)$power),
       condition = c("Experimental", "Control")
     )
-
+    
     ggplot(pwrs, aes(x = ns, y = ps, colour = condition)) +
       geom_point() +
       geom_line() +
@@ -169,8 +150,13 @@ shinyServer(function(input, output, session) {
       ylim(c(0,1)) + 
       ylab("Power to reject the null at p < .05\n") +
       xlab("\nSample size") +
+      scale_colour_brewer(name = "", palette = "Set1") +      
       theme_bw() +
-      theme(text = element_text(family = font))
+      theme(text = element_text(family = font),
+            legend.position = "bottom",
+            legend.direction = "vertical")
+  }, height = function() {
+    session$clientData$output_power_width * 0.7
   })
   
   output$scatter <- renderPlot({
@@ -187,12 +173,16 @@ shinyServer(function(input, output, session) {
       geom_point(aes(size = n)) +
       geom_smooth(method = "lm", formula = y ~ log(x)) +
       geom_hline(yintercept = 0, linetype = "dotted", color = "grey") +
-      scale_colour_brewer(name = "Procedure", palette = "Set1") +
-      scale_size_continuous(name = "n") +
+      scale_colour_brewer(name = "", palette = "Set1") +
+      scale_size_continuous(guide = FALSE) +
       xlab("\nMean Subject Age (Days)") +
       ylab("Effect Size\n") +
       theme_bw(base_size=14) +
-      theme(text = element_text(family = font))
+      theme(text = element_text(family = font),
+            legend.position = "bottom",
+            legend.direction = "vertical")
+  }, height = function() {
+    session$clientData$output_scatter_width * 0.7
   })
   
   #   output$violin <- renderPlot({

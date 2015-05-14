@@ -17,7 +17,6 @@ shinyUI(fluidPage(
       checkboxInput("mod_method", label = "Method"),
       checkboxInput("mod_procedure", label = "Procedure"),
       checkboxInput("mod_mean_age", label = "Mean Age")
-#      uiOutput("moderators")
     ), 
     
     mainPanel(
@@ -50,7 +49,7 @@ shinyUI(fluidPage(
                             uiOutput("procedure")))
                  ),
                  uiOutput("effect_size"),
-                 plotOutput("power_plot")
+                 plotOutput("power")
         )
       )
     )
