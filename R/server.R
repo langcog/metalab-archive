@@ -11,9 +11,11 @@ library(RCurl)
 library(jsonlite)
 font <- "Open Sans"
 
-# input <- list(dataset_name = "Phonemic Discrimination",
-#               mod_method = FALSE, mod_procedure = FALSE, mod_mean_age = FALSE,
-#               method = NULL, procedure = NULL, mean_age = NULL)
+input <- list(dataset_name = "Phonemic Discrimination",
+              mod_method = FALSE, mod_procedure = FALSE, mod_mean_age = FALSE,
+              method = NULL, procedure = NULL, mean_age = NULL)
+
+avg_month <- 365.2425/12.0
 
 map_procedure <- function(procedure) {  
   switch(as.character(procedure),
@@ -22,7 +24,7 @@ map_procedure <- function(procedure) {
          "HAB" = "Habituation",
          "FAM" = "Familiarization",
          "SA" = "Stimulus Alternation",
-         "Oddball" = "Other",
+         "ODD" = "Other",
          "AEM" = "Anticipatory Eye Movement",
          "OTHER" = "Other")
 }
@@ -32,8 +34,8 @@ map_method <- function(method) {
          "ET" = "Eyetracking",
          "B" = "Behavioral",
          "EEG" = "Electroencephalography",
-         "PHY" = "PHY?",
-         "NIRS" = "Near-infrared spectroscopy")  
+         "NIRS" = "Near-infrared spectroscopy",
+         "OTHER" = "Other")  
 }
 
 datasets <- fromJSON(txt = "../datasets.json")
@@ -89,8 +91,8 @@ shinyServer(function(input, output, session) {
   
   output$mean_age <- renderUI({
     sliderInput("mean_age", label = h5("Mean Age (months)"),
-                min = round(min(data()$mean_age)/30), max = round(max(data()$mean_age)/30),
-                value = mean(round(min(data()$mean_age)/30), round(max(data()$mean_age))/30))
+                min = round(min(data()$mean_age)/avg_month), max = round(max(data()$mean_age)/avg_month),
+                value = mean(round(min(data()$mean_age)/avg_month), round(max(data()$mean_age))/avg_month))
   })
   
   effect_size <- reactive({
@@ -104,7 +106,7 @@ shinyServer(function(input, output, session) {
     if (input$mod_mean_age) {
       model <- rma(d ~ mean_age, vi = d_var, slab = as.character(short_cite),
                    data = filtered_data, method = "REML")
-      predict(model, newmods = input$mean_age*30)  
+      predict(model, newmods = input$mean_age*avg_month)  
     } else {
       model <- rma(d, vi = d_var, slab = as.character(short_cite),
                    data = filtered_data, method = "REML")
