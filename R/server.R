@@ -11,9 +11,9 @@ library(RCurl)
 library(jsonlite)
 font <- "Open Sans"
 
-# input <- list(dataset_name = "Phonemic Discrimination",
+# input <- list(dataset_name = "Word Segmentation",
 #               mod_method = FALSE, mod_procedure = FALSE, mod_mean_age = FALSE,
-#               method = NULL, procedure = NULL, mean_age = NULL)
+#               method = NULL, procedure = NULL, mean_age = NULL, N = 20)
 
 map_procedure <- function(procedure) {  
   switch(as.character(procedure),
@@ -198,12 +198,35 @@ shinyServer(function(input, output, session) {
   #   })
   
   output$forest <- renderPlot({
-    par(mar = c(5, 4, 0, 2))
-    forest(model(),
-           mlab = "Grand effect size",
-           xlab = "Effect size estimate",
-           ylim = c(0, model()$k + 3),
-           annotate = F)
+#     par(mar = c(5, 4, 0, 2))
+#     forest(model(),
+#            mlab = "Grand effect size",
+#            xlab = "Effect size estimate",
+#            ylim = c(0, model()$k + 3),
+#            annotate = F)
+    f <- fitted(model())
+    p <- predict(model())
+    alpha <- .05
+    df <- data.frame(effects = as.numeric(model()$yi.f),
+                     variances = model()$vi.f) %>%
+      mutate(effects.cil = effects - qnorm(alpha/2, lower.tail = FALSE) * sqrt(variances),
+             effects.cih = effects + qnorm(alpha/2, lower.tail = FALSE) * sqrt(variances),
+             estimate = as.numeric(f),
+             weight = sqrt(variances),
+             short_cite = names(f),
+             estimate.cil = p$ci.lb,
+             estimate.cih = p$ci.ub) %>%
+      arrange(desc(effects)) %>%
+      mutate(short_cite = factor(short_cite, 
+                            levels = unique(short_cite))) 
+    
+    qplot(short_cite, effects, ymin = effects.cil, ymax = effects.cih, 
+          geom = "linerange", 
+          data=df) + 
+      geom_point(aes(y = effects, size = weight)) + 
+      coord_flip() + 
+      theme_bw()
+    
   }, height = function() {
     session$clientData$output_forest_width * 5
   })
