@@ -11,9 +11,9 @@ library(RCurl)
 library(jsonlite)
 font <- "Open Sans"
 
-# input <- list(dataset_name = "Word Segmentation",
-#               mod_method = FALSE, mod_procedure = FALSE, mod_mean_age = FALSE,
-#               method = NULL, procedure = NULL, mean_age = NULL, N = 20)
+input <- list(dataset_name = "Word Segmentation",
+              mod_method = FALSE, mod_procedure = FALSE, mod_mean_age = FALSE,
+              method = NULL, procedure = NULL, mean_age = NULL, N = 20)
 
 map_procedure <- function(procedure) {  
   switch(as.character(procedure),
