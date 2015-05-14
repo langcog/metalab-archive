@@ -33,22 +33,24 @@ shinyUI(fluidPage(
         tabPanel("Power Analysis",
                  br(),
                  fluidRow(
+                   column(4, sliderInput("N", label = h5("Sample size"),
+                                         min = 5, max = 120, value = 20)),
                    column(4,
+                          conditionalPanel(
+                            condition = "input.mod_mean_age",
+                            uiOutput("mean_age")))
+                 ),                 fluidRow(
+                   column(3,
                           conditionalPanel(
                             condition = "input.mod_method",
                             uiOutput("method"))),
                    column(4,
                           conditionalPanel(
                             condition = "input.mod_procedure",
-                            uiOutput("procedure"))),
-                   column(4,
-                          conditionalPanel(
-                            condition = "input.mod_mean_age",
-                            uiOutput("mean_age")))
+                            uiOutput("procedure")))
                  ),
                  uiOutput("effect_size"),
                  plotOutput("power_plot")
-                 #                 uiOutput("sample_size")
         )
       )
     )

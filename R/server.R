@@ -11,9 +11,9 @@ library(RCurl)
 library(jsonlite)
 font <- "Open Sans"
 
-input <- list(dataset_name = "Word Segmentation", #moderator = c("method", "procedure"),
+input <- list(dataset_name = "Phoneme Discrimination",
               mod_method = FALSE, mod_procedure = FALSE, mod_mean_age = FALSE,
-              method = "Behavioral", procedure = "Familiarization (HPP)", mean_age = 20)
+              method = NULL, procedure = NULL, mean_age = NULL)
 
 map_procedure <- function(procedure) {  
   switch(as.character(procedure),
@@ -44,8 +44,8 @@ shinyServer(function(input, output, session) {
   })
   
   data <- reactive({
-    dataset_url <- sprintf("https://docs.google.com/spreadsheets/d/%s/export?gid=0&format=csv",
-                           dataset()$key)
+    dataset_url <- sprintf("https://docs.google.com/spreadsheets/d/%s/export?id=%s&format=csv",
+                           dataset()$key, dataset()$key)
     read_csv(getURL(dataset_url)) %>%
       rowwise() %>%
       mutate(method = map_method(method),
@@ -123,7 +123,7 @@ shinyServer(function(input, output, session) {
     if (input$mod_mean_age) {
       model <- rma(d ~ mean_age, vi = d_var, slab = as.character(short_cite),
                    data = filtered_data, method = "REML")
-      predict(model, newmods = input$mean_age)  
+      predict(model, newmods = input$mean_age*30)  
     } else {
       model <- rma(d, vi = d_var, slab = as.character(short_cite),
                    data = filtered_data, method = "REML")
@@ -141,32 +141,23 @@ shinyServer(function(input, output, session) {
     es <- effect_size()$pred
     pwrs <- data.frame(
       ns = ns,
-      Experimental = pwr.p.test(h = es, n = ns, sig.level = .05)$power,
-      Control = pwr.p.test(h = 0, n = ns, sig.level = .05)$power#,
+      Experimental = pwr.p.test(h = es, n = ns, sig.level = 0.05)$power,
+      Control = pwr.p.test(h = 0, n = ns, sig.level = 0.05)$power#,
       #      Interaction = pwr.2p.test(h = es, n = ns, sig.level = .05)$power
     ) %>%
       gather(condition, ps, Experimental, Control) #Interaction,
     
-    #       this.pwr <- data.frame(ns = rep(input$N, 3),  
-    #                              ps = c(pwr.p.test(h = input$d,
-    #                                                n = input$N, 
-    #                                                sig.level = .05)$power,
-    #                                     pwr.p.test(h = 0,
-    #                                                n = input$N, 
-    #                                                sig.level = .05)$power,
-    #                                     pwr.2p.test(h = input$d,
-    #                                                 n = input$N, 
-    #                                                 sig.level = .05)$power),
-    #                              condition = c("Experimental", "Interaction",
-    #                                            "Control"))
-    #      qplot(ns, ps, colour = condition, 
-    #            geom = c("point","line"),
-    #            data = pwrs) + 
+    this.pwr <- data.frame(
+      ns = rep(input$N, 2),
+      ps = c(pwr.p.test(h = es, n = input$N, sig.level = 0.05)$power,
+             pwr.p.test(h = 0, n = input$N, sig.level = 0.05)$power),
+      condition = c("Experimental", "Control")
+    )
+
     ggplot(pwrs, aes(x = ns, y = ps, colour = condition)) +
       geom_point() +
       geom_line() +
-      #geom_point(data = this.pwr,
-      #           col = "red", size = 6) + 
+      geom_point(data = this.pwr, colour = "red", size = 6) + 
       geom_hline(yintercept = 0.8, linetype = "dashed") + 
       geom_vline(
         xintercept=pwr.p.test(h = es, sig.level = 0.05, power = 0.8)$n,
@@ -181,15 +172,6 @@ shinyServer(function(input, output, session) {
       theme_bw() +
       theme(text = element_text(family = font))
   })
-  
-  #   sample_size <- reactive({
-  #     pwr.t.test(d = effect_size(), sig.level = input$sig.level,
-  #                power = input$power, type = c("two.sample", "one.sample", "paired"))$n
-  #   })
-  
-  #   output$sample_size <- renderText({
-  #     sprintf("Estimated sample size is %s subjects in each group.", ceiling(sample_size()))
-  #   })
   
   output$scatter <- renderPlot({
     mod_group <- if (length(moderators()) == 0) {
