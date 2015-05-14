@@ -11,9 +11,9 @@ library(RCurl)
 library(jsonlite)
 font <- "Open Sans"
 
-input <- list(dataset_name = "Pointing",
-              mod_method = FALSE, mod_procedure = FALSE, mod_mean_age = FALSE,
-              method = NULL, procedure = NULL, mean_age = NULL)
+# input <- list(dataset_name = "Word Segmentation",
+#               mod_method = FALSE, mod_procedure = TRUE, mod_mean_age = FALSE,
+#               method = NULL, procedure = NULL, mean_age = NULL)
 
 avg_month <- 365.2425/12.0
 
@@ -83,10 +83,10 @@ shinyServer(function(input, output, session) {
   
   model <- reactive({
     if (length(moderators()) == 0) {
-      rma(d, vi = d_var, slab = as.character(short_cite), data = data(), method = "REML")
+      rma(d, vi = d_var, slab = as.character(unique_ID), data = data(), method = "REML")
     } else {
       rma(as.formula(paste("d ~", paste(moderators(), collapse = "+"))),
-          vi = d_var, slab = as.character(short_cite), data = data(), method = "REML")
+          vi = d_var, slab = as.character(unique_ID), data = data(), method = "REML")
     }
   })
   
@@ -209,15 +209,41 @@ shinyServer(function(input, output, session) {
   #   })
   
   output$forest <- renderPlot({
-    par(mar = c(5, 4, 0, 2))
-    forest(model(),
-           mlab = "Grand effect size",
-           xlab = "Effect size estimate",
-           ylim = c(0, model()$k + 3),
-           annotate = F)
+    f <- fitted(model())
+    p <- predict(model())
+    alpha <- .05
+    df <- data.frame(effects = as.numeric(model()$yi.f),
+                     variances = model()$vi.f) %>%
+      mutate(effects.cil = effects - qnorm(alpha/2, lower.tail = FALSE) * sqrt(variances),
+             effects.cih = effects + qnorm(alpha/2, lower.tail = FALSE) * sqrt(variances),
+             estimate = as.numeric(f),
+             unique_ID = names(f),
+             estimate.cil = p$ci.lb,
+             estimate.cih = p$ci.ub, 
+             identity = 1) %>%
+      left_join(data() %>% mutate(unique_ID = make.unique(unique_ID))) %>%    
+      arrange(desc(effects)) %>%
+      mutate(unique_ID = factor(unique_ID, levels = unique_ID))
+    
+    qplot(unique_ID, effects, ymin = effects.cil, ymax = effects.cih, 
+          geom = "linerange", 
+          data=df) + 
+      geom_point(aes(y = effects, size = n)) + 
+      geom_pointrange(aes(x = unique_ID, 
+                    y = estimate, 
+                    ymin = estimate.cil, 
+                    ymax = estimate.cih), 
+                col = "red") +
+      coord_flip() + 
+      scale_size_continuous(name = "N") + 
+      scale_colour_manual(values = c("data" = "black", "model" = "red")) + 
+      xlab("") + 
+      ylab("Effect Size") + 
+      theme_bw()
   }, height = function() {
-    session$clientData$output_forest_width * 5
+    session$clientData$output_forest_width * 2
   })
+  
   
   output$funnel <- renderPlot({
     if (length(moderators()) == 0) {
