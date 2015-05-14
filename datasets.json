@@ -1,14 +1,34 @@
 [
 	{
-		"name": "Phonemic Discrimination",
-		"key": "1XzSDQhwT8qv6wkvihvoo_6LGWBlM62vQFkK3b-JXMzM"
+		"name": "Phonemic discrimination",
+		"key": "1XzSDQhwT8qv6wkvihvoo_6LGWBlM62vQFkK3b-JXMzM",
+		"citation": "(Tsuji & Cristia, 2014)",
+		"link": "https://sites.google.com/site/inphondb/",
+		"N": "19",
+		"description": "Vowel space discrimintation narrows across development. This meta-analysis explore vowel discrimination, including results from behavioral, electrophysiological, and neuroimaging methods applied to infants 0-14 months of age."
 	},
 	{
-		"name": "Word Segmentation",
-		"key": "1XN6VaYRs7CStrINct_rr2d6rh6WN28xFiIGB5T1vkzY"
+		"name": "Word segmentation",
+		"key": "1XN6VaYRs7CStrINct_rr2d6rh6WN28xFiIGB5T1vkzY",
+		"citation": "(Bergmann & Cristia, under revision)",
+		"link": "https://sites.google.com/site/inworddb/",
+		"N": "48",
+		"description": "An analysis of studies on infants' extraction of words from running, natural speech as evidenced in paradigms built on listening times."
+	},
+	{
+		"name": "Pointing",
+		"key": "1ywuzdzvNE2H86_sM8heX33QUolzV3phJlQeonnkH4NM",
+		"citation": "(Colonnesi, et al., 2010)",
+		"link": "http://www.sciencedirect.com/science/article/pii/S0273229710000377",
+		"N": "25",
+		"description": "The pointing gesture has been argued to be related to the development of language. This meta-analysis explore the relationship between pointing and language development, bother concurrently and longitudinally."
 	},
 	{
 		"name": "Mutual Exclusivity",
-		"key": "14WdgHLcizDz7vjpxPkNlBkYi8s6yO3tnSTs69SSG7yY"
+		"key": "14WdgHLcizDz7vjpxPkNlBkYi8s6yO3tnSTs69SSG7yY",
+		"citation": "(Lewis & Frank, in prep)",
+		"link": "http://figshare.com/articles/Disambiguation_Meta_Analysis/1348836",
+		"N": "20",
+		"description": "Mutual exclusvity is the bias for children to assume a novel word refers to a novel object, in the presence of one novel and one familiar object."
 	}
 ]

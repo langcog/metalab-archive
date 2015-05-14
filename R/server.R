@@ -11,7 +11,7 @@ library(RCurl)
 library(jsonlite)
 font <- "Open Sans"
 
-input <- list(dataset_name = "Phonemic Discrimination",
+input <- list(dataset_name = "Pointing",
               mod_method = FALSE, mod_procedure = FALSE, mod_mean_age = FALSE,
               method = NULL, procedure = NULL, mean_age = NULL)
 
@@ -26,7 +26,8 @@ map_procedure <- function(procedure) {
          "SA" = "Stimulus Alternation",
          "ODD" = "Other",
          "AEM" = "Anticipatory Eye Movement",
-         "OTHER" = "Other")
+         "OTHER" = "Other",
+         "other" = "Other")
 }
 
 map_method <- function(method) {
@@ -35,10 +36,35 @@ map_method <- function(method) {
          "B" = "Behavioral",
          "EEG" = "Electroencephalography",
          "NIRS" = "Near-infrared spectroscopy",
-         "OTHER" = "Other")  
+         "OTHER" = "Other",
+         "other" = "Other")  
 }
 
-datasets <- fromJSON(txt = "../datasets.json")
+get_dataset <- function(dataset_name) {
+  
+  dataset_key <- filter(datasets, name == dataset_name)$key
+  dataset_url <- sprintf("https://docs.google.com/spreadsheets/d/%s/export?id=%s&format=csv",
+                         dataset_key, dataset_key)
+  
+  read.csv(textConnection(getURL(dataset_url)), stringsAsFactors = FALSE) %>%
+    rowwise() %>%
+    mutate(dataset = dataset_name,
+           study_num = as.character(study_num),
+           method = map_method(method),
+           procedure = map_procedure(procedure),
+           procedure = if(is.na(procedure_secondary)) procedure else sprintf('%s (%s)', procedure, procedure_secondary),
+           method_procedure = paste(method, procedure, sep = ": "),
+           d = d, #TODO: calculate effect size
+           d_var = d_var, # TODO: calculate effect size variance
+           mean_age = weighted.mean(c(mean_age_1, mean_age_2), c(n_1, n_2),
+                                    na.rm = TRUE),
+           n = mean(c(n_1, n_2), na.rm = TRUE)) %>%
+    filter(!is.na(d))
+  
+}
+
+all_data <- bind_rows(sapply(datasets$name, get_dataset, simplify = FALSE))
+  
 
 shinyServer(function(input, output, session) {
   
@@ -46,27 +72,10 @@ shinyServer(function(input, output, session) {
     selectInput("dataset_name", label = h4("Dataset"), choices = datasets$name)
   })
   
-  dataset <- reactive({
-    filter(datasets, name == input$dataset_name)
-  })
-  
   data <- reactive({
-    dataset_url <- sprintf("https://docs.google.com/spreadsheets/d/%s/export?id=%s&format=csv",
-                           dataset()$key, dataset()$key)
-    read.csv(textConnection(getURL(dataset_url)), stringsAsFactors = FALSE) %>%
-      rowwise() %>%
-      mutate(method = map_method(method),
-             procedure = map_procedure(procedure),
-             procedure = if(is.na(procedure_secondary)) procedure else sprintf('%s (%s)', procedure, procedure_secondary),
-             method_procedure = paste(method, procedure, sep = ": "),
-             d = d, #TODO: calculate effect size
-             d_var = d_var, # TODO: calculate effect size variance
-             mean_age = weighted.mean(c(mean_age_1, mean_age_2), c(n_1, n_2),
-                                      na.rm = TRUE),
-             n = mean(c(n_1, n_2), na.rm = TRUE)) %>%
-      filter(!is.na(d))
+    filter(all_data, dataset == input$dataset_name)
   })
-  
+
   moderators <- reactive({
     mod_opts <- c("method", "procedure", "mean_age")
     mod_opts[c(input$mod_method, input$mod_procedure, input$mod_mean_age)]
@@ -246,5 +255,28 @@ shinyServer(function(input, output, session) {
     
     
   }, height = 500)
+  
+  output$meta_datasets <- renderUI({
+    selectInput("meta_datasets", label = h4("Datasets"), choices = datasets$name,
+                selected = datasets$name, multiple = TRUE)
+  })
+    
+  output$metameta <- renderPlot({
+    ggplot(filter(all_data, dataset %in% input$meta_datasets),
+           aes(x = mean_age, y = d, colour = dataset)) +
+      geom_point(aes(size = n)) +
+      geom_smooth(method = "lm", formula = y ~ log(x)) +
+      geom_hline(yintercept = 0, linetype = "dotted", color = "grey") +
+      scale_colour_brewer(name = "", palette = "Set1") +
+      scale_size_continuous(guide = FALSE) +
+      xlab("\nMean Subject Age (Days)") +
+      ylab("Effect Size\n") +
+      theme_bw(base_size=14) +
+      theme(text = element_text(family = font),
+            legend.position = "bottom",
+            legend.direction = "vertical")
+    }, height = function() {
+      session$clientData$output_metameta_width * 0.9
+    })
   
 })
