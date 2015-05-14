@@ -24,7 +24,7 @@ Individual meta-analyses:
 ```{r results='asis', echo=FALSE}
 for (i in 1:nrow(datasets)) {
   dataset <- datasets[i,]
-  cat(sprintf("  * %s [%s](%s) [N = %s]\n\n    %s\n\n",
+  cat(sprintf("  * __%s__ [%s](%s) [N = %s]\n\n    %s\n\n",
               dataset$name, dataset$citation, dataset$link, dataset$N, dataset$description))
 }
 ```

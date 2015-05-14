@@ -51,23 +51,32 @@ shinyUI(navbarPage("MetaBaby",
         tabPanel("Funnel Plot", plotOutput("funnel")),        
         tabPanel("Power Analysis",
                  br(),
-                 fluidRow(
-                   column(4, sliderInput("N", label = h5("Sample size"),
-                                         min = 5, max = 120, value = 20)),
-                   column(4,
-                          conditionalPanel(
-                            condition = "input.mod_mean_age",
-                            uiOutput("mean_age")))
-                 ),                 fluidRow(
-                   column(3,
-                          conditionalPanel(
-                            condition = "input.mod_method",
-                            uiOutput("method"))),
-                   column(4,
-                          conditionalPanel(
-                            condition = "input.mod_procedure",
-                            uiOutput("procedure")))
-                 ),
+                 inputPanel(
+#                   fluidRow(width = 12,
+#                     column(3,
+                            sliderInput("N", label = h5("Sample size"),
+                                        min = 5, max = 120, value = 20),
+#                            ),
+#                     column(3,
+                            conditionalPanel(
+                              condition = "input.mod_mean_age",
+                              uiOutput("mean_age")),
+#                            ),
+#                   ),
+#                   fluidRow(
+#                     column(3,
+                            conditionalPanel(
+                              condition = "input.mod_method",
+                              uiOutput("method")),
+#                            ),
+#                     column(3,
+                            conditionalPanel(
+                              condition = "input.mod_procedure",
+                              uiOutput("procedure"))
+#                            )
+#                   )
+                ),
+                 br(),
                  uiOutput("effect_size"),
                  plotOutput("power")
         )

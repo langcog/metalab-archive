@@ -8,8 +8,7 @@ library(magrittr)
 library(metafor)
 library(readr)
 library(RCurl)
-library(jsonlite)
-font <- "Open Sans"
+font <- "Ubuntu"
 
 # input <- list(dataset_name = "Word Segmentation",
 #               mod_method = FALSE, mod_procedure = TRUE, mod_mean_age = FALSE,
@@ -239,7 +238,8 @@ shinyServer(function(input, output, session) {
       scale_colour_manual(values = c("data" = "black", "model" = "red")) + 
       xlab("") + 
       ylab("Effect Size") + 
-      theme_bw()
+      theme_bw() +
+      theme(text = element_text(family = font))
   }, height = function() {
     session$clientData$output_forest_width * 2
   })
