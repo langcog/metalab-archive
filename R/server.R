@@ -12,8 +12,10 @@ library(jsonlite)
 font <- "Open Sans"
 
 input <- list(dataset_name = "Word Segmentation",
-              mod_method = FALSE, mod_procedure = FALSE, mod_mean_age = FALSE,
-              method = NULL, procedure = NULL, mean_age = NULL, N = 20)
+              mod_method = FALSE, mod_procedure = TRUE, mod_mean_age = FALSE,
+              method = NULL, procedure = NULL, mean_age = NULL)
+
+avg_month <- 365.2425/12.0
 
 map_procedure <- function(procedure) {  
   switch(as.character(procedure),
@@ -22,7 +24,7 @@ map_procedure <- function(procedure) {
          "HAB" = "Habituation",
          "FAM" = "Familiarization",
          "SA" = "Stimulus Alternation",
-         "Oddball" = "Other",
+         "ODD" = "Other",
          "AEM" = "Anticipatory Eye Movement",
          "OTHER" = "Other")
 }
@@ -32,8 +34,8 @@ map_method <- function(method) {
          "ET" = "Eyetracking",
          "B" = "Behavioral",
          "EEG" = "Electroencephalography",
-         "PHY" = "PHY?",
-         "NIRS" = "Near-infrared spectroscopy")  
+         "NIRS" = "Near-infrared spectroscopy",
+         "OTHER" = "Other")  
 }
 
 datasets <- fromJSON(txt = "../datasets.json")
@@ -58,7 +60,7 @@ shinyServer(function(input, output, session) {
              procedure = if(is.na(procedure_secondary)) procedure else sprintf('%s (%s)', procedure, procedure_secondary),
              method_procedure = paste(method, procedure, sep = ": "),
              d = d, #TODO: calculate effect size
-             d_var = 0.5, # TODO: calculate effect size variance
+             d_var = d_var, # TODO: calculate effect size variance
              mean_age = weighted.mean(c(mean_age_1, mean_age_2), c(n_1, n_2),
                                       na.rm = TRUE),
              n = mean(c(n_1, n_2), na.rm = TRUE)) %>%
@@ -72,10 +74,10 @@ shinyServer(function(input, output, session) {
   
   model <- reactive({
     if (length(moderators()) == 0) {
-      rma(d, vi = d_var, slab = as.character(short_cite), data = data(), method = "REML")
+      rma(d, vi = d_var, slab = as.character(unique_ID), data = data(), method = "REML")
     } else {
       rma(as.formula(paste("d ~", paste(moderators(), collapse = "+"))),
-          vi = d_var, slab = as.character(short_cite), data = data(), method = "REML")
+          vi = d_var, slab = as.character(unique_ID), data = data(), method = "REML")
     }
   })
   
@@ -89,8 +91,8 @@ shinyServer(function(input, output, session) {
   
   output$mean_age <- renderUI({
     sliderInput("mean_age", label = h5("Mean Age (months)"),
-                min = round(min(data()$mean_age)/30), max = round(max(data()$mean_age)/30),
-                value = mean(round(min(data()$mean_age)/30), round(max(data()$mean_age))/30))
+                min = round(min(data()$mean_age)/avg_month), max = round(max(data()$mean_age)/avg_month),
+                value = mean(round(min(data()$mean_age)/avg_month), round(max(data()$mean_age))/avg_month))
   })
   
   effect_size <- reactive({
@@ -104,7 +106,7 @@ shinyServer(function(input, output, session) {
     if (input$mod_mean_age) {
       model <- rma(d ~ mean_age, vi = d_var, slab = as.character(short_cite),
                    data = filtered_data, method = "REML")
-      predict(model, newmods = input$mean_age*30)  
+      predict(model, newmods = input$mean_age*avg_month)  
     } else {
       model <- rma(d, vi = d_var, slab = as.character(short_cite),
                    data = filtered_data, method = "REML")
@@ -198,12 +200,6 @@ shinyServer(function(input, output, session) {
   #   })
   
   output$forest <- renderPlot({
-#     par(mar = c(5, 4, 0, 2))
-#     forest(model(),
-#            mlab = "Grand effect size",
-#            xlab = "Effect size estimate",
-#            ylim = c(0, model()$k + 3),
-#            annotate = F)
     f <- fitted(model())
     p <- predict(model())
     alpha <- .05
@@ -212,24 +208,33 @@ shinyServer(function(input, output, session) {
       mutate(effects.cil = effects - qnorm(alpha/2, lower.tail = FALSE) * sqrt(variances),
              effects.cih = effects + qnorm(alpha/2, lower.tail = FALSE) * sqrt(variances),
              estimate = as.numeric(f),
-             weight = sqrt(variances),
-             short_cite = names(f),
+             unique_ID = names(f),
              estimate.cil = p$ci.lb,
-             estimate.cih = p$ci.ub) %>%
+             estimate.cih = p$ci.ub, 
+             identity = 1) %>%
+      left_join(data() %>% mutate(unique_ID = make.unique(unique_ID))) %>%    
       arrange(desc(effects)) %>%
-      mutate(short_cite = factor(short_cite, 
-                            levels = unique(short_cite))) 
+      mutate(unique_ID = factor(unique_ID, levels = unique_ID))
     
-    qplot(short_cite, effects, ymin = effects.cil, ymax = effects.cih, 
+    qplot(unique_ID, effects, ymin = effects.cil, ymax = effects.cih, 
           geom = "linerange", 
           data=df) + 
-      geom_point(aes(y = effects, size = weight)) + 
+      geom_point(aes(y = effects, size = n)) + 
+      geom_pointrange(aes(x = unique_ID, 
+                    y = estimate, 
+                    ymin = estimate.cil, 
+                    ymax = estimate.cih), 
+                col = "red") +
       coord_flip() + 
+      scale_size_continuous(name = "N") + 
+      scale_colour_manual(values = c("data" = "black", "model" = "red")) + 
+      xlab("") + 
+      ylab("Effect Size") + 
       theme_bw()
-    
   }, height = function() {
-    session$clientData$output_forest_width * 5
+    session$clientData$output_forest_width * 2
   })
+  
   
   output$funnel <- renderPlot({
     if (length(moderators()) == 0) {
