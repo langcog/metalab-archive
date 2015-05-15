@@ -1,6 +1,6 @@
 library(jsonlite)
 
-datasets <- fromJSON(txt = "../datasets.json")
+datasets <- fromJSON(txt = "datasets.json")
 
 includeRmd <- function(path, datasets) {
   shiny:::dependsOnFile(path)

@@ -10,9 +10,9 @@ library(readr)
 library(RCurl)
 font <- "Ubuntu"
 
-# input <- list(dataset_name = "Word Segmentation",
-#               mod_method = FALSE, mod_procedure = TRUE, mod_mean_age = FALSE,
-#               method = NULL, procedure = NULL, mean_age = NULL)
+input <- list(dataset_name = "Infant directed speech preference",
+              mod_method = FALSE, mod_procedure = TRUE, mod_mean_age = FALSE,
+              method = NULL, procedure = NULL, mean_age = NULL, N = NULL)
 
 avg_month <- 365.2425/12.0
 
@@ -22,9 +22,11 @@ map_procedure <- function(procedure) {
          "CHT" = "Conditioned head-turn",
          "HAB" = "Habituation",
          "FAM" = "Familiarization",
-         "SA" = "Stimulus Alternation",
+         "SA" = "Stimulus alternation",
          "ODD" = "Other",
-         "AEM" = "Anticipatory Eye Movement",
+         "AEM" = "Anticipatory eye movement",
+         "CF" = "Central fixation",
+         "HPP" = "Head-turn preference",
          "OTHER" = "Other",
          "other" = "Other")
 }
@@ -280,7 +282,9 @@ shinyServer(function(input, output, session) {
             panel.grid.minor =  element_line(colour = "darkgrey", size = 0.5))
     
     
-  }, height = 500)
+  }, height = function() {
+    session$clientData$output_funnel_width * 0.7
+  })
   
   output$meta_datasets <- renderUI({
     selectInput("meta_datasets", label = h4("Datasets"), choices = datasets$name,
@@ -302,7 +306,7 @@ shinyServer(function(input, output, session) {
             legend.position = "bottom",
             legend.direction = "vertical")
     }, height = function() {
-      session$clientData$output_metameta_width * 0.9
+      session$clientData$output_metameta_width * 0.8
     })
   
 })
