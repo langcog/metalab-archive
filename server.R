@@ -10,9 +10,9 @@ library(readr)
 library(RCurl)
 font <- "Ubuntu"
 
-input <- list(dataset_name = "Infant directed speech preference",
-              mod_method = FALSE, mod_procedure = TRUE, mod_mean_age = FALSE,
-              method = NULL, procedure = NULL, mean_age = NULL, N = NULL)
+# input <- list(dataset_name = "Phonemic discrimination",
+#               mod_method = FALSE, mod_procedure = TRUE, mod_mean_age = FALSE,
+#               method = NULL, procedure = NULL, mean_age = NULL, N = NULL)
 
 avg_month <- 365.2425/12.0
 
@@ -81,7 +81,18 @@ shinyServer(function(input, output, session) {
     mod_opts <- c("method", "procedure", "mean_age")
     mod_opts[c(input$mod_method, input$mod_procedure, input$mod_mean_age)]
   })
+
+  output$include_procedure <- reactive({
+    length(unique(data()$procedure)) > 1
+  })
   
+  output$include_method <- reactive({
+    length(unique(data()$method)) > 1
+  })
+
+  outputOptions(output, 'include_procedure', suspendWhenHidden=FALSE)
+  outputOptions(output, 'include_method', suspendWhenHidden=FALSE)
+    
   model <- reactive({
     if (length(moderators()) == 0) {
       rma(d, vi = d_var, slab = as.character(unique_ID), data = data(), method = "REML")

@@ -40,9 +40,11 @@ shinyUI(navbarPage("MetaBaby",
       ),
       inputPanel(
         h4("Moderators"),
-        checkboxInput("mod_method", label = "Method"),
-        checkboxInput("mod_procedure", label = "Procedure"),
-        checkboxInput("mod_mean_age", label = "Mean Age")
+        checkboxInput("mod_mean_age", label = "Mean Age"),
+        conditionalPanel(condition = "output.include_procedure",
+                         checkboxInput("mod_procedure", label = "Procedure")),
+        conditionalPanel(condition = "output.include_method",
+                         checkboxInput("mod_method", label = "Method"))
       )
     ), 
     
@@ -62,14 +64,14 @@ shinyUI(navbarPage("MetaBaby",
                     sliderInput("N", label = h5("Sample size"),
                                 min = 5, max = 120, value = 20),
                     conditionalPanel(
-                      condition = "input.mod_method",
-                      uiOutput("method")),
+                      condition = "input.mod_mean_age",
+                      uiOutput("mean_age")),
                     conditionalPanel(
                       condition = "input.mod_procedure",
                       uiOutput("procedure")),
                     conditionalPanel(
-                      condition = "input.mod_mean_age",
-                      uiOutput("mean_age"))
+                      condition = "input.mod_method",
+                      uiOutput("method"))
                  ),
                  br(),
                  uiOutput("effect_size"),
