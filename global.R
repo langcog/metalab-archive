@@ -1,8 +1,9 @@
 library(jsonlite)
 
 datasets <- fromJSON(txt = "datasets.json")
+name <- "MetaLab"
 
-includeRmd <- function(path, datasets) {
+includeRmd <- function(path, shiny_data) {
   shiny:::dependsOnFile(path)
   contents = paste(readLines(path, warn = FALSE), collapse = '\n')
   html <- knitr::knit2html(text = contents, fragment.only = TRUE)
