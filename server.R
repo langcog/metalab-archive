@@ -140,9 +140,23 @@ shinyServer(function(input, output, session) {
             effect_size()$pred, effect_size()$ci.lb, effect_size()$ci.ub)
   })
   
+  safe.n <- function(es, sig, pow) {
+    n <- NULL
+    tryCatch({n <- ceiling(pwr.p.test(h = es, sig.level = sig, power = pow)$n)},
+             error = function(e) "effect size too large for reasonable n, setting n to 2")
+    if (is.null(n)) n <- 2
+    return(n)
+  }
+
   output$power <- renderPlot({
-    ns <- seq(5, 120, 5)
+
     es <- effect_size()$pred
+    n_target <- safe.n(es, 0.05, 0.9)
+    n_max <- max(n_target, input$N)
+    n_min <- if (n_target > 5) 5 else 1
+    n_step <- if (n_target > 5) 5 else 1
+    ns <- seq(n_min, n_max, n_step)
+    
     pwrs <- data.frame(
       ns = ns,
       Experimental = pwr.p.test(h = es, n = ns, sig.level = 0.05)$power,
@@ -164,7 +178,7 @@ shinyServer(function(input, output, session) {
       geom_point(data = this.pwr, colour = "red", size = 6) + 
       geom_hline(yintercept = 0.8, linetype = "dashed") + 
       geom_vline(
-        xintercept=pwr.p.test(h = es, sig.level = 0.05, power = 0.8)$n,
+        xintercept = safe.n(es, 0.05, 0.8),#pwr.p.test(h = es, sig.level = 0.05, power = 0.8)$n,
         linetype = "dashed"
       ) + 
       #        geom_vline(xintercept=pwr.2p.test(h = es, 
@@ -174,7 +188,7 @@ shinyServer(function(input, output, session) {
       ylab("Power to reject the null at p < .05\n") +
       xlab("\nSample size") +
       scale_colour_brewer(name = "", palette = "Set1") +      
-      theme_bw() +
+      theme_bw(base_size=14) +
       theme(text = element_text(family = font),
             legend.position = "bottom",
             legend.direction = "vertical")

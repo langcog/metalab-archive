@@ -1,7 +1,7 @@
 library(shiny)
 library(shinythemes)
 
-shinyUI(navbarPage("MetaBaby",
+shinyUI(navbarPage(name,
   theme = shinytheme("united"),
   
   tabPanel("Overview",
@@ -17,7 +17,7 @@ shinyUI(navbarPage("MetaBaby",
 #                                  icon("folder-o", "fa-stack-2x"),
 #                                  icon("child", "fa-stack-1x")),
 #                ),
-                column(width=12, h1("MetaBaby"), p(class="lead", "A tool for power analysis and experimental", br(), "planning in language acquisition research"))
+                column(width=12, h1(name), p(class="lead", "A tool for power analysis and experimental", br(), "planning in language acquisition research"))
 #                column(width=3, class="text-left",
 #                        tags$span(class="fa-stack fa-2x",
 #                                  icon("folder-o", "fa-stack-2x"),
@@ -26,7 +26,8 @@ shinyUI(navbarPage("MetaBaby",
               )
               )),
 #               ),
-             includeRmd("overview.Rmd", datasets)
+             includeRmd("overview.Rmd", list('datasets' = datasets,
+                                             'name' = name))
            )
   ),
   

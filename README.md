@@ -1,4 +1,2 @@
-# Metaviz
-Visualizations for meta-analyses
-
-https://mikabr.shinyapps.io/metaviz/
+# MetaLab
+Visualizations and tools for meta-analyses
