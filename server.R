@@ -10,9 +10,9 @@ library(readr)
 library(RCurl)
 font <- "Ubuntu"
 
-# input <- list(dataset_name = "Phonemic discrimination",
-#               mod_method = FALSE, mod_procedure = TRUE, mod_mean_age = FALSE,
-#               method = NULL, procedure = NULL, mean_age = NULL, N = NULL)
+input <- list(dataset_name = "Phonemic discrimination",
+              mod_method = FALSE, mod_procedure = TRUE, mod_mean_age = FALSE,
+              method = NULL, procedure = NULL, mean_age = NULL, N = NULL)
 
 avg_month <- 365.2425/12.0
 
@@ -195,7 +195,7 @@ shinyServer(function(input, output, session) {
     ggplot(data(), aes_string(x = "mean_age", y = "d", colour = mod_group)) +
       geom_point(aes(size = n)) +
       geom_smooth(method = "lm", formula = y ~ log(x)) +
-      geom_hline(yintercept = 0, linetype = "dotted", color = "grey") +
+      geom_hline(yintercept = 0, linetype = "dashed") +
       scale_colour_brewer(name = "", palette = "Set1") +
       scale_size_continuous(guide = FALSE) +
       xlab("\nMean Subject Age (Days)") +

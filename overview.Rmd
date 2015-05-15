@@ -9,8 +9,8 @@ library(knitr)
 opts_chunk$set(message=FALSE, warning=FALSE)
 ```
 
-MetaBaby is a research tool for aggregating across studies in the the language
-acquisition literature. Currently, MetaBaby contains meta-analyses in `r nrow(datasets)` domains
+BabyMeta is a research tool for aggregating across studies in the language
+acquisition literature. Currently, BabyMeta contains meta-analyses in `r nrow(datasets)` domains
 of language acquisition, with `r sum(as.numeric(datasets$N), na.rm = TRUE)`
 studies in total. These studies can be used to
 obtain better estimates of effect sizes across different domains, methods, and ages.

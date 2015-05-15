@@ -54,9 +54,10 @@ shinyUI(navbarPage("MetaBaby",
                  ".shiny-output-error { visibility: hidden; }",
                  ".shiny-output-error:before { visibility: hidden; }"),
       tabsetPanel(
+        tabPanel("Forest Plot", plotOutput("forest", width = "100%", height = "auto")),
+        
         tabPanel("Scatter Plot", plotOutput("scatter")),
         #        tabPanel("Violin Plot", plotOutput("violin")),
-        tabPanel("Forest Plot", plotOutput("forest", width = "100%", height = "auto")),
         tabPanel("Funnel Plot", plotOutput("funnel")),        
         tabPanel("Power Analysis",
                  br(),
