@@ -6,7 +6,7 @@ output:
 
 ```{r include=FALSE, echo=FALSE}
 library(knitr)
-opts_chunk$set(message=FALSE, warning=FALSE)
+opts_chunk$set(message=FALSE, warning=FALSE, cache=FALSE)
 datasets <- shiny_data$datasets
 name <- shiny_data$name
 ```
