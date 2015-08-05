@@ -1,7 +1,7 @@
 library(jsonlite)
 
-datasets <- fromJSON(txt = "datasets.json")
 name <- "MetaLab"
+datasets <- fromJSON(txt = "datasets.json")
 
 includeRmd <- function(path, shiny_data) {
   shiny:::dependsOnFile(path)

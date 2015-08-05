@@ -1,0 +1,32 @@
+{
+
+    "response_mode": [
+        "behavior",
+        "eye-tracking",
+        "physiology",
+        "EEG",
+        "NIRS",
+        "other"
+    ],
+
+    "procedure": [
+    	"conditioning",
+    	"habituation",
+    	"familiarization",
+    	"testOnly",
+    	"other"
+    ],
+
+    "method": {
+    	"CHT": "conditioned head-turn",
+    	"CF": "central fixation",
+    	"lookingWhileListening": "looking while listening",
+    	"HPP": "head-turn preference procedure",
+    	"HAS": "high-amplitude sucking",
+    	"AEM": "anticipatory eye movements",
+    	"SA": "stimulus alternation",
+    	"oddball": "oddball",
+    	"other": "other"
+    }
+
+}

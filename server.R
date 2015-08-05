@@ -4,94 +4,40 @@ library(tidyr)
 library(dplyr)
 library(ggplot2)
 library(pwr)
-library(magrittr)
 library(metafor)
 library(readr)
-library(RCurl)
 font <- "Ubuntu"
 
 input <- list(dataset_name = "Phonemic discrimination",
-              mod_method = FALSE, mod_procedure = TRUE, mod_mean_age = FALSE,
-              method = NULL, procedure = NULL, mean_age = NULL, N = NULL)
+              mod_response_mode = TRUE, mod_procedure = FALSE, mod_mean_age = FALSE,
+              response_mode = "behavior", procedure = NULL, mean_age = NULL, N = 16,
+              meta_datasets = c("Phonemic discrimination"))
 
 avg_month <- 365.2425/12.0
 
-map_procedure <- function(procedure) {  
-  switch(as.character(procedure),
-         "FC" = "Forced choice",
-         "CHT" = "Conditioned head-turn",
-         "HAB" = "Habituation",
-         "FAM" = "Familiarization",
-         "SA" = "Stimulus alternation",
-         "ODD" = "Other",
-         "AEM" = "Anticipatory eye movement",
-         "CF" = "Central fixation",
-         "HPP" = "Head-turn preference",
-         "OTHER" = "Other",
-         "other" = "Other")
-}
-
-map_method <- function(method) {
-  switch(as.character(method),
-         "ET" = "Eyetracking",
-         "B" = "Behavioral",
-         "EEG" = "Electroencephalography",
-         "NIRS" = "Near-infrared spectroscopy",
-         "OTHER" = "Other",
-         "other" = "Other")  
-}
-
-get_dataset <- function(dataset_name) {
-  
-  dataset_key <- filter(datasets, name == dataset_name)$key
-  dataset_url <- sprintf("https://docs.google.com/spreadsheets/d/%s/export?id=%s&format=csv",
-                         dataset_key, dataset_key)
-  
-  read.csv(textConnection(getURL(dataset_url)), stringsAsFactors = FALSE) %>%
-    rowwise() %>%
-    mutate(dataset = dataset_name,
-           study_num = as.character(study_num),
-           method = map_method(method),
-           procedure = map_procedure(procedure),
-           procedure = if(is.na(procedure_secondary)) procedure else sprintf('%s (%s)', procedure, procedure_secondary),
-           method_procedure = paste(method, procedure, sep = ": "),
-           d = d, #TODO: calculate effect size
-           d_var = d_var, # TODO: calculate effect size variance
-           mean_age = weighted.mean(c(mean_age_1, mean_age_2), c(n_1, n_2),
-                                    na.rm = TRUE),
-           n = mean(c(n_1, n_2), na.rm = TRUE)) %>%
-    filter(!is.na(d))
-  
-}
-
-all_data <- bind_rows(sapply(datasets$name, get_dataset, simplify = FALSE))
-  
+all_data <- bind_rows(lapply(list.files('data/'), function(filename) read_csv(paste0('data/', filename))))
 
 shinyServer(function(input, output, session) {
-  
-  output$datasets <- renderUI({
-    selectInput("dataset_name", label = h4("Dataset"), choices = datasets$name)
-  })
   
   data <- reactive({
     filter(all_data, dataset == input$dataset_name)
   })
 
   moderators <- reactive({
-    mod_opts <- c("method", "procedure", "mean_age")
-    mod_opts[c(input$mod_method, input$mod_procedure, input$mod_mean_age)]
+    mod_opts <- c("response_mode", "procedure", "mean_age")
+    mod_opts[c(input$mod_response_mode, input$mod_procedure, input$mod_mean_age)]
   })
 
   output$include_procedure <- reactive({
     length(unique(data()$procedure)) > 1
   })
   
-  output$include_method <- reactive({
-    length(unique(data()$method)) > 1
+  output$include_response_mode <- reactive({
+    length(unique(data()$response_mode)) > 1
   })
 
   outputOptions(output, 'include_procedure', suspendWhenHidden=FALSE)
-  outputOptions(output, 'include_method', suspendWhenHidden=FALSE)
+  outputOptions(output, 'include_response_mode', suspendWhenHidden=FALSE)
     
   model <- reactive({
     if (length(moderators()) == 0) {
@@ -102,12 +48,12 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  output$method <- renderUI({
-    selectInput("method", label = h5("Method"), choices = c(unique(data()$method)))
+  output$response_mode <- renderUI({
+    selectInput("response_mode", label = h5("Response mode"), choices = as.character(unique(data()$response_mode)))
   })
   
   output$procedure <- renderUI({
-    selectInput("procedure", label = h5("Procedure"), choices = c(unique(data()$procedure)))
+    selectInput("procedure", label = h5("Procedure"), choices = as.character(unique(data()$procedure)))
   })
   
   output$mean_age <- renderUI({
@@ -118,11 +64,11 @@ shinyServer(function(input, output, session) {
   
   effect_size <- reactive({
     filtered_data <- data()
-    if (input$mod_method) {
-      filtered_data %<>% filter(method == input$method)
+    if (input$mod_response_mode) {
+      filtered_data <- filter(filtered_data, response_mode == input$response_mode)
     }
     if (input$mod_procedure) {
-      filtered_data %<>% filter(procedure == input$procedure)
+      filtered_data <- filter(filtered_data, procedure == input$procedure)
     }
     if (input$mod_mean_age) {
       model <- rma(d ~ mean_age, vi = d_var, slab = as.character(short_cite),
@@ -199,10 +145,10 @@ shinyServer(function(input, output, session) {
   output$scatter <- renderPlot({
     mod_group <- if (length(moderators()) == 0) {
       NULL
-    } else if (input$mod_method & input$mod_procedure) {
-      "method_procedure"
-    } else if (input$mod_method) {
-      "method"
+    } else if (input$mod_response_mode & input$mod_procedure) {
+      "response_mode_procedure"
+    } else if (input$mod_response_mode) {
+      "response_mode"
     } else if (input$mod_procedure) {
       "procedure"
     }
@@ -247,7 +193,7 @@ shinyServer(function(input, output, session) {
              estimate.cil = p$ci.lb,
              estimate.cih = p$ci.ub, 
              identity = 1) %>%
-      left_join(data() %>% mutate(unique_ID = make.unique(unique_ID))) %>%    
+      left_join(data()) %>% # TODO: what is happing here... mutate(unique_ID = make.unique(unique_ID))) %>%    
       arrange(desc(effects)) %>%
       mutate(unique_ID = factor(unique_ID, levels = unique_ID))
     
