@@ -11,6 +11,7 @@ required_cols <- c("unique_ID", "long_cite", "short_cite", "contributor", "study
                    "response_mode", "procedure", "method", "dependent_measure", "native_lang", "infant_type",
                    "d", "d_var", "mean_age_1", "mean_age_2", "n_1", "n_2")
 
+# Checks that a dataset contains all required columns.
 valid_columns <- function(dataset_name, dataset_contents) {
   missing_cols <- required_cols[!(required_cols %in% names(dataset_contents))]
   if (length(missing_cols)) {
@@ -24,6 +25,7 @@ valid_columns <- function(dataset_name, dataset_contents) {
   return(TRUE)
 }
 
+# Checks that the values in a column of a dataset are in the mapping set.
 valid_values <- function(dataset_name, dataset_contents, column, mapping_values) {
   if (column %in% names(dataset_contents)) {
     invalid_procedures <- unique(dataset_contents[[column]][!(dataset_contents[[column]] %in% mapping_values)])
@@ -39,9 +41,9 @@ valid_values <- function(dataset_name, dataset_contents, column, mapping_values)
   return(TRUE)
 }
 
+# Fetches a dataset from Google Docs and runs it through valid_columns and valid_values
+# for response_mode, procedure, and method.
 get_dataset <- function(dataset_meta) {
-  
-  cat(sprintf("\nLoading dataset '%s'\n", dataset_meta$name))
   
   dataset_url <- sprintf("https://docs.google.com/spreadsheets/d/%s/export?id=%s&format=csv",
                          dataset_meta$key, dataset_meta$key)
@@ -79,10 +81,13 @@ get_dataset <- function(dataset_meta) {
   
 }
 
+# Loop over datasets in metadata, get and check their data, if it checks out write the
+# results to a data csv.
 for (i in 1:nrow(datasets)) {
   dataset_meta <- datasets[i,]
   dataset_data <- get_dataset(dataset_meta)
   if(!is.null(dataset_data)) {
+    cat(sprintf("Dataset '%s' loaded successfully\n", dataset_meta$name))
     write.csv(dataset_data, dataset_meta$file, row.names = FALSE)
   }
 }
