@@ -3,6 +3,7 @@
 # to LangCog's Slack under #metalab-log channel
 
 cd /home/ubuntu/metalab/
+mkdir -p log
 LOGDATE=$(date +%Y-%m-%dT%H:%M:%S)
 LOGFILE=log/cache_datasets_$LOGDATE
 Rscript scripts/cache_datasets.R > $LOGFILE
