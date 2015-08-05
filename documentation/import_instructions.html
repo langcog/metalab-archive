@@ -17,11 +17,29 @@ How to add a meta-analysis dataset
 
 - This gives you a link. Copy the key part of the link (the part in between `d/` and `/pubhtml`).
 
-- Add en entry in the file `datasets.json` with the dataset's name and key, such as:
-	    {
-	        "name": "Word Segmentation",
-	        "key": "1XN6VaYRs7CStrINct_rr2d6rh6WN28xFiIGB5T1vkzY"
-	    }
+- Add an entry in the file `datasets.json` with the dataset's name, key, desired filename, citation, link for further information, number of papers, and brief description:
+		{
+			"name": "Word segmentation",
+			"key": "1XN6VaYRs7CStrINct_rr2d6rh6WN28xFiIGB5T1vkzY",
+			"filename": "data/word_segmentation.csv",
+			"citation": "(Bergmann & Cristia, under revision)",
+			"link": "https://sites.google.com/site/inworddb/",
+			"N": "48",
+			"description": "An analysis of studies on infants' extraction of words from running, natural speech as evidenced in paradigms built on listening times."
+		}
+
+- Look at `mapping.json`. If the dataset has any values for `response_mode`, `procedure`, or `method` that are not listed there, either change them in the dataset or add them to mapping.
+
+- Run a script to check that there are no issues with the dataset:
+
+		$ Rscript scripts/cache_datasets.R
+
+- If you want the dataset to be include immediately, run
+
+		$ scripts/cache_datasets.sh
+
+  Otherwise it should get included automatically during the next night.
+
 
 </xmp>
 
