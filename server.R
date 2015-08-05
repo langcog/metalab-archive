@@ -16,7 +16,8 @@ input <- list(dataset_name = "Phonemic discrimination",
 avg_month <- 365.2425/12.0
 
 all_data <- bind_rows(lapply(list.files('data/'), function(filename) read_csv(paste0('data/', filename)))) %>%
-  mutate(all_mod = "All")
+  mutate(all_mod = "All",
+         mean_age_months = mean_age / avg_month)
 
 shinyServer(function(input, output, session) {
   
@@ -156,13 +157,13 @@ shinyServer(function(input, output, session) {
   })
   
   output$scatter <- renderPlot({
-    ggplot(data(), aes_string(x = "mean_age", y = "d", colour = mod_group())) +
+    ggplot(data(), aes_string(x = "mean_age_months", y = "d", colour = mod_group())) +
       geom_point(aes(size = n)) +
       geom_smooth(method = "lm", formula = y ~ log(x)) +
       geom_hline(yintercept = 0, linetype = "dashed") +
       scale_colour_brewer(name = "", palette = "Set1") +
       scale_size_continuous(guide = FALSE) +
-      xlab("\nMean Subject Age (Days)") +
+      xlab("\nMean Subject Age (Months)") +
       ylab("Effect Size\n") +
       theme_bw(base_size=14) +
       theme(text = element_text(family = font),
@@ -275,13 +276,13 @@ shinyServer(function(input, output, session) {
     
   output$metameta <- renderPlot({
     ggplot(filter(all_data, dataset %in% input$meta_datasets),
-           aes(x = mean_age, y = d, colour = dataset)) +
+           aes(x = mean_age_months, y = d, colour = dataset)) +
       geom_point(aes(size = n)) +
       geom_smooth(method = "lm", formula = y ~ log(x)) +
       geom_hline(yintercept = 0, linetype = "dotted", color = "grey") +
       scale_colour_brewer(name = "", palette = "Set1") +
       scale_size_continuous(guide = FALSE) +
-      xlab("\nMean Subject Age (Days)") +
+      xlab("\nMean Subject Age (Months)") +
       ylab("Effect Size\n") +
       theme_bw(base_size=14) +
       theme(text = element_text(family = font),
