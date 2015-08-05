@@ -1,0 +1,1 @@
+0 3 * * * /home/ubuntu/metalab/scripts/cache_datasets.sh >/dev/null 2>&1
