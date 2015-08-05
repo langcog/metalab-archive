@@ -9,13 +9,14 @@ library(readr)
 font <- "Ubuntu"
 
 input <- list(dataset_name = "Phonemic discrimination",
-              mod_response_mode = TRUE, mod_procedure = FALSE, mod_mean_age = FALSE,
+              mod_response_mode = TRUE, mod_procedure = TRUE, mod_mean_age = FALSE,
               response_mode = "behavior", procedure = NULL, mean_age = NULL, N = 16,
               meta_datasets = c("Phonemic discrimination"))
 
 avg_month <- 365.2425/12.0
 
-all_data <- bind_rows(lapply(list.files('data/'), function(filename) read_csv(paste0('data/', filename))))
+all_data <- bind_rows(lapply(list.files('data/'), function(filename) read_csv(paste0('data/', filename)))) %>%
+  mutate(all_mod = "All")
 
 shinyServer(function(input, output, session) {
   
@@ -142,8 +143,8 @@ shinyServer(function(input, output, session) {
     session$clientData$output_power_width * 0.7
   })
   
-  output$scatter <- renderPlot({
-    mod_group <- if (length(moderators()) == 0) {
+  mod_group <- reactive({
+    if (length(moderators()) == 0) {
       NULL
     } else if (input$mod_response_mode & input$mod_procedure) {
       "response_mode_procedure"
@@ -152,7 +153,10 @@ shinyServer(function(input, output, session) {
     } else if (input$mod_procedure) {
       "procedure"
     }
-    ggplot(data(), aes_string(x = "mean_age", y = "d", colour = mod_group)) +
+  })
+  
+  output$scatter <- renderPlot({
+    ggplot(data(), aes_string(x = "mean_age", y = "d", colour = mod_group())) +
       geom_point(aes(size = n)) +
       geom_smooth(method = "lm", formula = y ~ log(x)) +
       geom_hline(yintercept = 0, linetype = "dashed") +
@@ -168,17 +172,24 @@ shinyServer(function(input, output, session) {
     session$clientData$output_scatter_width * 0.7
   })
   
-  #   output$violin <- renderPlot({
-  #     ggplot(data(), aes(x = factor(procedure), y = d, colour = procedure)) +
-  #       geom_jitter(height = 0) +
-  #       geom_violin() +
-  #       geom_hline(yintercept = 0, linetype = "dotted", color = "grey") +      
-  #       scale_colour_brewer(name = "", palette = "Set1") +
-  #       xlab("\nMethod") +
-  #       ylab("Effect Size\n") +
-  #       theme_bw(base_size=14) +
-  #       theme(text = element_text(family = font))
-  #   })
+  output$violin <- renderPlot({
+    grp <- mod_group()
+    if(is.null(grp)) grp <- "all_mod"
+    x_label <- switch(grp,
+                      "all_mod" = "",
+                      "procedure" = "Procedure",
+                      "response_mode" = "Response Mode",
+                      "response_mode_procedure" = "Response Mode and Procedure")
+    ggplot(data(), aes_string(x = grp, y = "d", colour = grp)) +
+      geom_jitter(height = 0) +
+      geom_violin() +
+      geom_hline(yintercept = 0, linetype = "dotted", color = "grey") +      
+      scale_colour_brewer(name = "", palette = "Set1") +
+      xlab(paste0("\n", x_label)) +
+      ylab("Effect Size\n") +
+      theme_bw(base_size=14) +
+      theme(text = element_text(family = font))
+  })
   
   output$forest <- renderPlot({
     f <- fitted(model())

@@ -47,7 +47,7 @@ shinyUI(navbarPage(name,
         tabPanel("Forest Plot", plotOutput("forest", width = "100%", height = "auto")),
         
         tabPanel("Scatter Plot", plotOutput("scatter")),
-        #        tabPanel("Violin Plot", plotOutput("violin")),
+        tabPanel("Violin Plot", plotOutput("violin")),
         tabPanel("Funnel Plot", plotOutput("funnel")),        
         tabPanel("Power Analysis",
                  br(),
