@@ -14,3 +14,7 @@ do
     ENTRY=$line
     curl -X POST --data-urlencode 'payload={"channel": "#metalab-log", "username": "cachedatasetbot", "icon_emoji": ":dog:", "text": "'"$ENTRY"'"}' $SLACKPOSTURL
 done < $LOGFILE
+
+git add data/
+git commit -m "datasets cached by bot"
+git push origin master
