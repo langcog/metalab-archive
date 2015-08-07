@@ -26,7 +26,9 @@
     	"AEM": "anticipatory eye movements",
     	"SA": "stimulus alternation",
     	"oddball": "oddball",
-    	"other": "other"
+    	"other": "other",
+        "FC": "forced-choice",
+        "search": "search"
     }
 
 }
