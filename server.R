@@ -13,9 +13,14 @@ input <- list(dataset_name = "Phonemic discrimination",
               response_mode = "behavior", procedure = NULL, mean_age = NULL, N = 16,
               meta_datasets = c("Phonemic discrimination"))
 
+load_dataset <- function(filename) {
+  read_csv(filename) %>%
+    mutate(study_num = as.character(study_num))
+}
+
 avg_month <- 365.2425/12.0
 
-all_data <- bind_rows(lapply(list.files('data/'), function(filename) read_csv(paste0('data/', filename)))) %>%
+all_data <- bind_rows(lapply(cached_data, load_dataset)) %>%
   mutate(all_mod = "All",
          mean_age_months = mean_age / avg_month)
 
@@ -196,8 +201,8 @@ shinyServer(function(input, output, session) {
     f <- fitted(model())
     p <- predict(model())
     alpha <- .05
-    df <- data.frame(effects = as.numeric(model()$yi.f),
-                     variances = model()$vi.f) %>%
+    forest_data <- data.frame(effects = as.numeric(model()$yi.f),
+                              variances = model()$vi.f) %>%
       mutate(effects.cil = effects - qnorm(alpha/2, lower.tail = FALSE) * sqrt(variances),
              effects.cih = effects + qnorm(alpha/2, lower.tail = FALSE) * sqrt(variances),
              estimate = as.numeric(f),
@@ -205,13 +210,13 @@ shinyServer(function(input, output, session) {
              estimate.cil = p$ci.lb,
              estimate.cih = p$ci.ub, 
              identity = 1) %>%
-      left_join(data()) %>% # TODO: what is happing here... mutate(unique_ID = make.unique(unique_ID))) %>%    
+      left_join(mutate(data(), unique_ID = make.unique(unique_ID))) %>%
       arrange(desc(effects)) %>%
       mutate(unique_ID = factor(unique_ID, levels = unique_ID))
     
     qplot(unique_ID, effects, ymin = effects.cil, ymax = effects.cih, 
           geom = "linerange", 
-          data=df) + 
+          data = forest_data) + 
       geom_point(aes(y = effects, size = n)) + 
       geom_pointrange(aes(x = unique_ID, 
                     y = estimate, 

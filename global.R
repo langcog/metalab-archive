@@ -1,7 +1,9 @@
 library(jsonlite)
 
 name <- "MetaLab"
-datasets <- fromJSON(txt = "datasets.json")
+cached_data <- unlist(lapply(list.files('data/'), function(filename) paste0("data/", filename)))
+datasets <- fromJSON(txt = "datasets.json") %>%
+  filter(filename %in% cached_data)
 
 includeRmd <- function(path, shiny_data) {
   shiny:::dependsOnFile(path)
