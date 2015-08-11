@@ -1,4 +1,5 @@
 library(jsonlite)
+library(dplyr)
 
 name <- "MetaLab"
 cached_data <- unlist(lapply(list.files('data/'), function(filename) paste0("data/", filename)))
