@@ -17,7 +17,9 @@ instructions describe how to set up an Amazon EC2 instance that will use crontab
 
 - launch an Ubuntu instance from EC2 console on langcog's account, using the `metalab` key pair
 
-- get a `metalab.pem` file from someone who has it
+- get a `metalab.pem` file from someone who has it; make sure it has the right permissions set by running
+
+		$ chmod 400 metalab.pem
 
 - ssh into the server
 
@@ -27,6 +29,7 @@ instructions describe how to set up an Amazon EC2 instance that will use crontab
 
 		$ cd ~/
 		$ ssh-keygen -t rsa
+
   copy the contents of `~/.ssh/id_rsa.pub`
 
   go to GitHub, login to an account that has access to `langcog/metalab`
@@ -48,7 +51,7 @@ instructions describe how to set up an Amazon EC2 instance that will use crontab
 		$ sudo apt-get upgrade
 		$ sudo apt-get install r-base
 
-- micro instances don't seem to have enough RAM to install dplyr, so add a swapfile to give it more memory (https://www.digitalocean.com/community/tutorials/how-to-add-swap-on-ubuntu-14-04)
+- micro instances don't seem to have enough RAM to install dplyr, so if you're using a micro instance, add a swapfile to give it more memory (https://www.digitalocean.com/community/tutorials/how-to-add-swap-on-ubuntu-14-04)
 
 		$ sudo fallocate -l 4G /swapfile
 		$ sudo chmod 600 /swapfile
@@ -58,7 +61,7 @@ instructions describe how to set up an Amazon EC2 instance that will use crontab
 - install R packages:
 		$ sudo apt-get install libcurl4-openssl-dev
 		$ sudo R
-		> install.packages("RCurl", "dplyr", "jsonlite")
+		> install.packages(c("RCurl", "dplyr", "jsonlite"))
 
 - test that the script works:
 		$ /home/ubuntu/metalab/scripts/cache_datasets.sh
