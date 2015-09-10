@@ -44,24 +44,24 @@ valid_values <- function(dataset_name, dataset_contents, column, mapping_values)
 # Fetches a dataset from Google Docs and runs it through valid_columns and valid_values
 # for response_mode, procedure, and method.
 get_dataset <- function(dataset_meta) {
-  
+
   dataset_url <- sprintf("https://docs.google.com/spreadsheets/d/%s/export?id=%s&format=csv",
                          dataset_meta$key, dataset_meta$key)
-  
+
   tryCatch(dataset_contents <- read.csv(textConnection(getURL(dataset_url)), stringsAsFactors = FALSE),
            error = function(e) cat(sprintf("Can't load dataset %s with key %s\n", dataset_meta$name, dataset_meta$key)))
-  
+
   if (exists("dataset_contents")) {
-    
+
     valid_dataset <- all(
       valid_columns(dataset_meta$name, dataset_contents),
       valid_values(dataset_meta$name, dataset_contents, "response_mode", mapping$response_mode),
       valid_values(dataset_meta$name, dataset_contents, "procedure", mapping$procedure),
       valid_values(dataset_meta$name, dataset_contents, "method", names(mapping$method))
     )
-    
+
     if (valid_dataset) {
-      
+
       dataset_contents %>%
         mutate(dataset = dataset_meta[["name"]],
                study_num = as.character(study_num),
@@ -73,12 +73,11 @@ get_dataset <- function(dataset_meta) {
         rowwise() %>%
         mutate(mean_age = weighted.mean(c(mean_age_1, mean_age_2), c(n_1, n_2),
                                         na.rm = TRUE),
-               n = mean(c(n_1, n_2), na.rm = TRUE)) %>%
-        filter(!is.na(d))
+               n = mean(c(n_1, n_2), na.rm = TRUE))
     }
-    
+
   }
-  
+
 }
 
 # Loop over datasets in metadata, get and check their data, if it checks out write the

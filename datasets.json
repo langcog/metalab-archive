@@ -5,7 +5,6 @@
 		"filename": "data/phonemic_discrimination.csv",
 		"citation": "(Tsuji & Cristia, 2014)",
 		"link": "https://sites.google.com/site/inphondb/",
-		"N": "19",
 		"description": "Vowel space discrimintation narrows across development. This meta-analysis explore vowel discrimination, including results from behavioral, electrophysiological, and neuroimaging methods applied to infants 0-14 months of age."
 	},
 	{
@@ -14,7 +13,6 @@
 		"filename": "data/word_segmentation.csv",
 		"citation": "(Bergmann & Cristia, under revision)",
 		"link": "https://sites.google.com/site/inworddb/",
-		"N": "48",
 		"description": "An analysis of studies on infants' extraction of words from running, natural speech as evidenced in paradigms built on listening times."
 	},
 	{
@@ -23,7 +21,6 @@
 		"filename": "data/infant_directed_speech_preference.csv",
 		"citation": "(Dunst, Gorman, & Hamby, 2012)",
 		"link": "http://earlyliteracylearning.org/cellreviews/cellreviews_v5_n1.pdf",
-		"N": "34",
 		"description": "Preference for infant-directed vs. adult-directed speech."
 	},
 	{
@@ -32,7 +29,6 @@
 		"filename": "data/pointing.csv",
 		"citation": "(Colonnesi, et al., 2010)",
 		"link": "http://www.sciencedirect.com/science/article/pii/S0273229710000377",
-		"N": "25",
 		"description": "The pointing gesture has been argued to be related to the development of language. This meta-analysis explore the relationship between pointing and language development, both concurrently and longitudinally."
 	},
 	{
@@ -41,7 +37,6 @@
 		"filename": "data/mutual_exclusivity.csv",
 		"citation": "(Lewis & Frank, in prep)",
 		"link": "http://figshare.com/articles/Disambiguation_Meta_Analysis/1348836",
-		"N": "20",
 		"description": "Mutual exclusvity is the bias for children to assume a novel word refers to a novel object, in the presence of one novel and one familiar object."
 	}
 ]

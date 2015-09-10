@@ -1,10 +1,6 @@
 library(jsonlite)
 library(dplyr)
-
-name <- "MetaLab"
-cached_data <- unlist(lapply(list.files('data/'), function(filename) paste0("data/", filename)))
-datasets <- fromJSON(txt = "datasets.json") %>%
-  filter(filename %in% cached_data)
+library(readr)
 
 includeRmd <- function(path, shiny_data) {
   shiny:::dependsOnFile(path)
@@ -13,3 +9,38 @@ includeRmd <- function(path, shiny_data) {
   Encoding(html) <- 'UTF-8'
   return(HTML(html))
 }
+
+name <- "MetaLab"
+cached_data <- unlist(lapply(list.files('data/'), function(filename) paste0("data/", filename)))
+datasets <- fromJSON(txt = "datasets.json") %>%
+  filter(filename %in% cached_data)
+
+load_dataset <- function(filename) {
+  read_csv(filename) %>%
+    mutate(study_num = as.character(study_num),
+           filename = filename)
+}
+
+avg_month <- 365.2425/12.0
+
+all_data <- bind_rows(lapply(cached_data, load_dataset)) %>%
+  mutate(all_mod = "All",
+         mean_age_months = mean_age / avg_month)
+
+studies <- all_data %>%
+  group_by(filename) %>%
+  summarise(num_experiments = n(),
+            num_papers = length(unique(unique_ID)))
+
+subjects <- all_data %>%
+  rowwise() %>%
+  mutate(n_total = sum(c(n_1, n_2), na.rm = TRUE)) %>%
+  group_by(filename) %>%
+  summarise(num_subjects = sum(n_total))
+
+datasets <- datasets %>%
+  left_join(studies) %>%
+  left_join(subjects)
+
+all_data <- all_data %>%
+  filter(!is.na(d))

@@ -28,10 +28,10 @@
     	"SA": "stimulus alternation",
     	"oddball": "oddball",
     	"other": "other",
-      "FC": "forced-choice",
-      "search": "search",
-      "HVHP": "hybrid visual habituation procedure",
-      "WOP": "WOP"
+        "FC": "forced-choice",
+        "search": "search",
+        "HVHP": "hybrid visual habituation procedure",
+        "WOP": "word-object pairing"
     }
 
 }

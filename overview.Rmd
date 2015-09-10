@@ -7,27 +7,29 @@ output:
 ```{r include=FALSE, echo=FALSE}
 library(knitr)
 opts_chunk$set(message=FALSE, warning=FALSE, cache=FALSE)
-datasets <- shiny_data$datasets
 name <- shiny_data$name
+datasets <- shiny_data$datasets
 ```
 
-`r name` is a research tool for aggregating across studies in the language
-acquisition literature. Currently, `r name` contains meta-analyses in `r nrow(datasets)` domains
-of language acquisition, with `r sum(as.numeric(datasets$N), na.rm = TRUE)`
-studies in total. These studies can be used to
-obtain better estimates of effect sizes across different domains, methods, and ages.
-Using our power calculator, researchers can use these estimates to plan appropriate
-sample sizes for prospective studies. More generally, `r name` can be used as a
-theoretical tool for exploring patterns in development across language acquisition
-domains.
+`r name` is a research tool for aggregating across studies in the language 
+acquisition literature. Currently, `r name` contains
+`r as.integer(sum(as.numeric(datasets$num_experiments), na.rm = TRUE))` effect sizes across
+meta-analyses in `r nrow(datasets)` domains of language acquisition, based on
+data from `r as.integer(sum(as.numeric(datasets$num_papers), na.rm = TRUE))` papers collecting
+`r as.integer(sum(as.numeric(datasets$num_subjects), na.rm = TRUE))` subjects. These studies
+can be used to obtain better estimates of effect sizes across different domains,
+methods, and ages. Using our power calculator, researchers can use these
+estimates to plan appropriate sample sizes for prospective studies. More
+generally, `r name` can be used as a theoretical tool for exploring patterns in
+development across language acquisition domains.
 
 Individual meta-analyses:
 
 ```{r results='asis', echo=FALSE}
 for (i in 1:nrow(datasets)) {
   dataset <- datasets[i,]
-  cat(sprintf("  * __%s__ [%s](%s) [N = %s]\n\n    %s\n\n",
-              dataset$name, dataset$citation, dataset$link, dataset$N, dataset$description))
+  cat(sprintf("  * __%s__ [%s](%s) [N papers = %s, N effect sizes = %s]\n\n    %s\n\n",
+              dataset$name, dataset$citation, dataset$link, dataset$num_papers, dataset$num_experiments, dataset$description))
 }
 ```
 
