@@ -6,3 +6,5 @@ log/
 .Rproj.user
 *.Rproj
 rsconnect/
+*_files/
+*_cache/
