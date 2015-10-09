@@ -16,7 +16,7 @@ library(ggplot2)
 theme_set(theme_bw())
 font <- "Open Sans"
 library(knitr)
-opts_chunk$set(cache = TRUE, message = FALSE, warning = FALSE)
+opts_chunk$set(cache = F, message = FALSE, warning = FALSE)
 source("global.R")
 ```
 
@@ -41,15 +41,32 @@ calculate_age_effect <- function(sample_data) {
 
 Bootstrapping functions.
 ```{r bootstrap_funs}
-one_sample <- function(ma_data, summary_function, n) {
+get_paper_age_weights <- function(ma_data) {
+  years = unlist(lapply(strsplit(ma_data$short_cite, "[()]"),
+                        function(x) x[2])) %>%
+          as.numeric() %>%
+          ifelse(is.na(.), max(., na.rm = T),. )
+  
+  dif = years - min(years, na.rm = T) # get time since seed year
+  weights =  max(dif) - dif
+  weights
+}
+
+one_sample <- function(ma_data, summary_function, n, sample_strategy) {
   function(k) {
-    do.call(summary_function, list(sample_n(ma_data, size = n, replace = FALSE)))
+    if (sample_strategy == "uniform"){
+        do.call(summary_function, list(sample_n(ma_data, size = n, replace = F)))
+    } else if (sample_strategy == "age") {
+       age_weights = get_paper_age_weights(ma_data)
+       do.call(summary_function, list(sample_n(ma_data, size = n,
+                                            weight = age_weights, replace = T)))
+    }
   }
 }
 
 all_samples <- function(ma_data, summary_function, n, nboot) {
   sample_values <- 1:nboot %>%
-    map(one_sample(ma_data, summary_function, n)) %>%
+    map(one_sample(ma_data, summary_function, n, "age")) %>%
     unlist()
   data.frame(n = n,
              mean = mean(sample_values),
@@ -78,7 +95,7 @@ es_data <- all_data %>%
 
 ```{r plot_es, cache=FALSE, fig.width=10, fig.height=6}
 ggplot(es_data, aes(x = n, y = mean, fill = dataset)) +
-  facet_wrap(~dataset, scales = "free") +
+  facet_wrap(~dataset) +
   geom_ribbon(aes(ymin = ci_lower, ymax = ci_upper), alpha = 0.5) +
   geom_hline(aes(yintercept = overall_est), linetype = "dashed") +
   geom_line(weight = 1.5) +
@@ -99,13 +116,27 @@ age_data <- all_data %>%
 
 ```{r plot_age, cache=FALSE, fig.width=10, fig.height=6}
 ggplot(age_data, aes(x = n, y = mean, fill = dataset)) +
-  facet_wrap(~dataset, scales = "free") +
+  facet_wrap(~dataset) +
   geom_ribbon(aes(ymin = ci_lower, ymax = ci_upper), alpha = 0.5) +
   geom_hline(aes(yintercept = overall_est), linetype = "dashed") +
   geom_line(weight = 1.5) +
   xlab("Number of papers") +
   ylab("Age Coefficient Estimate") +
   scale_fill_solarized(guide = FALSE) +
+  theme(text = element_text(family = font),
+        panel.grid.minor = element_blank())
+```
+
+Effect size as a function of year
+```{r, plot_es_year, cache=FALSE, fig.width=10, fig.height=6}
+all_data$year =  unlist(lapply(strsplit(all_data$short_cite,
+                                          "[()]"),function(x) x[2])) %>%
+                   as.numeric()
+
+ggplot(all_data, aes(x = year, y = d)) + 
+  geom_smooth(method = lm) +
+  ylab("Effect Size") +
+  facet_wrap(~dataset) +
   theme(text = element_text(family = font),
         panel.grid.minor = element_blank())
 ```
