@@ -16,7 +16,7 @@ library(ggplot2)
 theme_set(theme_bw())
 font <- "Open Sans"
 library(knitr)
-opts_chunk$set(cache = F, message = FALSE, warning = FALSE)
+opts_chunk$set(cache = T, message = F, warning = F)
 source("global.R")
 ```
 
@@ -45,10 +45,10 @@ get_paper_age_weights <- function(ma_data) {
   years = unlist(lapply(strsplit(ma_data$short_cite, "[()]"),
                         function(x) x[2])) %>%
           as.numeric() %>%
-          ifelse(is.na(.), max(., na.rm = T),. )
+          ifelse(is.na(.), max(., na.rm = T),.)
   
   dif = years - min(years, na.rm = T) # get time since seed year
-  weights =  max(dif) - dif
+  weights =  (max(dif) + 1) - dif # add 1 to get rid of zeros
   weights
 }
 
@@ -59,7 +59,7 @@ one_sample <- function(ma_data, summary_function, n, sample_strategy) {
     } else if (sample_strategy == "age") {
        age_weights = get_paper_age_weights(ma_data)
        do.call(summary_function, list(sample_n(ma_data, size = n,
-                                            weight = age_weights, replace = T)))
+                                            weight = age_weights, replace = F)))
     }
   }
 }
