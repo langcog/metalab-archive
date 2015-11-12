@@ -5,7 +5,7 @@
 		"filename": "data/phonemic_discrimination.csv",
 		"citation": "(Tsuji & Cristia, 2014)",
 		"link": "https://sites.google.com/site/inphondb/",
-		"description": "Vowel space discrimintation narrows across development. This meta-analysis explore vowel discrimination, including results from behavioral, electrophysiological, and neuroimaging methods applied to infants 0-14 months of age."
+		"description": "Vowel space discrimination narrows across development. This meta-analysis explore vowel discrimination, including results from behavioral, electrophysiological, and neuroimaging methods applied to infants 0-14 months of age."
 	},
 	{
 		"name": "Word segmentation",
@@ -29,7 +29,7 @@
 		"filename": "data/pointing.csv",
 		"citation": "(Colonnesi, et al., 2010)",
 		"link": "http://www.sciencedirect.com/science/article/pii/S0273229710000377",
-		"description": "The pointing gesture has been argued to be related to the development of language. This meta-analysis explore the relationship between pointing and language development, both concurrently and longitudinally."
+		"description": "The pointing gesture has been argued to be related to the development of language. This meta-analysis explores the relationship between pointing and language development, both concurrently and longitudinally."
 	},
 	{
 		"name": "Mutual exclusivity",
@@ -37,6 +37,14 @@
 		"filename": "data/mutual_exclusivity.csv",
 		"citation": "(Lewis & Frank, in prep)",
 		"link": "http://figshare.com/articles/Disambiguation_Meta_Analysis/1348836",
-		"description": "Mutual exclusvity is the bias for children to assume a novel word refers to a novel object, in the presence of one novel and one familiar object."
+		"description": "Mutual exclusivity is the bias for children to assume a novel word refers to a novel object, in the presence of one novel and one familiar object."
+	},
+	{
+		"name": "Label advantage in concept learning",
+		"key": "163QOxPcb_bNbnMrnoZee3peIKvLlo8EYJUHVd06W81I",
+		"filename": "data/label_advantage.csv",
+		"citation": "",
+		"link": "",
+		"description": "Previous research suggests that labels support the formation of novel categories in young children. This meta-analysis includes studies exploring this question that use a paradigm similar to Balaban and Waxman (1997)."
 	}
 ]

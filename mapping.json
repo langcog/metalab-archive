@@ -3,6 +3,7 @@
     "response_mode": [
         "behavior",
         "eye-tracking",
+        "behavior/eye-tracking",
         "physiology",
         "EEG",
         "NIRS",
