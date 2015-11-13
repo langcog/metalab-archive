@@ -4,6 +4,7 @@ library(dplyr)
 library(ggplot2)
 library(pwr)
 library(metafor)
+library(langcog)
 font <- "Ubuntu"
 
 # input <- list(dataset_name = "Phonemic discrimination",
@@ -127,8 +128,8 @@ shinyServer(function(input, output, session) {
       ylim(c(0,1)) +
       ylab("Power to reject the null at p < .05\n") +
       xlab("\nSample size") +
-      scale_colour_brewer(name = "", palette = "Set1") +
-      theme_bw(base_size=14) +
+      scale_colour_solarized(name = "") +
+      theme_bw(base_size = 14) +
       theme(text = element_text(family = font),
             legend.position = "bottom",
             legend.direction = "vertical")
@@ -153,7 +154,7 @@ shinyServer(function(input, output, session) {
       geom_point(aes(size = n)) +
       geom_smooth(method = "lm", formula = y ~ log(x)) +
       geom_hline(yintercept = 0, linetype = "dashed") +
-      scale_colour_brewer(name = "", palette = "Set1") +
+      scale_colour_solarized(name = "") +
       scale_size_continuous(guide = FALSE) +
       xlab("\nMean Subject Age (Months)") +
       ylab("Effect Size\n") +
@@ -177,7 +178,7 @@ shinyServer(function(input, output, session) {
       geom_jitter(height = 0) +
       geom_violin() +
       geom_hline(yintercept = 0, linetype = "dotted", color = "grey") +
-      scale_colour_brewer(name = "", palette = "Set1") +
+      scale_colour_solarized(name = "") +
       xlab(paste0("\n", x_label)) +
       ylab("Effect Size\n") +
       theme_bw(base_size=14) +
@@ -269,11 +270,12 @@ shinyServer(function(input, output, session) {
   output$metameta <- renderPlot({
     ggplot(filter(all_data, dataset %in% input$meta_datasets),
            aes(x = mean_age_months, y = d, colour = dataset)) +
-      geom_point(aes(size = n)) +
+      #geom_point(aes(size = n)) +
+      geom_point(alpha = 0.5) +
       geom_smooth(method = "lm", formula = y ~ log(x)) +
       geom_hline(yintercept = 0, linetype = "dotted", color = "grey") +
-      scale_colour_brewer(name = "", palette = "Set1") +
-      scale_size_continuous(guide = FALSE) +
+      scale_colour_solarized(name = "") +
+      #scale_size_continuous(guide = FALSE) +
       xlab("\nMean Subject Age (Months)") +
       ylab("Effect Size\n") +
       theme_bw(base_size=14) +

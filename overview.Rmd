@@ -33,6 +33,8 @@ for (i in 1:nrow(datasets)) {
 }
 ```
 
+Here are some [instructional materials](https://docs.google.com/document/d/1rJDaBLTDpYcCeu0LH9E13qnC_ROarGyPXaRT-UBGBhE/edit) on creating new meta-analyses.
+
 Created by Molly Lewis, Mika Braginsky, Christina Bergmann, Sho Tsuji,
 Alejandrina Cristia, and Michael C. Frank.
 
