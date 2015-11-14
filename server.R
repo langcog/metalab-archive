@@ -7,10 +7,10 @@ library(metafor)
 library(langcog)
 font <- "Ubuntu"
 
-# input <- list(dataset_name = "Phonemic discrimination",
-#               mod_response_mode = TRUE, mod_procedure = TRUE, mod_mean_age = FALSE,
-#               response_mode = "behavior", procedure = NULL, mean_age = NULL, N = 16,
-#               meta_datasets = c("Phonemic discrimination"))
+input <- list(dataset_name = "Word Segmentation",
+              mod_response_mode = TRUE, mod_procedure = TRUE, mod_mean_age = FALSE,
+              response_mode = "behavior", procedure = NULL, mean_age = NULL, N = 16,
+              meta_datasets = c("Phonemic discrimination"))
 
 shinyServer(function(input, output, session) {
 
@@ -31,8 +31,8 @@ shinyServer(function(input, output, session) {
     length(unique(data()$response_mode)) > 1
   })
 
-  outputOptions(output, 'include_procedure', suspendWhenHidden=FALSE)
-  outputOptions(output, 'include_response_mode', suspendWhenHidden=FALSE)
+  outputOptions(output, "include_procedure", suspendWhenHidden = FALSE)
+  outputOptions(output, "include_response_mode", suspendWhenHidden = FALSE)
 
   model <- reactive({
     if (length(moderators()) == 0) {
@@ -44,28 +44,33 @@ shinyServer(function(input, output, session) {
   })
 
   output$response_mode <- renderUI({
-    selectInput("response_mode", label = h5("Response mode"), choices = as.character(unique(data()$response_mode)))
+    selectInput("response_mode", label = h5("Response mode"),
+                choices = as.character(unique(data()$response_mode)))
   })
 
   output$procedure <- renderUI({
-    selectInput("procedure", label = h5("Procedure"), choices = as.character(unique(data()$procedure)))
+    selectInput("procedure", label = h5("Procedure"),
+                choices = as.character(unique(data()$procedure)))
   })
 
   output$mean_age <- renderUI({
     sliderInput("mean_age", label = h5("Mean Age (months)"),
-                min = round(min(data()$mean_age)/avg_month), max = round(max(data()$mean_age)/avg_month),
-                value = mean(round(min(data()$mean_age)/avg_month), round(max(data()$mean_age))/avg_month))
+                min = round(min(data()$mean_age) / avg_month),
+                max = round(max(data()$mean_age) / avg_month),
+                value = mean(round(min(data()$mean_age) / avg_month),
+                             round(max(data()$mean_age)) / avg_month))
   })
 
   effect_size <- reactive({
     filtered_data <- data()
-    if (input$mod_response_mode) {
+    if (input$mod_response_mode && !is.null(input$response_mode) && input$response_mode %in% filtered_data$response_mode) {
       filtered_data <- filter(filtered_data, response_mode == input$response_mode)
     }
-    if (input$mod_procedure) {
+    if (input$mod_procedure && !is.null(input$procedure) && input$procedure %in% filtered_data$procedure) {
       filtered_data <- filter(filtered_data, procedure == input$procedure)
     }
-    if (input$mod_mean_age) {
+    if (input$mod_mean_age && !is.null(input$mean_age) && findInterval(input$mean_age*avg_month,
+                                                                       range(filtered_data$mean_age))) {
       model <- rma(d ~ mean_age, vi = d_var, slab = as.character(short_cite),
                    data = filtered_data, method = "REML")
       predict(model, newmods = input$mean_age*avg_month)
@@ -113,26 +118,29 @@ shinyServer(function(input, output, session) {
       condition = c("Experimental", "Control")
     )
 
-    ggplot(pwrs, aes(x = ns, y = ps, colour = condition)) +
-      geom_point() +
-      geom_line() +
-      geom_point(data = this.pwr, colour = "red", size = 6) +
-      geom_hline(yintercept = 0.8, linetype = "dashed") +
-      geom_vline(
-        xintercept = safe.n(es, 0.05, 0.8),#pwr.p.test(h = es, sig.level = 0.05, power = 0.8)$n,
-        linetype = "dashed"
-      ) +
-      #        geom_vline(xintercept=pwr.2p.test(h = es,
-      #                                          sig.level = .05,
-      #                                          power = .8)$n, lty=2) +
-      ylim(c(0,1)) +
-      ylab("Power to reject the null at p < .05\n") +
-      xlab("\nSample size") +
-      scale_colour_solarized(name = "") +
-      theme_bw(base_size = 14) +
-      theme(text = element_text(family = font),
-            legend.position = "bottom",
-            legend.direction = "vertical")
+    pwrs %>%
+      mutate(condition = paste0(condition, "  ")) %>%
+      ggplot(aes(x = ns, y = ps, colour = condition)) +
+        geom_point() +
+        geom_line() +
+        geom_point(data = this.pwr, colour = "red", size = 6) +
+        geom_hline(yintercept = 0.8, linetype = "dashed") +
+        geom_vline(
+          xintercept = safe.n(es, 0.05, 0.8),#pwr.p.test(h = es, sig.level = 0.05, power = 0.8)$n,
+          linetype = "dashed"
+        ) +
+        #        geom_vline(xintercept=pwr.2p.test(h = es,
+        #                                          sig.level = .05,
+        #                                          power = .8)$n, lty=2) +
+        ylim(c(0,1)) +
+        ylab("Power to reject the null at p < .05\n") +
+        xlab("\nSample size") +
+        scale_colour_solarized(name = "") +
+        theme_bw(base_size = 14) +
+        theme(text = element_text(family = font),
+              legend.position = "top",
+              legend.direction = "horizontal",
+              legend.key = element_blank())
   }, height = function() {
     session$clientData$output_power_width * 0.7
   })
@@ -158,17 +166,18 @@ shinyServer(function(input, output, session) {
       scale_size_continuous(guide = FALSE) +
       xlab("\nMean Subject Age (Months)") +
       ylab("Effect Size\n") +
-      theme_bw(base_size=14) +
+      theme_bw(base_size = 14) +
       theme(text = element_text(family = font),
-            legend.position = "bottom",
-            legend.direction = "vertical")
+            legend.position = "top",
+            legend.key = element_blank(),
+            legend.background = element_rect(fill = "transparent"))
   }, height = function() {
     session$clientData$output_scatter_width * 0.7
   })
 
   output$violin <- renderPlot({
     grp <- mod_group()
-    if(is.null(grp)) grp <- "all_mod"
+    if (is.null(grp)) grp <- "all_mod"
     x_label <- switch(grp,
                       "all_mod" = "",
                       "procedure" = "Procedure",
@@ -181,8 +190,11 @@ shinyServer(function(input, output, session) {
       scale_colour_solarized(name = "") +
       xlab(paste0("\n", x_label)) +
       ylab("Effect Size\n") +
-      theme_bw(base_size=14) +
-      theme(text = element_text(family = font))
+      theme_bw(base_size = 14) +
+      theme(text = element_text(family = font),
+            legend.position = "top",
+            legend.key = element_blank(),
+            legend.background = element_rect(fill = "transparent"))
   })
 
   output$forest <- renderPlot({
@@ -212,7 +224,7 @@ shinyServer(function(input, output, session) {
                     ymax = estimate.cih),
                 col = "red") +
       coord_flip() +
-      scale_size_continuous(name = "N") +
+      scale_size_continuous(guide = FALSE) + #name = "N") +
       scale_colour_manual(values = c("data" = "black", "model" = "red")) +
       xlab("") +
       ylab("Effect Size") +
@@ -236,22 +248,22 @@ shinyServer(function(input, output, session) {
     }
 
     lower_lim = max(d$se) + .05*max(d$se)
-    left_lim = ifelse(center-lower_lim*1.96 < min(d$es),center-lower_lim*1.96, min(d$es) )
-    right_lim = ifelse(center+lower_lim*1.96 > max(d$es),center+lower_lim*1.96, max(d$es) )
-    funnel = data.frame(x=c(center-lower_lim*1.96, center, center + lower_lim*1.96),
-                        y = c(-lower_lim,0,-lower_lim))
+    left_lim = ifelse(center - lower_lim*1.96 < min(d$es), center - lower_lim * 1.96, min(d$es) )
+    right_lim = ifelse(center + lower_lim*1.96 > max(d$es), center + lower_lim * 1.96, max(d$es) )
+    funnel = data.frame(x = c(center - lower_lim * 1.96, center, center + lower_lim * 1.96),
+                        y = c(-lower_lim, 0, -lower_lim))
 
     ggplot(d, aes(x = es, y = -se)) +
       scale_x_continuous(limits = c(left_lim,right_lim)) +
-      scale_y_continuous(expand = c(0,0), # gets rid of extra space ggplot adds to limits
-                         breaks = round(seq(0, -max(d$se), length.out = 5),2),
-                         labels = round(seq(0, max(d$se), length.out = 5),2))+
-      geom_polygon(data = funnel, aes(x=x,y=y),fill = "white") +
+      scale_y_continuous(expand = c(0, 0), # gets rid of extra space ggplot adds to limits
+                         breaks = round(seq(0, -max(d$se), length.out = 5), 2),
+                         labels = round(seq(0, max(d$se), length.out = 5), 2)) +
+      geom_polygon(data = funnel, aes(x = x, y = y), fill = "white") +
       geom_vline(xintercept = center, linetype = "dotted", color = "black", size = .5) +
       geom_point() +
       xlab(xlabel) +
       ylab("Standard error\n") +
-      theme_bw(base_size=14) +
+      theme_bw(base_size = 14) +
       theme(text = element_text(family = font),
             panel.background = element_rect(fill = "grey"),
             panel.grid.major =  element_line(colour = "darkgrey", size = 0.2),
@@ -268,20 +280,24 @@ shinyServer(function(input, output, session) {
   })
 
   output$metameta <- renderPlot({
-    ggplot(filter(all_data, dataset %in% input$meta_datasets),
-           aes(x = mean_age_months, y = d, colour = dataset)) +
-      #geom_point(aes(size = n)) +
-      geom_point(alpha = 0.5) +
-      geom_smooth(method = "lm", formula = y ~ log(x)) +
-      geom_hline(yintercept = 0, linetype = "dotted", color = "grey") +
-      scale_colour_solarized(name = "") +
-      #scale_size_continuous(guide = FALSE) +
-      xlab("\nMean Subject Age (Months)") +
-      ylab("Effect Size\n") +
-      theme_bw(base_size=14) +
-      theme(text = element_text(family = font),
-            legend.position = "bottom",
-            legend.direction = "vertical")
+    all_data %>%
+      filter(dataset %in% input$meta_datasets) %>%
+      mutate(dataset = paste0(dataset, "  ")) %>%
+      ggplot(aes(x = mean_age_months, y = d, colour = dataset)) +
+        #geom_point(aes(size = n)) +
+        geom_point(alpha = 0.5) +
+        geom_smooth(method = "lm", formula = y ~ log(x), size = 1) +
+        geom_hline(yintercept = 0, linetype = "dotted", color = "grey") +
+        scale_colour_solarized(name = "") +
+        #scale_size_continuous(guide = FALSE) +
+        xlab("\nMean Subject Age (Months)") +
+        ylab("Effect Size\n") +
+        theme_bw(base_size = 14) +
+        theme(text = element_text(family = font),
+              legend.position = "top",
+              legend.direction = "horizontal",
+              legend.key = element_blank(),
+              legend.background = element_rect(fill = "transparent"))
     }, height = function() {
       session$clientData$output_metameta_width * 0.8
     })
