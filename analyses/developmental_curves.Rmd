@@ -1,23 +1,70 @@
 ---
-title: "RMarkdown for writing scientific papers: A minimal working example"
-author: "Mike Frank"
+title: "Developmental curve comparison"
+author: "Page and Mike"
 date: "`r Sys.Date()`"
 output: 
   html_document:
     toc: true
     number_sections: true
-bibliography: mwe.bib
 ---
+
+Preliminaries
   
-# Introduction
-
-This is a minimal working example of using RMarkdown to write prose with code. 
-
-First load packages. 
-
 ```{r}
 rm(list=ls())
 library(knitr)
+library(ggplot2)
+library(broom)
+library(dplyr)
+theme_set(theme_bw())
 ```
 
-Now, here are some of the startup options I often use. Caching can be very helpful for large files, but can also cause problems when there are external dependencies that change. 
+Chunk options
+
+```{r echo=FALSE}
+opts_chunk$set(fig.width=8, fig.height=5, 
+                      echo=TRUE, warning=FALSE, message=FALSE, cache=TRUE)
+```
+
+Source all data. 
+
+```{r}
+setwd("..")
+source("global.R")
+setwd("./analyses")
+```
+
+# Plots
+
+```{r}
+ggplot(all_data, aes(x = mean_age, y = d, size = n)) +
+  geom_point() + 
+  geom_smooth(method="lm", formula = y ~ x, col = "red", 
+              se = FALSE) + 
+  geom_smooth(method="lm", formula = y ~ I(x^2), col = "blue", 
+              se = FALSE) + 
+  geom_smooth(method="lm", formula = y ~ log(x), col = "green", 
+              se = FALSE) + 
+  geom_smooth(method="loess", span = 1, col = "orange", 
+              se = FALSE) + 
+  facet_wrap(~ dataset, scales = "free") + 
+  geom_hline(x = 0, lty = 2, col = "black")
+```
+
+# Regressions
+
+```{r}
+linear <- all_data %>%
+  group_by(dataset) %>%
+  do(tidy(lm(.$d ~ .$mean_age, weights = 1/.$d_var))) %>%
+  mutate(model = "linear")
+
+quadratic <- all_data %>%
+  group_by(dataset) %>%
+  do(tidy(lm(.$d ~ I(.$mean_age^2), weights = 1/.$d_var))) %>%
+  mutate(model = "quadratic")
+
+
+
+
+```
