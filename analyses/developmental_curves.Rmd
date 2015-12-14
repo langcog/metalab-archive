@@ -18,6 +18,7 @@ library(broom)
 library(dplyr)
 library(tidyr)
 library(lme4)
+library(metafor)
 theme_set(theme_bw())
 ```
 
@@ -217,7 +218,11 @@ ggplot(all_data,
 
 This tells us that modeling the whole dataset doesn't make sense. 
 
-# Mixed-effects 
+# Mixed-effects regression
+
+[A very informative post on the difference between `rma` and `lm`/`lmer`](http://www.metafor-project.org/doku.php/tips:rma_vs_lm_and_lme) suggests that we want to do random effects MA in `lme` by setting `control=lmeControl(sigma = 1)`. But we can't do that under `lme4`. There's [a branch of lme4](https://github.com/lme4/lme4/issues/224) that deals with this, but it looks pretty intense. 
+
+So we'll eat this issue for now but note that we may want to go back and do this using metafor. 
 
 ## Simple mixed-effects
 
@@ -466,5 +471,19 @@ ggplot(multiage_data, aes(x = mean_age, y = d,
 
 Conclusion: Paper-level random effects make a really big difference here. Hard to know what to make of this. 
 
+# With `metafor` 
+
+```{r}
+# rma <- rma(all_data$d, cbind(mean_age + log(mean_age), 
+           
+  # lmer(d ~ mean_age + log(mean_age) + 
+                               # (log(mean_age) | dataset) + 
+                               # (1 | unique_ID),
+                           # weights = 1/d_var, 
+                        
+   # data = multiage_data)
+```
+
 # Conclusions
+
 
