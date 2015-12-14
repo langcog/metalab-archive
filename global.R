@@ -16,7 +16,7 @@ datasets <- fromJSON(txt = "datasets.json") %>%
   filter(filename %in% cached_data)
 
 load_dataset <- function(filename) {
-  read_csv(filename) %>%
+  read.csv(filename) %>%
     mutate(study_num = as.character(study_num),
            filename = filename)
 }
