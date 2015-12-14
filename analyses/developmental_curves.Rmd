@@ -29,9 +29,7 @@ opts_chunk$set(fig.width=8, fig.height=5,
 Source all data. 
 
 ```{r}
-setwd("..")
 source("global.R")
-setwd("./analyses")
 ```
 
 # Plots
@@ -64,7 +62,5 @@ quadratic <- all_data %>%
   do(tidy(lm(.$d ~ I(.$mean_age^2), weights = 1/.$d_var))) %>%
   mutate(model = "quadratic")
 
-
-
-
+regressions <- bind_rows(linear, quadratic)
 ```
