@@ -1,0 +1,23 @@
+---
+title: "RMarkdown for writing scientific papers: A minimal working example"
+author: "Mike Frank"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    number_sections: true
+bibliography: mwe.bib
+---
+  
+# Introduction
+
+This is a minimal working example of using RMarkdown to write prose with code. 
+
+First load packages. 
+
+```{r}
+rm(list=ls())
+library(knitr)
+```
+
+Now, here are some of the startup options I often use. Caching can be very helpful for large files, but can also cause problems when there are external dependencies that change. 

@@ -1,0 +1,73 @@
+---
+title: "RMarkdown for writing scientific papers: A minimal working example"
+author: "Mike Frank"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    number_sections: true
+bibliography: mwe.bib
+---
+  
+# Introduction
+
+This is a minimal working example of using RMarkdown to write prose with code. 
+
+First load packages. 
+
+```{r}
+rm(list=ls())
+library(knitr)
+library(ggplot2)
+```
+
+Now, here are some of the startup options I often use. Caching can be very helpful for large files, but can also cause problems when there are external dependencies that change. 
+
+```{r}
+opts_chunk$set(fig.width=8, fig.height=5, 
+                      echo=TRUE, warning=FALSE, message=FALSE, cache=TRUE)
+```
+
+And you can use various local and glbal chunk options like `echo=FALSE` to suppress showing the code (better for papers). 
+
+# Analysis
+
+Now on to the meat of the analysis. 
+
+## Graphs
+
+It's really easy to include graphs, like this one.
+
+```{r}
+qplot(hp, mpg, col = factor(cyl), data = mtcars)
+```
+
+## Statistics
+
+It's also really easy to include statistical tests of various types. 
+
+For this I really like the `broom` package, which formats the outputs of various tests really nicely. Paired with knitr's `kable` you can make very simple tables. 
+
+```{r}
+library(broom)
+mod <- lm(mpg ~ hp + cyl, data = mtcars)
+kable(tidy(mod), digits = 3)
+```
+
+Of course, cleaning these up can take some work. For example, we'd need to rename a bunch of fields to make this table have the labels we wanted (e.g., to turn `hp` into `Horsepower`). 
+
+I also do a lot of APA-formatted statistics. We can compute them first, and then print them inline.
+
+```{r}
+ts <- with(mtcars,t.test(hp[cyl==4], hp[cyl==6]))
+```
+
+There's a statistically-significant difference in horsepower for 4- and 6-cylinder cars  ($t(`r  round(ts$parameter,2)`) = `r  round(ts$statistic,2)`$, $p = `r round(ts$p.value,3)`$). To insert these stats inline I wrote e.g. `round(ts$parameter, 2)` inside an inline code block.
+
+Note that rounding can get you in trouble here, because it's very easy to have an output of $p = 0$ when in fact $p$ can never be exactly equal to 0. 
+
+# Conclusions
+
+It's also possible to include references using `bibtex`, by using `@ref` syntax. So in conclusion, and as described by @xie2013dynamic, `knitr` is really amazing! 
+
+# Bibliography
