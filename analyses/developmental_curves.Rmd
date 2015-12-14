@@ -64,3 +64,34 @@ quadratic <- all_data %>%
 
 regressions <- bind_rows(linear, quadratic)
 ```
+
+```{r}
+linear_full <- all_data %>%
+  group_by(dataset) %>%
+  do(augment(lm(.$d ~ .$mean_age, weights = 1/.$d_var))) %>%
+  ungroup() %>%
+  mutate(model = "linear")
+
+quadratic_full <- all_data %>%
+  group_by(dataset) %>%
+  do(augment(lm(.$d ~ I(.$mean_age^2), weights = 1/.$d_var))) %>%
+  ungroup() %>%
+  mutate(model = "quadratic")
+
+log_full <- all_data %>%
+  group_by(dataset) %>%
+  do(augment(lm(.$d ~ log(.$mean_age), weights = 1/.$d_var))) %>%
+  ungroup() %>%
+  mutate(model = "log")
+
+loess_full <- all_data %>%
+  group_by(dataset) %>%
+  do(augment(loess(.$d ~ log(.$mean_age), weights = 1/.$d_var))) %>%
+  ungroup() %>%
+  mutate(model = "loess")
+
+models <- bind_rows(linear_full, quadratic_full) %>%
+  bind_rows(log_full) %>%
+  bind_rows(loess_full)
+
+```
