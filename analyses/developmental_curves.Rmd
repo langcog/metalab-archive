@@ -16,6 +16,8 @@ library(knitr)
 library(ggplot2)
 library(broom)
 library(dplyr)
+library(tidyr)
+library(lme4)
 theme_set(theme_bw())
 ```
 
@@ -51,19 +53,273 @@ ggplot(all_data, aes(x = mean_age, y = d, size = n)) +
 
 # Regressions
 
+First, sanity check - try comparing fitted models using ANOVA (LRT). 
+
 ```{r}
-linear <- all_data %>%
-  group_by(dataset) %>%
-  do(tidy(lm(.$d ~ .$mean_age, weights = 1/.$d_var))) %>%
-  mutate(model = "linear")
-
-quadratic <- all_data %>%
-  group_by(dataset) %>%
-  do(tidy(lm(.$d ~ I(.$mean_age^2), weights = 1/.$d_var))) %>%
-  mutate(model = "quadratic")
-
-regressions <- bind_rows(linear, quadratic)
+lin_mod <- lm(d ~ mean_age, weights = 1/d_var, data = all_data)
+log_mod <- lm(d ~ log(mean_age), weights = 1/d_var, data = all_data)
 ```
+
+Show. 
+
+```{r}
+summary(lin_mod)
+summary(log_mod)
+anova(lin_mod, log_mod)
+t.test(wide_models$linear, wide_models$log, paired = TRUE)
+```
+
+Multiple predictors
+
+```{r}
+lin_log_mod <- lm(d ~ mean_age + log(mean_age), 
+                  weights = 1/d_var, 
+                  data = all_data)
+summary(lin_log_mod)
+```
+
+Nested model comparison. 
+
+```{r}
+anova(lin_mod, lin_log_mod)
+anova(log_mod, lin_log_mod)
+```
+
+Let's look at what that graph looks like on a plot. 
+
+```{r}
+ggplot(all_data, 
+       aes(x = mean_age, y = d, size = 1/d_var)) + 
+  geom_point() + 
+  geom_smooth(method = "lm", formula = y ~ x + log(x), 
+              SE = FALSE, col = "red") +   
+  geom_smooth(method = "lm", formula = y ~ x, 
+              SE = FALSE, col = "blue") +
+  geom_smooth(method = "lm", formula = y ~ log(x), 
+              SE = FALSE, col = "green")
+```
+
+This tells us that modeling the whole dataset doesn't make sense. 
+
+## Mixed-effects 
+
+Try writing as mixed-effects. 
+
+```{r}
+lin_lmer <- lmer(d ~ mean_age + 
+                   (1 | dataset), 
+                 weights = 1/d_var, 
+                 data = all_data)
+summary(lin_lmer)                
+```
+
+Note: Models with age random slope, even uncorrelated, failed to converge. 
+
+```{r}
+log_lmer_rs <- lmer(d ~ log(mean_age) + 
+                   (log(mean_age) | dataset), 
+                 weights = 1/d_var, 
+                 data = all_data)
+summary(log_lmer_rs)
+
+log_lmer_nrs <- lmer(d ~ log(mean_age) + 
+                   (1 | dataset), 
+                 weights = 1/d_var, 
+                 data = all_data)
+summary(log_lmer_nrs)
+```
+
+and the joint, log+linear model 
+
+```{r}
+log_lin_lmer <- lmer(d ~ mean_age + log(mean_age) + 
+                   (log(mean_age) | dataset), 
+                 weights = 1/d_var, 
+                 data = all_data)
+summary(log_lin_lmer)
+
+```
+
+ANOVA - hard to interpret?
+
+```{r}
+anova(lin_lmer, log_lmer_nrs)
+anova(lin_lmer, log_lmer_rs)
+anova(lin_lmer, log_lin_lmer)
+```
+
+Let's look at these. 
+
+```{r}
+ggplot(all_data, aes(x = mean_age, y = d, 
+                     size = 1/d_var, weight = 1/d_var)) +
+  geom_point() + 
+  geom_smooth(method="lm", formula = y ~ x, 
+              col = "red", 
+              se = FALSE) + 
+  geom_smooth(method="lm", formula = y ~ log(x), 
+              col = "green", 
+              se = FALSE) + 
+  geom_smooth(method="lm", formula = y ~ x + log(x), 
+              col = "blue", 
+              se = FALSE) + 
+  facet_wrap(~ dataset, scales = "free") + 
+  geom_hline(x = 0, lty = 2, col = "black")
+```
+
+Now try to plot actual model. 
+
+```{r}
+all_data_preds <- all_data %>%
+  select(dataset, d, d_var, mean_age, unique_ID) %>%
+  filter(complete.cases(.)) %>%
+  mutate(log_lin_pred = predict(log_lin_lmer))
+
+ggplot(all_data_preds, aes(x = mean_age, y = d, 
+                     size = 1/d_var, weight = 1/d_var)) +
+  geom_point() + 
+  geom_line(aes(x = mean_age, y = log_lin_pred, size = 1), col = "red") + 
+  facet_wrap(~ dataset, scales = "free") + 
+  geom_hline(x = 0, lty = 2, col = "black")
+```
+
+Summary - this looks pretty good, seems like the linear model is somehow smoothing the logs at the edges, and the random effects are working to capture cross-dataset variability. 
+
+## Mixed effects with nested paper effects
+
+Next add nested paper effects? 
+
+```{r}
+log_lin_paper_lmer <- lmer(d ~ mean_age + log(mean_age) + 
+                             (log(mean_age) | dataset / unique_ID),
+                           weights = 1/d_var, 
+                           data = all_data)
+summary(log_lin_paper_lmer)
+
+log_lin_paper_int_lmer <- lmer(d ~ mean_age + log(mean_age) + 
+                                 (log(mean_age) | dataset ) +
+                                 (1 | unique_ID),
+                               weights = 1/d_var, 
+                               data = all_data)
+summary(log_lin_paper_int_lmer)
+
+anova(log_lin_paper_lmer, log_lin_paper_int_lmer)
+```
+
+Summary: these models capture more variance, especially the nested slopes one - but do they change the plots?
+
+```{r}
+all_data_preds <- all_data_preds %>%
+  mutate(log_lin_paper_pred = predict(log_lin_paper_lmer))
+
+ggplot(all_data_preds, aes(x = mean_age, y = d, 
+                     size = 1/d_var, weight = 1/d_var)) +
+  geom_point() + 
+  geom_line(aes(x = mean_age, y = log_lin_pred, size = 1), col = "red") + 
+  geom_line(aes(x = mean_age, y = log_lin_paper_pred, size = 1), col = "blue") + 
+  facet_wrap(~ dataset, scales = "free") + 
+  geom_hline(x = 0, lty = 2, col = "black")
+```
+
+Conclusion: definitely no nesting. People test babies of the same age, so you just get massive overfitting of individual age groups. No real signal here. 
+
+## Subset to only those papers with multiple ages
+
+### Two age groups. 
+
+We arbitrarily decide on two age groups, more than 2mo apart. 
+
+```{r}
+multiage_data <- all_data_preds %>%
+  group_by(dataset, unique_ID) %>%
+  mutate(count_ages = length(unique(floor(mean_age/2)))) %>%
+  filter(count_ages > 1)
+
+nested_multiage_lmer <- lmer(d ~ mean_age + log(mean_age) + 
+                             (log(mean_age) | dataset / unique_ID),
+                           weights = 1/d_var, 
+                           data = multiage_data)
+summary(nested_multiage_lmer)
+```
+
+Wow - much better. (Still no mean age random effect possible, though). 
+
+```{r}
+multiage_data <- multiage_data %>%
+  ungroup %>%
+  select(dataset, unique_ID, d, mean_age, d_var, log_lin_pred) %>%
+  mutate(nested_pred = predict(nested_multiage_lmer))
+
+ggplot(multiage_data, aes(x = mean_age, y = d, 
+                     size = 1/d_var, weight = 1/d_var)) +
+  geom_point() + 
+  geom_line(aes(x = mean_age, y = log_lin_pred, size = 1), col = "red") + 
+  geom_line(aes(x = mean_age, y = nested_pred, size = 1), col = "blue") + 
+  facet_wrap(~ dataset, scales = "free") + 
+  geom_hline(x = 0, lty = 2, col = "black")
+```
+
+### Three age groups
+
+```{r}
+multiage_data <- all_data_preds %>%
+  group_by(dataset, unique_ID) %>%
+  mutate(count_ages = length(unique(floor(mean_age/2)))) %>%
+  filter(count_ages > 2)
+
+nested_multiage_lmer <- lmer(d ~ mean_age + log(mean_age) + 
+                             (log(mean_age) | dataset / unique_ID),
+                           weights = 1/d_var, 
+                           data = multiage_data)
+summary(nested_multiage_lmer)
+
+multiage_data <- multiage_data %>%
+  ungroup %>%
+  select(dataset, unique_ID, d, mean_age, d_var, log_lin_pred) %>%
+  mutate(nested_pred = predict(nested_multiage_lmer))
+
+ggplot(multiage_data, aes(x = mean_age, y = d, 
+                     size = 1/d_var, weight = 1/d_var)) +
+  geom_point() + 
+  geom_line(aes(x = mean_age, y = log_lin_pred, size = 1), col = "red") + 
+  geom_line(aes(x = mean_age, y = nested_pred, size = 1), col = "blue") + 
+  facet_wrap(~ dataset, scales = "free") + 
+  geom_hline(x = 0, lty = 2, col = "black")
+```
+
+### Two age groups, no slope per paper
+
+```{r}
+multiage_data <- all_data_preds %>%
+  group_by(dataset, unique_ID) %>%
+  mutate(count_ages = length(unique(floor(mean_age/2)))) %>%
+  filter(count_ages > 1)
+
+nested_multiage_lmer <- lmer(d ~ mean_age + log(mean_age) + 
+                               (log(mean_age) | dataset) + 
+                               (1 | unique_ID),
+                           weights = 1/d_var, 
+                           data = multiage_data)
+summary(nested_multiage_lmer)
+
+multiage_data <- multiage_data %>%
+  ungroup %>%
+  select(dataset, unique_ID, d, mean_age, d_var, log_lin_pred) %>%
+  mutate(nested_pred = predict(nested_multiage_lmer))
+
+ggplot(multiage_data, aes(x = mean_age, y = d, 
+                     size = 1/d_var, weight = 1/d_var)) +
+  geom_point() + 
+  geom_line(aes(x = mean_age, y = log_lin_pred, size = 1), col = "red") + 
+  geom_line(aes(x = mean_age, y = nested_pred, size = 1), col = "blue") + 
+  facet_wrap(~ dataset, scales = "free") + 
+  geom_hline(x = 0, lty = 2, col = "black")
+```
+Conclusion: Can't really do paper-level effects without overfitting wildly. Just not enough information for each paper. 
+
+## Residual t-tests
+
+These give funky answers - left in for completeness. 
 
 ```{r}
 linear_full <- all_data %>%
@@ -93,5 +349,58 @@ loess_full <- all_data %>%
 models <- bind_rows(linear_full, quadratic_full) %>%
   bind_rows(log_full) %>%
   bind_rows(loess_full)
+```
 
+Gather for comparison.
+
+```{r}
+wide_models <- models %>%
+  select(dataset, .resid, model) %>%
+  rename(resid = .resid) %>%
+  group_by(model) %>%
+  mutate(index = 1:n()) %>%
+  ungroup %>%
+  spread(model, resid)
+```
+
+Global fit. 
+
+```{r}
+t.test(wide_models$linear, wide_models$log, paired = TRUE)
+t.test(wide_models$linear, wide_models$quadratic, paired = TRUE)
+t.test(wide_models$log, wide_models$quadratic, paired = TRUE)
+```
+
+t-tests reject the null in no case. 
+
+```{r}
+wide_models %>%
+  group_by(dataset) %>%
+  do(data.frame(lin_log = t.test(.$linear, .$log, 
+                                   paired = TRUE)$p.value,
+                lin_log_diff = mean(abs(.$linear) - abs(.$log)), 
+                lin_quad = t.test(.$linear, .$quadratic, 
+                                    paired = TRUE)$p.value,
+                lin_quad_diff = mean(abs(.$linear) - abs(.$quadratic)), 
+                log_quad = t.test(.$log, .$quadratic, 
+                                    paired = TRUE)$p.value,
+                log_quad_diff = mean(abs(.$log) - abs(.$quadratic))))
+
+```
+
+# Other
+
+
+```{r}
+linear <- all_data %>%
+  group_by(dataset) %>%
+  do(tidy(lm(.$d ~ .$mean_age, weights = 1/.$d_var))) %>%
+  mutate(model = "linear")
+
+quadratic <- all_data %>%
+  group_by(dataset) %>%
+  do(tidy(lm(.$d ~ I(.$mean_age^2), weights = 1/.$d_var))) %>%
+  mutate(model = "quadratic")
+
+regressions <- bind_rows(linear, quadratic)
 ```
