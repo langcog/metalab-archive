@@ -6,7 +6,6 @@ output:
   html_document:
     toc: true
     number_sections: true
-bibliography: mwe.bib
 ---
   
 # Introduction
@@ -15,18 +14,52 @@ bibliography: mwe.bib
 ```{r}
 rm(list=ls())
 library(knitr)
+library(metafor)
 opts_chunk$set(fig.width=8, fig.height=5, 
                       echo=TRUE, warning=FALSE, message=FALSE, cache=TRUE)
+
 ```
 
 ```{r}
 setwd("../")
 source('global.R')
+source('multiplot.R')
+
 ```
 
 
-# P-curve
-# trim-and-fill
+# P-curve -- corrects for selective reporting on the basis of significance (fewer insignificant results)
+```{r}
+all_data$p_curve_stat = as.numeric(ifelse(!is.na(all_data$t), all_data$t, 
+                               ifelse(!is.na(all_data$F), all_data$F, 'NA')))
+
+
+                               
+                               
+                              
+
+
+```
+
+
+
+# Trim-and-fill -- corrects for selective reporting on the basis of effect size (fewer small effects; Duval & Tweedie, 2000a, 2000b)
+```{r}
+### fit random-effects model and plot
+datasets = unique(all_data$dataset)
+
+for (i in 1:length(datasets)) {
+  my_data = all_data[all_data$dataset ==  datasets[i],]
+  res <- rma(d, d_var, data = my_data)
+  taf <- trimfill(res)
+  funnel(taf, main = my_data$dataset[1])
+}
+
+res <- rma(d, d_var, data = all_data)
+taf <- trimfill(res)
+funnel(taf, main = "all data")
+```
+
 # Exclusions
 # Publication Bias (years vs. effect sizes)
 # Lab-based moderators (first author, last author, diversity)
