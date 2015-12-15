@@ -1,5 +1,5 @@
 ---
-title: "Reproducability analyses"
+title: "Reproducibility analyses"
 author: "Molly Lewis and Christina Bergmann"
 date: "`r Sys.Date()`"
 output: 
@@ -10,40 +10,89 @@ output:
   
 # Introduction
 
-
 ```{r}
 rm(list=ls())
 library(knitr)
 library(metafor)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(stringr)
 opts_chunk$set(fig.width=8, fig.height=5, 
                       echo=TRUE, warning=FALSE, message=FALSE, cache=TRUE)
-
 ```
 
 ```{r}
 setwd("../")
 source('global.R')
-source('multiplot.R')
-
 ```
 
-
-# P-curve -- corrects for selective reporting on the basis of significance (fewer insignificant results)
+# p-curve 
+Corrects for selective reporting on the basis of significance (fewer insignificant results; Simonsohn, Nelson, & Simmons, 2014)
 ```{r}
-all_data$p_curve_stat = as.numeric(ifelse(!is.na(all_data$t), all_data$t, 
-                               ifelse(!is.na(all_data$F), all_data$F, 'NA')))
+# calculate degrees of freedom based on 
+pcurve.data = 
+  select(all_data, dataset, unique_ID, t, F, n_1, n_2, participant_design) %>%
+  filter(!is.na(t)) %>%
+  filter(participant_design != "mixed") %>%
+  mutate(df = ifelse(participant_design == "within", n_1-1, n_1 + n_2-2))
+         
+#summary(pcurve.data$df)
 
+#pcurve.df %>% 
+#  filter(participant_design == "between") %>% 
+#  data.frame()
 
-                               
-                               
-                              
+# code from Simonsohn, Nelson, & Simmons (2014) appendix
+loss = function(t_obs,df_obs,d_est) { 
+  t_obs=abs(t_obs)
+  p_obs=2*(1-pt(t_obs,df=df_obs)) 
+  t.sig=subset(t_obs,p_obs<.05)
+  df.sig=subset(df_obs,p_obs<.05)
+  ncp_est=sqrt((df.sig+2)/4)*d_est 
+  tc=qt(.975,df.sig) 
+  power_est=1-pt(tc,df.sig,ncp_est)
+  p_larger=pt(t.sig,df=df.sig,ncp=ncp_est)
+  ppr=(p_larger-(1-power_est))/power_est 
+  KSD=ks.test(ppr,punif)$statistic 
+  return(KSD)
+}
 
+plotloss=function(t_obs,df_obs,dmin,dmax) { 
+  loss.all=c()
+  di=c()
+  for (i in 0:((dmax-dmin)*100)) {
+    d = dmin + i/100
+    di = c(di,d)
+    options(warn = -1)
+    loss.all=c(loss.all,loss(df_obs=df_obs,t_obs=t_obs,d_est=d)) 
+    options(warn = 0)
+  }
+    
+  imin=match(min(loss.all),loss.all) 
+  dstart=dmin+imin/100
+  dhat=optimize(loss,c(dstart-.1, dstart+.1), df_obs=df_obs,t_obs=t_obs)
+
+  plot(di,
+       loss.all, xlab="Effect size\nCohen-d", 
+       ylab="Loss (D stat in KS test)",
+       ylim=c(0,1),
+       main="How well does each effect size fit? (lower is better)")
+  points(dhat$minimum,dhat$objective,pch=19,col="red",cex=2) 
+  text(dhat$minimum,dhat$objective-.08,
+       paste0("p-curve’s estimate of effect size:\nd=",round(dhat$minimum,3)),col="red") 
+  return(dhat$minimum)
+} 
+
+#Example
+t_obs= c(1.7, 2.8, -3.1, 2.4) # include one p > .05 and one negative t-value to highlight how we treat those 
+df_obs=c(44, 75, 125, 200)
+plotloss(t_obs=t_obs,df_obs=df_obs,dmin=-1,dmax=1)
 
 ```
 
-
-
-# Trim-and-fill -- corrects for selective reporting on the basis of effect size (fewer small effects; Duval & Tweedie, 2000a, 2000b)
+#Trim-and-fill 
+Corrects for selective reporting on the basis of effect size (fewer small effects; Duval & Tweedie, 2000a, 2000b)
 ```{r}
 ### fit random-effects model and plot
 datasets = unique(all_data$dataset)
@@ -61,8 +110,76 @@ funnel(taf, main = "all data")
 ```
 
 # Exclusions
+
 # Publication Bias (years vs. effect sizes)
+
 # Lab-based moderators (first author, last author, diversity)
+Do effect sizes difer as a function of first author?
+```{r}
+all_data$first_author = unlist(lapply(all_data$short_cite, function(x) unlist(strsplit(x, " "))[1]))
+
+all_data$first_author = str_replace_all(all_data$first_author,"[[:punct:]]","") 
+all_data$first_author = as.factor(all_data$first_author)
+
+for (i in 1:length(datasets)) {
+  my_data = all_data[all_data$dataset ==  datasets[i],]
+  
+  freqs = my_data %>% 
+          group_by(first_author) %>%
+          summarise(count=n())
+  
+  p = ggplot(freqs, aes(y = count, x = reorder(first_author, -count))) +
+    geom_bar(stat = "identity") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+    xlab("First author") +
+    ggtitle(datasets[i])
+  
+  print(p)
+  
+  m = rma(d ~ first_author + mean_age, vi = d_var, slab = as.character(unique_ID),
+          data = my_data, method = "REML")
+  print(m)
+}
+```
+
+Do effect sizes differ as a function of last author?
+This needs some clean up.
+```{r}
+all_data$last_author = unlist(lapply(all_data$short_cite, function(x) unlist(strsplit(x, '[&(]'))[2]))
+
+all_data$last_author= str_replace_all(all_data$last_author,"[[:punct:]]","") 
+all_data$last_author = as.factor(all_data$last_author)
+
+for (i in 1:length(datasets)) {
+  my_data = all_data[all_data$dataset ==  datasets[i],]
+  
+  freqs = my_data %>% 
+          group_by(last_author) %>%
+          summarise(count=n())
+
+  p = ggplot(freqs, aes(y = count, x = reorder(last_author, -count))) +
+    geom_bar(stat = "identity") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+    xlab("Last author") +
+    ggtitle(datasets[i])
+  
+  print(p)
+  
+  m = rma(d ~ last_author + mean_age, vi = d_var, slab = as.character(unique_ID), 
+          data = my_data, method = "REML")
+  print(m)
+}
+```
+This is kind of messy -- is there a cleaner analysis to do here?
+
+Would be nice to also do number of authors here. 
+* minimum threshold of papers
 # Data availability/reporting standards
+Here we're intersted in describing the extent to which papers report all statistics that are desirable from the perspective of meta-analysis (i.e. t/F, M, SD, d)
+```{r}
+```
 # Meta-analytic power
-# Indiviual meta-analysis power
+# Individual meta-analysis power
+# Published vs. unpublished ES's
