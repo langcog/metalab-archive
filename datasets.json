@@ -11,9 +11,9 @@
 	{
 		"name": "Word segmentation",
 		"short_name": "inworddb",
-		"key": "1XN6VaYRs7CStrINct_rr2d6rh6WN28xFiIGB5T1vkzY",
+		"key": "1djn_-iE4uOs6yRmvBgzYAhB5guzfo3-3wnC7LJVLCe8",
 		"filename": "data/word_segmentation.csv",
-		"citation": "(Bergmann & Cristia, under revision)",
+		"citation": "(Bergmann & Cristia, 2015)",
 		"link": "https://sites.google.com/site/inworddb/",
 		"description": "An analysis of studies on infants' extraction of words from running, natural speech as evidenced in paradigms built on listening times."
 	},
