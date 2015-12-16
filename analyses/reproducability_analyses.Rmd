@@ -116,11 +116,6 @@ funnel(taf, main = "all data")
 # Lab-based moderators (first author, last author, diversity)
 Do effect sizes difer as a function of first author?
 ```{r}
-all_data$first_author = unlist(lapply(all_data$short_cite, function(x) unlist(strsplit(x, " "))[1]))
-
-all_data$first_author = str_replace_all(all_data$first_author,"[[:punct:]]","") 
-all_data$first_author = as.factor(all_data$first_author)
-
 for (i in 1:length(datasets)) {
   my_data = all_data[all_data$dataset ==  datasets[i],]
   
@@ -176,9 +171,104 @@ This is kind of messy -- is there a cleaner analysis to do here?
 
 Would be nice to also do number of authors here. 
 * minimum threshold of papers
+
 # Data availability/reporting standards
 Here we're intersted in describing the extent to which papers report all statistics that are desirable from the perspective of meta-analysis (i.e. t/F, M, SD, d)
 ```{r}
+
+counts = all_data %>%
+            summarise(test_statistic = sum(!is.na(t) | !is.na(F)),
+                      means = sum(!is.na(x_1)),
+                      SD = sum(!is.na(SD_1)),
+                      d = sum(!is.na(d)),
+                      age_range = sum(!is.na(age_range_1)),
+                      gender = sum(!is.na(gender_1))) %>%
+            gather("coded_variable", "n") %>%
+            mutate(coded = "coded") %>%
+            mutate(total = nrow(all_data))
+
+counts = counts %>%
+             mutate(n = total - n, 
+                    coded = "uncoded")  %>%
+             bind_rows(counts) %>%
+             mutate(n_lab = ifelse(coded == "coded", n, ""))
+
+ggplot(counts) + 
+  geom_bar(aes(x = coded_variable, 
+               y = n/total,
+               fill = coded,
+              order = coded), 
+           stat = "identity") + 
+  ylim(0,1) + 
+  ylab("Number coded") + 
+  xlab("Coded variable") + 
+  ggtitle("All data") + 
+   annotate("text", x = 1, y = .9, 
+            label = paste("N =", counts$total[1]), size = 6) + 
+  scale_fill_manual(values=c( "lightgreen", "grey")) + 
+  geom_text(aes(label = n_lab, x = coded_variable, y = n/total -.06) )+
+  theme_bw() + 
+  theme(panel.border = element_blank(), 
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+       axis.line = element_line(colour = "black"),
+       text = element_text(size=20))
+
+
+```
+
+By MA
+```{r}
+counts = all_data %>%
+            group_by(dataset) %>%
+            summarise(test_statistic = sum(!is.na(t) | !is.na(F)),
+                      means = sum(!is.na(x_1)),
+                      SD = sum(!is.na(SD_1)),
+                      d = sum(!is.na(d)),
+                      age_range = sum(!is.na(age_range_1)),
+                      gender = sum(!is.na(gender_1)),
+                      total = n()) %>%
+            gather(coded_variable, n, -dataset, -total) %>%
+            mutate(coded = "coded") 
+
+counts = counts %>%
+             mutate(n = total - n, 
+                    coded = "uncoded")  %>%
+             bind_rows(counts) %>%
+             mutate(n_lab = ifelse(coded == "coded", n, ""))
+
+totals_text = all_data %>%
+            group_by(dataset) %>%
+            summarise(total = n())%>%
+            mutate(coded_variable = 1,
+                   lab = paste("N =", total))
+
+ggplot(counts) + 
+  geom_bar(aes(x = coded_variable, 
+               y = n/total,
+               fill = coded,
+              order = coded), 
+           stat = "identity") + 
+  facet_wrap(~dataset, nrow=3, ncol=2) +
+  ylim(0,1) + 
+  ylab("Number coded") + 
+  xlab("Coded variable") + 
+  #annotate("text", x = 1, y = .9, 
+           # label = paste("N =", totals), size = 6) + 
+  geom_text = 
+  scale_fill_manual(values = c("lightgreen", "grey")) + 
+  geom_text(aes(label = n_lab,
+                x = coded_variable, 
+                y = n/total -.06))+
+  theme_bw() + 
+  theme(panel.border = element_blank(), 
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "black"),
+        text = element_text(size=20),
+        strip.background  = element_blank(), 
+        axis.text.x = element_text(angle = 30, hjust = 1))
+
 ```
 # Meta-analytic power
 # Individual meta-analysis power
