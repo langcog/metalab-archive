@@ -59,12 +59,12 @@ load_dataset <- function(dataset_short_name) {
     if (valid_dataset) {
 
       dataset_data <- dataset_contents %>%
-        mutate(dataset = dataset_meta[["name"]],
-               study_num = as.character(study_num),
+        mutate(dataset = dataset_meta[["name"]]
+               #study_num = as.character(study_num),
                #method = unlist(mapping$method[method]),
-               response_mode_procedure = paste(response_mode, procedure, sep = ": "),
-               d = d, #TODO: calculate effect size
-               d_var = d_var # TODO: calculate effect size variance
+               #response_mode_procedure = paste(response_mode, procedure, sep = ": "),
+               #d = d, #TODO: calculate effect size
+               #d_var = d_var # TODO: calculate effect size variance
         ) %>%
         rowwise() %>%
         mutate(mean_age = weighted.mean(c(mean_age_1, mean_age_2), c(n_1, n_2),
