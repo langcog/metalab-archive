@@ -1,6 +1,7 @@
 [
 	{
 		"name": "Phonemic discrimination",
+		"short_name": "inphondb",
 		"key": "1XzSDQhwT8qv6wkvihvoo_6LGWBlM62vQFkK3b-JXMzM",
 		"filename": "data/phonemic_discrimination.csv",
 		"citation": "(Tsuji & Cristia, 2014)",
@@ -9,14 +10,16 @@
 	},
 	{
 		"name": "Word segmentation",
-		"key": "1XN6VaYRs7CStrINct_rr2d6rh6WN28xFiIGB5T1vkzY",
+		"short_name": "inworddb",
+		"key": "1djn_-iE4uOs6yRmvBgzYAhB5guzfo3-3wnC7LJVLCe8",
 		"filename": "data/word_segmentation.csv",
-		"citation": "(Bergmann & Cristia, under revision)",
+		"citation": "(Bergmann & Cristia, 2015)",
 		"link": "https://sites.google.com/site/inworddb/",
 		"description": "An analysis of studies on infants' extraction of words from running, natural speech as evidenced in paradigms built on listening times."
 	},
 	{
 		"name": "Infant directed speech preference",
+		"short_name": "idspref",
 		"key": "1HvD_DvcKqzlBuiirVdDVr9t2DnWtKmiv98ee8vp345w",
 		"filename": "data/infant_directed_speech_preference.csv",
 		"citation": "(Dunst, Gorman, & Hamby, 2012)",
@@ -25,6 +28,7 @@
 	},
 	{
 		"name": "Pointing",
+		"short_name": "pointing",
 		"key": "1ywuzdzvNE2H86_sM8heX33QUolzV3phJlQeonnkH4NM",
 		"filename": "data/pointing.csv",
 		"citation": "(Colonnesi, et al., 2010)",
@@ -33,6 +37,7 @@
 	},
 	{
 		"name": "Mutual exclusivity",
+		"short_name": "mutex",
 		"key": "14WdgHLcizDz7vjpxPkNlBkYi8s6yO3tnSTs69SSG7yY",
 		"filename": "data/mutual_exclusivity.csv",
 		"citation": "(Lewis & Frank, in prep)",
@@ -41,6 +46,7 @@
 	},
 	{
 		"name": "Label advantage in concept learning",
+		"short_name": "labadv",
 		"key": "163QOxPcb_bNbnMrnoZee3peIKvLlo8EYJUHVd06W81I",
 		"filename": "data/label_advantage.csv",
 		"citation": "",
