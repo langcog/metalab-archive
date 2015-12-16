@@ -1,0 +1,168 @@
+---
+title: "Estimating Effect Size"
+author: "Mika Braginsky"
+date: "December 14, 2015"
+output:
+  html_document:
+    theme: spacelab
+    highlight: tango
+---
+
+```{r}
+library(knitr)
+opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache = TRUE)
+```
+
+```{r, cache=FALSE}
+library(dplyr)
+library(ggplot2)
+library(langcog)
+library(purrr)
+library(Hmisc)
+setwd("..")
+source("global.R")
+setwd("analyses")
+all_data <- mutate(all_data, SD_dif = NA)
+theme_set(theme_mikabr())
+```
+
+```{r}
+compute_es <- function(study) {
+  participant_design <- study$participant_design
+  between_participant <- study$between_participant
+  #print(participant_design)
+  #print(between_participant)
+  x_1 <- study$x_1
+  x_2 <- study$x_2
+  x_dif <- study$x_dif
+  SD_1 <- study$SD_1
+  SD_2 <- study$SD_2
+  SD_dif <- study$SD_dif
+  n_1 <- study$n_1
+  n_2 <- study$n_2
+  t <- study$t
+  F <- study$`F`
+  d <- study$d
+  corr <- study$corr
+  if (is.na(participant_design) && is.na(between_participant) && is.na(d)) {
+    return(NA)
+  }
+  if ((!is.na(participant_design) && participant_design == "between") || (!is.na(between_participant) && between_participant == 1)) {
+    if (all(!is.na(x_1), !is.na(x_2), !is.na(SD_1), !is.na(SD_2), !is.na(n_1), !is.na(n_2))) {
+      pooled_SD <- sqrt(((n_1 - 1) * SD_1 ^ 2 + (n_2 - 1) * SD_2 ^ 2) / (n_1 + n_2 - 2))
+      d <- (x_1 - x_2) / pooled_SD
+      return(d)
+    }
+    if (all(!is.na(t), !is.na(n_1), !is.na(n_2))) {
+      d <- t * sqrt((n_1 + n_2) / (n_1 * n_2))
+      return(d)
+    }
+    if (all(!is.na(F), !is.na(n_1), !is.na(n_2))) {
+      d <- sqrt(F * (n_1 + n_2) / (n_1 * n_2))
+      return(d)
+    }
+    if (all(!is.na(d))) {
+      return(d)
+    }
+  } else if ((!is.na(participant_design) && participant_design == "within_two") || (!is.na(between_participant) && between_participant == 0)) {
+    if (is.na(corr)) {
+      corr <- study$corr_imputed
+      #corr <- 1
+    }
+    if (all(!is.na(x_1), !is.na(x_2), !is.na(SD_1), !is.na(SD_2))) {
+      pooled_SD <- sqrt((SD_1 ^ 2 + SD_2 ^ 2) / 2)
+      d <- (x_1 - x_2) / pooled_SD
+      return(d)
+    }
+    if (all(!is.na(x_1), !is.na(x_2), !is.na(SD_dif))) {
+      within_SD <- SD_dif / sqrt(2 * (1 - corr))
+      d <- (x_1 - x_2) / within_SD
+      return(d)
+    }
+    if (all(!is.na(x_dif), !is.na(SD_1), !is.na(SD_2))) {
+      pooled_SD <- sqrt((SD_1 ^ 2 + SD_2 ^ 2) / 2)
+      d <- x_dif / pooled_SD
+      return(d)
+    }
+    if (all(!is.na(x_dif), !is.na(SD_dif))) {
+      wc <- sqrt(2 * (1 - corr))
+      d <- (x_dif / SD_dif) * wc
+      return(d)
+    }
+    if (all(!is.na(t), !is.na(n_1))) {
+      wc <- sqrt(2 * (1 - corr))
+      d <- (t / sqrt(n_1)) * wc
+      return(d)
+    }
+    if (all(!is.na(F), !is.na(n_1))) {
+      wc <- sqrt(2 * (1 - corr))
+      d <- sqrt(F / n_1) * wc
+      return(d)
+    }
+    if (all(!is.na(d))) {
+      return(d)
+    }
+  } else if (!is.na(participant_design) && participant_design == "within_one") {
+    if (all(!is.na(x_1), !is.na(x_2), !is.na(SD_1))) {
+      d <- (x_1 - x_2) / SD_1
+      return(d)
+    }
+    if (all(!is.na(t), !is.na(n_1))) {
+      d <- t / sqrt(n_1)
+      return(d)
+    }
+    if (all(!is.na(F), !is.na(n_1))) {
+      d <- sqrt(F / n_1)
+      return(d)
+    }
+    if (all(!is.na(d))) {
+      return(d)
+    }
+  }
+  return(d)
+}
+
+set.seed(111)
+es_data <- all_data %>%
+  mutate(SD_dif = NA) %>%
+  #split(paste(.$dataset, .$method, sep = " - ")) %>%
+  split(.$dataset) %>%
+  map(function(dataset_method) {
+    if (all(is.na(dataset_method$corr))) dataset_method$corr_imputed <- NA
+    else dataset_method$corr_imputed <- impute(dataset_method$corr, fun = "random")
+    dataset_method
+    }) %>%
+  bind_rows() %>%
+  mutate(num = row_number()) %>%
+  split(.$num) %>%
+  map(compute_es)
+
+all_data$es_estimate <- as.numeric(as.character(es_data))
+
+all_data %>% filter(is.na(es_estimate)) %>% group_by(dataset) %>% summarise(n = n())
+all_data %>% filter(abs(es_estimate - d) > 1e-8) %>% group_by(dataset) %>% summarise(n = n())
+ws <- all_data %>% mutate(diff = abs(es_estimate - d)) %>% filter(dataset == "Word segmentation") %>% arrange(desc(diff))
+all_data <- all_data %>%
+ rowwise() %>%
+ mutate(es_correct = es_estimate,
+        es_correct = ifelse(dataset == "Word segmentation",
+                            es_correct * (1 - 3 / (4 * sum(n_1, n_2, na.rm = TRUE) - 5)),
+                            es_correct),
+        es_correct = ifelse(dataset == "Phonemic discrimination",
+                            es_correct * (1 - 3 / (4 * sum(n_1, n_2, na.rm = TRUE) - 9)),
+                            es_correct))
+```
+
+```{r, fig.width=10, fig.height=10, cache=FALSE}
+all_data %>%
+  mutate(d = ifelse(dataset %in% c("Label advantage in concept learning",
+                                   "Mutual exclusivity"),
+                    es_correct, d)) %>%
+  #filter(dataset == "Word segmentation") %>%
+  ggplot(aes(x = es_correct, y = d, colour = dataset)) +
+  geom_point() +
+  coord_fixed() +
+#  scale_x_continuous(limits = c(-2, 8), breaks = 0:8) +
+#  scale_y_continuous(limits = c(-2, 8), breaks = 0:8) +
+  scale_colour_solarized()
+```
