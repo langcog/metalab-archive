@@ -29,8 +29,8 @@
   description:  indicates whether study is from a peer-reviewed publication
   type:         options
   options:
-      - yes
-      - no
+      - "yes"
+      - "no"
   required:     yes
 
 - field:        coder
