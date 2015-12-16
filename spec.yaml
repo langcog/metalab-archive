@@ -134,6 +134,8 @@
     - peak_amplitude:         ERP
     - d_prime:                d-prime
     - a_prime:                A-prime
+    - heart_rate:
+    - body_movement:
   required:     yes
 
 - field:        participant_design
@@ -154,7 +156,7 @@
 
 - field:        infant_type
   description:  development characteristic of experiment participants
-  type:         options
+  type:         string
   format:       typical for monolingual, full-term infants with no hearing, language, or cognitive impairments
                 otherwise, main unusual characteristic, with mixed for group that combines typical and atypical characteristics
   example:      typical; down syndrome; bilingual; mixed
