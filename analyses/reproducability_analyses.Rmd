@@ -30,12 +30,11 @@ source('global.R')
 # p-curve 
 Corrects for selective reporting on the basis of significance (fewer insignificant results; Simonsohn, Nelson, & Simmons, 2014)
 ```{r}
-# calculate degrees of freedom based on 
+# calculate degrees of freedom based on Ns and design (within = n_1-1, between = n_1 + n_2 - 2
 pcurve.data = 
   select(all_data, dataset, unique_ID, t, F, n_1, n_2, participant_design) %>%
-  filter(!is.na(t)) %>%
-  filter(participant_design != "mixed") %>%
-  mutate(df = ifelse(participant_design == "within", n_1-1, n_1 + n_2-2))
+  filter(!is.na(t)|!is.na(F)) %>%
+  mutate(df = ifelse(participant_design == "between", n_1 + n_2-2, n_1-1))
          
 #summary(pcurve.data$df)
 
@@ -85,9 +84,9 @@ plotloss=function(t_obs,df_obs,dmin,dmax) {
 } 
 
 #Example
-t_obs= c(1.7, 2.8, -3.1, 2.4) # include one p > .05 and one negative t-value to highlight how we treat those 
-df_obs=c(44, 75, 125, 200)
-plotloss(t_obs=t_obs,df_obs=df_obs,dmin=-1,dmax=1)
+#t_obs= c(1.7, 2.8, -3.1, 2.4) # include one p > .05 and one negative t-value to highlight how we treat those 
+#df_obs=c(44, 75, 125, 200)
+#plotloss(t_obs=t_obs,df_obs=df_obs,dmin=-1,dmax=1)
 
 ```
 
@@ -111,10 +110,33 @@ funnel(taf, main = "all data")
 
 # Exclusions
 
+Q1: Does the number of excluded infants affect effect sizes?
+
+
+```{r Exclusions_nExcluded, warning=FALSE, tidy=TRUE}
+datasets = unique(all_data$dataset)
+
+for (i in 1:length(datasets)) {
+  my_data = all_data[all_data$dataset ==  datasets[i],]
+  ggplot() + title()
+}
+
+res <- rma(d, d_var, data = all_data)
+taf <- trimfill(res)
+funnel(taf, main = "all data")
+
+```
+
+Q2: To correct for total number of infants tested, what about proportion excluded?
+
+
+
+
+
 # Publication Bias (years vs. effect sizes)
 
 # Lab-based moderators (first author, last author, diversity)
-Do effect sizes difer as a function of first author?
+Do effect sizes differ as a function of first author?
 ```{r}
 for (i in 1:length(datasets)) {
   my_data = all_data[all_data$dataset ==  datasets[i],]
