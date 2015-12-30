@@ -19,7 +19,8 @@ library(tidyr)
 library(ggplot2)
 library(stringr)
 opts_chunk$set(fig.width=8, fig.height=5, 
-                      echo=TRUE, warning=FALSE, message=FALSE, cache=TRUE)
+               echo=TRUE, warning=FALSE,
+               message=FALSE, cache=TRUE)
 ```
 
 ```{r}
@@ -91,7 +92,7 @@ plotloss(t_obs=t_obs,df_obs=df_obs,dmin=-1,dmax=1)
 
 ```
 
-#Trim-and-fill 
+# Trim-and-fill 
 Corrects for selective reporting on the basis of effect size (fewer small effects; Duval & Tweedie, 2000a, 2000b)
 ```{r}
 ### fit random-effects model and plot
@@ -116,12 +117,20 @@ funnel(taf, main = "all data")
 # Lab-based moderators (first author, last author, diversity)
 Do effect sizes difer as a function of first author?
 ```{r}
+
+all_data$first_author = unlist(lapply(all_data$short_cite, 
+                                     function(x) unlist(strsplit(x, '[&,(]|et|and'))[1]))
+
+all_data$first_author= str_replace_all(all_data$first_author,"[[:punct:]]","") 
+all_data$first_author = as.factor(all_data$first_author)
+
 for (i in 1:length(datasets)) {
   my_data = all_data[all_data$dataset ==  datasets[i],]
   
   freqs = my_data %>% 
           group_by(first_author) %>%
-          summarise(count=n())
+          summarise(count=n()) %>%
+          filter(count > 3) # filter so only look at authors with >x studies
   
   p = ggplot(freqs, aes(y = count, x = reorder(first_author, -count))) +
     geom_bar(stat = "identity") +
@@ -141,7 +150,8 @@ for (i in 1:length(datasets)) {
 Do effect sizes differ as a function of last author?
 This needs some clean up.
 ```{r}
-all_data$last_author = unlist(lapply(all_data$short_cite, function(x) unlist(strsplit(x, '[&(]'))[2]))
+all_data$last_author = unlist(lapply(all_data$short_cite, 
+                                     function(x) unlist(strsplit(x, '[&(]|^|'))[2]))
 
 all_data$last_author= str_replace_all(all_data$last_author,"[[:punct:]]","") 
 all_data$last_author = as.factor(all_data$last_author)
@@ -214,7 +224,6 @@ ggplot(counts) +
        axis.line = element_line(colour = "black"),
        text = element_text(size=20))
 
-
 ```
 
 By MA
@@ -237,12 +246,6 @@ counts = counts %>%
              bind_rows(counts) %>%
              mutate(n_lab = ifelse(coded == "coded", n, ""))
 
-totals_text = all_data %>%
-            group_by(dataset) %>%
-            summarise(total = n())%>%
-            mutate(coded_variable = 1,
-                   lab = paste("N =", total))
-
 ggplot(counts) + 
   geom_bar(aes(x = coded_variable, 
                y = n/total,
@@ -253,13 +256,10 @@ ggplot(counts) +
   ylim(0,1) + 
   ylab("Number coded") + 
   xlab("Coded variable") + 
-  #annotate("text", x = 1, y = .9, 
-           # label = paste("N =", totals), size = 6) + 
-  geom_text = 
   scale_fill_manual(values = c("lightgreen", "grey")) + 
   geom_text(aes(label = n_lab,
-                x = coded_variable, 
-                y = n/total -.06))+
+              x = coded_variable, 
+              y = n/total -.06)) +
   theme_bw() + 
   theme(panel.border = element_blank(), 
         panel.grid.major = element_blank(), 
@@ -269,7 +269,14 @@ ggplot(counts) +
         strip.background  = element_blank(), 
         axis.text.x = element_text(angle = 30, hjust = 1))
 
+#annotate("text", x = 1, y = .9, 
+           # label = paste("N =", totals), size = 6) + 
+#totals_text = all_data %>%
+      #      group_by(dataset) %>%
+      #     summarise(total = n())%>%
+      #     mutate(coded_variable = 1,
+      #             lab = paste("N =", total))
 ```
-# Meta-analytic power
+# Meta-analytic powerg
 # Individual meta-analysis power
 # Published vs. unpublished ES's
