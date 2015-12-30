@@ -17,7 +17,7 @@ datasets <- fromJSON(txt = "datasets.json") %>%
 
 load_dataset <- function(filename) {
   read.csv(filename) %>%
-    mutate(study_num = as.character(study_num),
+    mutate(expt_num = as.character(expt_num),
            filename = filename)
 }
 
