@@ -6,7 +6,13 @@
 		"filename": "data/phonemic_discrimination.csv",
 		"citation": "(Tsuji & Cristia, 2014)",
 		"link": "https://sites.google.com/site/inphondb/",
-		"description": "Vowel space discrimination narrows across development. This meta-analysis explores vowel discrimination, including results from behavioral, electrophysiological, and neuroimaging methods applied to infants 0-14 months of age."
+		"full_citation": "Tsuji, S. & Cristia, A. (2013). Perceptual attunement in vowels: A meta-analysis. Developmental Psychobiology, 56(2), 179-191.",
+		"doi": "10.1002/dev.21179",
+		"systematic": "yes",
+		"reliability": "no",
+		"last_update": "2015-12-14",
+		"link_fields": "https://drive.google.com/file/d/0B_tr1H-CJ3AIb1VpeUtqalhxNkU/view",
+		"description": "Discrimination of vowels, including results from behavioral, electrophysiological, and neuroimaging methods applied to infants 0-14 months of age."
 	},
 	{
 		"name": "Word segmentation",
@@ -15,7 +21,13 @@
 		"filename": "data/word_segmentation.csv",
 		"citation": "(Bergmann & Cristia, 2015)",
 		"link": "https://sites.google.com/site/inworddb/",
-		"description": "An analysis of studies on infants' extraction of words from running, natural speech as evidenced in paradigms built on listening times."
+		"full_citation": "Bergmann, C., & Cristia, A. (in press). Development of infants’ segmentation of words from native speech: A meta-analytic approach. Developmental Science.",
+		"doi": "10.1111/desc.12341",
+		"systematic": "yes",
+		"reliability": "no",
+		"last_update": "2015-12-14",
+		"link_fields": "https://sites.google.com/site/inworddb/db/files/InWordDB%20FieldNames.pdf?attredirects=0&d=1",
+		"description": "Recognition of familiarized words from running, natural speech using behavioral methods applied to infants 0-20 months of age."
 	},
 	{
 		"name": "Infant directed speech preference",
@@ -24,7 +36,13 @@
 		"filename": "data/infant_directed_speech_preference.csv",
 		"citation": "(Dunst, Gorman, & Hamby, 2012)",
 		"link": "http://earlyliteracylearning.org/cellreviews/cellreviews_v5_n1.pdf",
-		"description": "Preference for infant-directed vs. adult-directed speech."
+		"full_citation": "Dunst, C. J., Gorman, E., & Hamby, D. W. (2012). Preference for infant-directed speech in preverbal young children. Center for Early Literacy Learning, 5(1).",
+		"doi": "",
+		"systematic": "yes",
+		"reliability": "",
+		"last_update": "2012-01-01",
+		"link_fields": "http://earlyliteracylearning.org/cellreviews/cellreviews_v5_n1.pdf",
+		"description": "Looking times as a function of whether infant-directed vs. adult-directed speech is presented as stimulation, in infants aged 0-XX months."
 	},
 	{
 		"name": "Pointing",
@@ -33,7 +51,13 @@
 		"filename": "data/pointing.csv",
 		"citation": "(Colonnesi, et al., 2010)",
 		"link": "http://www.sciencedirect.com/science/article/pii/S0273229710000377",
-		"description": "The pointing gesture has been argued to be related to the development of language. This meta-analysis explores the relationship between pointing and language development, both concurrently and longitudinally."
+		"full_citation": "Colonnesi, C., Stams, G. J. J., Koster, I., & Noom, M. J. (2010). The relation between pointing and language development: A meta-analysis. Developmental Review, 30(4), 352-366.",
+		"doi": "",
+		"systematic": "yes",
+		"reliability": "no",
+		"last_update": "2010-01-01",
+		"link_fields": "",
+		"description": "The pointing gesture has been argued to be related to the development of language. This meta-analysis explores the relationship between pointing and language development, both concurrently and longitudinally, in infants aged XX to XX months."
 	},
 	{
 		"name": "Mutual exclusivity",
@@ -42,7 +66,13 @@
 		"filename": "data/mutual_exclusivity.csv",
 		"citation": "(Lewis & Frank, in prep)",
 		"link": "http://figshare.com/articles/Disambiguation_Meta_Analysis/1348836",
-		"description": "Mutual exclusivity is the bias for children to assume a novel word refers to a novel object, in the presence of one novel and one familiar object."
+		"full_citation": "Lewis, M. & Frank, M. (in preparation). Mutual exclusivity: A meta-analysis.",
+		"doi": "",
+		"systematic": "",
+		"reliability": "no",
+		"last_update": "",
+		"link_fields": "",
+		"description": "Mutual exclusivity is the bias for children to assume a novel word refers to a novel object, in the presence of one novel and one familiar object. This meta-analysis covers behavioral experiments on infants aged XX to XX."
 	},
 	{
 		"name": "Label advantage in concept learning",
@@ -51,6 +81,55 @@
 		"filename": "data/label_advantage.csv",
 		"citation": "",
 		"link": "",
-		"description": "Previous research suggests that labels support the formation of novel categories in young children. This meta-analysis includes studies exploring this question that use a paradigm similar to Balaban and Waxman (1997)."
+		"full_citation": "",
+		"doi": "",
+		"systematic": "",
+		"reliability": "no",
+		"last_update": "",
+		"link_fields": "",
+		"description": "Previous research suggests that labels support the formation of novel categories in young children. This meta-analysis includes studies exploring this question that use a paradigm similar to Balaban and Waxman (1997), resulting in a selection of experiments using behavioral methods on infants XX to XX months."
+	},
+	{
+		"name": "Phonotactic learning in the lab",
+		"key": "       ",
+		"filename": "data/AGL_phonotactics.csv",
+		"citation": "Cristia (in prep.)",
+		"link": "",
+		"full_citation": "Cristia, A. (in preparation). Infants' phonology learning in the lab.",
+		"doi": "",
+		"systematic": "yes",
+		"reliability": "no",
+		"last_update": "2015-12-14",
+		"link_fields": "https://osf.io/vhwzq/",
+		"description": "Laboratory experiments in which infants are exposed to a set of pseudo-words that could support a phonotactic generalization, and thereafter tested on their preference between new types that follow or violate the familiarized phonotactics."
+	},
+	{
+		"name": "Sound learning in the lab from acoustic cue distributions",
+		"key": "       ",
+		"filename": "data/AGL_soundsDL.csv",
+		"citation": "Cristia (in prep.)",
+		"link": "",
+		"full_citation": "Cristia, A. (in preparation). Infants' phonology learning in the lab.",
+		"doi": "",
+		"systematic": "yes",
+		"reliability": "no",
+		"last_update": "2015-12-14",
+		"link_fields": "https://osf.io/vhwzq/",
+		"description": "Laboratory experiments in which infants are exposed to a set of syllables that have been generated using a bimodal distribution of acoustic cues or not, and infants are tested on their discrimination of two sounds differing along the same dimension."
+	},
+	{
+		"name": "Individual variation in infant speech perception tasks",
+		"key": "       ",
+		"filename": "data/invarinf.csv",
+		"citation": "Cristia et al. (2014)",
+		"link": "",
+		"full_citation": "Cristia, A., Seidl, A., Junge, C., Soderstrom, M., & Hagoort, P. (2014) Infant predictors of language. Child Development, 85(4), 1330-1345.",
+		"doi": "10.1111/cdev.12193",
+		"systematic": "yes",
+		"reliability": "no",
+		"last_update": "2015-12-14",
+		"link_fields": "",
+		"description": "Correlations between infant (4-12 months) performance in a speech perception task that is plausibly affected by language experience, on the one hand, and vocabulary, on the other, concurrently and/or longitudinally. Also contains some data points from infant processing of non-speech stimuli."
 	}
+
 ]
