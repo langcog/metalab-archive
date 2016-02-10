@@ -8,3 +8,4 @@ log/
 rsconnect/
 *_files/
 *_cache/
+.RData
