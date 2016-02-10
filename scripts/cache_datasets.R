@@ -4,6 +4,7 @@ suppressMessages(suppressWarnings({
   library(dplyr)
   library(yaml)
   library(purrr)
+  library(lazyeval)
 }))
 
 datasets <- fromJSON(txt = "datasets.json")
