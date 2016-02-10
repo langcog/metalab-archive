@@ -1,9 +1,24 @@
 [
 	{
-		"name": "Phonemic discrimination",
-		"short_name": "inphondb",
-		"key": "1XzSDQhwT8qv6wkvihvoo_6LGWBlM62vQFkK3b-JXMzM",
-		"filename": "data/phonemic_discrimination.csv",
+		"name": "Phonemic discrimination (native)",
+		"short_name": "inphondb-native",
+		"key": "13ytBtSP9ZUNDeW5K2uf_VfyTFOILivTFZN1YBLZtmuU",
+		"filename": "data/phonemic_discrimination_native.csv",
+		"citation": "(Tsuji & Cristia, 2014)",
+		"link": "https://sites.google.com/site/inphondb/",
+		"full_citation": "Tsuji, S. & Cristia, A. (2013). Perceptual attunement in vowels: A meta-analysis. Developmental Psychobiology, 56(2), 179-191.",
+		"doi": "10.1002/dev.21179",
+		"systematic": "yes",
+		"reliability": "no",
+		"last_update": "2015-12-14",
+		"link_fields": "https://drive.google.com/file/d/0B_tr1H-CJ3AIb1VpeUtqalhxNkU/view",
+		"description": "Discrimination of vowels, including results from behavioral, electrophysiological, and neuroimaging methods applied to infants 0-14 months of age."
+	},
+	{
+		"name": "Phonemic discrimination (non-native)",
+		"short_name": "inphondb-nonnative",
+		"key": "1K7iCsLUXTB8GXbynuQ9aJOM6O-EcrnDDlmYspdW_Sh8",
+		"filename": "data/phonemic_discrimination_nonnative.csv",
 		"citation": "(Tsuji & Cristia, 2014)",
 		"link": "https://sites.google.com/site/inphondb/",
 		"full_citation": "Tsuji, S. & Cristia, A. (2013). Perceptual attunement in vowels: A meta-analysis. Developmental Psychobiology, 56(2), 179-191.",
@@ -43,21 +58,6 @@
 		"last_update": "2012-01-01",
 		"link_fields": "http://earlyliteracylearning.org/cellreviews/cellreviews_v5_n1.pdf",
 		"description": "Looking times as a function of whether infant-directed vs. adult-directed speech is presented as stimulation, in infants aged 0-XX months."
-	},
-	{
-		"name": "Pointing",
-		"short_name": "pointing",
-		"key": "1ywuzdzvNE2H86_sM8heX33QUolzV3phJlQeonnkH4NM",
-		"filename": "data/pointing.csv",
-		"citation": "(Colonnesi, et al., 2010)",
-		"link": "http://www.sciencedirect.com/science/article/pii/S0273229710000377",
-		"full_citation": "Colonnesi, C., Stams, G. J. J., Koster, I., & Noom, M. J. (2010). The relation between pointing and language development: A meta-analysis. Developmental Review, 30(4), 352-366.",
-		"doi": "",
-		"systematic": "yes",
-		"reliability": "no",
-		"last_update": "2010-01-01",
-		"link_fields": "",
-		"description": "The pointing gesture has been argued to be related to the development of language. This meta-analysis explores the relationship between pointing and language development, both concurrently and longitudinally, in infants aged XX to XX months."
 	},
 	{
 		"name": "Mutual exclusivity",

@@ -136,6 +136,7 @@
     - a_prime:                A-prime
     - heart_rate:
     - body_movement:
+    - facial_expression:
   required:     yes
 
 - field:        participant_design
@@ -320,7 +321,7 @@
 
 - field:        special_cases_measures
   description:  column to list variables for special cases of ES calculation
-  type:         character
-  format:	n of group 3;x of group 3;x of group 4;Number of factor levels;F/t
-  example:	20;5.83;;3;4.49
+  type:         string
+  format:       n of group 3;x of group 3;x of group 4;Number of factor levels;F/t
+  example:      20;5.83;;3;4.49
   required:     no

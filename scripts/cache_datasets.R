@@ -26,6 +26,13 @@ validate_dataset_field <- function(dataset_name, dataset_contents, field) {
         if (length(invalid_values)) {
           return(FALSE)
         }
+      } else if (field$type == "numeric") {
+        field_contents <- dataset_contents[[field$field]]
+        if (!(is.numeric(field_contents) || all(is.na(field_contents)))) {
+          cat(sprintf("Dataset '%s' has wrong type for numeric field '%s'.\n",
+                      dataset_name, field$field))
+          return(FALSE)
+        }
       }
     } else {
       cat(sprintf("Dataset '%s' is missing required field: '%s'.\n",
@@ -36,18 +43,19 @@ validate_dataset_field <- function(dataset_name, dataset_contents, field) {
   return(TRUE)
 }
 
-# Fetches a dataset from Google Docs and runs it through valid_columns and valid_values
-# for response_mode, procedure, and method.
+# Fetches a dataset from Google Docs and runs it through field validation.
 load_dataset <- function(dataset_short_name) {
 
   dataset_meta <- datasets %>% filter(short_name == dataset_short_name)
   dataset_url <- sprintf("https://docs.google.com/spreadsheets/d/%s/export?id=%s&format=csv",
                          dataset_meta$key, dataset_meta$key)
 
-  tryCatch(dataset_contents <- read.csv(textConnection(getURL(dataset_url)),
-                                        stringsAsFactors = FALSE),
-           error = function(e) cat(sprintf("Can't load dataset %s with key %s.\n",
-                                           dataset_meta$name, dataset_meta$key)))
+  tryCatch({
+    dataset_contents <- read.csv(textConnection(getURL(dataset_url)),
+                                 stringsAsFactors = FALSE)
+  },
+  error = function(e) cat(sprintf("Can't load dataset %s with key %s.\n",
+                                  dataset_meta$name, dataset_meta$key)))
 
   if (exists("dataset_contents")) {
 
@@ -58,9 +66,20 @@ load_dataset <- function(dataset_short_name) {
 
     if (valid_dataset) {
 
+      for (field in fields) {
+        if (field$field %in% names(dataset_contents)) {
+          if (field$type == "string") {
+            dots = list(interp(~as.character(var), var = as.name(field$field)))
+          } else if (field$type == "numeric") {
+            dots = list(interp(~as.numeric(var), var = as.name(field$field)))
+          }
+          dataset_contents <- dataset_contents %>%
+            mutate_(.dots = setNames(dots, field$field))
+        }
+      }
+
       dataset_data <- dataset_contents %>%
         mutate(dataset = dataset_meta[["name"]]
-               #study_num = as.character(study_num),
                #method = unlist(mapping$method[method]),
                #response_mode_procedure = paste(response_mode, procedure, sep = ": "),
                #d = d, #TODO: calculate effect size
@@ -73,7 +92,9 @@ load_dataset <- function(dataset_short_name) {
       cat(sprintf("Dataset '%s' validated successfully.\n", dataset_meta$name))
       write.csv(dataset_data, dataset_meta$file, row.names = FALSE)
     } else {
-      cat(sprintf("Dataset '%s' had one or more validation issues, not being cached.\n", dataset_meta$name))
+      cat(sprintf(
+        "Dataset '%s' had one or more validation issues, not being cached.\n",
+        dataset_meta$name))
     }
   }
 }
