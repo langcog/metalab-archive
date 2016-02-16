@@ -20,11 +20,14 @@ validate_dataset_field <- function(dataset_name, dataset_contents, field) {
           options <- field$options
         }
         invalid_values <- setdiff(unique(dataset_contents[[field$field]]), options)
-        for (value in invalid_values) {
-          cat(sprintf("Dataset '%s' has invalid value '%s' for field '%s'.\n",
-                      dataset_name, value, field$field))
+        if (!is.null(field$nullable) && field$nullable) {
+          invalid_values <- na.omit(invalid_values)
         }
         if (length(invalid_values)) {
+          for (value in invalid_values) {
+            cat(sprintf("Dataset '%s' has invalid value '%s' for field '%s'.\n",
+                        dataset_name, value, field$field))
+          }
           return(FALSE)
         }
       } else if (field$type == "numeric") {
