@@ -91,7 +91,8 @@
 	},
 	{
 		"name": "Phonotactic learning in the lab",
-		"key": "       ",
+		"short_name": "phonotactics",
+		"key": "",
 		"filename": "data/AGL_phonotactics.csv",
 		"citation": "Cristia (in prep.)",
 		"link": "",
@@ -105,7 +106,8 @@
 	},
 	{
 		"name": "Sound learning in the lab from acoustic cue distributions",
-		"key": "       ",
+		"short_name": "sounds",
+		"key": "",
 		"filename": "data/AGL_soundsDL.csv",
 		"citation": "Cristia (in prep.)",
 		"link": "",
@@ -119,7 +121,8 @@
 	},
 	{
 		"name": "Individual variation in infant speech perception tasks",
-		"key": "       ",
+		"short_name": "invarinf",
+		"key": "",
 		"filename": "data/invarinf.csv",
 		"citation": "Cristia et al. (2014)",
 		"link": "",
