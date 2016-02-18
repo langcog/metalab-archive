@@ -6,13 +6,12 @@ output:
 
 ```{r include=FALSE, echo=FALSE}
 library(knitr)
-opts_chunk$set(message=FALSE, warning=FALSE, cache=FALSE)
-name <- shiny_data$name
+opts_chunk$set(message = FALSE, warning = FALSE, cache = FALSE)
 datasets <- shiny_data$datasets
 ```
 
-`r name` is a research tool for aggregating across studies in the language 
-acquisition literature. Currently, `r name` contains
+MetaLab is a research tool for aggregating across studies in the language 
+acquisition literature. Currently, `MetaLab contains
 `r as.integer(sum(as.numeric(datasets$num_experiments), na.rm = TRUE))` effect sizes across
 meta-analyses in `r nrow(datasets)` domains of language acquisition, based on
 data from `r as.integer(sum(as.numeric(datasets$num_papers), na.rm = TRUE))` papers collecting
@@ -20,7 +19,7 @@ data from `r as.integer(sum(as.numeric(datasets$num_papers), na.rm = TRUE))` pap
 can be used to obtain better estimates of effect sizes across different domains,
 methods, and ages. Using our power calculator, researchers can use these
 estimates to plan appropriate sample sizes for prospective studies. More
-generally, `r name` can be used as a theoretical tool for exploring patterns in
+generally, MetaLab can be used as a theoretical tool for exploring patterns in
 development across language acquisition domains.
 
 Individual meta-analyses:
