@@ -1,6 +1,11 @@
 library(jsonlite)
 library(dplyr)
 library(readr)
+library(yaml)
+library(lazyeval)
+library(purrr)
+
+fields <- yaml.load_file("../spec.yaml")
 
 includeRmd <- function(path, shiny_data) {
   shiny:::dependsOnFile(path)
@@ -10,21 +15,40 @@ includeRmd <- function(path, shiny_data) {
   return(HTML(html))
 }
 
-cached_data <- unlist(lapply(list.files('../data/'),
-                             function(filename) paste0("data/", filename)))
+cached_data <- list.files('../data/') %>% map(~paste0("data/", .x)) %>% unlist()
+
 datasets <- fromJSON(txt = "../datasets.json") %>%
   filter(filename %in% cached_data)
 
 load_dataset <- function(filename) {
+
   print(paste0("../", filename))
-  read.csv(paste0("../", filename), stringsAsFactors = FALSE) %>%
-    mutate(#study_num = as.character(study_num),
-           filename = filename)
+  dataset_contents <- read.csv(paste0("../", filename), stringsAsFactors = FALSE) %>%
+    mutate(filename = filename,
+           response_mode_exposure_phase = sprintf("%s: %s", response_mode, exposure_phase))
+
+  # Coerce each field's values to the field's type
+  for (field in fields) {
+    if (field$field %in% names(dataset_contents)) {
+      if (field$type == "string") {
+        dots = list(interp(~as.character(var), var = as.name(field$field)))
+        dataset_contents <- dataset_contents %>%
+          mutate_(.dots = setNames(dots, field$field))
+      } else if (field$type == "numeric") {
+        dots = list(interp(~as.numeric(var), var = as.name(field$field)))
+        dataset_contents <- dataset_contents %>%
+          mutate_(.dots = setNames(dots, field$field))
+      }
+    }
+  }
+
+  dataset_contents
 }
 
 avg_month <- 365.2425/12.0
 
-all_data <- bind_rows(lapply(cached_data, load_dataset)) %>%
+all_data <- cached_data %>%
+  map_df(load_dataset) %>%
   mutate(all_mod = "All",
          mean_age_months = mean_age / avg_month)
 
@@ -44,4 +68,4 @@ datasets <- datasets %>%
   left_join(subjects)
 
 all_data <- all_data %>%
-  filter(!is.na(d))
+  filter(!is.na(d_calc))

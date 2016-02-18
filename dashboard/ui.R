@@ -105,11 +105,12 @@ body <- dashboardBody(
             column(width = 6,
                    box(width = NULL, status = "danger",
                        selectInput("dataset_name", label = "Dataset", choices = datasets$name),
-                       checkboxGroupInput("moderators", label = "Moderators",
-                                          choices = list("Age" = "mean_age",
-                                                         "Procedure" = "procedure",
-                                                         "Response Mode" = "response_mode"),
-                                          inline = TRUE)
+                       uiOutput("moderator_input")
+                       # checkboxGroupInput("moderators", label = "Moderators",
+                       #                    choices = list("Age" = "mean_age",
+                       #                                   "Exposure phase" = "exposure_phase",
+                       #                                   "Response mode" = "response_mode"),
+                       #                    inline = TRUE)
                    ),
                    box(width = NULL, status = "danger", plotOutput("scatter")),
                    box(width = NULL, status = "danger", plotOutput("violin")),
