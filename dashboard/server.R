@@ -7,8 +7,26 @@ library(metafor)
 library(langcog)
 font <- "Ubuntu"
 
-# input <- list(dataset_name = "Mutual exclusivity",
-#               moderators = c("response_mode"))
+################################################################################
+## CONSTANTS FOR POWER ANALYSIS
+
+pwrmu <- 10
+pwrsd <- 5
+
+################################################################################
+## HELPER FUNCTIONS
+
+sem <- function(x) {
+  sd(x) / sqrt(length(x)) 
+}
+
+ci95.t <- function(x) {
+  qt(.975, length(x)-1) * sem(x)
+} 
+
+pretty.p <- function(x) {
+  as.character(signif(x, digits = 3))
+}
 
 shinyServer(function(input, output, session) {
 
@@ -219,23 +237,23 @@ shinyServer(function(input, output, session) {
   })
   
   ########### GENERATE DATA #############
-  data <- reactive({
+  pwrdata <- reactive({
     if (input$go | !input$go) {
       conds() %>%
         do(data.frame(looking.time = ifelse(rep(.$group == "Experimental" & 
                                                   .$condition == "Longer looking predicted", input$N), 
                                             rnorm(n = input$N, 
-                                                  mean = input$m + (input$d * input$sd)/2, 
-                                                  sd = input$sd),
+                                                  mean = pwrmu + (input$d * pwrsd)/2, 
+                                                  sd = pwrsd),
                                             rnorm(n = input$N, 
-                                                  mean = input$m - (input$d * input$sd)/2, 
-                                                  sd = input$sd))))
+                                                  mean = pwrmu - (input$d * pwrsd)/2, 
+                                                  sd = pwrsd))))
     }
   })
   
   ########### MEANS FOR PLOTTING #############
   ms <- reactive({
-    data() %>%
+    pwrdata() %>%
       group_by(group, condition) %>%
       summarise(mean = mean(looking.time), 
                 ci = ci95.t(looking.time), 
@@ -246,12 +264,10 @@ shinyServer(function(input, output, session) {
   ########### BAR GRAPH #############
   output$bar <- renderPlot({
     pos <- position_dodge(width=.25)
-    qplot(group, mean, fill = condition, 
-          colour = condition,
-          position = pos,
-          stat = "identity", 
-          geom="bar", width = .25,
-          data = ms()) + 
+    ggplot(ms(), aes(x = group, y = mean, fill = condition, colour = condition)) + 
+      geom_bar(position = pos,
+               stat = "identity", 
+               width = .25) + 
       geom_linerange(data = ms(), 
                      aes(x = group, y = mean, 
                          fill = condition, 
@@ -260,37 +276,39 @@ shinyServer(function(input, output, session) {
                      position = pos,                     
                      colour = "black") + 
       xlab("Group") +
-      ylab("Simulated Looking Time")  })
+      ylab("Simulated Looking Time") + 
+      theme_bw()  
+    })
   
   ########### SCATTER PLOT #############
-  output$scatter <- renderPlot({
-    print(ms())
-    print(data())
-    pos <- position_jitterdodge(jitter.width = .1,
-                                dodge.width = .25)
-    qplot(group, looking.time, fill = condition, 
-          colour = condition, 
-          group = condition, 
-          position = pos, 
-          geom="point", 
-          data = data()) + 
-      geom_linerange(data = ms(), 
-                     aes(x = group, y = mean, 
-                         fill = condition, 
-                         ymin = mean - interval, 
-                         ymax = mean + interval), 
-                     position = pos, 
-                     size = 2, 
-                     colour = "black") + 
-      xlab("Group") +
-      ylab("Looking Time") + 
-      ylim(c(0, ceiling(max(data()$looking.time)/5)*5))
-  })
-  
+#   output$scatter <- renderPlot({
+#     print(ms())
+#     print(data())
+#     pos <- position_jitterdodge(jitter.width = .1,
+#                                 dodge.width = .25)
+#     qplot(group, looking.time, fill = condition, 
+#           colour = condition, 
+#           group = condition, 
+#           position = pos, 
+#           geom="point", 
+#           data = data()) + 
+#       geom_linerange(data = ms(), 
+#                      aes(x = group, y = mean, 
+#                          fill = condition, 
+#                          ymin = mean - interval, 
+#                          ymax = mean + interval), 
+#                      position = pos, 
+#                      size = 2, 
+#                      colour = "black") + 
+#       xlab("Group") +
+#       ylab("Looking Time") + 
+#       ylim(c(0, ceiling(max(data()$looking.time)/5)*5))
+#   })
+#   
   ########### STATISTICAL TEST OUTPUTS #############
   output$stat <- renderText({
-    p.e <- t.test(data()$looking.time[data()$condition == "Longer looking predicted" & data()$group == "Experimental"],
-                  data()$looking.time[data()$condition == "Shorter looking predicted" & data()$group == "Experimental"], 
+    p.e <- t.test(pwrdata()$looking.time[pwrdata()$condition == "Longer looking predicted" & pwrdata()$group == "Experimental"],
+                  pwrdata()$looking.time[pwrdata()$condition == "Shorter looking predicted" & pwrdata()$group == "Experimental"], 
                   paired = TRUE)$p.value
     
     stat.text <- paste("A t.test of the experimental condition is ",
@@ -301,11 +319,11 @@ shinyServer(function(input, output, session) {
                        sep = "")
     
     if (input$control) {      
-      p.c <- t.test(data()$looking.time[data()$condition == "Longer looking predicted" & data()$group == "Control"],
-                    data()$looking.time[data()$condition == "Shorter looking predicted" & data()$group == "Control"], 
+      p.c <- t.test(pwrdata()$looking.time[pwrdata()$condition == "Longer looking predicted" & pwrdata()$group == "Control"],
+                    pwrdata()$looking.time[pwrdata()$condition == "Shorter looking predicted" & pwrdata()$group == "Control"], 
                     paired = TRUE)$p.value
       
-      a <- anova(lm(looking.time ~ group * condition, data = data()))
+      a <- anova(lm(looking.time ~ group * condition, data = pwrdata()))
       
       return(paste(stat.text,
                    "A t.test of the control condition is ",

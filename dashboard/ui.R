@@ -1,4 +1,5 @@
 library(shinydashboard)
+options(shiny.trace=TRUE)
 
 header <- dashboardHeader(title = "MetaLab")
 
@@ -87,42 +88,33 @@ tab_power <- tabItem(
   tabName = "power",
   fluidRow(
     column(width = 6,
-           box(width = NULL, status = "danger",
-               selectInput("dataset_name", label = "Dataset", choices = datasets$name),
-               uiOutput("moderator_input")
-           ),
            box(width = NULL, status = "danger", 
-                     sliderInput("m", p("Mean looking time (M)"), 
-                                 min = 2, max = 60, value = 8, step = 1),
-                     sliderInput("sd", p("Standard deviation (SD)"), 
-                                 min = 1, max = 15, value = 2, step = 1),
-                     sliderInput("d", p("Effect size (Cohen's d)"),
-                                 min = 0, max = 2.5, value = .5, step = .1),
-                     sliderInput("N", p("Number of infants per group (N)"),
-                                 min = 4, max = 120, value = 16, step = 2),
-                     radioButtons("control", p("Conditions"),
-                                  choices = list("Experimental only" = FALSE, 
-                                                 "Experimental + negative control" = TRUE)),
-                     radioButtons("interval", p("Type of error bars"),
-                                  choices = list("Standard error of the mean" = "sem", 
-                                                 "95% confidence interval" = "ci"), 
-                                  selected = "ci"),
-                     actionButton("go", label = "Sample Again")),
-           box(width = NULL, status = "danger", plotOutput("bar")),
-           # box(width = NULL, status = "danger", textOutput("scatter")),
-           box(width = NULL, status = "danger", plotOutput("stat"))
-    ),
+               sliderInput("d", p("Effect size (Cohen's d)"),
+                           min = 0, max = 2.5, value = .5, step = .1),
+               sliderInput("N", p("Number of infants per group (N)"),
+                           min = 4, max = 120, value = 16, step = 2))),
     column(width = 6,
-           fluidRow(valueBoxOutput("studies_box"),
-                    valueBoxOutput("effect_size_box"),
-                    valueBoxOutput("effect_size_var_box")),
-           fluidRow(box(width = NULL, status = "danger", plotOutput("power"), 
-                        br(),
-                        p("Plot shows statistical power to detect a difference between 
-                           conditions at p < .05 with the selected effect size, 
-                           plotted by conditions. Red dot shows power with currently 
-                           selected N. Dashed lines show 80% power and necessary sample size.")))
-    )
+           box(width = NULL, stats = "danger", 
+               radioButtons("control", p("Conditions"),
+                            choices = list("Experimental only" = FALSE, 
+                                           "Experimental + negative control" = TRUE)),
+               radioButtons("interval", p("Type of error bars"),
+                            choices = list("Standard error of the mean" = "sem", 
+                                           "95% confidence interval" = "ci"), 
+                            selected = "ci"),
+               actionButton("go", label = "Sample Again")))),
+  fluidRow(
+    column(width = 6,
+           box(width = NULL, status = "danger", plotOutput("bar")),
+           box(width = NULL, status = "danger", textOutput("stat"))),
+    column(width = 6,
+           box(width = NULL, status = "danger", plotOutput("power"), 
+               br(),
+               p("Plot shows statistical power to detect a difference between 
+                   conditions at p < .05 with the selected effect size, 
+                   plotted by conditions. Red dot shows power with currently 
+                   selected N. Dashed lines show 80% power and necessary sample size.")))
+    
   )
 )
 
