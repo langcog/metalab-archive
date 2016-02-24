@@ -39,7 +39,7 @@ Corrects for selective reporting on the basis of significance (fewer insignifica
 ```{r}
 # calculate degrees of freedom based on Ns and design (within = n_1-1, between = n_1 + n_2 - 2
 pcurve.data = 
-  select(all_data, dataset, unique_ID, t, F, n_1, n_2, participant_design) %>%
+  select(all_data, dataset, unique_ID, t, F, n_1, n_2, participant_design, d) %>%
   filter(!is.na(t)|!is.na(F)) %>%
   mutate(df = ifelse(participant_design == "between", n_1 + n_2-2, n_1-1))
          
@@ -64,7 +64,7 @@ loss = function(t_obs,df_obs,d_est) {
   return(KSD)
 }
 
-plotloss=function(t_obs,df_obs,dmin,dmax) { 
+plotloss=function(t_obs,df_obs,dmin,dmax, titlestring) { 
   loss.all=c()
   di=c()
   for (i in 0:((dmax-dmin)*100)) {
@@ -83,20 +83,45 @@ plotloss=function(t_obs,df_obs,dmin,dmax) {
        loss.all, xlab="Effect size\nCohen-d", 
        ylab="Loss (D stat in KS test)",
        ylim=c(0,1),
-       main="How well does each effect size fit? (lower is better)")
+       main=paste("Effect size fit ", titlestring, sep = "\n"))
   points(dhat$minimum,dhat$objective,pch=19,col="red",cex=2) 
-  text(dhat$minimum,dhat$objective-.08,
+  text(dhat$minimum,dhat$objective+.28,
        paste0("p-curve’s estimate of effect size:\nd=",round(dhat$minimum,3)),col="red") 
   return(dhat$minimum)
 } 
 
-#Example
-#t_obs= c(1.7, 2.8, -3.1, 2.4) # include one p > .05 and one negative t-value to highlight how we treat those 
-#df_obs=c(44, 75, 125, 200)
-#plotloss(t_obs=t_obs,df_obs=df_obs,dmin=-1,dmax=1)
+plotloss(pcurve.data$t, pcurve.data$df, dmin=-2, dmax =2, "All data")
+
+datasets = unique(all_data$dataset)
+
+for (i in 2:length(datasets)) {
+  my_data = pcurve.data[pcurve.data$dataset ==  datasets[i],]
+  #print(length(my_data$t)) 
+  plotloss(my_data$t, my_data$df, dmin=-2, dmax =2, my_data$dataset[1])
+  print(my_data$dataset[1])
+  print(median(abs(my_data$d), na.rm=TRUE))
+}
 
 ```
 
+```{r Printp-curvedata }
+# Just something to paste into p-curve for now.
+for (i in 2:length(datasets)) {
+  my_data = pcurve.data[pcurve.data$dataset ==  datasets[i],]
+  Reportfile = paste(datasets[i], "_p-curvedata.txt", sep = "")
+  file.create(Reportfile)
+  for (record in 1:length(my_data$dataset)){
+    if (!is.na(my_data$t[record])){
+      write(paste("t(",as.character(my_data$df[record]),")=",as.character(my_data$t[record]), sep =""), file = Reportfile, append = TRUE)
+    }
+    else if (!is.na(my_data$F[record])){
+      write(paste("F(1,",as.character(my_data$df[record]),")=",as.character(my_data$F[record]), sep =""), file = Reportfile, append = TRUE)
+    }
+  }
+}
+
+
+```
 # Trim-and-fill 
 Corrects for selective reporting on the basis of effect size (fewer small effects; Duval & Tweedie, 2000a, 2000b)
 ```{r}
@@ -305,6 +330,6 @@ ggplot(counts) +
       #     mutate(coded_variable = 1,
       #             lab = paste("N =", total))
 ```
-# Meta-analytic powerg
+# Meta-analytic power
 # Individual meta-analysis power
 # Published vs. unpublished ES's
