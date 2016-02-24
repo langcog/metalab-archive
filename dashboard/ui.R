@@ -93,35 +93,31 @@ tab_power <- tabItem(
     column(
       width = 6,
       box(width = NULL, status = "danger",
+          h2("Experiment planning"),
           sliderInput("d", p("Effect size (Cohen's d)"),
                       min = 0, max = 2.5, value = .5, step = .1),
-          sliderInput("N", p("Number of infants per group (N)"),
-                      min = 4, max = 120, value = 16, step = 2))),
+          plotOutput("power"), 
+          br(),
+          p("Plot shows statistical power to detect a difference between
+            conditions at p < .05 with the selected effect size, plotted by
+            conditions. Red dot shows power with currently selected N. Dashed
+            lines show 80% power and necessary sample size."))),
     column(
       width = 6,
       box(width = NULL, status = "danger",
+          h2("Experiment simulation"),
+          sliderInput("N", p("Number of infants per group (N)"),
+                      min = 4, max = 120, value = 16, step = 2),
           radioButtons("control", p("Conditions"),
-                       choices = list(
-                         "Experimental only" = FALSE,
-                         "Experimental + negative control" = TRUE)),
+                       choices = list("Experimental only" = FALSE,
+                                      "Experimental + negative control" = TRUE)),
           radioButtons("interval", p("Type of error bars"),
                        choices = list("Standard error of the mean" = "sem",
                                       "95% confidence interval" = "ci"),
                        selected = "ci"),
-          actionButton("go", label = "Sample Again")))),
-  fluidRow(
-    column(
-      width = 6,
-      box(width = NULL, status = "danger", plotOutput("bar")),
-      box(width = NULL, status = "danger", textOutput("stat"))),
-    column(
-      width = 6,
-      box(width = NULL, status = "danger",
-          plotOutput("power"), br(),
-          p("Plot shows statistical power to detect a difference between
-            conditions at p < .05 with the selected effect size, plotted by
-            conditions. Red dot shows power with currently selected N. Dashed
-            lines show 80% power and necessary sample size.")
+          actionButton("go", label = "Sample Again"),
+          plotOutput("bar"),
+          textOutput("stat")
       )
     )
   )
@@ -131,8 +127,8 @@ tab_power <- tabItem(
 # REPORTS
 
 tabs <- map(1:nrow(reports),
-               ~tabPanel(reports[.x,]$title, includeRmd(reports[.x,]$src),
-                         class = "tab-pane-spaced"))
+            ~tabPanel(reports[.x,]$title, includeRmd(reports[.x,]$src),
+                      class = "tab-pane-spaced"))
 
 tab_reports <- tabItem(
   tabName = "reports",
