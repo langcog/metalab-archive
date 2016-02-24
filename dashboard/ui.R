@@ -26,7 +26,7 @@ tab_overview <- tabItem(
     div(class = "text-center",
         fluidRow(column(
           width = 12,
-          h1("MetaLab"),
+          h1("MetaLab", class = "jumbo"),
           p(class = "lead", "A tool for power analysis and experimental",
             br(), "planning in language acquisition research")
         )
@@ -92,17 +92,17 @@ tab_power <- tabItem(
   fluidRow(
     column(
       width = 6,
-      box(width = NULL, status = "danger",
-          h2("Experiment planning"),
-          selectInput("dataset_name_pwr", label = "Get effect size from meta-analysis",
+      box(width = NULL, status = "danger", solidHeader = TRUE,
+          title = "Experiment planning",
+          selectInput("dataset_name_pwr", "Get effect size from meta-analysis",
                       choices = datasets$name),
-#           selectInput("standard_pwr", label = "Or use a standard effect size",
-#                       selected = NA,
-#                       choices = list("Small (.2)"=.2, "Medium (.5)"=.5, "Large (.8)"=.8)),
+          #           selectInput("standard_pwr", "Or use a standard effect size",
+          #                       selected = NA,
+          #                       choices = list("Small (.2)"=.2, "Medium (.5)"=.5, "Large (.8)"=.8)),
           # uiOutput("moderator_input_pwr"),
-          uiOutput("es_slider"), 
-          h3("Power by number of participants"),
-          plotOutput("power"), 
+          uiOutput("es_slider"),
+          strong("Power by number of participants"),
+          plotOutput("power"),
           br(),
           p("Statistical power to detect a difference between
             conditions at p < .05 with the selected effect size, plotted by
@@ -110,22 +110,27 @@ tab_power <- tabItem(
             lines show 80% power and necessary sample size."))),
     column(
       width = 6,
-      box(width = NULL, status = "danger",
-          h2("Experiment simulation"),
-          sliderInput("N", p("Number of infants per group (N)"),
+      box(width = NULL, status = "danger", solidHeader = TRUE,
+          title = "Experiment simulation",
+          sliderInput("N", "Number of infants per group (N)",
                       min = 4, max = 120, value = 16, step = 2),
-          radioButtons("control", p("Conditions"),
-                       choices = list("Experimental only" = FALSE,
-                                      "Experimental + negative control" = TRUE)),
-          radioButtons("interval", p("Type of error bars"),
-                       choices = list("Standard error of the mean" = "sem",
-                                      "95% confidence interval" = "ci"),
-                       selected = "ci"),
+          fluidRow(
+            column(width = 6,
+                   radioButtons("control", "Conditions",
+                                choices = list("Experimental only" = FALSE,
+                                               "Experimental & control" = TRUE))),
+            column(width = 6,
+                   radioButtons("interval", "Type of error bars",
+                                choices = list("Standard error of the mean" = "sem",
+                                               "95% confidence interval" = "ci"),
+                                selected = "ci"))
+          ),
           actionButton("go", label = "Sample Again"),
-          h3("Simulated data"),
+          hr(),
+          strong("Simulated data"),
           plotOutput("bar"),
           br(),
-          h3("Simulated statistical tests"),
+          strong("Simulated statistical tests"),
           textOutput("stat")
       )
     )
