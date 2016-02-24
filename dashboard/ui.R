@@ -94,13 +94,19 @@ tab_power <- tabItem(
       width = 6,
       box(width = NULL, status = "danger",
           h2("Experiment planning"),
-          sliderInput("d", p("Effect size (Cohen's d)"),
-                      min = 0, max = 2.5, value = .5, step = .1),
+          selectInput("dataset_name_pwr", label = "Get effect size from meta-analysis",
+                      choices = datasets$name),
+#           selectInput("standard_pwr", label = "Or use a standard effect size",
+#                       selected = NA,
+#                       choices = list("Small (.2)"=.2, "Medium (.5)"=.5, "Large (.8)"=.8)),
+          # uiOutput("moderator_input_pwr"),
+          uiOutput("es_slider"), 
+          h3("Power by number of participants"),
           plotOutput("power"), 
           br(),
-          p("Plot shows statistical power to detect a difference between
+          p("Statistical power to detect a difference between
             conditions at p < .05 with the selected effect size, plotted by
-            conditions. Red dot shows power with currently selected N. Dashed
+            conditions. Red dot shows power with currently selected N from simulation. Dashed
             lines show 80% power and necessary sample size."))),
     column(
       width = 6,
@@ -116,7 +122,10 @@ tab_power <- tabItem(
                                       "95% confidence interval" = "ci"),
                        selected = "ci"),
           actionButton("go", label = "Sample Again"),
+          h3("Simulated data"),
           plotOutput("bar"),
+          br(),
+          h3("Simulated statistical tests"),
           textOutput("stat")
       )
     )
