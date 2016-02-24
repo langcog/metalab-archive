@@ -1,10 +1,14 @@
 [
   {
-    "title": "Very Interesting Report",
-    "src": "reports/interesting.Rmd"
+    "title": "Effect size estimation",
+    "src": "reports/es_estimation.Rmd"
   },
   {
-    "title": "Groundbreaking New Report",
-    "src": "reports/new.Rmd"
+    "title": "Developmental curves",
+    "src": "reports/developmental_curves.Rmd"
+  },
+  {
+    "title": "Reproducibility analyses",
+    "src": "reports/reproducibility.Rmd"
   }
 ]
