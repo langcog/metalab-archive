@@ -1,9 +1,5 @@
 [
   {
-    "title": "Effect size estimation",
-    "src": "reports/es_estimation.Rmd"
-  },
-  {
     "title": "Developmental curves",
     "src": "reports/developmental_curves.Rmd"
   },
