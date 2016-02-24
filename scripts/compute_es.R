@@ -26,15 +26,15 @@ compute_es <- function(participant_design, x_1 = NA, x_2 = NA, x_dif = NA,
   d_var_calc <- NA
 
   if (participant_design == "between") {
-    if (complete(n_1, n_2)) {
-      if (complete(x_1, x_2, SD_1, SD_2)) {
-        pooled_SD <- sqrt(((n_1 - 1) * SD_1 ^ 2 + (n_2 - 1) * SD_2 ^ 2) / (n_1 + n_2 - 2))
-        d_calc <- (x_1 - x_2) / pooled_SD
-      } else if (complete(t)) {
-        d_calc <- t * sqrt((n_1 + n_2) / (n_1 * n_2))
-      } else if (complete(f)) {
-        d_calc <- sqrt(f * (n_1 + n_2) / (n_1 * n_2))
-      }
+    if (complete(x_1, x_2, SD_1, SD_2)) {
+      pooled_SD <- sqrt(((n_1 - 1) * SD_1 ^ 2 + (n_2 - 1) * SD_2 ^ 2) / (n_1 + n_2 - 2))
+      d_calc <- (x_1 - x_2) / pooled_SD
+    } else if (complete(t)) {
+      d_calc <- t * sqrt((n_1 + n_2) / (n_1 * n_2))
+    } else if (complete(f)) {
+      d_calc <- sqrt(f * (n_1 + n_2) / (n_1 * n_2))
+    }
+    if (complete(n_1, n_2, d_calc)) {
       d_var_calc <- ((n_1 + n_2) / (n_1 * n_2)) + (d_calc ^ 2 / 2 * (n_1 + n_2))
     } else if (complete(r)) {
       d_calc <- 2 * r / sqrt(1 - r ^ 2)
@@ -48,26 +48,26 @@ compute_es <- function(participant_design, x_1 = NA, x_2 = NA, x_dif = NA,
     if (is.na(corr)) {
       corr <- corr_imputed
     }
-    if (complete(n_1)) {
-      if (complete(x_1, x_2, SD_1, SD_2)) {
-        pooled_SD <- sqrt((SD_1 ^ 2 + SD_2 ^ 2) / 2)
-        d_calc <- (x_1 - x_2) / pooled_SD
-      } else if (complete(x_1, x_2, SD_dif)) {
-        within_SD <- SD_dif / sqrt(2 * (1 - corr))
-        d_calc <- (x_1 - x_2) / within_SD
-      } else if (complete(x_dif, SD_1, SD_2)) {
-        pooled_SD <- sqrt((SD_1 ^ 2 + SD_2 ^ 2) / 2)
-        d_calc <- x_dif / pooled_SD
-      } else if (complete(x_dif, SD_dif)) {
-        wc <- sqrt(2 * (1 - corr))
-        d_calc <- (x_dif / SD_dif) * wc
-      } else if (complete(t)) {
-        wc <- sqrt(2 * (1 - corr))
-        d_calc <- (t / sqrt(n_1)) * wc
-      } else if (complete(f)) {
-        wc <- sqrt(2 * (1 - corr))
-        d_calc <- sqrt(f / n_1) * wc
-      }
+    if (complete(x_1, x_2, SD_1, SD_2)) {
+      pooled_SD <- sqrt((SD_1 ^ 2 + SD_2 ^ 2) / 2)
+      d_calc <- (x_1 - x_2) / pooled_SD
+    } else if (complete(x_1, x_2, SD_dif)) {
+      within_SD <- SD_dif / sqrt(2 * (1 - corr))
+      d_calc <- (x_1 - x_2) / within_SD
+    } else if (complete(x_dif, SD_1, SD_2)) {
+      pooled_SD <- sqrt((SD_1 ^ 2 + SD_2 ^ 2) / 2)
+      d_calc <- x_dif / pooled_SD
+    } else if (complete(x_dif, SD_dif)) {
+      wc <- sqrt(2 * (1 - corr))
+      d_calc <- (x_dif / SD_dif) * wc
+    } else if (complete(t)) {
+      wc <- sqrt(2 * (1 - corr))
+      d_calc <- (t / sqrt(n_1)) * wc
+    } else if (complete(f)) {
+      wc <- sqrt(2 * (1 - corr))
+      d_calc <- sqrt(f / n_1) * wc
+    }
+    if (complete(n_1, d_calc)) {
       d_var_calc <- ((1 / n_1) + (d_calc ^ 2 / (2 * n_1))) * 2 * (1 - corr)
     } else  if (complete(r)) {
       d_calc <- 2 * r / sqrt(1 - r ^ 2)
@@ -78,14 +78,14 @@ compute_es <- function(participant_design, x_1 = NA, x_2 = NA, x_dif = NA,
     }
 
   } else if (participant_design == "within_one") {
-    if (complete(n_1)) {
-      if (complete(x_1, x_2, SD_1)) {
-        d_calc <- (x_1 - x_2) / SD_1
-      } else if (complete(t)) {
-        d_calc <- t / sqrt(n_1)
-      } else if (complete(f)) {
-        d_calc <- sqrt(f / n_1)
-      }
+    if (complete(x_1, x_2, SD_1)) {
+      d_calc <- (x_1 - x_2) / SD_1
+    } else if (complete(t)) {
+      d_calc <- t / sqrt(n_1)
+    } else if (complete(f)) {
+      d_calc <- sqrt(f / n_1)
+    }
+    if (complete(n_1, d_calc)) {
       d_var_calc <- (1 / n_1) + (d_calc ^ 2 / (2 * n_1)) #TODO: x2 factor
     } else if (complete(r)) {
       d_calc <- 2 * r / sqrt(1 - r ^ 2)

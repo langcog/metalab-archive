@@ -118,7 +118,8 @@ tidy_dataset <- function(dataset_meta, dataset_contents) {
     map_df(~bind_cols(
       .x, compute_es(.x$participant_design, .x$x_1, .x$x_2, .x$x_dif, .x$SD_1,
                      .x$SD_2, .x$SD_dif, .x$n_1, .x$n_2, .x$t, .x$F, .x$d,
-                     .x$d_var, .x$corr, .x$corr_imputed, .x$r)))
+                     .x$d_var, .x$corr, .x$corr_imputed, .x$r))) %>%
+    select(-num)
 
   # Add any other derived values
   method_options <- keep(fields, ~.x$field == "method")[[1]]$options
