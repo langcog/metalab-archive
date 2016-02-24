@@ -10,3 +10,9 @@ h1 {
   font-family: "Ubuntu";
   font-size: 400%;
 }
+
+.tab-pane-spaced {
+  background: #fff;
+  margin-left: 1px;
+  padding: 10px 20px;
+}

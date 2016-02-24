@@ -1,5 +1,4 @@
 library(shinydashboard)
-options(shiny.trace=TRUE)
 
 header <- dashboardHeader(title = "MetaLab")
 
@@ -131,8 +130,13 @@ tab_power <- tabItem(
 #############################################################################
 # REPORTS
 
+tabs <- map(1:nrow(reports),
+               ~tabPanel(reports[.x,]$title, includeRmd(reports[.x,]$src),
+                         class = "tab-pane-spaced"))
+
 tab_reports <- tabItem(
-  tabName = "reports"
+  tabName = "reports",
+  do.call(tabsetPanel, tabs)
 )
 
 #############################################################################

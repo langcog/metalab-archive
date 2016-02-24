@@ -5,8 +5,9 @@ library(lazyeval)
 library(purrr)
 
 fields <- yaml.load_file("../spec.yaml")
+reports <- fromJSON("reports.json")
 
-includeRmd <- function(path, shiny_data) {
+includeRmd <- function(path, shiny_data = NULL) {
   shiny:::dependsOnFile(path)
   contents <- paste(readLines(path, warn = FALSE), collapse = "\n")
   html <- knitr::knit2html(text = contents, fragment.only = TRUE)
@@ -16,7 +17,7 @@ includeRmd <- function(path, shiny_data) {
 
 cached_data <- list.files("../data/") %>% map(~paste0("data/", .x)) %>% unlist()
 
-datasets <- fromJSON(txt = "../datasets.json") %>%
+datasets <- fromJSON("../datasets.json") %>%
   filter(filename %in% cached_data)
 
 load_dataset <- function(filename) {
