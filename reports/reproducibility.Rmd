@@ -104,24 +104,7 @@ for (i in 2:length(datasets)) {
 
 ```
 
-```{r Printp-curvedata }
-# Just something to paste into p-curve for now.
-for (i in 2:length(datasets)) {
-  my_data = pcurve.data[pcurve.data$dataset ==  datasets[i],]
-  Reportfile = paste(datasets[i], "_p-curvedata.txt", sep = "")
-  file.create(Reportfile)
-  for (record in 1:length(my_data$dataset)){
-    if (!is.na(my_data$t[record])){
-      write(paste("t(",as.character(my_data$df[record]),")=",as.character(my_data$t[record]), sep =""), file = Reportfile, append = TRUE)
-    }
-    else if (!is.na(my_data$F[record])){
-      write(paste("F(1,",as.character(my_data$df[record]),")=",as.character(my_data$F[record]), sep =""), file = Reportfile, append = TRUE)
-    }
-  }
-}
 
-
-```
 # Trim-and-fill 
 Corrects for selective reporting on the basis of effect size (fewer small effects; Duval & Tweedie, 2000a, 2000b)
 ```{r}
