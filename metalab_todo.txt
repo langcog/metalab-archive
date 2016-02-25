@@ -1,6 +1,4 @@
-- idspref lost bunch of studies
 - inphondb has huge SEs for some studies (special cases?)
-- age scatterplot -> lm
 - labadv weird curve in funnel plot
 - forest plot
   - sort order? toggle?
@@ -8,4 +6,8 @@
 - plot headings, brief descriptions
 
 
-report rendering structure
+longitudinal (pointing, invarinf):
+  - no age moderator
+  - different age scatterplot
+
+non-ES things: same plot, just label something other than "Effect Size"

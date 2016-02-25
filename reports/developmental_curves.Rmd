@@ -6,32 +6,33 @@ output:
   html_document:
     toc: true
     number_sections: true
+    highlight: tango
+    theme: united
 ---
-  
-```{r, echo=FALSE, warning=FALSE, message=FALSE}
-# Preliminaries.
-rm(list=ls())
+
+```{r, include=FALSE}
+# Chunk options.
 library(knitr)
+opts_chunk$set(fig.width = 8, fig.height = 5, 
+               echo = TRUE, warning = FALSE, message = FALSE, cache = TRUE)
+```
+
+```{r, echo=FALSE, cache=FALSE}
 library(ggplot2)
 library(broom)
 library(dplyr)
 library(tidyr)
 library(lme4)
 library(metafor)
-theme_set(theme_bw())
+library(langcog)
+theme_set(theme_mikabr(base_family = "Ubuntu"))
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-# Chunk options.
-opts_chunk$set(fig.width=8, fig.height=5, 
-                      echo=TRUE, warning=FALSE, message=FALSE, cache=TRUE)
-```
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, include=FALSE}
 # Source all data. 
-setwd("../dashboard")
+setwd("../dashboard/")
 source("global.R")
-setwd("../analyses")
+setwd("../reports/")
 ```
 
 ```{r}

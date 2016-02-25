@@ -54,7 +54,7 @@ tab_overview <- tabItem(
 
 tab_documentation <- tabItem(
   tabName = "documentation",
-  includeRmd("../overview.Rmd", list("datasets" = datasets))
+  includeRmd("overview.Rmd", list("datasets" = datasets))
 )
 
 #############################################################################

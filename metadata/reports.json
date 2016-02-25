@@ -1,10 +1,10 @@
 [
   {
     "title": "Developmental curves",
-    "src": "reports/developmental_curves.Rmd"
+    "src": "../reports/developmental_curves.Rmd"
   },
   {
     "title": "Reproducibility analyses",
-    "src": "reports/reproducibility.Rmd"
+    "src": "../reports/reproducibility.Rmd"
   }
 ]

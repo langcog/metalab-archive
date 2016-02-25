@@ -10,22 +10,28 @@ output:
   
 # Introduction
 
-```{r}
-rm(list=ls())
+```{r, include=FALSE}
+# Chunk options.
+library(knitr)
+opts_chunk$set(fig.width = 8, fig.height = 5, 
+               echo = TRUE, warning = FALSE, message = FALSE, cache = TRUE)
+```
+
+```{r, cache=FALSE}
 library(knitr)
 library(metafor)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(stringr)
-opts_chunk$set(fig.width=8, fig.height=5, 
-               echo=TRUE, warning=FALSE,
-               message=FALSE, cache=TRUE)
+library(langcog)
+theme_set(theme_mikabr(base_family = "Ubuntu"))
 ```
 
-```{r}
-setwd("../")
-source('global.R')
+```{r, include=FALSE}
+setwd("../dashboard/")
+source("global.R")
+setwd("../reports/")
 ```
 
 # p-curve 
