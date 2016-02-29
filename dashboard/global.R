@@ -9,7 +9,7 @@ reports <- fromJSON("../metadata/reports.json")
 
 includeRmd <- function(path, shiny_data = NULL) {
   shiny:::dependsOnFile(path)
-  contents <- paste(readLines(path, warn = FALSE), collapse = "\n")
+  contents <- readLines(path, warn = FALSE)
   html <- knitr::knit2html(text = contents, fragment.only = TRUE)
   Encoding(html) <- "UTF-8"
   return(HTML(html))
