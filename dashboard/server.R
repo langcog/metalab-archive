@@ -36,6 +36,7 @@ shinyServer(function(input, output, session) {
   #############################################################################
   # MODELS AND REACTIVES
 
+  ########### DATA ###########
   data <- reactive({
     filter(all_data, dataset == input$dataset_name)
   })
@@ -231,6 +232,8 @@ shinyServer(function(input, output, session) {
   #############################################################################
   # POWER ANALYSIS
 
+  #input <- list(control = FALSE, N = 16)
+
   conds <- reactive({
     if (input$control) {
       groups <- factor(c("Experimental","Control",
@@ -244,8 +247,30 @@ shinyServer(function(input, output, session) {
       group_by(group, condition)
   })
 
-  ########### GENERATE DATA #############
+  ########### DATA ###########
   pwrdata <- reactive({
+    filter(all_data, dataset == input$dataset_name_pwr)
+  })
+
+  ########### PWR MODEL ###########
+  pwrmodel <- reactive({
+    rma(d_calc, vi = d_var_calc, slab = as.character(unique_ID),
+        data = pwrdata(), method = "REML")
+  })
+
+  ########### GET ES #############
+  output$es_slider <- renderUI({
+
+    es_slider_val <- pwrmodel()$b[,1][["intrcpt"]]
+    print(es_slider_val)
+
+    sliderInput("d", "Effect size (Cohen's d)",
+                min = 0, max = 2, step = .1,
+                value = es_slider_val)
+  })
+
+  ########### GENERATE DATA #############
+  pwr_sim_data <- reactive({
     if (input$go | !input$go) {
       conds() %>%
         do(data.frame(
@@ -266,7 +291,7 @@ shinyServer(function(input, output, session) {
 
   ########### MEANS FOR PLOTTING #############
   ms <- reactive({
-    pwrdata() %>%
+    pwr_sim_data() %>%
       group_by(group, condition) %>%
       summarise(mean = mean(looking.time),
                 ci = ci95.t(looking.time),
@@ -276,6 +301,8 @@ shinyServer(function(input, output, session) {
 
   ########### BAR GRAPH #############
   output$bar <- renderPlot({
+    req(input$d)
+
     pos <- position_dodge(width = .25)
     ggplot(ms(), aes(x = group, y = mean, fill = condition,
                      colour = condition)) +
@@ -327,17 +354,12 @@ shinyServer(function(input, output, session) {
 
   ########### STATISTICAL TEST OUTPUTS #############
   output$stat <- renderText({
-    p.e <- t.test(
-      pwrdata() %>%
-        filter(condition == "Longer looking predicted",
-               group == "Experimental") %>%
-        select(looking.time),
-      pwrdata() %>%
-        filter(condition == "Shorter looking predicted",
-               group == "Experimental") %>%
-        select(looking.time),
-      paired = TRUE
-    )$p.value
+
+    longer_exp <- filter(pwr_sim_data(), condition == "Longer looking predicted",
+                         group == "Experimental")$looking.time
+    shorter_exp <- filter(pwr_sim_data(), condition == "Shorter looking predicted",
+                          group == "Experimental")$looking.time
+    p.e <- t.test(longer_exp, shorter_exp, paired = TRUE)$p.value
 
     stat.text <- paste("A t.test of the experimental condition is ",
                        ifelse(p.e > .05, "non", ""),
@@ -347,19 +369,14 @@ shinyServer(function(input, output, session) {
                        sep = "")
 
     if (input$control) {
-      p.c <- t.test(
-        pwrdata() %>%
-          filter(condition == "Longer looking predicted",
-                 group == "Control") %>%
-          select(looking.time),
-        pwrdata() %>%
-          filter(condition == "Shorter looking predicted",
-                 group == "Control") %>%
-          select(looking.time),
-        paired = TRUE
-      )$p.value
 
-      a <- anova(lm(looking.time ~ group * condition, data = pwrdata()))
+      longer_ctl <- filter(pwr_sim_data(), condition == "Longer looking predicted",
+                           group == "Control")$looking.time
+      shorter_ctl <- filter(pwr_sim_data(), condition == "Shorter looking predicted",
+                            group == "Control")$looking.time
+      p.c <- t.test(longer_ctl, shorter_ctl, paired = TRUE)$p.value
+
+      a <- anova(lm(looking.time ~ group * condition, data = pwr_sim_data()))
 
       return(paste(stat.text,
                    "A t.test of the control condition is ",
@@ -380,38 +397,37 @@ shinyServer(function(input, output, session) {
 
   ########### POWER COMPUTATIONS #############
   output$power <- renderPlot({
+    req(input$d)
+
     if (input$control) {
       ns <- seq(5, 120, 5)
       pwrs <- data.frame(ns = ns,
                          Experimental = pwr.p.test(h = input$d,
                                                    n = ns,
                                                    sig.level = .05)$power,
-                         Control = pwr.p.test(h = 0,
-                                              n = ns,
-                                              sig.level = .05)$power,
                          Interaction = pwr.2p.test(h = input$d,
                                                    n = ns,
                                                    sig.level = .05)$power) %>%
-        gather(condition, ps, Experimental, Interaction, Control)
+        gather(condition, ps, Experimental, Interaction)
 
 
-      this.pwr <- data.frame(ns = rep(input$N, 3),
+      this.pwr <- data.frame(ns = rep(input$N, 2),
                              ps = c(pwr.p.test(h = input$d,
-                                               n = input$N,
-                                               sig.level = .05)$power,
-                                    pwr.p.test(h = 0,
                                                n = input$N,
                                                sig.level = .05)$power,
                                     pwr.2p.test(h = input$d,
                                                 n = input$N,
                                                 sig.level = .05)$power),
-                             condition = c("Experimental", "Interaction",
-                                           "Control"))
+                             condition = c("Experimental", "Interaction"))
       qplot(ns, ps, col = condition,
             geom = c("point","line"),
             data = pwrs) +
         geom_point(data = this.pwr,
                    col = "red", size = 6) +
+        geom_label(data = this.pwr,
+                   label = "simulation",
+                   nudge_x = 10,
+                   col = "red") +
         geom_hline(yintercept = .8, lty = 2) +
         geom_vline(xintercept = pwr.p.test(h = input$d,
                                            sig.level = .05,
@@ -441,6 +457,10 @@ shinyServer(function(input, output, session) {
             data = pwrs) +
         geom_point(data = this.pwr,
                    col = "red", size = 6) +
+        geom_label(data = this.pwr,
+                   label = "simulation",
+                   nudge_x = 10,
+                   col = "red") +
         geom_hline(yintercept = .8, lty = 2) +
         geom_vline(xintercept = pwr.p.test(h = input$d,
                                            sig.level = .05,

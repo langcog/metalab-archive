@@ -26,7 +26,7 @@ tab_overview <- tabItem(
     div(class = "text-center",
         fluidRow(column(
           width = 12,
-          h1("MetaLab"),
+          h1("MetaLab", class = "jumbo"),
           p(class = "lead", "A tool for power analysis and experimental",
             br(), "planning in language acquisition research")
         )
@@ -54,7 +54,7 @@ tab_overview <- tabItem(
 
 tab_documentation <- tabItem(
   tabName = "documentation",
-  includeRmd("../overview.Rmd", list("datasets" = datasets))
+  includeRmd("overview.Rmd", list("datasets" = datasets))
 )
 
 #############################################################################
@@ -92,36 +92,46 @@ tab_power <- tabItem(
   fluidRow(
     column(
       width = 6,
-      box(width = NULL, status = "danger",
-          sliderInput("d", p("Effect size (Cohen's d)"),
-                      min = 0, max = 2.5, value = .5, step = .1),
-          sliderInput("N", p("Number of infants per group (N)"),
-                      min = 4, max = 120, value = 16, step = 2))),
-    column(
-      width = 6,
-      box(width = NULL, status = "danger",
-          radioButtons("control", p("Conditions"),
-                       choices = list(
-                         "Experimental only" = FALSE,
-                         "Experimental + negative control" = TRUE)),
-          radioButtons("interval", p("Type of error bars"),
-                       choices = list("Standard error of the mean" = "sem",
-                                      "95% confidence interval" = "ci"),
-                       selected = "ci"),
-          actionButton("go", label = "Sample Again")))),
-  fluidRow(
-    column(
-      width = 6,
-      box(width = NULL, status = "danger", plotOutput("bar")),
-      box(width = NULL, status = "danger", textOutput("stat"))),
-    column(
-      width = 6,
-      box(width = NULL, status = "danger",
-          plotOutput("power"), br(),
-          p("Plot shows statistical power to detect a difference between
+      box(width = NULL, status = "danger", solidHeader = TRUE,
+          title = "Experiment planning",
+          selectInput("dataset_name_pwr", "Get effect size from meta-analysis",
+                      choices = datasets$name),
+          #           selectInput("standard_pwr", "Or use a standard effect size",
+          #                       selected = NA,
+          #                       choices = list("Small (.2)"=.2, "Medium (.5)"=.5, "Large (.8)"=.8)),
+          # uiOutput("moderator_input_pwr"),
+          uiOutput("es_slider"),
+          strong("Power by number of participants"),
+          plotOutput("power"),
+          br(),
+          p("Statistical power to detect a difference between
             conditions at p < .05 with the selected effect size, plotted by
-            conditions. Red dot shows power with currently selected N. Dashed
-            lines show 80% power and necessary sample size.")
+            conditions. Red dot shows power with currently selected N from simulation. Dashed
+            lines show 80% power and necessary sample size."))),
+    column(
+      width = 6,
+      box(width = NULL, status = "danger", solidHeader = TRUE,
+          title = "Experiment simulation",
+          sliderInput("N", "Number of infants per group (N)",
+                      min = 4, max = 120, value = 16, step = 2),
+          fluidRow(
+            column(width = 6,
+                   radioButtons("control", "Conditions",
+                                choices = list("Experimental only" = FALSE,
+                                               "Experimental & control" = TRUE))),
+            column(width = 6,
+                   radioButtons("interval", "Type of error bars",
+                                choices = list("Standard error of the mean" = "sem",
+                                               "95% confidence interval" = "ci"),
+                                selected = "ci"))
+          ),
+          actionButton("go", label = "Sample Again"),
+          hr(),
+          strong("Simulated data"),
+          plotOutput("bar"),
+          br(),
+          strong("Simulated statistical tests"),
+          textOutput("stat")
       )
     )
   )
@@ -131,8 +141,8 @@ tab_power <- tabItem(
 # REPORTS
 
 tabs <- map(1:nrow(reports),
-               ~tabPanel(reports[.x,]$title, includeRmd(reports[.x,]$src),
-                         class = "tab-pane-spaced"))
+            ~tabPanel(reports[.x,]$title, includeRmd(reports[.x,]$src),
+                      class = "tab-pane-spaced"))
 
 tab_reports <- tabItem(
   tabName = "reports",

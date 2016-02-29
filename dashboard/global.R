@@ -4,12 +4,12 @@ library(yaml)
 library(lazyeval)
 library(purrr)
 
-fields <- yaml.load_file("../spec.yaml")
-reports <- fromJSON("reports.json")
+fields <- yaml.load_file("../metadata/spec.yaml")
+reports <- fromJSON("../metadata/reports.json")
 
 includeRmd <- function(path, shiny_data = NULL) {
   shiny:::dependsOnFile(path)
-  contents <- paste(readLines(path, warn = FALSE), collapse = "\n")
+  contents <- readLines(path, warn = FALSE)
   html <- knitr::knit2html(text = contents, fragment.only = TRUE)
   Encoding(html) <- "UTF-8"
   return(HTML(html))
@@ -17,7 +17,7 @@ includeRmd <- function(path, shiny_data = NULL) {
 
 cached_data <- list.files("../data/") %>% map(~paste0("data/", .x)) %>% unlist()
 
-datasets <- fromJSON("../datasets.json") %>%
+datasets <- fromJSON("../metadata/datasets.json") %>%
   filter(filename %in% cached_data)
 
 load_dataset <- function(filename) {

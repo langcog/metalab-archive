@@ -13,7 +13,7 @@
 		"last_update": "2015-12-14",
 		"link_fields": "https://drive.google.com/file/d/0B_tr1H-CJ3AIb1VpeUtqalhxNkU/view",
 		"description": "Discrimination of vowels, including results from behavioral, electrophysiological, and neuroimaging methods applied to infants 0-14 months of age.",
-		"src": "images/dinosaur.png"
+		"src": "images/discrim.png"
 	},
 	{
 		"name": "Phonemic discrimination (non-native)",
@@ -29,7 +29,7 @@
 		"last_update": "2015-12-14",
 		"link_fields": "https://drive.google.com/file/d/0B_tr1H-CJ3AIb1VpeUtqalhxNkU/view",
 		"description": "Discrimination of vowels, including results from behavioral, electrophysiological, and neuroimaging methods applied to infants 0-14 months of age.",
-		"src": "images/dinosaur.png"
+		"src": "images/discrim.png"
 	},
 	{
 		"name": "Word segmentation",
@@ -45,7 +45,7 @@
 		"last_update": "2015-12-14",
 		"link_fields": "https://sites.google.com/site/inworddb/db/files/InWordDB%20FieldNames.pdf?attredirects=0&d=1",
 		"description": "Recognition of familiarized words from running, natural speech using behavioral methods applied to infants 0-20 months of age.",
-		"src": "images/dinosaur.png"
+		"src": "images/segmentation.png"
 	},
 	{
 		"name": "Infant directed speech preference",
@@ -61,7 +61,7 @@
 		"last_update": "2012-01-01",
 		"link_fields": "http://earlyliteracylearning.org/cellreviews/cellreviews_v5_n1.pdf",
 		"description": "Looking times as a function of whether infant-directed vs. adult-directed speech is presented as stimulation, in infants aged 0-XX months.",
-		"src": "images/dinosaur.png"
+		"src": "images/ids.png"
 	},
 	{
 		"name": "Mutual exclusivity",

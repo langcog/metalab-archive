@@ -9,3 +9,5 @@ rsconnect/
 *_files/
 *_cache/
 .RData
+dashboard/figure/
+dashboard/cache/

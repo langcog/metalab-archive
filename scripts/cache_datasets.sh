@@ -5,9 +5,9 @@
 cd /home/ubuntu/metalab/
 git pull
 
-mkdir -p log
+mkdir -p scripts/log
 LOGDATE=$(date +%Y-%m-%dT%H:%M:%S)
-LOGFILE=log/cache_datasets_$LOGDATE
+LOGFILE=scripts/log/cache_datasets_$LOGDATE
 Rscript scripts/cache_datasets.R > $LOGFILE
 
 SLACKPOSTURL=https://hooks.slack.com/services/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
