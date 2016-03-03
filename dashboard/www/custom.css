@@ -16,3 +16,7 @@ body {
   margin-left: 1px;
   padding: 10px 20px;
 }
+
+.sidebar-toggle {
+  visibility: hidden;
+}
