@@ -70,16 +70,24 @@ tab_visualizations <- tabItem(
                       choices = datasets$name),
           uiOutput("moderator_input")
       ),
-      box(width = NULL, status = "danger", plotOutput("scatter")),
-      box(width = NULL, status = "danger", plotOutput("violin")),
-      box(width = NULL, status = "danger", plotOutput("funnel"))
+      box(width = NULL, status = "danger",
+          downloadButton("download_scatter", class = "btn-xs pull-right"),
+          br(), plotOutput("scatter")),
+      box(width = NULL, status = "danger",
+          downloadButton("download_violin", class = "btn-xs pull-right"),
+          br(), plotOutput("violin")),
+      box(width = NULL, status = "danger",
+          downloadButton("download_funnel", class = "btn-xs pull-right"),
+          br(), plotOutput("funnel"))
     ),
     column(
       width = 6,
       fluidRow(valueBoxOutput("studies_box"),
                valueBoxOutput("effect_size_box"),
                valueBoxOutput("effect_size_var_box")),
-      fluidRow(box(width = NULL, status = "danger", plotOutput("forest")))
+      fluidRow(box(width = NULL, status = "danger",
+                   downloadButton("download_forest", class = "btn-xs pull-right"),
+                   br(), plotOutput("forest", height = "auto")))
     )
   )
 )

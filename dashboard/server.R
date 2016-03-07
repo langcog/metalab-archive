@@ -107,7 +107,8 @@ shinyServer(function(input, output, session) {
   # PLOTS
 
   ########### SCATTER PLOT ###########
-  output$scatter <- renderPlot({
+
+  scatter <- function() {
     grp <- mod_group()
     if (is.null(grp)) grp <- "all_mod"
     labels <- if (is.null(mod_group())) NULL else
@@ -122,33 +123,30 @@ shinyServer(function(input, output, session) {
       scale_size_continuous(guide = FALSE) +
       xlab("\nMean Subject Age (Months)") +
       ylab("Effect Size\n")
-  }, height = function() {
-    session$clientData$output_scatter_width * 0.7
-  })
+  }
+
+  output$scatter <- renderPlot(scatter())
 
   ########### VIOLIN PLOT ###########
-  output$violin <- renderPlot({
+
+  violin <- function() {
     grp <- mod_group()
     if (is.null(grp)) grp <- "all_mod"
-    # x_label <- switch(
-    #   grp,
-    #   "all_mod" = "",
-    #   "response_mode" = "Response Mode",
-    #   "exposure_phase" = "Exposure Phase",
-    #   "response_mode_exposure_phase" = "Response Mode and Exposure Phase"
-    # )
     ggplot(data(), aes_string(x = grp, y = "d_calc", colour = grp)) +
-      geom_jitter(height = 0) +
       geom_violin() +
+      geom_jitter(height = 0) +
       geom_hline(yintercept = 0, linetype = "dotted", color = "grey") +
       scale_colour_solarized(name = "", guide = FALSE) +
       xlab("") +
       #xlab(paste0("\n", x_label)) +
       ylab("Effect Size\n")
-  })
+  }
+
+  output$violin <- renderPlot(violin())
 
   ########### FOREST PLOT ###########
-  output$forest <- renderPlot({
+
+  forest <- function() {
     f <- fitted(model())
     p <- predict(model())
     alpha <- .05
@@ -181,12 +179,13 @@ shinyServer(function(input, output, session) {
       scale_colour_manual(values = c("data" = "black", "model" = "red")) +
       xlab("") +
       ylab("Effect Size")
-  }, height = function() {
-    session$clientData$output_forest_width * 2
-  })
+  }
+
+  output$forest <- renderPlot(forest(), height = function() nrow(data()) * 10)
 
   ########### FUNNEL PLOT ###########
-  output$funnel <- renderPlot({
+
+  funnel <- function() {
     if (length(input$moderators) == 0) {
       d <- data.frame(se = sqrt(model()$vi), es = model()$yi)
       center <- mean(d$es)
@@ -223,11 +222,32 @@ shinyServer(function(input, output, session) {
       theme(panel.background = element_rect(fill = "grey"),
             panel.grid.major =  element_line(colour = "darkgrey", size = 0.2),
             panel.grid.minor =  element_line(colour = "darkgrey", size = 0.5))
+  }
+
+  output$funnel <- renderPlot(funnel())
 
 
-  }, height = function() {
-    session$clientData$output_funnel_width * 0.7
-  })
+  #############################################################################
+  # DOWNLOAD HANDLERS
+
+  plot_download_handler <- function(plot_name, plot_fun) {
+    downloadHandler(
+      filename = function() {
+        sprintf("%s [%s].png", input$dataset_name, plot_name)
+      },
+      content = function(file) {
+        cairo_pdf(file, width = 10, height = 7)
+        print(plot_fun())
+        dev.off()
+      }
+    )
+  }
+
+  output$download_scatter <- plot_download_handler("scatter", scatter)
+  output$download_violin <- plot_download_handler("violin", violin)
+  output$download_funnel <- plot_download_handler("funnel", funnel)
+  output$download_forest <- plot_download_handler("forest", forest)
+
 
   #############################################################################
   # POWER ANALYSIS
