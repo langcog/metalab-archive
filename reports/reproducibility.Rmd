@@ -1,239 +1,216 @@
 ---
-title: "Reproducibility analyses"
+title: "Metalab Reproducibility Analyses"
 author: "Molly Lewis and Christina Bergmann"
 date: "`r Sys.Date()`"
 output: 
   html_document:
-    theme: united
-    highlight: tango
     toc: true
     number_sections: true
-    code_folding: hide
 ---
   
-```{r, include=FALSE}
-knitr::opts_chunk$set(fig.width = 8, fig.height = 5, echo = TRUE,
-                      warning = FALSE, message = FALSE, cache = TRUE)
-ggplot2::theme_set(langcog::theme_mikabr(base_family = "Ubuntu"))
-source("../dashboard/global.R", chdir = TRUE)
-```
+# Introduction
+```{r, setup, include =FALSE}
+library(knitr)
+opts_chunk$set(fig.width=8, fig.height=5, 
+               echo=TRUE, warning=FALSE,
+               message=FALSE, cache=TRUE)
 
-```{r, echo=FALSE, cache=FALSE}
+rm(list=ls())
+library(knitr)
 library(metafor)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(stringr)
+library(purrr)
 library(langcog)
 ```
 
-# Introduction
-
-# p-curve 
-Corrects for selective reporting on the basis of significance (fewer insignificant results; Simonsohn, Nelson, & Simmons, 2014)
 ```{r}
-# calculate degrees of freedom based on Ns and design (within = n_1-1, between = n_1 + n_2 - 2
-pcurve.data = 
-  select(all_data, dataset, unique_ID, t, F, n_1, n_2, participant_design, d) %>%
-  filter(!is.na(t)|!is.na(F)) %>%
-  mutate(df = ifelse(participant_design == "between", n_1 + n_2-2, n_1-1))
-         
-#summary(pcurve.data$df)
-
-#pcurve.df %>% 
-#  filter(participant_design == "between") %>% 
-#  data.frame()
-
-# code from Simonsohn, Nelson, & Simmons (2014) appendix
-loss = function(t_obs,df_obs,d_est) { 
-  t_obs=abs(t_obs)
-  p_obs=2*(1-pt(t_obs,df=df_obs)) 
-  t.sig=subset(t_obs,p_obs<.05)
-  df.sig=subset(df_obs,p_obs<.05)
-  ncp_est=sqrt((df.sig+2)/4)*d_est 
-  tc=qt(.975,df.sig) 
-  power_est=1-pt(tc,df.sig,ncp_est)
-  p_larger=pt(t.sig,df=df.sig,ncp=ncp_est)
-  ppr=(p_larger-(1-power_est))/power_est 
-  KSD=ks.test(ppr,punif)$statistic 
-  return(KSD)
-}
-
-plotloss=function(t_obs,df_obs,dmin,dmax, titlestring) { 
-  loss.all=c()
-  di=c()
-  for (i in 0:((dmax-dmin)*100)) {
-    d = dmin + i/100
-    di = c(di,d)
-    options(warn = -1)
-    loss.all=c(loss.all,loss(df_obs=df_obs,t_obs=t_obs,d_est=d)) 
-    options(warn = 0)
-  }
-    
-  imin=match(min(loss.all),loss.all) 
-  dstart=dmin+imin/100
-  dhat=optimize(loss,c(dstart-.1, dstart+.1), df_obs=df_obs,t_obs=t_obs)
-
-  plot(di,
-       loss.all, xlab="Effect size\nCohen-d", 
-       ylab="Loss (D stat in KS test)",
-       ylim=c(0,1),
-       main=paste("Effect size fit ", titlestring, sep = "\n"))
-  points(dhat$minimum,dhat$objective,pch=19,col="red",cex=2) 
-  text(dhat$minimum,dhat$objective+.28,
-       paste0("p-curve’s estimate of effect size:\nd=",round(dhat$minimum,3)),col="red") 
-  return(dhat$minimum)
-} 
-
-plotloss(pcurve.data$t, pcurve.data$df, dmin=-2, dmax =2, "All data")
-
-datasets = unique(all_data$dataset)
-
-for (i in 2:length(datasets)) {
-  my_data = pcurve.data[pcurve.data$dataset ==  datasets[i],]
-  #print(length(my_data$t)) 
-  plotloss(my_data$t, my_data$df, dmin=-2, dmax =2, my_data$dataset[1])
-  print(my_data$dataset[1])
-  print(median(abs(my_data$d), na.rm=TRUE))
-}
-
+# load data
+setwd('../dashboard/')
+source('global.R')
 ```
 
+We currently have 6 datasets included: IDS, label advantage, mutual exclusivity, phonemic discrimination native, phonemic discrimination non-native, and word segmentation.
 
-# Trim-and-fill 
-Corrects for selective reporting on the basis of effect size (fewer small effects; Duval & Tweedie, 2000a, 2000b)
+# Sample sizes and exclusions
+
+## How do n's vary as a function of age?
 ```{r}
-### fit random-effects model and plot
-datasets = unique(all_data$dataset)
-
-for (i in 1:length(datasets)) {
-  my_data = all_data[all_data$dataset ==  datasets[i],]
-  res <- rma(d, d_var, data = my_data)
-  taf <- trimfill(res)
-  funnel(taf, main = my_data$dataset[1])
-}
-
-res <- rma(d, d_var, data = all_data)
-taf <- trimfill(res)
-funnel(taf, main = "all data")
+all = all_data %>%
+  mutate(n_total = ifelse(!is.na(n_2), n_1 + n_2, n_1)) %>%
+  select(dataset, d_calc, 
+         mean_age_1, n_total,
+         n_excluded, num_trials, method)
+ 
+ggplot(all, aes(x = mean_age_1, y = n_total, color = dataset)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  facet_wrap(~dataset, scales = "free") +
+  theme_bw() +
+  theme(legend.position="none")
 ```
 
-# Exclusions
+## Do n's vary with d's?
 
-Q1: Does the number of excluded infants affect effect sizes?
-
-
-```{r Exclusions_nExcluded, warning=FALSE, tidy=TRUE}
-datasets = unique(all_data$dataset)
-
-for (i in 1:length(datasets)) {
-  my_data = all_data[all_data$dataset ==  datasets[i],]
-  ggplot() + title()
-}
-
-res <- rma(d, d_var, data = all_data)
-taf <- trimfill(res)
-funnel(taf, main = "all data")
-
-```
-
-Q2: To correct for total number of infants tested, what about proportion excluded?
-
-
-
-
-
-# Publication Bias (years vs. effect sizes)
-
-# Lab-based moderators (first author, last author, diversity)
-Do effect sizes differ as a function of first author?
 ```{r}
+ns_ds = all_data %>%
+  mutate(n_total = ifelse(!is.na(n_2), n_1 + n_2, n_1)) %>%
+  select(dataset, d_calc, 
+         mean_age_1, n_total) 
 
-all_data$first_author = unlist(lapply(all_data$short_cite, 
-                                     function(x) unlist(strsplit(x, '[&,(]|et|and'))[1]))
-
-all_data$first_author= str_replace_all(all_data$first_author,"[[:punct:]]","") 
-all_data$first_author = as.factor(all_data$first_author)
-
-for (i in 1:length(datasets)) {
-  my_data = all_data[all_data$dataset ==  datasets[i],]
-  
-  freqs = my_data %>% 
-          group_by(first_author) %>%
-          summarise(count=n()) %>%
-          filter(count > 3) # filter so only look at authors with >x studies
-  
-  p = ggplot(freqs, aes(y = count, x = reorder(first_author, -count))) +
-    geom_bar(stat = "identity") +
-    theme_bw() +
-    theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-    xlab("First author") +
-    ggtitle(datasets[i])
-  
-  print(p)
-  
-  m = rma(d ~ first_author + mean_age, vi = d_var, slab = as.character(unique_ID),
-          data = my_data, method = "REML")
-  print(m)
-}
+ggplot(ns_ds , aes(y = n_total, x = d_calc, color = dataset)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  facet_wrap(~dataset, scales = "free") +
+  theme_bw() +
+  xlab("Effect size") + 
+  theme(legend.position="none")
 ```
 
-Do effect sizes differ as a function of last author?
-This needs some clean up.
-```{r}
-all_data$last_author = unlist(lapply(all_data$short_cite, 
-                                     function(x) unlist(strsplit(x, '[&(]|^|'))[2]))
+## Does the number of excluded infants affect effect sizes?
 
-all_data$last_author= str_replace_all(all_data$last_author,"[[:punct:]]","") 
-all_data$last_author = as.factor(all_data$last_author)
+Some issues:
 
-for (i in 1:length(datasets)) {
-  my_data = all_data[all_data$dataset ==  datasets[i],]
-  
-  freqs = my_data %>% 
-          group_by(last_author) %>%
-          summarise(count=n())
-
-  p = ggplot(freqs, aes(y = count, x = reorder(last_author, -count))) +
-    geom_bar(stat = "identity") +
-    theme_bw() +
-    theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-    xlab("Last author") +
-    ggtitle(datasets[i])
-  
-  print(p)
-  
-  m = rma(d ~ last_author + mean_age, vi = d_var, slab = as.character(unique_ID), 
-          data = my_data, method = "REML")
-  print(m)
-}
+* not here that different data sets use differently names columsn to indicate exclusions ("n_excluded", "n_excluded_1", "n_excluded_fussers")
+* an additional complicaiton: are the exlcusions part of the n?
+* we don't have num_trials for any, but this would be great to look at
+* what's up with the n_excluded > n?
+ 
+```{r, fig.width = 10}
+exclusions = all_data %>%
+  filter(!is.na(n_excluded_1) | !is.na(n_excluded)) %>%
+  mutate(n_excluded = ifelse(is.na(n_excluded), n_excluded_1,
+                             n_excluded),
+         n_total = ifelse(!is.na(n_2), n_1 + n_2, n_1)) %>%
+  select(dataset, d_calc, 
+         mean_age_1, n_total,
+         n_excluded, num_trials, method) %>%
+  mutate(prop_excluded = n_excluded/n_total) %>%
+  filter(prop_excluded < 1)
+ 
+ggplot(exclusions, aes(x = prop_excluded, y =d_calc ,
+                       color = dataset)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  ggtitle("prop. excluded as a function of age") +
+  xlab("proportion excluded") +
+  ylab("d") +
+  theme_bw() 
 ```
-This is kind of messy -- is there a cleaner analysis to do here?
 
-Would be nice to also do number of authors here. 
-* minimum threshold of papers
+## Does proportion excluded vary as a function of age? 
+
+Looks like maybe increases. 
+
+```{r Exclusions_nExcluded, fig.width = 10}
+
+ggplot(exclusions, aes(x = mean_age_1, y = prop_excluded,
+                       color = dataset)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  ggtitle("prop. excluded as a function of age") +
+  xlab("mean age (months)") +
+  ylab("proportion excluded") +
+  theme_bw() 
+```
+
+
+# Publication Bias
+## Do effect sizes vary as a function of year?
+```{r, fig.width = 10}
+years.df = all_data %>%
+  mutate(year = as.numeric(unlist(lapply(strsplit(unlist(all_data$unique_ID), "[^0-9]+"),  function(x) unlist(x)[2])))) 
+
+#years.sig = rep('', length(unique(years.df$dataset)))
+#for (i in 1:length(unique(years.df$dataset))) {
+#  my_data = all_data[all_data$dataset ==  datasets[i],]
+#  m = rma(d ~ year + mean_age_1, vi = d_var, slab = as.character(unique_ID), data = #my_data, method = "REML")
+#  years.sig[i]  = ifelse(m$pval[2] <.05, "*", years.sig)
+#}
+#ann_text <- data.frame(sig = years.sig, lab = "Text",
+#                       df = unique(years.df$dataset))
+
+ggplot(years.df , aes(x = year, y = d_calc, color = dataset)) +
+  geom_point() +
+  #scale_colour_gradientn(colours = topo.colors(10)) +
+  geom_smooth(method = "lm") +
+  facet_wrap(~ dataset, scales = "free_y") +
+  theme_bw() +
+  #geom_text(data = ann_text,aes(label = sig), x = 2000, y = 1) +
+  xlab("published year") +
+  theme(legend.position="none")
+
+rma(d_calc ~ year + mean_age_1 + dataset, vi = d_var_calc, data = years.df, method = "REML")
+
+```
+
+## Does age vary as a function of year?
+```{r, fig.width = 10}
+ggplot(years.df , aes(x = year, y = mean_age_1, color = dataset)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  facet_wrap(~ dataset, scales = "free_y") +
+  theme_bw() +
+  #geom_text(data = ann_text,aes(label = sig), x = 2000, y = 1) +
+  xlab("published year")  +
+    theme(legend.position="none")
+
+```
+
+
+
+## Does effect size vary as a function of number of authors?
+Not really enough data here. Controling for age, though, studies with more authors have bigger effect size.
+```{r, fig.width = 10}
+all_data$short_cite2 = str_replace_all(all_data$short_cite, " ", "")
+all_data$short_cite2 = str_replace_all(all_data$short_cite2, "&", ",")
+all_data$num_authors = unlist(lapply(lapply(all_data$short_cite2, 
+                                     function(x) unlist(strsplit(x, ',+'))), 
+                              function(x) length(which(x != ""))))
+all_data$num_authors =  as.numeric(ifelse(grepl("et al", all_data$short_cite), "NA",
+                                          all_data$num_authors)) # deal with miss coded short_cites (et al.)
+all_data$short_cite2 <- NULL
+
+all_data %>%
+  ggplot(aes(x = num_authors, y = d_calc, colour = dataset)) +
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  facet_wrap(~dataset, scales = "free_y") +
+  theme_bw()+
+  theme(legend.position="none")
+
+
+rma(d_calc ~ num_authors + mean_age_1 + dataset, vi = d_var_calc, 
+          data = all_data, method = "REML")
+```
+
 
 # Data availability/reporting standards
 Here we're intersted in describing the extent to which papers report all statistics that are desirable from the perspective of meta-analysis (i.e. t/F, M, SD, d)
-```{r}
-
+```{r, fig.width = 10}
 counts = all_data %>%
-            summarise(test_statistic = sum(!is.na(t) | !is.na(F)),
+            summarise(test_statistic = sum(!is.na(t) | !is.na(F) | !is.na(r)),
                       means = sum(!is.na(x_1)),
                       SD = sum(!is.na(SD_1)),
-                      d = sum(!is.na(d)),
+                      d = sum(!is.na(d_calc)),
+                      g = sum(!is.na(g_calc)),
+                      r = sum(!is.na(r_calc)),
                       age_range = sum(!is.na(age_range_1)),
                       gender = sum(!is.na(gender_1))) %>%
             gather("coded_variable", "n") %>%
             mutate(coded = "coded") %>%
-            mutate(total = nrow(all_data))
-
+            mutate(total = nrow(all_data))  %>%
+            mutate(coded_variable = factor(coded_variable, levels = c("d", "g", "r", "means",
+                                                                        "SD", "test_statistic",
+                                                                        "age_range", "gender")))
 counts = counts %>%
              mutate(n = total - n, 
                     coded = "uncoded")  %>%
              bind_rows(counts) %>%
-             mutate(n_lab = ifelse(coded == "coded", n, ""))
-
+             mutate(n_lab = ifelse(coded == "coded", n, "")) %>%
+             arrange(coded)
 ggplot(counts) + 
   geom_bar(aes(x = coded_variable, 
                y = n/total,
@@ -258,31 +235,36 @@ ggplot(counts) +
 ```
 
 By MA
-```{r}
+```{r, fig.width = 10}
 counts = all_data %>%
             group_by(dataset) %>%
             summarise(test_statistic = sum(!is.na(t) | !is.na(F)),
                       means = sum(!is.na(x_1)),
                       SD = sum(!is.na(SD_1)),
-                      d = sum(!is.na(d)),
+                      d = sum(!is.na(d_calc)),
+                      g = sum(!is.na(g_calc)),
+                      r = sum(!is.na(r_calc)),
                       age_range = sum(!is.na(age_range_1)),
                       gender = sum(!is.na(gender_1)),
                       total = n()) %>%
             gather(coded_variable, n, -dataset, -total) %>%
-            mutate(coded = "coded") 
+            mutate(coded = "coded") %>%
+            mutate(coded_variable = factor(coded_variable, levels = c("d", "g", "r", "means",
+                                                                        "SD", "test_statistic",
+                                                                        "age_range", "gender")))
 
 counts = counts %>%
              mutate(n = total - n, 
                     coded = "uncoded")  %>%
              bind_rows(counts) %>%
-             mutate(n_lab = ifelse(coded == "coded", n, ""))
+             mutate(n_lab = ifelse(coded == "coded", n, "")) %>%
+  arrange(coded)
 
-ggplot(counts) + 
-  geom_bar(aes(x = coded_variable, 
-               y = n/total,
-               fill = coded,
-              order = coded), 
-           stat = "identity") + 
+ggplot(counts, aes(fill = coded)) + 
+  geom_bar(aes(x = factor(coded_variable), 
+               y = n/total),  ## FIX THIS
+           stat = "identity",
+           position = "fill") + 
   facet_wrap(~dataset, nrow=3, ncol=2) +
   ylim(0,1) + 
   ylab("Number coded") + 
@@ -308,6 +290,152 @@ ggplot(counts) +
       #     mutate(coded_variable = 1,
       #             lab = paste("N =", total))
 ```
-# Meta-analytic power
+
 # Individual meta-analysis power
-# Published vs. unpublished ES's
+## What is the power to determine if the overall effect is greater than zero?
+
+Here I calculated the power to detect an effect using a random effect model (Hedges & Pigott, 2001; Valentine, Pigott, & Rothstein, 2010). Note that this information is redundant with confidence intervals on the estimated effect size, and the power in all of these MAs is essentially 1. Below, I ran a simulation sampling n papers from each meta-analysis, and calculating power. We need surprisingly few studies to get relatively high power.
+
+```{r}
+calculate_ma_power <- function(sample_data) {
+  ALPHA <-  .05
+  NTAILS <-  2
+  c_crit <-  qnorm(ALPHA/NTAILS, lower.tail = F)
+  model <- rma(d_calc, vi = d_var_calc, data = sample_data,
+               method = "REML", control = list(maxiter = 1000, stepadj = 0.5))
+  lambda  <-  model$b[1] / model$se[1] # Valentine, Eq. [6]
+  power <-  1 - pnorm(c_crit - lambda)
+  power
+}
+
+one_sample <- function(ma_data, summary_function, n) {
+   function(k) {
+      do.call(summary_function, list(sample_n(ma_data, size = n, replace = F)))
+   }
+}
+
+all_samples <- function(ma_data, summary_function, n, nboot) {
+  sample_values <- 1:nboot %>%
+    map(one_sample(ma_data, summary_function, n)) %>%
+    unlist()
+  data.frame(n = n,
+             mean = mean(sample_values),
+             ci_lower = ci_lower(sample_values),
+             ci_upper = ci_upper(sample_values),
+             row.names = NULL)
+}
+
+dataset_data <- function(ma_data, summary_function, nboot) {
+  overall <- do.call(summary_function, list(ma_data))
+  seq(1, nrow(ma_data), by = 1) %>%
+    map(function(n) all_samples(ma_data, 
+                                summary_function, n, nboot)) %>%
+    bind_rows() %>%
+    mutate(dataset = unique(ma_data$dataset),
+           overall_est = overall)
+}
+
+power_data <- all_data %>%
+  split(.$dataset) %>%
+  map(function(ma_data) dataset_data(ma_data, 
+                                     calculate_ma_power, 50)) %>%
+  bind_rows()
+
+ggplot(power_data, aes(x = n, y = mean, fill = dataset)) +
+  geom_ribbon(aes(ymin = ci_lower, ymax = ci_upper), alpha = 0.5) +
+  geom_hline(aes(yintercept = overall_est), linetype = "dashed") +
+  geom_line( aes(x = n, y = mean)) +
+  facet_wrap(~dataset) +
+  xlab("Number of effect sizes") +
+  ylab("Meta-analytic power") +
+  xlim(0,150) +
+  scale_fill_solarized(guide = FALSE) +
+  theme_bw() +
+  theme(text = element_text(family = "Open Sans"),
+        panel.grid.minor = element_blank())
+```
+
+## What is the power to determine if there's a moderator (e.g. age)? 
+
+Not totally sure how to do this. Valentine et al. (2001) say it's difficult without the raw data?
+
+# P-curve [Christina]
+Corrects for selective reporting on the basis of significance (fewer insignificant results; Simonsohn, Nelson, & Simmons, 2014)
+```{r, eval = F}
+# calculate degrees of freedom based on Ns and design (within = n_1-1, between = n_1 + n_2 - 2
+pcurve.data = 
+  select(all_data, dataset, unique_ID, t, F, n_1, n_2, participant_design) %>%
+  filter(!is.na(t)|!is.na(F)) %>%
+  mutate(df = ifelse(participant_design == "between", n_1 + n_2-2, n_1-1))
+         
+#summary(pcurve.data$df)
+
+#pcurve.df %>% 
+#  filter(participant_design == "between") %>% 
+#  data.frame()
+
+# code from Simonsohn, Nelson, & Simmons (2014) appendix
+loss = function(t_obs,df_obs,d_est) { 
+  t_obs=abs(t_obs)
+  p_obs=2*(1-pt(t_obs,df=df_obs)) 
+  t.sig=subset(t_obs,p_obs<.05)
+  df.sig=subset(df_obs,p_obs<.05)
+  ncp_est=sqrt((df.sig+2)/4)*d_est 
+  tc=qt(.975,df.sig) 
+  power_est=1-pt(tc,df.sig,ncp_est)
+  p_larger=pt(t.sig,df=df.sig,ncp=ncp_est)
+  ppr=(p_larger-(1-power_est))/power_est 
+  KSD=ks.test(ppr,punif)$statistic 
+  return(KSD)
+}
+
+plotloss=function(t_obs,df_obs,dmin,dmax) { 
+  loss.all=c()
+  di=c()
+  for (i in 0:((dmax-dmin)*100)) {
+    d = dmin + i/100
+    di = c(di,d)
+    options(warn = -1)
+    loss.all=c(loss.all,loss(df_obs=df_obs,t_obs=t_obs,d_est=d)) 
+    options(warn = 0)
+  }
+    
+  imin=match(min(loss.all),loss.all) 
+  dstart=dmin+imin/100
+  dhat=optimize(loss,c(dstart-.1, dstart+.1), df_obs=df_obs,t_obs=t_obs)
+
+  plot(di,
+       loss.all, xlab="Effect size\nCohen-d", 
+       ylab="Loss (D stat in KS test)",
+       ylim=c(0,1),
+       main="How well does each effect size fit? (lower is better)")
+  points(dhat$minimum,dhat$objective,pch=19,col="red",cex=2) 
+  text(dhat$minimum,dhat$objective-.08,
+       paste0("p-curve’s estimate of effect size:\nd=",round(dhat$minimum,3)),col="red") 
+  return(dhat$minimum)
+} 
+
+#Example
+#t_obs= c(1.7, 2.8, -3.1, 2.4) # include one p > .05 and one negative t-value to highlight how we treat those 
+#df_obs=c(44, 75, 125, 200)
+#plotloss(t_obs=t_obs,df_obs=df_obs,dmin=-1,dmax=1)
+```
+
+# Trim-and-fill [Christina?]
+Corrects for selective reporting on the basis of effect size (fewer small effects; Duval & Tweedie, 2000a, 2000b)
+```{r, eval = F}
+### fit random-effects model and plot
+
+for (i in 1:length(datasets)) {
+  my_data = all_data[all_data$dataset ==  datasets[i],]
+  res <- rma(d, d_var, data = my_data)
+  taf <- trimfill(res)
+  funnel(taf, main = my_data$dataset[1])
+}
+
+res <- rma(d, d_var, data = all_data)
+taf <- trimfill(res)
+funnel(taf, main = "all data")
+
+#regtest
+```
