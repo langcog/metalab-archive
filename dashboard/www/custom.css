@@ -1,13 +1,15 @@
+@import url(https://fonts.googleapis.com/css?family=Ubuntu);
+
 .main-header .logo {
-  font-family: "Ubuntu";
+  font-family: "Ubuntu", sans-serif;
 }
 
 body {
-  font-family: "Ubuntu";
+  font-family: "Ubuntu", sans-serif;
 }
 
 .jumbo {
-  font-family: "Ubuntu";
+  font-family: "Ubuntu", sans-serif;
   font-size: 400%;
 }
 
