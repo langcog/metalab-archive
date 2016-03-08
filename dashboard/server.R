@@ -132,14 +132,18 @@ shinyServer(function(input, output, session) {
   violin <- function() {
     grp <- mod_group()
     if (is.null(grp)) grp <- "all_mod"
-    ggplot(data(), aes_string(x = grp, y = "d_calc", colour = grp)) +
+    plt <- ggplot(data(), aes_string(x = grp, y = "d_calc", colour = grp)) +
       geom_violin() +
       geom_jitter(height = 0) +
       geom_hline(yintercept = 0, linetype = "dotted", color = "grey") +
       scale_colour_solarized(name = "", guide = FALSE) +
       xlab("") +
-      #xlab(paste0("\n", x_label)) +
       ylab("Effect Size\n")
+    if (grp == "all_mod") {
+      plt + theme(axis.ticks.x = element_blank())
+    } else {
+      plt
+    }
   }
 
   output$violin <- renderPlot(violin())

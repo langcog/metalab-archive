@@ -71,14 +71,29 @@ tab_visualizations <- tabItem(
           uiOutput("moderator_input")
       ),
       box(width = NULL, status = "danger",
-          downloadButton("download_scatter", class = "btn-xs pull-right"),
-          br(), plotOutput("scatter")),
+          fluidRow(
+            column(width = 10,
+                   p(strong("Scatter plot"), "of effect sizes over age")),
+            column(width = 2,
+                   downloadButton("download_scatter",
+                                  class = "btn-xs pull-right"))),
+          plotOutput("scatter")),
       box(width = NULL, status = "danger",
-          downloadButton("download_violin", class = "btn-xs pull-right"),
-          br(), plotOutput("violin")),
+          fluidRow(
+            column(width = 10,
+                   p(strong("Violin plot"), "of effect size density")),
+            column(width = 2,
+                   downloadButton("download_violin",
+                                  class = "btn-xs pull-right"))),
+          plotOutput("violin")),
       box(width = NULL, status = "danger",
-          downloadButton("download_funnel", class = "btn-xs pull-right"),
-          br(), plotOutput("funnel"))
+          fluidRow(
+            column(width = 10,
+                   p(strong("Funnel plot"), "of bias in effect sizes")),
+            column(width = 2,
+                   downloadButton("download_funnel",
+                                  class = "btn-xs pull-right"))),
+          plotOutput("funnel"))
     ),
     column(
       width = 6,
@@ -86,8 +101,12 @@ tab_visualizations <- tabItem(
                valueBoxOutput("effect_size_box"),
                valueBoxOutput("effect_size_var_box")),
       fluidRow(box(width = NULL, status = "danger",
-                   downloadButton("download_forest", class = "btn-xs pull-right"),
-                   br(), plotOutput("forest", height = "auto")))
+                   fluidRow(
+                     column(width = 10,
+                            p(strong("Forest plot"), "of effect sizes and meta-analysis model estimates")),
+                     column(width = 2,
+                            downloadButton("download_forest", class = "btn-xs pull-right"))),
+                   plotOutput("forest", height = "auto")))
     )
   )
 )
@@ -166,4 +185,4 @@ body <- dashboardBody(
            tab_power, tab_reports)
 )
 
-dashboardPage(skin = "red", header, sidebar, body)
+dashboardPage(header, sidebar, body, title = "MetaLab", skin = "red")
