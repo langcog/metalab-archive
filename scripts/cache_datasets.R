@@ -128,6 +128,7 @@ tidy_dataset <- function(dataset_meta, dataset_contents) {
 
   dataset_data %>%
     mutate(dataset = dataset_meta[["name"]],
+           short_name = dataset_meta[["short_name"]],
            method = unlist(method_names[method])) %>%
     rowwise() %>%
     mutate(mean_age = weighted.mean(c(mean_age_1, mean_age_2), c(n_1, n_2),

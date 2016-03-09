@@ -54,7 +54,18 @@ tab_overview <- tabItem(
 
 tab_documentation <- tabItem(
   tabName = "documentation",
-  includeRmd("overview.Rmd", list("datasets" = datasets))
+  tabsetPanel(
+    tabPanel("Overview", includeRmd("overview.Rmd", list("datasets" = datasets)),
+             class = "tab-pane-spaced"),
+    tabPanel("Specification", #includeRmd("spec.Rmd"),
+             h3("Required fields"),
+             DT::dataTableOutput("req_table"),
+             h3("Optional fields"),
+             DT::dataTableOutput("opt_table"),
+             h3("Derived fields"),
+             DT::dataTableOutput("drv_table"),
+             class = "tab-pane-spaced")
+  )
 )
 
 #############################################################################

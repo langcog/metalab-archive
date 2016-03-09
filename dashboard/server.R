@@ -1,3 +1,4 @@
+library(DT)
 library(shiny)
 library(tidyr)
 library(dplyr)
@@ -494,5 +495,55 @@ shinyServer(function(input, output, session) {
         xlab("Number of participants (N)")
     }
   })
+
+
+  #############################################################################
+  # SPECIFICATION TABLES
+
+  get_property <- function(property, property_fun = function(x) x) {
+    map_chr(spec, function(entry) {
+      if (property %in% names(entry) && !is.null(entry[[property]]))
+        property_fun(entry[[property]])
+      else ""
+    })
+  }
+
+  spec <- yaml.load_file("../metadata/spec.yaml")
+
+  process_options <- function(options) {
+    if (class(options) == "list") {
+      opts <- names(unlist(options, recursive = FALSE))
+    } else {
+      opts <- options
+    }
+    paste(map_chr(opts, ~sprintf("<code>%s</code>", .x)), collapse = ", ")
+  }
+  spec_data <- data_frame(field = get_property("field"),
+                          description = get_property("description"),
+                          type = get_property("type"),
+                          format = get_property("format"),
+                          #example = get_property("example"),
+                          options = get_property("options", process_options),
+                          required = get_property("required")) %>%
+    unite(`format/options`, format, options, sep = "") %>%
+    split(.$required) %>%
+    map(~.x %>% select(-required))
+
+  spec_derived <- yaml.load_file("../metadata/spec_derived.yaml") %>%
+    transpose() %>%
+    simplify_all() %>%
+    as_data_frame()
+
+  make_datatable <- function(df) {
+    DT::datatable(df,
+                  style = "bootstrap", rownames = FALSE,
+                  escape = FALSE,
+                  options = list(paging = FALSE, searching = FALSE,
+                                 dom = "t"))
+  }
+
+  output$req_table <- DT::renderDataTable(make_datatable(spec_data[["TRUE"]]))
+  output$opt_table <- DT::renderDataTable(make_datatable(spec_data[["FALSE"]]))
+  output$drv_table <- DT::renderDataTable(make_datatable(spec_derived))
 
 })
