@@ -77,6 +77,8 @@ tab_visualizations <- tabItem(
     column(
       width = 6,
       box(width = NULL, status = "danger",
+          downloadButton("download_data", "Download data", class = "btn-xs pull-right"),
+          br(),
           selectInput("dataset_name", label = "Dataset",
                       choices = datasets$name),
           uiOutput("moderator_input")
@@ -86,7 +88,7 @@ tab_visualizations <- tabItem(
             column(width = 10,
                    p(strong("Scatter plot"), "of effect sizes over age")),
             column(width = 2,
-                   downloadButton("download_scatter",
+                   downloadButton("download_scatter", "Save",
                                   class = "btn-xs pull-right"))),
           plotOutput("scatter")),
       box(width = NULL, status = "danger",
@@ -94,7 +96,7 @@ tab_visualizations <- tabItem(
             column(width = 10,
                    p(strong("Violin plot"), "of effect size density")),
             column(width = 2,
-                   downloadButton("download_violin",
+                   downloadButton("download_violin", "Save",
                                   class = "btn-xs pull-right"))),
           plotOutput("violin")),
       box(width = NULL, status = "danger",
@@ -102,7 +104,7 @@ tab_visualizations <- tabItem(
             column(width = 10,
                    p(strong("Funnel plot"), "of bias in effect sizes")),
             column(width = 2,
-                   downloadButton("download_funnel",
+                   downloadButton("download_funnel", "Save",
                                   class = "btn-xs pull-right"))),
           plotOutput("funnel"))
     ),
@@ -116,7 +118,7 @@ tab_visualizations <- tabItem(
                      column(width = 10,
                             p(strong("Forest plot"), "of effect sizes and meta-analysis model estimates")),
                      column(width = 2,
-                            downloadButton("download_forest", class = "btn-xs pull-right"))),
+                            downloadButton("download_forest", "Save", class = "btn-xs pull-right"))),
                    plotOutput("forest", height = "auto")))
     )
   )

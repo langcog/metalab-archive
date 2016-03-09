@@ -6,6 +6,7 @@ library(ggplot2)
 library(pwr)
 library(metafor)
 library(langcog)
+library(readr)
 theme_set(theme_mikabr(base_family = "Ubuntu") +
             theme(legend.position = "top",
                   legend.key = element_blank(),
@@ -253,6 +254,12 @@ shinyServer(function(input, output, session) {
   output$download_funnel <- plot_download_handler("funnel", funnel)
   output$download_forest <- plot_download_handler("forest", forest)
 
+  output$download_data <- downloadHandler(
+    filename = function() sprintf("%s.csv", input$dataset_name),
+    content = function(file) {
+      write_csv(data(), file)
+    }
+  )
 
   #############################################################################
   # POWER ANALYSIS
