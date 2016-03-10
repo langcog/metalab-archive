@@ -17,6 +17,7 @@ source("../dashboard/global.R", chdir = TRUE)
 ```
 
 ```{r, echo=FALSE, cache=FALSE}
+library(knitr)
 library(ggplot2)
 library(broom)
 library(dplyr)
@@ -67,13 +68,13 @@ lin_lm <- lm(d_calc ~ mean_age, weights = 1/d_var_calc, data = all_data)
 log_lm <- lm(d_calc ~ log(mean_age), weights = 1/d_var_calc, data = all_data)
 quad_lm <- lm(d_calc ~ I(mean_age^2), weights = 1/d_var_calc, data = all_data)
 
-summary(lin_lm)
-summary(log_lm)
-summary(quad_lm)
+kable(coef(summary(lin_lm)))
+kable(coef(summary(log_lm)))
+kable(coef(summary(quad_lm)))
 
-anova(lin_lm, log_lm, test = "Chisq")
-anova(lin_lm, quad_lm, test = "Chisq")
-anova(log_lm, quad_lm, test = "Chisq")
+kable(anova(lin_lm, log_lm, test = "Chisq"))
+kable(anova(lin_lm, quad_lm, test = "Chisq"))
+kable(anova(log_lm, quad_lm, test = "Chisq"))
 ```
 
 Overall these results suggest that when modelling the full data set no particular curve best represents the data.
@@ -106,10 +107,10 @@ lin_log_lm <- lm(d_calc ~ mean_age + log(mean_age),
                   weights = 1/d_var_calc, 
                   data = all_data)
 
-summary(lin_log_lm)
+kable(coef(summary(lin_log_lm)))
 
-anova(lin_lm, lin_log_lm, test = "Chisq")
-anova(log_lm, lin_log_lm, test = "Chisq")
+kable(anova(lin_lm, lin_log_lm, test = "Chisq"))
+kable(anova(log_lm, lin_log_lm, test = "Chisq"))
 ```
 
 While it is interesting to learn that the model with both types of predictors is a better fit of the data, in general our previous conclusion is confirmed. Modeling the whole data set with simple regressions is not the best approach. 
@@ -171,16 +172,16 @@ lin_log_lmer <- lmer(d_calc ~ mean_age + log(mean_age) +
                     weights = 1/d_var_calc, 
                     REML = F, data = all_data)
 
-coef(summary(lin_lmer))
-coef(summary(log_lmer))
-coef(summary(quad_lmer))
-coef(summary(lin_log_lmer))
+kable(coef(summary(lin_lmer)))
+kable(coef(summary(log_lmer)))
+kable(coef(summary(quad_lmer)))
+kable(coef(summary(lin_log_lmer)))
 
-anova(lin_lmer, log_lmer)
-anova(lin_lmer, quad_lmer)
-anova(log_lmer, quad_lmer)
-anova(lin_lmer, lin_log_lmer)
-anova(log_lmer, lin_log_lmer)
+kable(anova(lin_lmer, log_lmer))
+kable(anova(lin_lmer, quad_lmer))
+kable(anova(log_lmer, quad_lmer))
+kable(anova(lin_lmer, lin_log_lmer))
+kable(anova(log_lmer, lin_log_lmer))
 ```
 
 Focusing on the linear, log, and two predictor models, we built predictions for all complete meta-analyses. The plot separated by meta analysis is presented below. The linear and two predictor models are pretty similar, mainly being different at very early ages.
@@ -223,10 +224,10 @@ lin_log_paper_lmer <- lmer(d_calc ~ mean_age + log(mean_age) +
                           weights = 1/d_var_calc, 
                           REML = F, data = all_data)
 
-coef(summary(lin_log_paper_lmer))
-coef(summary(lin_log_lmer))
+kable(coef(summary(lin_log_paper_lmer)))
+kable(coef(summary(lin_log_lmer)))
 
-anova(lin_log_lmer, lin_log_paper_lmer)
+kable(anova(lin_log_lmer, lin_log_paper_lmer))
 ```
 
 We then predicted from this new, more complex model and compare it to the model without the nested paper random effects structure. Initial testing found that including the nested random effect in the predict algorithm led to massive overfitting, so just the simple random effects structure was used to compute predictions. Below is the figure comparing the two curves. The curves are very similar, suggesting that while adding the nesting of paper does significantly improve the model, visually the difference is very small.
@@ -267,16 +268,16 @@ lin_log_paper_slope_lmer <- lmer(d_calc ~ mean_age + log(mean_age) +
                           weights = 1/d_var_calc, 
                           REML = F, data = all_data)
 
-coef(summary(lin_log_slope_lmer))
-coef(summary(lin_log_paper_slope_lmer))
-coef(summary(lin_log_lmer))
-coef(summary(lin_log_paper_lmer))
+kable(coef(summary(lin_log_slope_lmer)))
+kable(coef(summary(lin_log_paper_slope_lmer)))
+kable(coef(summary(lin_log_lmer)))
+kable(coef(summary(lin_log_paper_lmer)))
 
-anova(lin_log_lmer, lin_log_slope_lmer)
-anova(lin_log_lmer, lin_log_paper_slope_lmer)
-anova(lin_log_paper_lmer, lin_log_slope_lmer)
-anova(lin_log_paper_lmer, lin_log_paper_slope_lmer)
-anova(lin_log_slope_lmer, lin_log_paper_slope_lmer)
+kable(anova(lin_log_lmer, lin_log_slope_lmer))
+kable(anova(lin_log_lmer, lin_log_paper_slope_lmer))
+kable(anova(lin_log_paper_lmer, lin_log_slope_lmer))
+kable(anova(lin_log_paper_lmer, lin_log_paper_slope_lmer))
+kable(anova(lin_log_slope_lmer, lin_log_paper_slope_lmer))
 ```
 
 As before, predictions were built for the new models and plotted on the data. Overall the models do look pretty similar in terms of their predicted fit of the data.
@@ -334,7 +335,7 @@ lin_log_paper_slope_multiage_lmer <- lmer(d_calc ~ mean_age + log(mean_age) +
                                      weights = 1/d_var_calc, 
                                      REML = F, data = multiage_data)
 
-coef(summary(lin_log_paper_slope_multiage_lmer))
+kable(coef(summary(lin_log_paper_slope_multiage_lmer)))
 ```
 
 Predictions were calculated for the new model and visually compared to the simple model on the full data set with no nested random effects and no random slope. The plot below suggests that for this reduced data set, the addition of the nested random effects and random slope does differ greatly from the simpler model.
@@ -377,7 +378,7 @@ lin_log_paper_slope_multiage_3_lmer <- lmer(d_calc ~ mean_age + log(mean_age) +
                                      weights = 1/d_var_calc, 
                                      REML = F, data = multiage_3_data)
 
-coef(summary(lin_log_paper_slope_multiage_3_lmer))
+kable(coef(summary(lin_log_paper_slope_multiage_3_lmer)))
 ```
 
 Predictions were calculated for the new model and visually compared to the simple model on the full data set with no nested random effects and no random slope. The plot below suggests that for this further reduced data set, the difference becomes the two models becomes even more apparent.
