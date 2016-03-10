@@ -55,6 +55,7 @@ ggplot(all_data, aes(x = mean_age, y = d_calc)) +
               se = FALSE) + 
   geom_hline(yintercept = 0, lty = 2, col = "black") + 
   xlab("Mean age in days") +
+  ylab("d (original and calculated)") +
   scale_colour_solarized(name="Models", breaks=c("Linear", "Log", "Quadratic"),
                           labels=c("Linear" = "Linear",
                                    "Log" = "Log",
@@ -94,6 +95,7 @@ ggplot(all_data,
   geom_smooth(method = "lm", formula = y ~ x + log(x), 
               se = FALSE, aes(col = "Linear and Log")) +
   xlab("Mean age in days") +
+  ylab("d (original and calculated)") +
   scale_colour_solarized(name="Models", breaks = c("Linear", "Log", "Linear and Log"),
                                      labels=c("Linear" = "Linear",
                                               "Log" = "Log",
@@ -141,6 +143,7 @@ ggplot(all_data, aes(x = mean_age, y = d_calc,
   facet_wrap(~ dataset, scales = "free") + 
   geom_hline(yintercept = 0, lty = 2, col = "black") + 
   xlab("Mean age in days") +
+  ylab("d (original and calculated)") +
   scale_colour_solarized(name="Models", breaks = c("Linear", "Log",
                                                 "Quadratic", "Linear and Log"),
                                      labels=c("Linear" = "Linear",
@@ -149,7 +152,7 @@ ggplot(all_data, aes(x = mean_age, y = d_calc,
                                               "Linear and Log" = "Linear and Log"))
 ```
 
-As a second step we ran mixed effects regressions where meta-analysis (data set) was included as a random intercept for our four models: 1) linear, 2) logarithmic, 3) quadratic, and 4) joint linear and logarithmic. As for the simple regressions, we then ran Chi-squared tests to compare the different models to one another. Model comparison found the quadratic model to be a better fit than the logistic model, but there were no significant differences between any of the other single predictor models. The two predictor model (linear and log) also outperformed the single predictor logarithmic model, but not the single predictor linear model.
+As a second step we ran mixed effects regressions where meta-analysis (data set) was included as a random intercept for our four models: 1) linear, 2) logarithmic, 3) quadratic, and 4) joint linear and logarithmic. As for the simple regressions, we then ran Chi-squared tests to compare the different models to one another. Model comparison found the quadratic model to be a better fit than the linear model and the logarithmic model, but no difference between the linear and logarithmic model. The two predictor model (linear and log) also outperformed both the single predictor linear model and the single predictor logarithmic model.
 
 ```{r}
 lin_lmer <- lmer(d_calc ~ mean_age + 
@@ -204,6 +207,7 @@ ggplot(all_data_preds, aes(x = mean_age, y = d_calc)) +
   facet_wrap(~ dataset, scales = "free") + 
   geom_hline(yintercept = 0, lty = 2, col = "black") + 
   xlab("Mean age in days") +
+  ylab("d (original and calculated)") +
   scale_colour_solarized(name="Models", breaks = c("Linear",
                                                 "Log",
                                                 "Linear and Log"),
@@ -249,6 +253,7 @@ ggplot(all_data_preds, aes(x = mean_age, y = d_calc)) +
   facet_wrap(~ dataset, scales = "free") + 
   geom_hline(yintercept = 0, lty = 2, col = "black") +
   xlab("Mean age in days") +
+  ylab("d (original and calculated)") +
   scale_colour_solarized(name = "Models", labels = c("Linear and Log" = "Linear and Log",
                                                  "Linear and Log Paper"= "Linear and Log Paper"))
 ```
@@ -306,6 +311,7 @@ ggplot(all_data_preds, aes(x = mean_age, y = d_calc)) +
   facet_wrap(~ dataset, scales = "free") + 
   geom_hline(yintercept = 0, lty = 2, col = "black") +
   xlab("Mean age in days") +
+  ylab("d (original and calculated)") +
   scale_colour_solarized(name = "Models", breaks = c("Linear and Log",
                                                   "Linear and Log Paper",
                                                   "Linear and Log Slope",
@@ -359,6 +365,7 @@ ggplot(multiage_data, aes(x = mean_age, y = d_calc)) +
   facet_wrap(~ dataset, scales = "free") + 
   geom_hline(yintercept = 0, lty = 2, col = "black") +
   xlab("Mean age in days") +
+  ylab("d (original and calculated)") +
   scale_colour_solarized(name="Models", labels=c("Linear and Log" = "Linear and Log",
                                               "Linear and Log Paper Slope\n2 Groups" = "Linear and Log Paper Slope\n2 Groups"))
 ```
@@ -402,6 +409,7 @@ ggplot(multiage_3_data, aes(x = mean_age, y = d_calc)) +
   facet_wrap(~ dataset, scales = "free") + 
   geom_hline(yintercept = 0, lty = 2, col = "black") +
   xlab("Mean age in days") +
+  ylab("d (original and calculated)") +
   scale_colour_solarized(name="Models", labels=c("Linear and Log" = "Linear and Log",
                                               "Linear and Log Paper Slope\n3 Groups" = "Linear and Log Paper Slope\n3 Groups"))
 ```
