@@ -24,20 +24,8 @@ library(tidyr)
 library(lme4)
 library(metafor)
 library(RColorBrewer)
+library(langcog)
 ```
-
-```{r, echo=FALSE}
-# Set colors for report
-colors = brewer.pal(7, "Dark2")
-col_lin = colors[1]
-col_log = colors[2]
-col_quad = colors[3]
-col_linlog = colors[4]
-col_linlog_paper = colors[5]
-col_linlog_slope = colors[6]
-col_linlog_paper_slope = colors[7]
-```
-
 
 # Introduction
 
@@ -66,10 +54,10 @@ ggplot(all_data, aes(x = mean_age, y = d_calc)) +
               se = FALSE) + 
   geom_hline(yintercept = 0, lty = 2, col = "black") + 
   xlab("Mean age in days") +
-  scale_colour_manual(name="Models", breaks=c("Linear", "Log", "Quadratic"),
-                          values=c("Linear" = col_lin,
-                                   "Log" = col_log,
-                                   "Quadratic" = col_quad))
+  scale_colour_solarized(name="Models", breaks=c("Linear", "Log", "Quadratic"),
+                          labels=c("Linear" = "Linear",
+                                   "Log" = "Log",
+                                   "Quadratic" = "Quadratic"))
 ```
 
 To see if one particular type of model is a better fit of the data, we built each model and then compared them with a Chi-squared test. Head to head comparisons find no significant differences between any of the three models.
@@ -105,10 +93,10 @@ ggplot(all_data,
   geom_smooth(method = "lm", formula = y ~ x + log(x), 
               se = FALSE, aes(col = "Linear and Log")) +
   xlab("Mean age in days") +
-  scale_colour_manual(name="Models", breaks = c("Linear", "Log", "Linear and Log"),
-                                     values=c("Linear" = col_lin,
-                                              "Log" = col_log,
-                                              "Linear and Log" = col_linlog))
+  scale_colour_solarized(name="Models", breaks = c("Linear", "Log", "Linear and Log"),
+                                     labels=c("Linear" = "Linear",
+                                              "Log" = "Log",
+                                              "Linear and Log" = "Linear and Log"))
 ```
 
 Similar to the comparison of the single predictor models, we built a new model with our two predictors and then used Chi-squared tests to compare it to our two single predictor models. In both comparisons the model with both the linear and logarithmic predictors of mean age outperformed the two simple, single predictor models.
@@ -152,12 +140,12 @@ ggplot(all_data, aes(x = mean_age, y = d_calc,
   facet_wrap(~ dataset, scales = "free") + 
   geom_hline(yintercept = 0, lty = 2, col = "black") + 
   xlab("Mean age in days") +
-  scale_colour_manual(name="Models", breaks = c("Linear", "Log",
+  scale_colour_solarized(name="Models", breaks = c("Linear", "Log",
                                                 "Quadratic", "Linear and Log"),
-                                     values=c("Linear" = col_lin,
-                                              "Log" = col_log,
-                                              "Quadratic" = col_quad,
-                                              "Linear and Log" = col_linlog))
+                                     labels=c("Linear" = "Linear",
+                                              "Log" = "Log",
+                                              "Quadratic" = "Quadratic",
+                                              "Linear and Log" = "Linear and Log"))
 ```
 
 As a second step we ran mixed effects regressions where meta-analysis (data set) was included as a random intercept for our four models: 1) linear, 2) logarithmic, 3) quadratic, and 4) joint linear and logarithmic. As for the simple regressions, we then ran Chi-squared tests to compare the different models to one another. Model comparison found the quadratic model to be a better fit than the logistic model, but there were no significant differences between any of the other single predictor models. The two predictor model (linear and log) also outperformed the single predictor logarithmic model, but not the single predictor linear model.
@@ -215,12 +203,12 @@ ggplot(all_data_preds, aes(x = mean_age, y = d_calc)) +
   facet_wrap(~ dataset, scales = "free") + 
   geom_hline(yintercept = 0, lty = 2, col = "black") + 
   xlab("Mean age in days") +
-  scale_colour_manual(name="Models", breaks = c("Linear",
+  scale_colour_solarized(name="Models", breaks = c("Linear",
                                                 "Log",
                                                 "Linear and Log"),
-                                     values=c("Linear" = col_lin,
-                                              "Log" = col_log,
-                                              "Linear and Log" = col_linlog))
+                                     labels=c("Linear" = "Linear",
+                                              "Log" = "Log",
+                                              "Linear and Log" = "Linear and Log"))
 ```
 
 Overall this method looks pretty good. It seems like the linear predictor in the two predictor model is smoothing the logs at the edges, and the random effects are working to capture cross data set variability. 
@@ -260,8 +248,8 @@ ggplot(all_data_preds, aes(x = mean_age, y = d_calc)) +
   facet_wrap(~ dataset, scales = "free") + 
   geom_hline(yintercept = 0, lty = 2, col = "black") +
   xlab("Mean age in days") +
-  scale_colour_manual(name = "Models", values = c("Linear and Log" = col_linlog,
-                                                 "Linear and Log Paper"= col_linlog_paper))
+  scale_colour_solarized(name = "Models", labels = c("Linear and Log" = "Linear and Log",
+                                                 "Linear and Log Paper"= "Linear and Log Paper"))
 ```
 
 ## Complex mixed-effects (random slope)
@@ -317,14 +305,14 @@ ggplot(all_data_preds, aes(x = mean_age, y = d_calc)) +
   facet_wrap(~ dataset, scales = "free") + 
   geom_hline(yintercept = 0, lty = 2, col = "black") +
   xlab("Mean age in days") +
-  scale_colour_manual(name = "Models", breaks = c("Linear and Log",
+  scale_colour_solarized(name = "Models", breaks = c("Linear and Log",
                                                   "Linear and Log Paper",
                                                   "Linear and Log Slope",
                                                   "Linear and Log Paper Slope"),
-                                       values = c("Linear and Log" = col_linlog,
-                                                 "Linear and Log Paper" = col_linlog_paper,
-                                                 "Linear and Log Slope" = col_linlog_slope,
-                                                 "Linear and Log Paper Slope" = col_linlog_paper_slope))
+                                       labels = c("Linear and Log" = "Linear and Log",
+                                                 "Linear and Log Paper" = "Linear and Log Paper",
+                                                 "Linear and Log Slope" = "Linear and Log Slope",
+                                                 "Linear and Log Paper Slope" = "Linear and Log Paper Slope"))
 ```
 
 ## Subset to only those papers with multiple ages
@@ -370,8 +358,8 @@ ggplot(multiage_data, aes(x = mean_age, y = d_calc)) +
   facet_wrap(~ dataset, scales = "free") + 
   geom_hline(yintercept = 0, lty = 2, col = "black") +
   xlab("Mean age in days") +
-  scale_colour_manual(name="Models", values=c("Linear and Log" = col_linlog,
-                                              "Linear and Log Paper Slope\n2 Groups" = col_linlog_paper_slope))
+  scale_colour_solarized(name="Models", labels=c("Linear and Log" = "Linear and Log",
+                                              "Linear and Log Paper Slope\n2 Groups" = "Linear and Log Paper Slope\n2 Groups"))
 ```
 
 ### Three age groups
@@ -413,8 +401,8 @@ ggplot(multiage_3_data, aes(x = mean_age, y = d_calc)) +
   facet_wrap(~ dataset, scales = "free") + 
   geom_hline(yintercept = 0, lty = 2, col = "black") +
   xlab("Mean age in days") +
-  scale_colour_manual(name="Models", values=c("Linear and Log" = col_linlog,
-                                              "Linear and Log Paper Slope\n3 Groups" = col_linlog_paper_slope))
+  scale_colour_solarized(name="Models", labels=c("Linear and Log" = "Linear and Log",
+                                              "Linear and Log Paper Slope\n3 Groups" = "Linear and Log Paper Slope\n3 Groups"))
 ```
 
 
