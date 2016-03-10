@@ -30,99 +30,18 @@ library(langcog)
 
 # Introduction
 
-The goal for this analysis was to better understand the shape of the developmental curve. To do this we examined both general curves across all meta-analyses and curves taking into account meta-analysis specific variance.
+The goal for this analysis was to better understand the shape of the developmental curve. To do this we used linear mixed effects models, so that the variance of individual meta-analyses could be accounted for.
 
 Summary of investigations:
 
-* Running regressions over the entire data set is not appropriate.
 * Meta-analytic mixed-effects are promising, but...
-* The random effects structure (specifically if we nest paper effects within data sets) makes a big difference to the implied curve shape.
-
-# Simple Regressions
-
-## One Predictor
-
-First we looked at the entire data set with various curve types: 1) linear, 2) log, and 3) quadratic.
-
-```{r, echo=FALSE}
-ggplot(all_data, aes(x = mean_age, y = d_calc)) +
-  geom_point(col = "black", aes(size = n)) + 
-  geom_smooth(method="lm", formula = y ~ x, aes(col = "Linear"), 
-              se = FALSE) + 
-  geom_smooth(method="lm", formula = y ~ log(x), aes(col = "Log"), 
-              se = FALSE) + 
-  geom_smooth(method="lm", formula = y ~ I(x^2), aes(col = "Quadratic"), 
-              se = FALSE) + 
-  geom_hline(yintercept = 0, lty = 2, col = "black") + 
-  xlab("Mean age in days") +
-  ylab("d (original and calculated)") +
-  scale_colour_solarized(name="Models", breaks=c("Linear", "Log", "Quadratic"),
-                          labels=c("Linear" = "Linear",
-                                   "Log" = "Log",
-                                   "Quadratic" = "Quadratic"))
-```
-
-To see if one particular type of model is a better fit of the data, we built each model and then compared them with a Chi-squared test. Head to head comparisons find no significant differences between any of the three models.
-
-```{r}
-lin_lm <- lm(d_calc ~ mean_age, weights = 1/d_var_calc, data = all_data)
-log_lm <- lm(d_calc ~ log(mean_age), weights = 1/d_var_calc, data = all_data)
-quad_lm <- lm(d_calc ~ I(mean_age^2), weights = 1/d_var_calc, data = all_data)
-
-kable(coef(summary(lin_lm)))
-kable(coef(summary(log_lm)))
-kable(coef(summary(quad_lm)))
-
-kable(anova(lin_lm, log_lm, test = "Chisq"))
-kable(anova(lin_lm, quad_lm, test = "Chisq"))
-kable(anova(log_lm, quad_lm, test = "Chisq"))
-```
-
-Overall these results suggest that when modelling the full data set no particular curve best represents the data.
-
-## Two Predictors
-
-We also built a model that included two predictors. Specifically, we built a model that includes both mean age as a predictor and the log of mean age as a predictor. A figure with the two single predictor regressions (linear and log) and the new two predictor regression is provided below.
-
-```{r, echo=FALSE}
-ggplot(all_data, 
-       aes(x = mean_age, y = d_calc)) + 
-  geom_point(aes(size = 1/d_var_calc)) + 
-  geom_smooth(method = "lm", formula = y ~ x, 
-              se = FALSE, aes(col = "Linear")) +
-  geom_smooth(method = "lm", formula = y ~ log(x), 
-              se = FALSE, aes(col = "Log")) + 
-  geom_smooth(method = "lm", formula = y ~ x + log(x), 
-              se = FALSE, aes(col = "Linear and Log")) +
-  xlab("Mean age in days") +
-  ylab("d (original and calculated)") +
-  scale_colour_solarized(name="Models", breaks = c("Linear", "Log", "Linear and Log"),
-                                     labels=c("Linear" = "Linear",
-                                              "Log" = "Log",
-                                              "Linear and Log" = "Linear and Log"))
-```
-
-Similar to the comparison of the single predictor models, we built a new model with our two predictors and then used Chi-squared tests to compare it to our two single predictor models. In both comparisons the model with both the linear and logarithmic predictors of mean age outperformed the two simple, single predictor models.
-
-```{r}
-lin_log_lm <- lm(d_calc ~ mean_age + log(mean_age), 
-                  weights = 1/d_var_calc, 
-                  data = all_data)
-
-kable(coef(summary(lin_log_lm)))
-
-kable(anova(lin_lm, lin_log_lm, test = "Chisq"))
-kable(anova(log_lm, lin_log_lm, test = "Chisq"))
-```
-
-While it is interesting to learn that the model with both types of predictors is a better fit of the data, in general our previous conclusion is confirmed. Modeling the whole data set with simple regressions is not the best approach. 
+* The random effects structure (specifically if we nest paper effects within meta-analysis) makes a big difference to the implied curve shape.
+* Subsetting to only studies with multiple age groups improves performance.
 
 
-# Mixed-effects regression
+# Simple random effects structure
 
-## Simple mixed-effects
-
-Since modeling the entire data set with simple regressions did not result in one model clearly winning out as superior, we moved to mixed-effects regression models. Below is our data set with the curves previously analyzed but separated by meta-analysis.
+Below is our data set separated by meta-analysis with four curve types: 1) linear, 2) logarithmic, 3) quadratic, and 4) both linear and logarithmic predictors.
 
 ```{r, echo=FALSE}
 ggplot(all_data, aes(x = mean_age, y = d_calc, 
@@ -152,7 +71,7 @@ ggplot(all_data, aes(x = mean_age, y = d_calc,
                                               "Linear and Log" = "Linear and Log"))
 ```
 
-As a second step we ran mixed effects regressions where meta-analysis (data set) was included as a random intercept for our four models: 1) linear, 2) logarithmic, 3) quadratic, and 4) joint linear and logarithmic. As for the simple regressions, we then ran Chi-squared tests to compare the different models to one another. Model comparison found the quadratic model to be a better fit than the linear model and the logarithmic model, but no difference between the linear and logarithmic model. The two predictor model (linear and log) also outperformed both the single predictor linear model and the single predictor logarithmic model.
+We ran mixed effects regressions where meta-analysis (data set) was included as a random intercept for our four models. We then ran Chi-squared tests to compare the different models to one another. Model comparison found the quadratic model to be a better fit than the linear model and the logarithmic model, but no difference between the linear and logarithmic model. The two predictor model (linear and log) also outperformed both the single predictor linear model and the single predictor logarithmic model.
 
 ```{r}
 lin_lmer <- lmer(d_calc ~ mean_age + 
@@ -187,7 +106,7 @@ kable(anova(lin_lmer, lin_log_lmer))
 kable(anova(log_lmer, lin_log_lmer))
 ```
 
-Focusing on the linear, log, and two predictor models, we built predictions for all complete meta-analyses. The plot separated by meta analysis is presented below. The linear and two predictor models are pretty similar, mainly being different at very early ages.
+Focusing on the linear, log, and two predictor (linear and log) models, we built predictions for all complete meta-analyses. The plot separated by meta-analysis is presented below. The linear and two predictor models are pretty similar, mainly being different at very early ages.
 
 ```{r}
 all_data_preds <- all_data %>%
@@ -218,9 +137,10 @@ ggplot(all_data_preds, aes(x = mean_age, y = d_calc)) +
 
 Overall this method looks pretty good. It seems like the linear predictor in the two predictor model is smoothing the logs at the edges, and the random effects are working to capture cross data set variability. 
 
-## Complex mixed-effects (nested paper effects)
 
-Since adding meta-analysis as a random effect appeared to improve the model we decided to expand our random effects structure to include paper (unique_ID) nested in meta-analysis (data set) to capture the fact that a given meta-analysis has a specific set of papers, and may have multiple entries from the same paper. Here we focused on the two predictor model. The simpler random effects model from above is repeated here for easy comparison. A Chi-squared test finds a significant difference between the models, with the model with the more complex random effects structure having a lower AIC.
+# Complex random effects structure (nested paper effects)
+
+We decided to expand our random effects structure to include paper (unique_ID) nested in meta-analysis (data set) to capture the fact that a given meta-analysis has a specific set of papers, and may have multiple entries from the same paper. Here we focused on the two predictor model. The simpler random effects model from above is repeated here for easy comparison. A Chi-squared test finds a significant difference between the models, with the model with the more complex random effects structure having a lower AIC.
 
 ```{r}
 lin_log_paper_lmer <- lmer(d_calc ~ mean_age + log(mean_age) + 
@@ -258,7 +178,8 @@ ggplot(all_data_preds, aes(x = mean_age, y = d_calc)) +
                                                  "Linear and Log Paper"= "Linear and Log Paper"))
 ```
 
-## Complex mixed-effects (random slope)
+
+# Complex random effects structure (random slope)
 
 Another way to make the random effects structure more complex is to add a random slope to the model. Two more models were built with a random slope by mean age log transformed, one without the nesting of paper, and one with the nesting of paper. Summaries of the new models with the random slope and the previous models without the random slope are below. Model comparison found that the model with nested structure and the slope was better than the simplest model (no nesting, no slope). The model with both the nested structure and the slope was also better than than the model with only the slope. Based on this it appears that the best model is one that includes both the nested random effects structure and a random slope of mean age log transformed.
 
@@ -322,7 +243,8 @@ ggplot(all_data_preds, aes(x = mean_age, y = d_calc)) +
                                                  "Linear and Log Paper Slope" = "Linear and Log Paper Slope"))
 ```
 
-## Subset to only those papers with multiple ages
+
+# Subset to only those papers with multiple ages
 
 One concern with using a random slope with meta-analysis nested by paper is that not all studies included more than one age group. To be sure that our random slope is really appropriate, here we look at only papers where more than one age group was tested.
 
@@ -417,4 +339,4 @@ ggplot(multiage_3_data, aes(x = mean_age, y = d_calc)) +
 
 # Conclusions
 
-In this report we sought to find the best curve to describe developmental data. We found that, regarding predictors, the best fit of the data appears to be a model that includes both mean age and mean age log transformed as predictors. We further improved the curve by using mixed-effects regressions. We found that a more complicated random effects structure was best by: 1) nesting paper in meta-analysis, and 2) including a random slope by mean age log transformed. This structure was most appropriate when we only looked at papers that had at least two or three age groups, to ensure the random slope applied to all data analyzed.
+In this report we sought to find the best curve to describe developmental data. We found that, regarding predictors, the best fit of the data appears to be a model that includes both mean age and mean age log transformed as predictors. We further improved the curve by using complex random effects structures in our regressions. We found that a more complicated random effects structure was best by: 1) nesting paper in meta-analysis, and 2) including a random slope by mean age log transformed. This structure was most appropriate when we only looked at papers that had at least two or three age groups, to ensure the random slope applied to all data analyzed.
