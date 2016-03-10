@@ -55,7 +55,8 @@ tab_overview <- tabItem(
 tab_documentation <- tabItem(
   tabName = "documentation",
   tabsetPanel(
-    tabPanel("Overview", includeRmd("overview.Rmd", list("datasets" = datasets)),
+    tabPanel("Overview",
+             includeRmd("overview.Rmd", list("datasets" = datasets)),
              class = "tab-pane-spaced"),
     tabPanel("Specification", #includeRmd("spec.Rmd"),
              h3("Required fields"),
@@ -77,7 +78,8 @@ tab_visualizations <- tabItem(
     column(
       width = 6,
       box(width = NULL, status = "danger",
-          downloadButton("download_data", "Download data", class = "btn-xs pull-right"),
+          downloadButton("download_data", "Download data",
+                         class = "btn-xs pull-right"),
           br(),
           selectInput("dataset_name", label = "Dataset",
                       choices = datasets$name),
@@ -110,16 +112,29 @@ tab_visualizations <- tabItem(
     ),
     column(
       width = 6,
-      fluidRow(valueBoxOutput("studies_box"),
-               valueBoxOutput("effect_size_box"),
-               valueBoxOutput("effect_size_var_box")),
-      fluidRow(box(width = NULL, status = "danger",
-                   fluidRow(
-                     column(width = 10,
-                            p(strong("Forest plot"), "of effect sizes and meta-analysis model estimates")),
-                     column(width = 2,
-                            downloadButton("download_forest", "Save", class = "btn-xs pull-right"))),
-                   plotOutput("forest", height = "auto")))
+      fluidRow(
+        valueBoxOutput("studies_box"),
+        valueBoxOutput("effect_size_box"),
+        valueBoxOutput("effect_size_var_box")),
+      fluidRow(
+        box(width = NULL, status = "danger",
+            fluidRow(
+              column(
+                width = 10,
+                p(strong("Forest plot"),
+                  "of effect sizes and meta-analysis model estimates")),
+              column(
+                width = 2,
+                downloadButton("download_forest", "Save",
+                               class = "btn-xs pull-right"))),
+            column(
+              width = 4,
+              selectInput("forest_sort", label = "Sort order",
+                        choices = c("model fit" = "effects",
+                                    "model estimate" = "estimate",
+                                    "alphabetical" = "unique_ID",
+                                    "chronological" = "year"))),
+            plotOutput("forest", height = "auto")))
     )
   )
 )

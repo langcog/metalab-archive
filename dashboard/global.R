@@ -3,6 +3,7 @@ library(dplyr)
 library(yaml)
 library(lazyeval)
 library(purrr)
+library(stringr)
 
 fields <- yaml.load_file("../metadata/spec.yaml")
 reports <- fromJSON("../metadata/reports.json")
@@ -15,19 +16,20 @@ includeRmd <- function(path, shiny_data = NULL) {
   return(HTML(html))
 }
 
-cached_data <- list.files("../data/") %>% map(~paste0("data/", .x)) %>% unlist()
+cached_data <- list.files("../data/") %>% map_chr(~paste0("data/", .x))
 
 datasets <- fromJSON("../metadata/datasets.json") %>%
   filter(filename %in% cached_data)
 
 load_dataset <- function(filename) {
 
-  print(paste0("../", filename))
   dataset_contents <- read.csv(paste0("../", filename),
                                stringsAsFactors = FALSE) %>%
     mutate(filename = filename,
            response_mode_exposure_phase = sprintf(
-             "%s, %s", response_mode, exposure_phase)
+             "%s, %s", response_mode, exposure_phase),
+           year = ifelse(grepl("submitted", unique_ID), Inf,
+                         str_extract(unique_ID, "([:digit:]{4})"))
     )
 
   # Coerce each field's values to the field's type

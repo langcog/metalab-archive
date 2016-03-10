@@ -168,21 +168,26 @@ shinyServer(function(input, output, session) {
              estimate.cih = p$ci.ub,
              identity = 1) %>%
       left_join(mutate(data(), unique_ID = make.unique(unique_ID))) %>%
-      arrange(desc(effects)) %>%
+      arrange_(.dots = list(sprintf("desc(%s)", input$forest_sort),
+                            "desc(effects)")) %>%
       mutate(unique_ID = factor(unique_ID, levels = unique_ID))
+
+    grp <- mod_group()
+    if (is.null(grp)) grp <- "all_mod"
+    labels <- if (is.null(mod_group())) NULL else
+      setNames(paste(data()[[grp]], "  "), data()[[grp]])
 
     qplot(unique_ID, effects, ymin = effects.cil, ymax = effects.cih,
           geom = "linerange",
           data = forest_data) +
       geom_point(aes(y = effects, size = n)) +
-      geom_pointrange(aes(x = unique_ID,
-                          y = estimate,
-                          ymin = estimate.cil,
-                          ymax = estimate.cih),
-                      col = "red") +
+      geom_pointrange(aes_string(x = "unique_ID", y = "estimate",
+                                 ymin = "estimate.cil", ymax = "estimate.cih",
+                                 colour = grp)) +
       coord_flip() +
-      scale_size_continuous(guide = FALSE) + #name = "N") +
-      scale_colour_manual(values = c("data" = "black", "model" = "red")) +
+      scale_size_continuous(guide = FALSE) +
+      scale_colour_solarized(name = "", labels = labels,
+                             guide = if (grp == "all_mod") FALSE else "legend") +
       xlab("") +
       ylab("Effect Size")
   }
