@@ -8,9 +8,9 @@ suppressMessages(suppressWarnings({
   library(Hmisc)
 }))
 
-source('scripts/compute_es.R')
-datasets <- fromJSON(txt = "datasets.json")
-fields <- yaml.load_file("spec.yaml")
+source("scripts/compute_es.R")
+datasets <- fromJSON(txt = "metadata/datasets.json")
+fields <- yaml.load_file("metadata/spec.yaml")
 
 
 # Validate dataset's values for a given field
