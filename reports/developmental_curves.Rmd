@@ -59,7 +59,7 @@ ggplot(all_data, aes(x = mean_age, y = d_calc,
   geom_smooth(method="lm", formula = y ~ x + log(x), 
               aes(col = "Linear and Log"),
               se = FALSE) + 
-  facet_wrap(~ dataset, scales = "free") + 
+  facet_wrap(~ short_name, scales = "free") + 
   geom_hline(yintercept = 0, lty = 2, col = "black") + 
   xlab("Mean age in days") +
   ylab("d (original and calculated)") +
@@ -110,7 +110,7 @@ Focusing on the linear, log, and two predictor (linear and log) models, we built
 
 ```{r}
 all_data_preds <- all_data %>%
-  select(dataset, d_calc, d_var_calc, mean_age, unique_ID) %>%
+  select(dataset, short_name, d_calc, d_var_calc, mean_age, unique_ID) %>%
   filter(complete.cases(.)) %>%
   mutate(lin_pred = predict(lin_lmer)) %>%
   mutate(log_pred = predict(log_lmer)) %>%
@@ -123,7 +123,7 @@ ggplot(all_data_preds, aes(x = mean_age, y = d_calc)) +
   geom_line(aes(x = mean_age, y = lin_pred, size = 1, col = "Linear")) + 
   geom_line(aes(x = mean_age, y = log_pred, size = 1, col = "Log")) + 
   geom_line(aes(x = mean_age, y = lin_log_pred, size = 1, col = "Linear and Log")) + 
-  facet_wrap(~ dataset, scales = "free") + 
+  facet_wrap(~ short_name, scales = "free") + 
   geom_hline(yintercept = 0, lty = 2, col = "black") + 
   xlab("Mean age in days") +
   ylab("d (original and calculated)") +
@@ -170,7 +170,7 @@ ggplot(all_data_preds, aes(x = mean_age, y = d_calc)) +
                 col = "Linear and Log")) + 
   geom_line(aes(x = mean_age, y = lin_log_paper_pred, size = 1, 
                 col = "Linear and Log Paper")) + 
-  facet_wrap(~ dataset, scales = "free") + 
+  facet_wrap(~ short_name, scales = "free") + 
   geom_hline(yintercept = 0, lty = 2, col = "black") +
   xlab("Mean age in days") +
   ylab("d (original and calculated)") +
@@ -229,7 +229,7 @@ ggplot(all_data_preds, aes(x = mean_age, y = d_calc)) +
                 col = "Linear and Log Slope")) + 
   geom_line(aes(x = mean_age, y = lin_log_paper_slope_pred, size = 1, 
                 col = "Linear and Log Paper Slope")) + 
-  facet_wrap(~ dataset, scales = "free") + 
+  facet_wrap(~ short_name, scales = "free") + 
   geom_hline(yintercept = 0, lty = 2, col = "black") +
   xlab("Mean age in days") +
   ylab("d (original and calculated)") +
@@ -273,7 +273,7 @@ lin_log_paper_slope_multiage_preds <- predict(lin_log_paper_slope_multiage_lmer,
 
 multiage_data <- multiage_data %>%
   ungroup %>%
-  select(dataset, unique_ID, d_calc, mean_age, d_var_calc, lin_log_pred) %>%
+  select(dataset, short_name, unique_ID, d_calc, mean_age, d_var_calc, lin_log_pred) %>%
   mutate(lin_log_paper_slope_multiage_pred = lin_log_paper_slope_multiage_preds)
 ```
 
@@ -284,7 +284,7 @@ ggplot(multiage_data, aes(x = mean_age, y = d_calc)) +
                 col = "Linear and Log")) + 
   geom_line(aes(x = mean_age, y = lin_log_paper_slope_multiage_pred, size = 1,
                 col = "Linear and Log Paper Slope\n2 Groups")) + 
-  facet_wrap(~ dataset, scales = "free") + 
+  facet_wrap(~ short_name, scales = "free") + 
   geom_hline(yintercept = 0, lty = 2, col = "black") +
   xlab("Mean age in days") +
   ylab("d (original and calculated)") +
@@ -317,7 +317,7 @@ lin_log_paper_slope_multiage_3_preds <- predict(lin_log_paper_slope_multiage_3_l
 
 multiage_3_data <- multiage_3_data %>%
   ungroup %>%
-  select(dataset, unique_ID, d_calc, mean_age, d_var_calc, lin_log_pred) %>%
+  select(dataset, short_name, unique_ID, d_calc, mean_age, d_var_calc, lin_log_pred) %>%
   mutate(lin_log_paper_slope_multiage_3_pred = lin_log_paper_slope_multiage_3_preds)
 ```
 
@@ -328,7 +328,7 @@ ggplot(multiage_3_data, aes(x = mean_age, y = d_calc)) +
                 col = "Linear and Log")) + 
   geom_line(aes(x = mean_age, y = lin_log_paper_slope_multiage_3_pred, size = 1,
                 col = "Linear and Log Paper Slope\n3 Groups")) + 
-  facet_wrap(~ dataset, scales = "free") + 
+  facet_wrap(~ short_name, scales = "free") + 
   geom_hline(yintercept = 0, lty = 2, col = "black") +
   xlab("Mean age in days") +
   ylab("d (original and calculated)") +
