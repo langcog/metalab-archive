@@ -6,5 +6,9 @@
   {
     "title": "Reproducibility analyses",
     "src": "../reports/reproducibility.Rmd"
+  },
+  {
+    "title": "P-curve analyses",
+    "src": "../reports/p-curve.Rmd"
   }
 ]
