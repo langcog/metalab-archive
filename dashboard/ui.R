@@ -13,7 +13,12 @@ sidebar <- dashboardSidebar(
     menuItem("Power Analysis", tabName = "power",
              icon = icon("flash", lib = "glyphicon")),
     menuItem("Reports", tabName = "reports",
-             icon = icon("folder-open", lib = "glyphicon"))
+             icon = icon("folder-open", lib = "glyphicon"),
+             map(reports, function(report) {
+               menuSubItem(report$title, tabName = report$title)
+             })),
+    menuItem("Source code", icon = icon("file-code-o"),
+             href = "https://github.com/langcog/metalab/")
   )
 )
 
@@ -34,15 +39,15 @@ tab_overview <- tabItem(
     )
   ),
   br(),
-  h3("Meta-analyses currently in MetaLab:"),
+  #h3("Meta-analyses currently in MetaLab:"),
   fluidRow(
     map(1:nrow(datasets), function(i) {
       dataset <- datasets[i,]
       box(
-        width = 6,
+        width = 6, status = "danger", solidHeader = TRUE,
         fluidRow(
-          column(width = 3, img(src = dataset$src, width = 100)),
-          column(width = 9, h3(dataset$name))
+          column(width = 3, img(src = dataset$src, height = 70, width = 110)),
+          column(width = 9, h4(strong(dataset$name)))
         )
       )
     })
@@ -58,9 +63,9 @@ person_content <- function(person) {
       h4(strong(person$name)), person$affiliation, br(),
       a(person$email, href = sprintf("mailto:%s", person$email)), br(),
       tags$small(
-      map(unlist(strsplit(person$tags, ", ")),
-          ~list(code(.x), br())) %>%
-        flatten()
+        map(unlist(strsplit(person$tags, ", ")),
+            ~list(code(.x), br())) %>%
+          flatten()
       )
   )
 }
@@ -219,22 +224,22 @@ tab_power <- tabItem(
 #############################################################################
 # REPORTS
 
-tabs <- map(1:nrow(reports),
-            ~tabPanel(reports[.x,]$title, includeRmd(reports[.x,]$src),
-                      class = "tab-pane-spaced"))
-
-tab_reports <- tabItem(
-  tabName = "reports",
-  do.call(tabsetPanel, tabs)
-)
+report_tabs <- map(reports, function(report) {
+  tabItem(
+    tabName = report$title,
+    tags$iframe(src = sprintf("langcog.github.io/metalab/%s.html", report$src),
+                width = 1000, height = 1200, border = 0))
+})
 
 #############################################################################
-# OTHER FORMATTING
+# DASHBOARD STRUCTURE
+
+tabs <- c(list(tab_overview, tab_documentation, tab_visualizations, tab_power),
+          report_tabs)
 
 body <- dashboardBody(
   includeCSS("www/custom.css"),
-  tabItems(tab_overview, tab_documentation, tab_visualizations,
-           tab_power, tab_reports)
+  do.call(tabItems, tabs)
 )
 
 dashboardPage(header, sidebar, body, title = "MetaLab", skin = "red")

@@ -2,21 +2,13 @@
 title: "Metalab Reproducibility Analyses"
 author: "Molly Lewis and Christina Bergmann"
 date: "`r Sys.Date()`"
-output: 
-  html_document:
-    toc: true
-    number_sections: true
 ---
   
 # Introduction
-```{r, setup, include =FALSE}
-library(knitr)
-opts_chunk$set(fig.width=8, fig.height=5, 
-               echo=TRUE, warning=FALSE,
-               message=FALSE, cache=TRUE)
-
-rm(list=ls())
-library(knitr)
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, cache = TRUE)
+ggplot2::theme_set(langcog::theme_mikabr(base_family = "Ubuntu"))
+source("../dashboard/global.R", chdir = TRUE)
 library(metafor)
 library(dplyr)
 library(tidyr)
@@ -24,12 +16,6 @@ library(ggplot2)
 library(stringr)
 library(purrr)
 library(langcog)
-```
-
-```{r}
-# load data
-setwd('../dashboard/')
-source('global.R')
 ```
 
 We currently have 6 datasets included: IDS, label advantage, mutual exclusivity, phonemic discrimination native, phonemic discrimination non-native, and word segmentation.

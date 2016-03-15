@@ -6,13 +6,13 @@ library(purrr)
 library(stringr)
 
 fields <- yaml.load_file("../metadata/spec.yaml")
-reports <- fromJSON("../metadata/reports.json")
+reports <- yaml.load_file("../metadata/reports.yaml")
 people <- yaml.load_file("../metadata/people.yaml")
 
 includeRmd <- function(path, shiny_data = NULL) {
   shiny:::dependsOnFile(path)
   contents <- readLines(path, warn = FALSE)
-  html <- knitr::knit2html(text = contents, fragment.only = TRUE)
+  html <- knitr::knit2html(text = contents, fragment.only = TRUE, quiet = TRUE)
   Encoding(html) <- "UTF-8"
   return(HTML(html))
 }
