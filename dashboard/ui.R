@@ -15,7 +15,7 @@ sidebar <- dashboardSidebar(
     menuItem("Reports", tabName = "reports",
              icon = icon("folder-open", lib = "glyphicon"),
              map(reports, function(report) {
-               menuSubItem(report$title, tabName = report$title)
+               menuSubItem(report$title, tabName = report$file)
              })),
     menuItem("Source code", icon = icon("file-code-o"),
              href = "https://github.com/langcog/metalab/")
@@ -225,10 +225,11 @@ tab_power <- tabItem(
 # REPORTS
 
 report_tabs <- map(reports, function(report) {
+  report_url <- sprintf("https://rawgit.com/langcog/metalab/gh-pages/reports/%s.html",
+                        report$file)
   tabItem(
-    tabName = report$title,
-    tags$iframe(src = sprintf("langcog.github.io/metalab/%s.html", report$src),
-                width = 1000, height = 1200, border = 0))
+    tabName = report$file,
+    tags$iframe(src = report_url, width = 1000, height = 1200, frameBorder = 0))
 })
 
 #############################################################################
