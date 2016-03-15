@@ -233,6 +233,11 @@ shinyServer(function(input, output, session) {
   }
 
   output$funnel <- renderPlot(funnel())
+  output$funnel_test <- renderText({
+    funnel_test <- regtest.rma(model())
+    sprintf("Regression test for funnel plot asymmetry: z = %.3g, p = %.3g",
+            funnel_test$zval, funnel_test$pval)
+  })
 
 
   #############################################################################

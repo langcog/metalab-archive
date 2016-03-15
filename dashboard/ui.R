@@ -108,7 +108,8 @@ tab_visualizations <- tabItem(
             column(width = 2,
                    downloadButton("download_funnel", "Save",
                                   class = "btn-xs pull-right"))),
-          plotOutput("funnel"))
+          plotOutput("funnel"),
+          div(class = "text-center", textOutput("funnel_test")))
     ),
     column(
       width = 6,
