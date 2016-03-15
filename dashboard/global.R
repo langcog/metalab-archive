@@ -11,10 +11,8 @@ people <- yaml.load_file("../metadata/people.yaml")
 
 includeRmd <- function(path, shiny_data = NULL) {
   shiny:::dependsOnFile(path)
-  contents <- readLines(path, warn = FALSE)
-  html <- knitr::knit2html(text = contents, fragment.only = TRUE, quiet = TRUE)
-  Encoding(html) <- "UTF-8"
-  return(HTML(html))
+  rmarkdown::render(path, quiet = TRUE)
+  includeHTML(gsub(".Rmd", ".html", path))
 }
 
 cached_data <- list.files("../data/") %>% map_chr(~paste0("data/", .x))

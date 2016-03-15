@@ -1,6 +1,6 @@
 ---
 output:
-  html_document
+  html_fragment
 ---
 
 ```{r include=FALSE, echo=FALSE}
@@ -32,8 +32,3 @@ for (i in 1:nrow(datasets)) {
 ```
 
 Here are some `r a("instructional materials", target = "_blank", href = "https://docs.google.com/document/d/1rJDaBLTDpYcCeu0LH9E13qnC_ROarGyPXaRT-UBGBhE/edit")` on creating new meta-analyses.
-
-Created by Molly Lewis, Mika Braginsky, Christina Bergmann, Sho Tsuji,
-Alejandrina Cristia, and Michael C. Frank.
-
-Contact: mll@stanford.edu

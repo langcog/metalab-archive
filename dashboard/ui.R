@@ -19,6 +19,12 @@ sidebar <- dashboardSidebar(
              })),
     menuItem("Source code", icon = icon("file-code-o"),
              href = "https://github.com/langcog/metalab/")
+  ),
+  tags$footer(
+    class = "footer",
+    p("Questions or comments?", br(), a("metalab-project@googlegroups.com",
+                                        href = "mailto:metalab-project@googlegroups.com"),
+      class = "small", align = "center")
   )
 )
 
