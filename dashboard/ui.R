@@ -52,11 +52,24 @@ tab_overview <- tabItem(
 #############################################################################
 # DOCUMENTATION
 
+person_content <- function(person) {
+  box(width = 3, align = "center", status = "danger", solidHeader = TRUE,
+      img(src = person$image, width = 180, height = 180),
+      h4(strong(person$name)), person$affiliation, br(),
+      a(person$email, href = sprintf("mailto:%s", person$email)), br(),
+      tags$small(
+      map(unlist(strsplit(person$tags, ", ")),
+          ~list(code(.x), br())) %>%
+        flatten()
+      )
+  )
+}
+
 tab_documentation <- tabItem(
   tabName = "documentation",
   tabsetPanel(
     tabPanel("Overview",
-             includeRmd("overview.Rmd", list("datasets" = datasets)),
+             includeRmd("rmarkdown/overview.Rmd", list("datasets" = datasets)),
              class = "tab-pane-spaced"),
     tabPanel("Specification", #includeRmd("spec.Rmd"),
              h3("Required fields"),
@@ -65,7 +78,17 @@ tab_documentation <- tabItem(
              DT::dataTableOutput("opt_table"),
              h3("Derived fields"),
              DT::dataTableOutput("drv_table"),
-             class = "tab-pane-spaced")
+             class = "tab-pane-spaced"),
+    tabPanel("People",
+             h3("Meet the MetaLab team:"), br(),
+             map(split(people, ceiling(seq_along(people)/4)),
+                 function(people_row) {
+                   fluidRow(
+                     map(people_row[1:length(people_row)], person_content)
+                   )
+                 }),
+             class = "tab-pane-spaced"
+    )
   )
 )
 
@@ -131,10 +154,10 @@ tab_visualizations <- tabItem(
             column(
               width = 4,
               selectInput("forest_sort", label = "Sort order",
-                        choices = c("model fit" = "effects",
-                                    "model estimate" = "estimate",
-                                    "alphabetical" = "unique_ID",
-                                    "chronological" = "year"))),
+                          choices = c("model fit" = "effects",
+                                      "model estimate" = "estimate",
+                                      "alphabetical" = "unique_ID",
+                                      "chronological" = "year"))),
             plotOutput("forest", height = "auto")))
     )
   )

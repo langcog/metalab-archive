@@ -7,6 +7,7 @@ library(stringr)
 
 fields <- yaml.load_file("../metadata/spec.yaml")
 reports <- fromJSON("../metadata/reports.json")
+people <- yaml.load_file("../metadata/people.yaml")
 
 includeRmd <- function(path, shiny_data = NULL) {
   shiny:::dependsOnFile(path)
