@@ -27,7 +27,7 @@ load_dataset <- function(filename) {
                                stringsAsFactors = FALSE) %>%
     mutate(filename = filename,
            response_mode_exposure_phase = sprintf(
-             "%s, %s", response_mode, exposure_phase),
+             "%s \n %s", response_mode, exposure_phase),
            year = ifelse(grepl("submitted", unique_ID), Inf,
                          str_extract(unique_ID, "([:digit:]{4})"))
     )
