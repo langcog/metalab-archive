@@ -13,12 +13,6 @@ body {
   font-size: 400%;
 }
 
-.tab-pane-spaced {
-  background: #fff;
-  margin-left: 1px;
-  padding: 10px 20px;
-}
-
 .sidebar-toggle {
   visibility: hidden;
 }
@@ -32,4 +26,8 @@ body {
   bottom: 0;
   width: 100%;
   height: 60px;
+}
+
+.nav-tabs-custom .nav-tabs li.active {
+  border-top-color: red;
 }
