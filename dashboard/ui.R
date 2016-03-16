@@ -4,7 +4,7 @@ header <- dashboardHeader(title = "MetaLab")
 
 sidebar <- dashboardSidebar(
   sidebarMenu(
-    menuItem("Overview", tabName = "overview",
+    menuItem("About", tabName = "about",
              icon = icon("home", lib = "glyphicon")),
     menuItem("Documentation", tabName = "documentation",
              icon = icon("file", lib = "glyphicon")),
@@ -19,43 +19,17 @@ sidebar <- dashboardSidebar(
              })),
     menuItem("Source code", icon = icon("file-code-o"),
              href = "https://github.com/langcog/metalab/")
-  )
-)
-
-#############################################################################
-# OVERVIEW
-
-tab_overview <- tabItem(
-  tabName = "overview",
-  wellPanel(
-    div(class = "text-center",
-        fluidRow(column(
-          width = 12,
-          h1("MetaLab", class = "jumbo"),
-          p(class = "lead", "A tool for power analysis and experimental",
-            br(), "planning in language acquisition research")
-        )
-        )
-    )
   ),
-  br(),
-  #h3("Meta-analyses currently in MetaLab:"),
-  fluidRow(
-    map(1:nrow(datasets), function(i) {
-      dataset <- datasets[i,]
-      box(
-        width = 6, status = "danger", solidHeader = TRUE,
-        fluidRow(
-          column(width = 3, img(src = dataset$src, height = 70, width = 110)),
-          column(width = 9, h4(strong(dataset$name)))
-        )
-      )
-    })
+  tags$footer(
+    class = "footer",
+    p("Questions or comments?", br(), a("metalab-project@googlegroups.com",
+                                        href = "mailto:metalab-project@googlegroups.com"),
+      class = "small", align = "center")
   )
 )
 
 #############################################################################
-# DOCUMENTATION
+# ABOUT
 
 person_content <- function(person) {
   box(width = 3, align = "center", status = "danger", solidHeader = TRUE,
@@ -70,30 +44,57 @@ person_content <- function(person) {
   )
 }
 
+tab_about <- tabItem(
+  tabName = "about",
+  wellPanel(
+    div(class = "text-center",
+        fluidRow(column(
+          width = 12,
+          h1("MetaLab", class = "jumbo"),
+          p(class = "lead", "A tool for power analysis and experimental",
+            br(), "planning in language acquisition research")
+        )
+        )
+    )
+  ),
+  br(),
+  h3("Meta-analyses currently in MetaLab:"),
+  fluidRow(
+    map(1:nrow(datasets), function(i) {
+      dataset <- datasets[i,]
+      box(
+        width = 6, status = "danger", solidHeader = TRUE,
+        fluidRow(
+          column(width = 3, img(src = dataset$src, height = 70, width = 110)),
+          column(width = 9, h4(strong(dataset$name)))
+        )
+      )
+    })
+  ),
+  h3("Meet the MetaLab team:"), br(),
+  map(split(people, ceiling(seq_along(people)/4)),
+      function(people_row) {
+        fluidRow(
+          map(people_row[1:length(people_row)], person_content)
+        )
+      })
+)
+
+#############################################################################
+# DOCUMENTATION
+
 tab_documentation <- tabItem(
   tabName = "documentation",
-  tabsetPanel(
+  tabBox(width = "100%", status = "danger",
     tabPanel("Overview",
-             includeRmd("rmarkdown/overview.Rmd", list("datasets" = datasets)),
-             class = "tab-pane-spaced"),
-    tabPanel("Specification", #includeRmd("spec.Rmd"),
+             includeRmd("rmarkdown/overview.Rmd", list("datasets" = datasets))),
+    tabPanel("Specification",
              h3("Required fields"),
              DT::dataTableOutput("req_table"),
              h3("Optional fields"),
              DT::dataTableOutput("opt_table"),
              h3("Derived fields"),
-             DT::dataTableOutput("drv_table"),
-             class = "tab-pane-spaced"),
-    tabPanel("People",
-             h3("Meet the MetaLab team:"), br(),
-             map(split(people, ceiling(seq_along(people)/4)),
-                 function(people_row) {
-                   fluidRow(
-                     map(people_row[1:length(people_row)], person_content)
-                   )
-                 }),
-             class = "tab-pane-spaced"
-    )
+             DT::dataTableOutput("drv_table"))
   )
 )
 
@@ -235,7 +236,7 @@ report_tabs <- map(reports, function(report) {
 #############################################################################
 # DASHBOARD STRUCTURE
 
-tabs <- c(list(tab_overview, tab_documentation, tab_visualizations, tab_power),
+tabs <- c(list(tab_about, tab_documentation, tab_visualizations, tab_power),
           report_tabs)
 
 body <- dashboardBody(
