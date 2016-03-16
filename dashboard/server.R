@@ -62,7 +62,7 @@ shinyServer(function(input, output, session) {
 
   mod_group <- reactive({
     if (length(input$moderators) == 0) {
-      NULL
+      "all_mod"
     } else if ("response_mode" %in% input$moderators &
                "exposure_phase" %in% input$moderators) {
       "response_mode_exposure_phase"
@@ -111,17 +111,15 @@ shinyServer(function(input, output, session) {
   ########### SCATTER PLOT ###########
 
   scatter <- function() {
-    grp <- mod_group()
-    if (is.null(grp)) grp <- "all_mod"
-    labels <- if (is.null(mod_group())) NULL else
-      setNames(paste(data()[[grp]], "  "), data()[[grp]])
+    labels <- if (mod_group() == "all_mod") NULL else
+      setNames(paste(data()[[mod_group()]], "  "), data()[[mod_group()]])
     ggplot(data(), aes_string(x = "mean_age_months", y = "d_calc",
-                              colour = grp)) +
+                              colour = mod_group())) +
       geom_jitter(aes(size = n), alpha = 0.5) +
       geom_smooth(method = "lm", se = FALSE) +
       geom_hline(yintercept = 0, linetype = "dashed") +
       scale_colour_solarized(name = "", labels = labels,
-                             guide = if (grp == "all_mod") FALSE else "legend") +
+                             guide = if (mod_group() == "all_mod") FALSE else "legend") +
       scale_size_continuous(guide = FALSE) +
       xlab("\nMean Subject Age (Months)") +
       ylab("Effect Size\n")
@@ -132,23 +130,24 @@ shinyServer(function(input, output, session) {
   ########### VIOLIN PLOT ###########
 
   violin <- function() {
-    grp <- mod_group()
-    if (is.null(grp)) grp <- "all_mod"
-    plt <- ggplot(data(), aes_string(x = grp, y = "d_calc", colour = grp)) +
+    plt <- ggplot(data(), aes_string(x = mod_group(), y = "d_calc",
+                                     colour = mod_group())) +
       geom_violin() +
       geom_jitter(height = 0) +
       geom_hline(yintercept = 0, linetype = "dotted", color = "grey") +
       scale_colour_solarized(name = "", guide = FALSE) +
       xlab("") +
       ylab("Effect Size\n")
-    if (grp == "all_mod") {
+    if (mod_group() == "all_mod") {
       plt + theme(axis.ticks.x = element_blank())
     } else {
       plt
     }
   }
 
-  output$violin <- renderPlot(violin())
+  output$violin <- renderPlot(
+    violin(), width = function() min(length(unique(data()[[mod_group()]])) * 200, 475)
+  )
 
   ########### FOREST PLOT ###########
 
@@ -172,10 +171,8 @@ shinyServer(function(input, output, session) {
                             "desc(effects)")) %>%
       mutate(unique_ID = factor(unique_ID, levels = unique_ID))
 
-    grp <- mod_group()
-    if (is.null(grp)) grp <- "all_mod"
-    labels <- if (is.null(mod_group())) NULL else
-      setNames(paste(data()[[grp]], "  "), data()[[grp]])
+    labels <- if (mod_group() == "all_mod") NULL else
+      setNames(paste(data()[[mod_group()]], "  "), data()[[mod_group()]])
 
     qplot(unique_ID, effects, ymin = effects.cil, ymax = effects.cih,
           geom = "linerange",
@@ -183,11 +180,11 @@ shinyServer(function(input, output, session) {
       geom_point(aes(y = effects, size = n)) +
       geom_pointrange(aes_string(x = "unique_ID", y = "estimate",
                                  ymin = "estimate.cil", ymax = "estimate.cih",
-                                 colour = grp)) +
+                                 colour = mod_group())) +
       coord_flip() +
       scale_size_continuous(guide = FALSE) +
       scale_colour_solarized(name = "", labels = labels,
-                             guide = if (grp == "all_mod") FALSE else "legend") +
+                             guide = if (mod_group() == "all_mod") FALSE else "legend") +
       xlab("") +
       ylab("Effect Size")
   }
@@ -236,6 +233,11 @@ shinyServer(function(input, output, session) {
   }
 
   output$funnel <- renderPlot(funnel())
+  output$funnel_test <- renderText({
+    funnel_test <- regtest.rma(model())
+    sprintf("Regression test for funnel plot asymmetry: z = %.3g, p = %.3g",
+            funnel_test$zval, funnel_test$pval)
+  })
 
 
   #############################################################################

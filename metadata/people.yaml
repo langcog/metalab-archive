@@ -1,0 +1,43 @@
+#----------------
+
+- name:         Christina Bergman
+  email:        chbergma@gmail.com
+  affiliation:  École normale supérieure
+  tags:         word segmentation, reproducibility, p-curves
+  image:        images/people/christina.jpg
+
+- name:         Mika Braginsky
+  email:        mika.br@gmail.com
+  affiliation:  Stanford University
+  tags:         infrastructure
+  image:        images/people/mika.jpg
+
+- name:         Alejandrina Cristia
+  email:        alecristia@gmail.com
+  affiliation:  École normale supérieure
+  tags:         IDS preference
+  image:        images/people/alex.jpg
+
+- name:         Michael C. Frank
+  email:        mcfrank@stanford.edu
+  affiliation:  Stanford University
+  tags:         developmental curves, p-curves
+  image:        images/people/mike.jpg
+
+- name:         Molly Lewis
+  email:        mll@stanford.edu
+  affiliation:  Stanford University
+  tags:         mutual exclusivity, label advantage, reproducibility
+  image:        images/people/molly.jpg
+
+- name:         Page Piccinini
+  email:        page.piccinini@gmail.com
+  affiliation:  École normale supérieure
+  tags:         developmental curves
+  image:        images/people/page.jpg
+
+- name:         Sho Tsuji
+  email:        tsujish@gmail.com
+  affiliation:  École normale supérieure
+  tags:         phonemic discrimination
+  image:        images/people/sho.jpg

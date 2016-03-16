@@ -1,17 +1,16 @@
 ---
 output:
-  html_document:
-    theme: united
+  html_fragment
 ---
 
 ```{r include=FALSE, echo=FALSE}
-library(knitr)
-opts_chunk$set(message = FALSE, warning = FALSE, cache = FALSE)
+library(shiny)
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, cache = FALSE)
 datasets <- shiny_data$datasets
 ```
 
 MetaLab is a research tool for aggregating across studies in the language 
-acquisition literature. Currently, `MetaLab contains
+acquisition literature. Currently, MetaLab contains
 `r as.integer(sum(as.numeric(datasets$num_experiments), na.rm = TRUE))` effect sizes across
 meta-analyses in `r nrow(datasets)` domains of language acquisition, based on
 data from `r as.integer(sum(as.numeric(datasets$num_papers), na.rm = TRUE))` papers collecting
@@ -32,9 +31,4 @@ for (i in 1:nrow(datasets)) {
 }
 ```
 
-Here are some [instructional materials](https://docs.google.com/document/d/1rJDaBLTDpYcCeu0LH9E13qnC_ROarGyPXaRT-UBGBhE/edit) on creating new meta-analyses.
-
-Created by Molly Lewis, Mika Braginsky, Christina Bergmann, Sho Tsuji,
-Alejandrina Cristia, and Michael C. Frank.
-
-Contact: mll@stanford.edu
+Here are some `r a("instructional materials", target = "_blank", href = "https://docs.google.com/document/d/1rJDaBLTDpYcCeu0LH9E13qnC_ROarGyPXaRT-UBGBhE/edit")` on creating new meta-analyses.

@@ -1,22 +1,14 @@
 ---
-title: "Metalab Reproducibility Analyses"
+title: "Reproducibility Analyses"
 author: "Molly Lewis and Christina Bergmann"
 date: "`r Sys.Date()`"
-output: 
-  html_document:
-    toc: true
-    number_sections: true
 ---
   
 # Introduction
-```{r, setup, include =FALSE}
-library(knitr)
-opts_chunk$set(fig.width=8, fig.height=5, 
-               echo=TRUE, warning=FALSE,
-               message=FALSE, cache=TRUE)
-
-rm(list=ls())
-library(knitr)
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, cache = TRUE)
+ggplot2::theme_set(langcog::theme_mikabr(base_family = "Ubuntu"))
+source("../dashboard/global.R", chdir = TRUE)
 library(metafor)
 library(dplyr)
 library(tidyr)
@@ -26,170 +18,11 @@ library(purrr)
 library(langcog)
 ```
 
-```{r}
-# load data
-setwd('../dashboard/')
-source('global.R')
-```
-
-We currently have 6 datasets included: IDS, label advantage, mutual exclusivity, phonemic discrimination native, phonemic discrimination non-native, and word segmentation.
-
-# Sample sizes and exclusions
-
-## How do n's vary as a function of age?
-```{r}
-all = all_data %>%
-  mutate(n_total = ifelse(!is.na(n_2), n_1 + n_2, n_1)) %>%
-  select(dataset, d_calc, 
-         mean_age_1, n_total,
-         n_excluded, num_trials, method)
- 
-ggplot(all, aes(x = mean_age_1, y = n_total, color = dataset)) +
-  geom_point() +
-  geom_smooth(method = "lm") +
-  facet_wrap(~dataset, scales = "free") +
-  theme_bw() +
-  theme(legend.position="none")
-```
-
-## Do n's vary with d's?
-
-```{r}
-ns_ds = all_data %>%
-  mutate(n_total = ifelse(!is.na(n_2), n_1 + n_2, n_1)) %>%
-  select(dataset, d_calc, 
-         mean_age_1, n_total) 
-
-ggplot(ns_ds , aes(y = n_total, x = d_calc, color = dataset)) +
-  geom_point() +
-  geom_smooth(method = "lm") +
-  facet_wrap(~dataset, scales = "free") +
-  theme_bw() +
-  xlab("Effect size") + 
-  theme(legend.position="none")
-```
-
-## Does the number of excluded infants affect effect sizes?
-
-Some issues:
-
-* not here that different data sets use differently names columsn to indicate exclusions ("n_excluded", "n_excluded_1", "n_excluded_fussers")
-* an additional complicaiton: are the exlcusions part of the n?
-* we don't have num_trials for any, but this would be great to look at
-* what's up with the n_excluded > n?
- 
-```{r, fig.width = 10}
-exclusions = all_data %>%
-  filter(!is.na(n_excluded_1) | !is.na(n_excluded)) %>%
-  mutate(n_excluded = ifelse(is.na(n_excluded), n_excluded_1,
-                             n_excluded),
-         n_total = ifelse(!is.na(n_2), n_1 + n_2, n_1)) %>%
-  select(dataset, d_calc, 
-         mean_age_1, n_total,
-         n_excluded, num_trials, method) %>%
-  mutate(prop_excluded = n_excluded/n_total) %>%
-  filter(prop_excluded < 1)
- 
-ggplot(exclusions, aes(x = prop_excluded, y =d_calc ,
-                       color = dataset)) +
-  geom_point() +
-  geom_smooth(method = "lm") +
-  ggtitle("prop. excluded as a function of age") +
-  xlab("proportion excluded") +
-  ylab("d") +
-  theme_bw() 
-```
-
-## Does proportion excluded vary as a function of age? 
-
-Looks like maybe increases. 
-
-```{r Exclusions_nExcluded, fig.width = 10}
-
-ggplot(exclusions, aes(x = mean_age_1, y = prop_excluded,
-                       color = dataset)) +
-  geom_point() +
-  geom_smooth(method = "lm") +
-  ggtitle("prop. excluded as a function of age") +
-  xlab("mean age (months)") +
-  ylab("proportion excluded") +
-  theme_bw() 
-```
-
-
-# Publication Bias
-## Do effect sizes vary as a function of year?
-```{r, fig.width = 10}
-years.df = all_data %>%
-  mutate(year = as.numeric(unlist(lapply(strsplit(unlist(all_data$unique_ID), "[^0-9]+"),  function(x) unlist(x)[2])))) 
-
-#years.sig = rep('', length(unique(years.df$dataset)))
-#for (i in 1:length(unique(years.df$dataset))) {
-#  my_data = all_data[all_data$dataset ==  datasets[i],]
-#  m = rma(d ~ year + mean_age_1, vi = d_var, slab = as.character(unique_ID), data = #my_data, method = "REML")
-#  years.sig[i]  = ifelse(m$pval[2] <.05, "*", years.sig)
-#}
-#ann_text <- data.frame(sig = years.sig, lab = "Text",
-#                       df = unique(years.df$dataset))
-
-ggplot(years.df , aes(x = year, y = d_calc, color = dataset)) +
-  geom_point() +
-  #scale_colour_gradientn(colours = topo.colors(10)) +
-  geom_smooth(method = "lm") +
-  facet_wrap(~ dataset, scales = "free_y") +
-  theme_bw() +
-  #geom_text(data = ann_text,aes(label = sig), x = 2000, y = 1) +
-  xlab("published year") +
-  theme(legend.position="none")
-
-rma(d_calc ~ year + mean_age_1 + dataset, vi = d_var_calc, data = years.df, method = "REML")
-
-```
-
-## Does age vary as a function of year?
-```{r, fig.width = 10}
-ggplot(years.df , aes(x = year, y = mean_age_1, color = dataset)) +
-  geom_point() +
-  geom_smooth(method = "lm") +
-  facet_wrap(~ dataset, scales = "free_y") +
-  theme_bw() +
-  #geom_text(data = ann_text,aes(label = sig), x = 2000, y = 1) +
-  xlab("published year")  +
-    theme(legend.position="none")
-
-```
-
-
-
-## Does effect size vary as a function of number of authors?
-Not really enough data here. Controling for age, though, studies with more authors have bigger effect size.
-```{r, fig.width = 10}
-all_data$short_cite2 = str_replace_all(all_data$short_cite, " ", "")
-all_data$short_cite2 = str_replace_all(all_data$short_cite2, "&", ",")
-all_data$num_authors = unlist(lapply(lapply(all_data$short_cite2, 
-                                     function(x) unlist(strsplit(x, ',+'))), 
-                              function(x) length(which(x != ""))))
-all_data$num_authors =  as.numeric(ifelse(grepl("et al", all_data$short_cite), "NA",
-                                          all_data$num_authors)) # deal with miss coded short_cites (et al.)
-all_data$short_cite2 <- NULL
-
-all_data %>%
-  ggplot(aes(x = num_authors, y = d_calc, colour = dataset)) +
-  geom_point() + 
-  geom_smooth(method = "lm") +
-  facet_wrap(~dataset, scales = "free_y") +
-  theme_bw()+
-  theme(legend.position="none")
-
-
-rma(d_calc ~ num_authors + mean_age_1 + dataset, vi = d_var_calc, 
-          data = all_data, method = "REML")
-```
-
+To draw inferences from null hypothesis testing, a range of assumptions must be made. Here we look at our database to examine the extent to which these assumptions are valid within the language acquisition literature. We find broadly that these assumptions are merited. 
 
 # Data availability/reporting standards
-Here we're intersted in describing the extent to which papers report all statistics that are desirable from the perspective of meta-analysis (i.e. t/F, M, SD, d)
-```{r, fig.width = 10}
+An important component of reproducbility is complete description  of data in published report. This is critical both for evaluating an individual study, but also for the purposes of a cumulative science (e.g. meta-analysis). Here we explore the extent to which papers report desired statistics such as test-statistics mean and standard deviation, effect sizes and test statistics.
+```{r, fig.width = 11}
 counts = all_data %>%
             summarise(test_statistic = sum(!is.na(t) | !is.na(F) | !is.na(r)),
                       means = sum(!is.na(x_1)),
@@ -218,11 +51,11 @@ ggplot(counts) +
               order = coded), 
            stat = "identity") + 
   ylim(0,1) + 
-  ylab("Number coded") + 
+  ylab("Proportion coded") + 
   xlab("Coded variable") + 
   ggtitle("All data") + 
-   annotate("text", x = 1, y = .9, 
-            label = paste("N =", counts$total[1]), size = 6) + 
+   #annotate("text", x = 1, y = .9, 
+    #        label = paste("N =", counts$total[1]), size = 6) + 
   scale_fill_manual(values=c( "lightgreen", "grey")) + 
   geom_text(aes(label = n_lab, x = coded_variable, y = n/total -.06) )+
   theme_bw() + 
@@ -230,12 +63,15 @@ ggplot(counts) +
         panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(),
        axis.line = element_line(colour = "black"),
-       text = element_text(size=20))
+       text = element_text(size=20),
+       axis.text.x = element_text(angle = 30, hjust = 1))
+
 
 ```
+This analysis is in practice difficult because our many of our source MA's include effect sizes that were included by the coders. Similarly, the proportion of coded gender in many cases reflects only that the coder chose not to code that, not that this information was not present. Nevertheless, this analysis gives us a good sense of the the proportion of papers that report means and standard deviations (about two-thirds).
 
 By MA
-```{r, fig.width = 10}
+```{r, fig.width = 10, fig.height = 8}
 counts = all_data %>%
             group_by(dataset) %>%
             summarise(test_statistic = sum(!is.na(t) | !is.na(F)),
@@ -267,7 +103,7 @@ ggplot(counts, aes(fill = coded)) +
            position = "fill") + 
   facet_wrap(~dataset, nrow=3, ncol=2) +
   ylim(0,1) + 
-  ylab("Number coded") + 
+  ylab("Proportion coded") + 
   xlab("Coded variable") + 
   scale_fill_manual(values = c("lightgreen", "grey")) + 
   geom_text(aes(label = n_lab,
@@ -281,22 +117,191 @@ ggplot(counts, aes(fill = coded)) +
         text = element_text(size=20),
         strip.background  = element_blank(), 
         axis.text.x = element_text(angle = 30, hjust = 1))
-
-#annotate("text", x = 1, y = .9, 
-           # label = paste("N =", totals), size = 6) + 
-#totals_text = all_data %>%
-      #      group_by(dataset) %>%
-      #     summarise(total = n())%>%
-      #     mutate(coded_variable = 1,
-      #             lab = paste("N =", total))
 ```
+
+# Sample sizes and exclusions
+
+Here we examine how sample sizes and exclusion rates are related to other variables of inteerest.
+
+## How do sample sizes vary as a function of age?
+Given that effect size broadly increases with age, we would expect sample sizes to decrease. Broadly, the data are consistent with this. Phonemic discriminatiion (native) is an exception, but this may be due to differences in method (?).
+```{r, fig.width = 10}
+all = all_data %>%
+  mutate(n_total = ifelse(!is.na(n_2), n_1 + n_2, n_1)) %>%
+  select(dataset, d_calc, 
+         mean_age_1, n_total,
+         n_excluded, num_trials, method)
+ 
+ggplot(all, aes(x = mean_age_1, y = n_total, color = dataset)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  facet_wrap(~dataset, scales = "free") +
+  theme_bw() +
+  theme(legend.position="none")
+```
+
+## Do sample sizes vary with effect sizes?
+Here we explore a more direct test that sample sizes are coupled with effect sizes. We test this by looking at the relationship between sample sizes and effect size, after residualizing out the effect of (1) phenomenon, (2) age, and (3) method.
+
+Compute residuals.
+```{r}
+full.model = rma(d_calc ~ method + dataset + mean_age_1, 
+        vi = d_var_calc, data = all_data, method = "REML")
+
+residuals = rstandard(full.model)
+
+all_data = all_data %>%
+            bind_cols(as.data.frame(residuals$resid),
+                      as.data.frame(residuals$z)) %>%
+            rename(residual.d = `residuals$resid`, 
+                   residual.d.s = `residuals$z`) # standardized
+```
+
+```{r, fig.width = 10}
+ns_ds = all_data %>%
+  mutate(n_total = ifelse(!is.na(n_2), n_1 + n_2, n_1)) %>%
+  select(dataset, d_calc, residual.d.s,
+         mean_age_1, n_total) 
+
+ggplot(ns_ds , aes(y = n_total, x = residual.d.s, color = dataset)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_bw() +
+  xlab("Residual effect size") + 
+  facet_wrap(~dataset, scales = "free") +
+  theme(legend.position="none")
+```
+
+If sample size and effect sizes were appropriately coupled, we should expect sample to decrease as effect size increases. Across 3 meta-analyses, we find the opposite pattern: sample size increases with effect size. This suggest that researchers either are not prospectively planning their sample sizes based on effect size estimates. 
+
+## Does the number of excluded infants affect effect sizes?
+Here we look at whether the number of excluded infants varies as a function of effect size. If infants are excluded based on an indepenent criteria, and before looking at the data, there should be no relationship. Again, we use residualized effect sizes.
+
+However, there are some techincal issues we need to address before properly doing this analysis:
+
+* not here that different data sets use differently names columsn to indicate exclusions ("n_excluded", "n_excluded_1", "n_excluded_fussers")
+* an additional complicaiton: are the exlcusions part of the n?
+* we don't have num_trials for any, but this would be great to look at
+* what's up with the n_excluded > n?
+
+Compute residuals.
+```{r}
+age.method = rma(mean_age_1 ~ method + dataset, 
+        vi = d_var_calc, data = all_data, method = "REML")
+
+residuals.age.method = rstandard(age.method)
+
+all_data = all_data %>%
+            bind_cols(as.data.frame(residuals.age.method$resid),
+                      as.data.frame(residuals.age.method$z)) %>%
+            rename(residual.d.age = `residuals.age.method$resid`, 
+                   residual.d.s.age = `residuals.age.method$z`) # standardized
+
+```
+ 
+```{r, fig.width = 10}
+exclusions = all_data %>%
+  filter(!is.na(n_excluded_1) | !is.na(n_excluded)) %>%
+  mutate(n_excluded = ifelse(is.na(n_excluded), n_excluded_1,
+                             n_excluded),
+         n_total = ifelse(!is.na(n_2), n_1 + n_2, n_1)) %>%
+  select(dataset, d_calc, 
+         mean_age_1, n_total,
+         n_excluded, num_trials, method, residual.d.s, residual.d.s.age) %>%
+  mutate(prop_excluded = n_excluded/n_total) %>%
+  filter(prop_excluded < 1)
+ 
+  ggplot(exclusions, aes(x = prop_excluded, y =residual.d.s ,
+                       color = dataset)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  ggtitle("prop. excluded as a function of d") +
+  xlab("proportion excluded") +
+  ylab("d") +
+  theme_bw() + 
+  facet_wrap(~dataset, scales = "free") +
+  theme(legend.position="none")
+  
+```
+
+## Does proportion excluded vary as a function of age? 
+Again, if there is no bias we should see no relationship. In contrast, we see some evidence that proportion excluded increases with age. This is difficult to interpret though, for the reasons described above.
+
+```{r Exclusions_nExcluded, fig.width = 10}
+ggplot(exclusions, aes(x = residual.d.s.age, y = prop_excluded,
+                       color = dataset)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  ggtitle("prop. excluded as a function of age") +
+  xlab("mean age (months)") +
+  ylab("proportion excluded") +
+  theme_bw()  + 
+  facet_wrap(~dataset, scales = "free") +
+  theme(legend.position="none")
+  
+```
+
+# Publication Bias
+
+If studies are randomly sampled from the population of possible studies, effect sizes should not be bias. Here we examine this assumption, using residualized effect sizes.
+
+## Do effect sizes vary as a function of year?
+```{r, fig.width = 10}
+years.df = all_data %>%
+  mutate(year = as.numeric(unlist(lapply(strsplit(unlist(all_data$unique_ID),
+                                                  "[^0-9]+"),  function(x) unlist(x)[2])))) 
+
+ggplot(years.df , aes(x = year, y = residual.d.s, color = dataset)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  facet_wrap(~ dataset, scales = "free_y") +
+  theme_bw() +
+  xlab("published year") +
+  theme(legend.position="none")
+```
+We see a bias of year here: Studies conducted early on in a literature tend to have larger effect sizes than later studies.
+
+## Does age vary as a function of year?
+
+```{r, fig.width = 10}
+ggplot(years.df , aes(x = year, y = residual.d.s.age, color = dataset)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  facet_wrap(~ dataset, scales = "free_y") +
+  theme_bw() +
+  xlab("published year")  +
+    theme(legend.position="none")
+
+```
+In some literatures, we see a trend toward looking for the phenomenon in younger children over time.
+
+## Does effect size vary as a function of number of authors?
+Not really enough data to do this analysis. (maybe cut?)
+```{r, fig.width = 10}
+all_data$short_cite2 = str_replace_all(all_data$short_cite, " ", "")
+all_data$short_cite2 = str_replace_all(all_data$short_cite2, "&", ",")
+all_data$num_authors = unlist(lapply(lapply(all_data$short_cite2, 
+                                     function(x) unlist(strsplit(x, ',+'))), 
+                              function(x) length(which(x != ""))))
+all_data$num_authors =  as.numeric(ifelse(grepl("et al", all_data$short_cite), "NA",
+                                          all_data$num_authors)) # deal with miss coded short_cites (et al.)
+all_data$short_cite2 <- NULL
+
+all_data %>%
+  ggplot(aes(x = num_authors, y = residual.d.s, colour = dataset)) +
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  facet_wrap(~dataset, scales = "free_y") +
+  theme_bw()+
+  theme(legend.position="none")
+```
+
 
 # Individual meta-analysis power
 ## What is the power to determine if the overall effect is greater than zero?
-
 Here I calculated the power to detect an effect using a random effect model (Hedges & Pigott, 2001; Valentine, Pigott, & Rothstein, 2010). Note that this information is redundant with confidence intervals on the estimated effect size, and the power in all of these MAs is essentially 1. Below, I ran a simulation sampling n papers from each meta-analysis, and calculating power. We need surprisingly few studies to get relatively high power.
 
-```{r}
+```{r, eval = F}
 calculate_ma_power <- function(sample_data) {
   ALPHA <-  .05
   NTAILS <-  2
@@ -356,72 +361,9 @@ ggplot(power_data, aes(x = n, y = mean, fill = dataset)) +
 ```
 
 ## What is the power to determine if there's a moderator (e.g. age)? 
-
 Not totally sure how to do this. Valentine et al. (2001) say it's difficult without the raw data?
 
-# P-curve [Christina]
-Corrects for selective reporting on the basis of significance (fewer insignificant results; Simonsohn, Nelson, & Simmons, 2014)
-```{r, eval = F}
-# calculate degrees of freedom based on Ns and design (within = n_1-1, between = n_1 + n_2 - 2
-pcurve.data = 
-  select(all_data, dataset, unique_ID, t, F, n_1, n_2, participant_design) %>%
-  filter(!is.na(t)|!is.na(F)) %>%
-  mutate(df = ifelse(participant_design == "between", n_1 + n_2-2, n_1-1))
-         
-#summary(pcurve.data$df)
-
-#pcurve.df %>% 
-#  filter(participant_design == "between") %>% 
-#  data.frame()
-
-# code from Simonsohn, Nelson, & Simmons (2014) appendix
-loss = function(t_obs,df_obs,d_est) { 
-  t_obs=abs(t_obs)
-  p_obs=2*(1-pt(t_obs,df=df_obs)) 
-  t.sig=subset(t_obs,p_obs<.05)
-  df.sig=subset(df_obs,p_obs<.05)
-  ncp_est=sqrt((df.sig+2)/4)*d_est 
-  tc=qt(.975,df.sig) 
-  power_est=1-pt(tc,df.sig,ncp_est)
-  p_larger=pt(t.sig,df=df.sig,ncp=ncp_est)
-  ppr=(p_larger-(1-power_est))/power_est 
-  KSD=ks.test(ppr,punif)$statistic 
-  return(KSD)
-}
-
-plotloss=function(t_obs,df_obs,dmin,dmax) { 
-  loss.all=c()
-  di=c()
-  for (i in 0:((dmax-dmin)*100)) {
-    d = dmin + i/100
-    di = c(di,d)
-    options(warn = -1)
-    loss.all=c(loss.all,loss(df_obs=df_obs,t_obs=t_obs,d_est=d)) 
-    options(warn = 0)
-  }
-    
-  imin=match(min(loss.all),loss.all) 
-  dstart=dmin+imin/100
-  dhat=optimize(loss,c(dstart-.1, dstart+.1), df_obs=df_obs,t_obs=t_obs)
-
-  plot(di,
-       loss.all, xlab="Effect size\nCohen-d", 
-       ylab="Loss (D stat in KS test)",
-       ylim=c(0,1),
-       main="How well does each effect size fit? (lower is better)")
-  points(dhat$minimum,dhat$objective,pch=19,col="red",cex=2) 
-  text(dhat$minimum,dhat$objective-.08,
-       paste0("p-curve’s estimate of effect size:\nd=",round(dhat$minimum,3)),col="red") 
-  return(dhat$minimum)
-} 
-
-#Example
-#t_obs= c(1.7, 2.8, -3.1, 2.4) # include one p > .05 and one negative t-value to highlight how we treat those 
-#df_obs=c(44, 75, 125, 200)
-#plotloss(t_obs=t_obs,df_obs=df_obs,dmin=-1,dmax=1)
-```
-
-# Trim-and-fill [Christina?]
+# Trim-and-fill [TO DO]
 Corrects for selective reporting on the basis of effect size (fewer small effects; Duval & Tweedie, 2000a, 2000b)
 ```{r, eval = F}
 ### fit random-effects model and plot

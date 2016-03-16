@@ -6,14 +6,13 @@ library(purrr)
 library(stringr)
 
 fields <- yaml.load_file("../metadata/spec.yaml")
-reports <- fromJSON("../metadata/reports.json")
+reports <- yaml.load_file("../metadata/reports.yaml")
+people <- yaml.load_file("../metadata/people.yaml")
 
 includeRmd <- function(path, shiny_data = NULL) {
   shiny:::dependsOnFile(path)
-  contents <- readLines(path, warn = FALSE)
-  html <- knitr::knit2html(text = contents, fragment.only = TRUE)
-  Encoding(html) <- "UTF-8"
-  return(HTML(html))
+  rmarkdown::render(path, quiet = TRUE)
+  includeHTML(gsub(".Rmd", ".html", path))
 }
 
 cached_data <- list.files("../data/") %>% map_chr(~paste0("data/", .x))
@@ -27,7 +26,7 @@ load_dataset <- function(filename) {
                                stringsAsFactors = FALSE) %>%
     mutate(filename = filename,
            response_mode_exposure_phase = sprintf(
-             "%s, %s", response_mode, exposure_phase),
+             "%s \n %s", response_mode, exposure_phase),
            year = ifelse(grepl("submitted", unique_ID), Inf,
                          str_extract(unique_ID, "([:digit:]{4})"))
     )

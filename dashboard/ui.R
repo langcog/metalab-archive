@@ -4,7 +4,7 @@ header <- dashboardHeader(title = "MetaLab")
 
 sidebar <- dashboardSidebar(
   sidebarMenu(
-    menuItem("Overview", tabName = "overview",
+    menuItem("About", tabName = "about",
              icon = icon("home", lib = "glyphicon")),
     menuItem("Documentation", tabName = "documentation",
              icon = icon("file", lib = "glyphicon")),
@@ -13,15 +13,39 @@ sidebar <- dashboardSidebar(
     menuItem("Power Analysis", tabName = "power",
              icon = icon("flash", lib = "glyphicon")),
     menuItem("Reports", tabName = "reports",
-             icon = icon("folder-open", lib = "glyphicon"))
+             icon = icon("folder-open", lib = "glyphicon"),
+             map(reports, function(report) {
+               menuSubItem(report$title, tabName = report$file)
+             })),
+    menuItem("Source code", icon = icon("file-code-o"),
+             href = "https://github.com/langcog/metalab/")
+  ),
+  tags$footer(
+    class = "footer",
+    p("Questions or comments?", br(), a("metalab-project@googlegroups.com",
+                                        href = "mailto:metalab-project@googlegroups.com"),
+      class = "small", align = "center")
   )
 )
 
 #############################################################################
-# OVERVIEW
+# ABOUT
 
-tab_overview <- tabItem(
-  tabName = "overview",
+person_content <- function(person) {
+  box(width = 3, align = "center", status = "danger", solidHeader = TRUE,
+      img(src = person$image, width = 180, height = 180),
+      h4(strong(person$name)), person$affiliation, br(),
+      a(person$email, href = sprintf("mailto:%s", person$email)), br(),
+      tags$small(
+        map(unlist(strsplit(person$tags, ", ")),
+            ~list(code(.x), br())) %>%
+          flatten()
+      )
+  )
+}
+
+tab_about <- tabItem(
+  tabName = "about",
   wellPanel(
     div(class = "text-center",
         fluidRow(column(
@@ -39,14 +63,21 @@ tab_overview <- tabItem(
     map(1:nrow(datasets), function(i) {
       dataset <- datasets[i,]
       box(
-        width = 6,
+        width = 6, status = "danger", solidHeader = TRUE,
         fluidRow(
-          column(width = 3, img(src = dataset$src, width = 100)),
-          column(width = 9, h3(dataset$name))
+          column(width = 3, img(src = dataset$src, height = 70, width = 110)),
+          column(width = 9, h4(strong(dataset$name)))
         )
       )
     })
-  )
+  ),
+  h3("Meet the MetaLab team:"), br(),
+  map(split(people, ceiling(seq_along(people)/4)),
+      function(people_row) {
+        fluidRow(
+          map(people_row[1:length(people_row)], person_content)
+        )
+      })
 )
 
 #############################################################################
@@ -54,18 +85,16 @@ tab_overview <- tabItem(
 
 tab_documentation <- tabItem(
   tabName = "documentation",
-  tabsetPanel(
+  tabBox(width = "100%", status = "danger",
     tabPanel("Overview",
-             includeRmd("overview.Rmd", list("datasets" = datasets)),
-             class = "tab-pane-spaced"),
-    tabPanel("Specification", #includeRmd("spec.Rmd"),
+             includeRmd("rmarkdown/overview.Rmd", list("datasets" = datasets))),
+    tabPanel("Specification",
              h3("Required fields"),
              DT::dataTableOutput("req_table"),
              h3("Optional fields"),
              DT::dataTableOutput("opt_table"),
              h3("Derived fields"),
-             DT::dataTableOutput("drv_table"),
-             class = "tab-pane-spaced")
+             DT::dataTableOutput("drv_table"))
   )
 )
 
@@ -108,7 +137,8 @@ tab_visualizations <- tabItem(
             column(width = 2,
                    downloadButton("download_funnel", "Save",
                                   class = "btn-xs pull-right"))),
-          plotOutput("funnel"))
+          plotOutput("funnel"),
+          div(class = "text-center", textOutput("funnel_test")))
     ),
     column(
       width = 6,
@@ -130,10 +160,10 @@ tab_visualizations <- tabItem(
             column(
               width = 4,
               selectInput("forest_sort", label = "Sort order",
-                        choices = c("model fit" = "effects",
-                                    "model estimate" = "estimate",
-                                    "alphabetical" = "unique_ID",
-                                    "chronological" = "year"))),
+                          choices = c("model fit" = "effects",
+                                      "model estimate" = "estimate",
+                                      "alphabetical" = "unique_ID",
+                                      "chronological" = "year"))),
             plotOutput("forest", height = "auto")))
     )
   )
@@ -195,22 +225,23 @@ tab_power <- tabItem(
 #############################################################################
 # REPORTS
 
-tabs <- map(1:nrow(reports),
-            ~tabPanel(reports[.x,]$title, includeRmd(reports[.x,]$src),
-                      class = "tab-pane-spaced"))
-
-tab_reports <- tabItem(
-  tabName = "reports",
-  do.call(tabsetPanel, tabs)
-)
+report_tabs <- map(reports, function(report) {
+  report_url <- sprintf("https://rawgit.com/langcog/metalab/gh-pages/reports/%s.html",
+                        report$file)
+  tabItem(
+    tabName = report$file,
+    tags$iframe(src = report_url, width = 1000, height = 1200, frameBorder = 0))
+})
 
 #############################################################################
-# OTHER FORMATTING
+# DASHBOARD STRUCTURE
+
+tabs <- c(list(tab_about, tab_documentation, tab_visualizations, tab_power),
+          report_tabs)
 
 body <- dashboardBody(
   includeCSS("www/custom.css"),
-  tabItems(tab_overview, tab_documentation, tab_visualizations,
-           tab_power, tab_reports)
+  do.call(tabItems, tabs)
 )
 
 dashboardPage(header, sidebar, body, title = "MetaLab", skin = "red")

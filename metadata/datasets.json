@@ -13,7 +13,7 @@
 		"last_update": "2015-12-14",
 		"link_fields": "https://drive.google.com/file/d/0B_tr1H-CJ3AIb1VpeUtqalhxNkU/view",
 		"description": "Discrimination of vowels, including results from behavioral, electrophysiological, and neuroimaging methods applied to infants 0-14 months of age.",
-		"src": "images/discrim.png"
+		"src": "images/datasets/discrim.png"
 	},
 	{
 		"name": "Phonemic discrimination (non-native)",
@@ -29,7 +29,7 @@
 		"last_update": "2015-12-14",
 		"link_fields": "https://drive.google.com/file/d/0B_tr1H-CJ3AIb1VpeUtqalhxNkU/view",
 		"description": "Discrimination of vowels, including results from behavioral, electrophysiological, and neuroimaging methods applied to infants 0-14 months of age.",
-		"src": "images/discrim.png"
+		"src": "images/datasets/discrim.png"
 	},
 	{
 		"name": "Word segmentation",
@@ -45,7 +45,7 @@
 		"last_update": "2015-12-14",
 		"link_fields": "https://sites.google.com/site/inworddb/db/files/InWordDB%20FieldNames.pdf?attredirects=0&d=1",
 		"description": "Recognition of familiarized words from running, natural speech using behavioral methods applied to infants 0-20 months of age.",
-		"src": "images/segmentation.png"
+		"src": "images/datasets/segmentation.png"
 	},
 	{
 		"name": "Infant directed speech preference",
@@ -61,7 +61,7 @@
 		"last_update": "2012-01-01",
 		"link_fields": "http://earlyliteracylearning.org/cellreviews/cellreviews_v5_n1.pdf",
 		"description": "Looking times as a function of whether infant-directed vs. adult-directed speech is presented as stimulation, in infants aged 0-XX months.",
-		"src": "images/ids.png"
+		"src": "images/datasets/ids.png"
 	},
 	{
 		"name": "Mutual exclusivity",
@@ -77,7 +77,7 @@
 		"last_update": "",
 		"link_fields": "",
 		"description": "Mutual exclusivity is the bias for children to assume a novel word refers to a novel object, in the presence of one novel and one familiar object. This meta-analysis covers behavioral experiments on infants aged XX to XX.",
-		"src": "images/zot.png"
+		"src": "images/datasets/zot.png"
 	},
 	{
 		"name": "Label advantage in concept learning",
@@ -93,7 +93,7 @@
 		"last_update": "",
 		"link_fields": "",
 		"description": "Previous research suggests that labels support the formation of novel categories in young children. This meta-analysis includes studies exploring this question that use a paradigm similar to Balaban and Waxman (1997), resulting in a selection of experiments using behavioral methods on infants XX to XX months.",
-		"src": "images/dinosaur.png"
+		"src": "images/datasets/dinosaur.png"
 	},
 	{
 		"name": "Phonotactic learning in the lab",
@@ -109,7 +109,7 @@
 		"last_update": "2015-12-14",
 		"link_fields": "https://osf.io/vhwzq/",
 		"description": "Laboratory experiments in which infants are exposed to a set of pseudo-words that could support a phonotactic generalization, and thereafter tested on their preference between new types that follow or violate the familiarized phonotactics.",
-		"src": "images/dinosaur.png"
+		"src": "images/datasets/dinosaur.png"
 	},
 	{
 		"name": "Sound learning in the lab from acoustic cue distributions",
@@ -125,7 +125,7 @@
 		"last_update": "2015-12-14",
 		"link_fields": "https://osf.io/vhwzq/",
 		"description": "Laboratory experiments in which infants are exposed to a set of syllables that have been generated using a bimodal distribution of acoustic cues or not, and infants are tested on their discrimination of two sounds differing along the same dimension.",
-		"src": "images/dinosaur.png"
+		"src": "images/datasets/dinosaur.png"
 	},
 	{
 		"name": "Individual variation in infant speech perception tasks",
@@ -141,7 +141,7 @@
 		"last_update": "2015-12-14",
 		"link_fields": "",
 		"description": "Correlations between infant (4-12 months) performance in a speech perception task that is plausibly affected by language experience, on the one hand, and vocabulary, on the other, concurrently and/or longitudinally. Also contains some data points from infant processing of non-speech stimuli.",
-		"src": "images/dinosaur.png"
+		"src": "images/datasets/dinosaur.png"
 	}
 
 ]
