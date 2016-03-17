@@ -8,6 +8,8 @@ sidebar <- dashboardSidebar(
              icon = icon("home", lib = "glyphicon")),
     menuItem("Documentation", tabName = "documentation",
              icon = icon("file", lib = "glyphicon")),
+    menuItem("Data", tabName = "data",
+             icon = icon("list", lib = "glyphicon")),
     menuItem("Visualizations", tabName = "visualizations",
              icon = icon("signal", lib = "glyphicon")),
     menuItem("Power Analysis", tabName = "power",
@@ -95,6 +97,20 @@ tab_documentation <- tabItem(
              DT::dataTableOutput("opt_table"),
              h3("Derived fields"),
              DT::dataTableOutput("drv_table"))
+  )
+)
+
+#############################################################################
+# DATA
+
+tab_data <- tabItem(
+  tabName = "data",
+  box(width = "100%", status = "danger",
+      fluidRow(
+      column(width = 5,
+        selectInput("table_dataset_name", label = "Dataset",
+                    choices = datasets$name))),
+      DT::dataTableOutput("dataset_table")
   )
 )
 
@@ -236,8 +252,8 @@ report_tabs <- map(reports, function(report) {
 #############################################################################
 # DASHBOARD STRUCTURE
 
-tabs <- c(list(tab_about, tab_documentation, tab_visualizations, tab_power),
-          report_tabs)
+tabs <- c(list(tab_about, tab_documentation, tab_data, tab_visualizations,
+               tab_power), report_tabs)
 
 body <- dashboardBody(
   includeCSS("www/custom.css"),
