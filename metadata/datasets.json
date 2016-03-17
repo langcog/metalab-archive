@@ -1,6 +1,6 @@
 [
 	{
-		"name": "Phonemic discrimination (native)",
+		"name": "Vowel discrimination (native)",
 		"short_name": "inphondb-native",
 		"key": "13ytBtSP9ZUNDeW5K2uf_VfyTFOILivTFZN1YBLZtmuU",
 		"filename": "data/phonemic_discrimination_native.csv",
@@ -16,7 +16,7 @@
 		"src": "images/datasets/discrim.png"
 	},
 	{
-		"name": "Phonemic discrimination (non-native)",
+		"name": "Vowel discrimination (non-native)",
 		"short_name": "inphondb-nonnative",
 		"key": "1K7iCsLUXTB8GXbynuQ9aJOM6O-EcrnDDlmYspdW_Sh8",
 		"filename": "data/phonemic_discrimination_nonnative.csv",

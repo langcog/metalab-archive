@@ -4,7 +4,7 @@ header <- dashboardHeader(title = "MetaLab")
 
 sidebar <- dashboardSidebar(
   sidebarMenu(
-    menuItem("About", tabName = "about",
+    menuItem("Home", tabName = "home",
              icon = icon("home", lib = "glyphicon")),
     menuItem("Documentation", tabName = "documentation",
              icon = icon("file", lib = "glyphicon")),
@@ -17,6 +17,10 @@ sidebar <- dashboardSidebar(
              map(reports, function(report) {
                menuSubItem(report$title, tabName = report$file)
              })),
+    menuItem("Contribute", tabName = "contributions",
+             icon = icon("upload", lib = "glyphicon")),
+    menuItem("Team", tabName = "team",
+             icon = icon("users")),
     menuItem("Source code", icon = icon("file-code-o"),
              href = "https://github.com/langcog/metalab/")
   ),
@@ -44,20 +48,33 @@ person_content <- function(person) {
   )
 }
 
-tab_about <- tabItem(
-  tabName = "about",
+tab_home <- tabItem(
+  tabName = "home",
   wellPanel(
     div(class = "text-center",
         fluidRow(column(
           width = 12,
           h1("MetaLab", class = "jumbo"),
-          p(class = "lead", "A tool for power analysis and experimental",
-            br(), "planning in language acquisition research")
+          p(class = "lead", "Interactive tools for community-augmented meta-analysis,",
+            br(),
+            "power analysis, and experimental planning in language acquisition research")
         )
         )
     )
   ),
-  br(),
+  fluidRow(
+    column(width=2),
+    valueBox(as.integer(sum(as.numeric(datasets$num_experiments), na.rm = TRUE)),
+             "Effect sizes", color = "red", width=2, icon=icon("list")),
+    valueBox(nrow(datasets),
+             "Meta Analyses", color = "red", width=2, icon=icon("cubes")),
+    valueBox(as.integer(sum(as.numeric(datasets$num_papers), na.rm = TRUE)),
+             "Papers", color = "red", width=2, icon=icon("file-text-o")),
+    valueBox(format(as.integer(sum(as.numeric(datasets$num_subjects), na.rm = TRUE)),
+                    big.mark=","),
+             "Participants", color = "red", width=2, icon=icon("child")),
+    column(width=2)
+  ),
   h3("Meta-analyses currently in MetaLab:"),
   fluidRow(
     map(1:nrow(datasets), function(i) {
@@ -66,18 +83,11 @@ tab_about <- tabItem(
         width = 6, status = "danger", solidHeader = TRUE,
         fluidRow(
           column(width = 3, img(src = dataset$src, height = 70, width = 110)),
-          column(width = 9, h4(strong(dataset$name)))
-        )
+          column(width = 9, h4(strong(dataset$name)), 
+                 p(dataset$description)))
       )
     })
-  ),
-  h3("Meet the MetaLab team:"), br(),
-  map(split(people, ceiling(seq_along(people)/4)),
-      function(people_row) {
-        fluidRow(
-          map(people_row[1:length(people_row)], person_content)
-        )
-      })
+  )
 )
 
 #############################################################################
@@ -86,15 +96,15 @@ tab_about <- tabItem(
 tab_documentation <- tabItem(
   tabName = "documentation",
   tabBox(width = "100%", status = "danger",
-    tabPanel("Overview",
-             includeRmd("rmarkdown/overview.Rmd", list("datasets" = datasets))),
-    tabPanel("Specification",
-             h3("Required fields"),
-             DT::dataTableOutput("req_table"),
-             h3("Optional fields"),
-             DT::dataTableOutput("opt_table"),
-             h3("Derived fields"),
-             DT::dataTableOutput("drv_table"))
+         tabPanel("Overview",
+                  includeRmd("rmarkdown/overview.Rmd", list("datasets" = datasets))),
+         tabPanel("Specification",
+                  h3("Required fields"),
+                  DT::dataTableOutput("req_table"),
+                  h3("Optional fields"),
+                  DT::dataTableOutput("opt_table"),
+                  h3("Derived fields"),
+                  DT::dataTableOutput("drv_table"))
   )
 )
 
@@ -234,9 +244,41 @@ report_tabs <- map(reports, function(report) {
 })
 
 #############################################################################
+# EDUCATION
+
+tab_contributions <- tabItem(
+  tabName = "contributions",
+  tabBox(width = "100%", status = "danger",
+         tabPanel("Motivation and Background",
+                  includeRmd("rmarkdown/background.Rmd")),
+         tabPanel("Building a MA",
+                  includeRmd("rmarkdown/building.Rmd")),
+         tabPanel("Contribute to MetaLab",
+                  includeRmd("rmarkdown/contribute.Rmd")),
+         tabPanel("Resources",
+                  includeRmd("rmarkdown/resources.Rmd")))
+)
+
+#############################################################################
+# TEAM
+
+tab_team <- tabItem(
+  tabName = "team",
+  h3("Meet the MetaLab team"), br(),
+  map(split(people, ceiling(seq_along(people)/4)),
+      function(people_row) {
+        fluidRow(
+          map(people_row[1:length(people_row)], person_content)
+        )
+      })
+)
+
+
+#############################################################################
 # DASHBOARD STRUCTURE
 
-tabs <- c(list(tab_about, tab_documentation, tab_visualizations, tab_power),
+tabs <- c(list(tab_home, tab_documentation, tab_visualizations, tab_power, 
+               tab_contributions, tab_team),
           report_tabs)
 
 body <- dashboardBody(
