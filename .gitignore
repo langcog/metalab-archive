@@ -11,3 +11,4 @@ rsconnect/
 .RData
 dashboard/figure/
 dashboard/cache/
+dashboard/rmarkdown/*.html

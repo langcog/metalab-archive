@@ -5,17 +5,17 @@ header <- dashboardHeader(title = "MetaLab")
 sidebar <- dashboardSidebar(
   sidebarMenu(
     menuItem("Home", tabName = "home",
-             icon = icon("home", lib = "glyphicon")),
+             icon = icon("home")),
     menuItem("Documentation", tabName = "documentation",
-             icon = icon("file", lib = "glyphicon")),
+             icon = icon("file")),
     menuItem("Data", tabName = "data",
-             icon = icon("list", lib = "glyphicon")),
+             icon = icon("list")),
     menuItem("Visualizations", tabName = "visualizations",
-             icon = icon("signal", lib = "glyphicon")),
+             icon = icon("signal")),
     menuItem("Power Analysis", tabName = "power",
-             icon = icon("flash", lib = "glyphicon")),
+             icon = icon("flash")),
     menuItem("Reports", tabName = "reports",
-             icon = icon("folder-open", lib = "glyphicon"),
+             icon = icon("folder-open"),
              map(reports, function(report) {
                menuSubItem(report$title, tabName = report$file)
              })),
@@ -35,24 +35,11 @@ sidebar <- dashboardSidebar(
 )
 
 #############################################################################
-# ABOUT
-
-person_content <- function(person) {
-  box(width = 3, align = "center", status = "danger", solidHeader = TRUE,
-      img(src = person$image, width = 180, height = 180),
-      h4(strong(person$name)), person$affiliation, br(),
-      a(person$email, href = sprintf("mailto:%s", person$email)), br(),
-      tags$small(
-        map(unlist(strsplit(person$tags, ", ")),
-            ~list(code(.x), br())) %>%
-          flatten()
-      )
-  )
-}
+# HOME
 
 tab_home <- tabItem(
   tabName = "home",
-  wellPanel(
+#  wellPanel(
     div(class = "text-center",
         fluidRow(column(
           width = 12,
@@ -62,20 +49,20 @@ tab_home <- tabItem(
             "power analysis, and experimental planning in language acquisition research")
         )
         )
-    )
+#    )
   ),
   fluidRow(
-    column(width=2),
-    valueBox(as.integer(sum(as.numeric(datasets$num_experiments), na.rm = TRUE)),
-             "Effect sizes", color = "red", width=2, icon=icon("list")),
+    column(width = 2),
     valueBox(nrow(datasets),
-             "Meta Analyses", color = "red", width=2, icon=icon("cubes")),
+             "Meta-analyses", color = "red", width = 2, icon = icon("cubes")),
     valueBox(as.integer(sum(as.numeric(datasets$num_papers), na.rm = TRUE)),
-             "Papers", color = "red", width=2, icon=icon("file-text-o")),
+             "Papers", color = "red", width = 2, icon = icon("file-text-o")),
+    valueBox(as.integer(sum(as.numeric(datasets$num_experiments), na.rm = TRUE)),
+             "Effect sizes", color = "red", width = 2, icon = icon("list")),
     valueBox(format(as.integer(sum(as.numeric(datasets$num_subjects), na.rm = TRUE)),
-                    big.mark=","),
-             "Participants", color = "red", width=2, icon=icon("child")),
-    column(width=2)
+                    big.mark = ","),
+             "Participants", color = "red", width = 2, icon = icon("child")),
+    column(width = 2)
   ),
   h3("Meta-analyses currently in MetaLab:"),
   fluidRow(
@@ -260,7 +247,7 @@ report_tabs <- map(reports, function(report) {
 })
 
 #############################################################################
-# EDUCATION
+# CONTRIBUTE
 
 tab_contributions <- tabItem(
   tabName = "contributions",
@@ -278,22 +265,37 @@ tab_contributions <- tabItem(
 #############################################################################
 # TEAM
 
+person_content <- function(person) {
+  box(width = 3, align = "center", status = "danger", solidHeader = TRUE,
+      img(src = person$image, width = 180, height = 180),
+      h4(strong(person$name)), person$affiliation, br(),
+      a(person$email, href = sprintf("mailto:%s", person$email)), br(),
+      tags$small(
+        map(unlist(strsplit(person$tags, ", ")),
+            ~list(code(.x), br())) %>%
+          flatten()
+      )
+  )
+}
+
 tab_team <- tabItem(
   tabName = "team",
-  h3("Meet the MetaLab team"), br(),
-  map(split(people, ceiling(seq_along(people)/4)),
-      function(people_row) {
-        fluidRow(
-          map(people_row[1:length(people_row)], person_content)
-        )
-      })
+  box(status = "danger", width = "100%",
+    h3("Meet the MetaLab team"), br(),
+    map(split(people, ceiling(seq_along(people) / 4)),
+        function(people_row) {
+          fluidRow(
+            map(people_row[1:length(people_row)], person_content)
+          )
+        })
+  )
 )
 
 
 #############################################################################
 # DASHBOARD STRUCTURE
 
-tabs <- c(list(tab_about, tab_documentation, tab_data, tab_visualizations,
+tabs <- c(list(tab_home, tab_documentation, tab_data, tab_visualizations,
                tab_power, tab_contributions, tab_team), report_tabs)
 
 body <- dashboardBody(
