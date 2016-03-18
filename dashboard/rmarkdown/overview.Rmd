@@ -1,7 +1,4 @@
----
-output:
-  html_fragment
----
+
 
 ```{r include=FALSE, echo=FALSE}
 library(shiny)
