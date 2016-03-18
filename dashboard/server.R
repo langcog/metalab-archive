@@ -43,6 +43,18 @@ shinyServer(function(input, output, session) {
     filter(all_data, dataset == input$dataset_name)
   })
 
+  table_data <- reactive({
+    all_data %>%
+      filter(dataset == input$table_dataset_name) %>%
+      select(-passages, -long_cite, -stimuli_notes, -method_notes, -general_notes,
+             -dataset, -short_name, -filename, -response_mode_exposure_phase, -all_mod)
+  })
+
+  output$dataset_table <- DT::renderDataTable(
+    table_data(), style = "bootstrap", rownames = FALSE,
+    options = list(scrollX = TRUE, autoWidth = TRUE, pageLength = 20)
+  )
+
   ########### MODEL ###########
   model <- reactive({
     if (length(input$moderators) == 0) {
