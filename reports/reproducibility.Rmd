@@ -363,21 +363,19 @@ ggplot(power_data, aes(x = n, y = mean, fill = dataset)) +
 ## What is the power to determine if there's a moderator (e.g. age)? 
 Not totally sure how to do this. Valentine et al. (2001) say it's difficult without the raw data?
 
-# Trim-and-fill [TO DO]
-Corrects for selective reporting on the basis of effect size (fewer small effects; Duval & Tweedie, 2000a, 2000b)
-```{r, eval = F}
+# Trim-and-fill 
+Corrects for selective reporting on the basis of effect size (fewer small effects; Duval & Tweedie, 2000a, 2000b). The routines and plotting tools stem from the R library "metafor" (Viechtbauer).
+
+[TODO: Adapt to Metalab style]
+```{r Trim and Fill}
 ### fit random-effects model and plot
 
+datasets = unique(all_data$short_name)
+
 for (i in 1:length(datasets)) {
-  my_data = all_data[all_data$dataset ==  datasets[i],]
-  res <- rma(d, d_var, data = my_data)
+  my_data = all_data[all_data$short_name ==  datasets[i],]
+  res <- rma(d_calc, d_var_calc, data = my_data)
   taf <- trimfill(res)
-  funnel(taf, main = my_data$dataset[1])
+  funnel(taf, main = datasets[i])
 }
-
-res <- rma(d, d_var, data = all_data)
-taf <- trimfill(res)
-funnel(taf, main = "all data")
-
-#regtest
 ```
