@@ -82,6 +82,8 @@ shinyServer(function(input, output, session) {
       "response_mode"
     } else if ("exposure_phase" %in% input$moderators) {
       "exposure_phase"
+    } else if ("mean_age" %in% input$moderators) {
+      "all_mod"
     }
   })
 
