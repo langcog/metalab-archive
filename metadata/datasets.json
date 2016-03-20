@@ -142,6 +142,37 @@
 		"link_fields": "",
 		"description": "Correlations between infant (4-12 months) performance in a speech perception task that is plausibly affected by language experience, on the one hand, and vocabulary, on the other, concurrently and/or longitudinally. Also contains some data points from infant processing of non-speech stimuli.",
 		"src": "images/datasets/dinosaur.png"
+	},
+	{
+		"name": "Gaze following",
+		"short_name": "gaze_following",
+		"key": "",
+		"filename": "data/gaze_following.csv",
+		"citation": "Frank, Lewis, & MacDonald (2016)",
+		"link": "",
+		"full_citation": "Frank, M. C., Lewis, M. L., & MacDonald, K. (2016). A performance model for early word learning. Manuscript under review.",
+		"doi": "",
+		"systematic": "",
+		"reliability": "no",
+		"last_update": "2016-2-1",
+		"link_fields": "",
+		"description": "Gaze following using standard multi-alternative forced-choice paradigms.",
+		"src": "images/datasets/gaze.png"
+	},
+	{
+		"name": "Online word recognition",
+		"short_name": "word_recognition",
+		"key": "",
+		"filename": "data/word_recognition.csv",
+		"citation": "Frank, Lewis, & MacDonald (2016)",
+		"link": "",
+		"full_citation": "Frank, M. C., Lewis, M. L., & MacDonald, K. (2016). A performance model for early word learning. Manuscript under review.",
+		"doi": "",
+		"systematic": "",
+		"reliability": "",
+		"last_update": "2016-2-1",
+		"link_fields": "",
+		"description": "Online word recognition of familiar words using two-alternative forced choice preferential looking, following Fernald et al., (1998)",
+		"src": "images/datasets/word_rec.png"
 	}
-
 ]
