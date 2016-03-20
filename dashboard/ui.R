@@ -6,10 +6,6 @@ sidebar <- dashboardSidebar(
   sidebarMenu(
     menuItem("Home", tabName = "home",
              icon = icon("home")),
-    menuItem("Documentation", tabName = "documentation",
-             icon = icon("file")),
-    menuItem("Data", tabName = "data",
-             icon = icon("list")),
     menuItem("Visualizations", tabName = "visualizations",
              icon = icon("signal")),
     menuItem("Power Analysis", tabName = "power",
@@ -19,8 +15,10 @@ sidebar <- dashboardSidebar(
              map(reports, function(report) {
                menuSubItem(report$title, tabName = report$file)
              })),
-    menuItem("Contribute", tabName = "contributions",
-             icon = icon("upload", lib = "glyphicon")),
+    menuItem("Browse Raw Data", tabName = "data",
+             icon = icon("list")),
+    menuItem("Documentation", tabName = "documentation",
+             icon = icon("file")),
     menuItem("Team", tabName = "team",
              icon = icon("users")),
     menuItem("Source code", icon = icon("file-code-o"),
@@ -87,7 +85,13 @@ tab_documentation <- tabItem(
   tabBox(width = "100%", status = "danger",
          tabPanel("Overview",
                   includeRmd("rmarkdown/overview.Rmd", list("datasets" = datasets))),
-         tabPanel("Specification",
+         tabPanel("Motivation and Background",
+                  includeRmd("rmarkdown/background.Rmd")),
+         tabPanel("Building a MA",
+                  includeRmd("rmarkdown/building.Rmd")),
+         tabPanel("Contribute to MetaLab",
+                  includeRmd("rmarkdown/contribute.Rmd")),
+         tabPanel("MetaLab Data Specification",
                   h3("Required fields"),
                   DT::dataTableOutput("req_table"),
                   h3("Optional fields"),
@@ -247,22 +251,6 @@ report_tabs <- map(reports, function(report) {
 })
 
 #############################################################################
-# CONTRIBUTE
-
-tab_contributions <- tabItem(
-  tabName = "contributions",
-  tabBox(width = "100%", status = "danger",
-         tabPanel("Motivation and Background",
-                  includeRmd("rmarkdown/background.Rmd")),
-         tabPanel("Building a MA",
-                  includeRmd("rmarkdown/building.Rmd")),
-         tabPanel("Contribute to MetaLab",
-                  includeRmd("rmarkdown/contribute.Rmd")),
-         tabPanel("Resources",
-                  includeRmd("rmarkdown/resources.Rmd")))
-)
-
-#############################################################################
 # TEAM
 
 person_content <- function(person) {
@@ -295,8 +283,8 @@ tab_team <- tabItem(
 #############################################################################
 # DASHBOARD STRUCTURE
 
-tabs <- c(list(tab_home, tab_documentation, tab_data, tab_visualizations,
-               tab_power, tab_contributions, tab_team), report_tabs)
+tabs <- c(list(tab_home, tab_data, tab_visualizations,
+               tab_power, tab_documentation, tab_team), report_tabs)
 
 body <- dashboardBody(
   includeCSS("www/custom.css"),

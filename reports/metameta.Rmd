@@ -35,7 +35,6 @@ ggplot(all_data,
   ylim(c(-1, 3))
 ```
 
-
 Plot without ME, to fcous on the first two years. 
 
 ```{r}

@@ -1,7 +1,4 @@
-Motivation and background
-=========================
-
-### Why do a meta-analysis? 
+# Why do a meta-analysis? 
 
 Meta-analyses (MAs) can be useful for two main purposes: (1) theory
 building and evaluation and (2) practical decisions during study design.
@@ -10,7 +7,7 @@ as reliable as an MA and then explains how exactly MAs overcome this
 problem. You can either browse through the whole background section or
 directly skip to the practical instructions which start on page 4.
 
-#### 1.1. Building and evaluating theories
+## Building and evaluating theories
 
 When thinking about development, we often wonder which abilities infants
 display at what age. To this end, we regularly look at published studies
@@ -33,7 +30,7 @@ problem when consulting single published studies is the false positive,
 which the next section discusses, along with the two most common causes:
 practices that increase the chance of a significant p-value and biases.
 
-##### 1.1.1. False positives: The Type I Error
+### False positives: The Type I Error
 
 Every study we run has (at least) a 5% chance of telling us that infants
 can do something when this is not true, according to the significance
@@ -94,9 +91,9 @@ researcher. [*http://www.p-curve.com/*](http://www.p-curve.com/) or
 [*http://shinyapps.org/apps/p-checker/*](http://shinyapps.org/apps/p-checker/)
 are two well-documented examples.
 
-#### 1.2. Practical decisions during study design
+## Practical decisions during study design
 
-##### 1.2.2. False negatives: The Type II Error 
+### False negatives: The Type II Error 
 
 In addition to the probability to obtain false positives, there is also
 the possibility to be unable to measure an effect despite it being
@@ -119,7 +116,7 @@ significance threshold, calculating power is straightforward. Here is a
 simulation of how all ingredients fit together:
 [*rpsychologist.com/d3/NHST/*](http://rpsychologist.com/d3/NHST/)
 
-##### 1.2.3 How MAs help
+### How MAs help
 
 To increase power and make up for small effects, we need to test more
 babies. But we do not want to needlessly spend time and money in the
@@ -138,7 +135,7 @@ be obtained by looking at the data in a CAMA, which come with detailed
 instructions on how to download and inspect their contents as simple
 spreadsheets.
 
-###  2. What are effect sizes?
+# What are effect sizes?
 
 In MAs we express the outcome of a single experiment in a way that
 captures how big an effect is and how much it varies. There are 3 groups
@@ -166,9 +163,16 @@ sizes might be systematically affected by variables such as infant age
 in "moderator analyses" (see
 [*metalab.stanford.edu*](http://metalab.stanford.edu/)).
 
-### 3. How to arrive at a well-defined MA research question?
+# How to arrive at a well-defined MA research question?
 
 It is important to strike a balance between choosing a topic that is too
 broad (how do children learn words?) and too narrow (how do Dutch
 children segment monosyllabic words from speech?).
 
+[^1]: People are trying to change this but nonetheless common practice
+is still this way.
+
+[^2]: Some further reading on biases:
+  [*https://explorable.com/research-bias*](https://explorable.com/research-bias)
+and
+[*http://www.nature.com/news/how-scientists-fool-themselves-and-how-they-can-stop-1.18517*](http://www.nature.com/news/how-scientists-fool-themselves-and-how-they-can-stop-1.18517)
