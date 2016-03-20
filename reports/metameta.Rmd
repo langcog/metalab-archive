@@ -1,0 +1,61 @@
+---
+title: "Meta-meta analsyis"
+author: "Molly Lewis, Mika Braginsky, & Mike Frank"
+date: "`r Sys.Date()`"
+---
+
+```{r, setup, include = FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+ggplot2::theme_set(langcog::theme_mikabr(base_family = "Ubuntu"))
+source("../dashboard/global.R", chdir = TRUE)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(langcog)
+```
+
+# Introduction
+
+Let's put everything together. 
+
+
+```{r}
+ggplot(all_data,
+       aes(x = mean_age/365, y = d_calc, col = dataset)) + 
+  geom_point(aes(size = n), alpha = .5) + 
+  geom_smooth(method="lm", se = FALSE, size = 1.5, 
+              aes(weight = 1/d_var_calc), formula = y ~ log(x)) + 
+  xlab("Age (years)") + 
+  ylab("Effect size (d)") + 
+  theme(legend.position = "bottom",
+        legend.key = element_blank(),
+        legend.background = element_rect(fill = "transparent")) + 
+  scale_color_discrete(guide = guide_legend(nrow=2, 
+                                             title = "")) + 
+  ylim(c(-1, 3))
+```
+
+
+Plot without ME, to fcous on the first two years. 
+
+```{r}
+ggplot(filter(all_data, 
+              mean_age < 365 * 1.5,
+              dataset != "Mutual exclusivity"),
+       aes(x = mean_age/365, y = d_calc, col = dataset)) + 
+  geom_point(aes(size = n), alpha = .5) + 
+  geom_smooth(method="lm", se = FALSE, size = 1.5, 
+              aes(weight = 1/d_var_calc), formula = y ~ log(x)) + 
+  xlab("Age (years)") + 
+  ylab("Effect size (d)") + 
+  theme(legend.position = "bottom",
+        legend.key = element_blank(),
+        legend.background = element_rect(fill = "transparent")) + 
+  scale_color_discrete(guide = guide_legend(nrow=2, 
+                                             title = "")) + 
+  ylim(c(-1, 3))
+
+```
+
+
+
