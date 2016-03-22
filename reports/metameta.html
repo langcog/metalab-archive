@@ -9,11 +9,11 @@
 <meta name="generator" content="pandoc" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<meta name="author" content="Christina Bergmann" />
+<meta name="author" content="Molly Lewis, Mika Braginsky, &amp; Mike Frank" />
 
 <meta name="date" content="2016-03-21" />
 
-<title>P-Curves</title>
+<title>Meta-meta analsyis</title>
 
 <script src="libs/jquery-1.11.3/jquery.min.js"></script>
 <script src="libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
@@ -223,8 +223,8 @@ div.tocify {
 </ul>
 </div>
 
-<h1 class="title">P-Curves</h1>
-<h4 class="author"><em>Christina Bergmann</em></h4>
+<h1 class="title">Meta-meta analsyis</h1>
+<h4 class="author"><em>Molly Lewis, Mika Braginsky, &amp; Mike Frank</em></h4>
 <h4 class="date"><em>2016-03-21</em></h4>
 
 </div>
@@ -232,36 +232,38 @@ div.tocify {
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>P-curves have been proposed as one (of many) ways to measure publication biases, because so-called p-hacking (conducting multiple statistical analyses, excluding data points, etc until a p-value below the significance threshold [typically .05] is reached) can lead to an inflation of high p-values that are nonetheless significant. The exected distribution of p-values in the absence of prevalent p-hacking of a null effect is biased towards smaller values. The present script is based on the p-curve app version 4.0.</p>
-<p>One of the main problems with p-curve is the use of text mining to generate input, and the presence of heterogeneous tests (<a href="https://peerj.com/articles/1715/" class="uri">https://peerj.com/articles/1715/</a>). In the case of MetaLab, however, all test statistics were entered by hand and concern a homogeneous research literature (within each dataset). Further, we only enter the <em>main</em> test statistic which would also be used to calculate effect sizes in our meta-analysis. Therefore, we believe that p-curve is an appropriate analysis for the dataset.</p>
-<div id="data-preparation" class="section level3">
-<h3>Data preparation</h3>
-<p>When reported or necessary to calculate effect sizes, we note the t-value or F-score for each record (a single study). We do not consider studies for which this information was unavailable in the following analyses.</p>
-<p>To calculate p-values from <span class="math">\(t\)</span>-values and <span class="math">\(F\)</span>-scores, we also need the degrees of freedom. When one group of participants was tested, we use <span class="math">\(N-1\)</span>, for a two group comparison design we use <span class="math">\(N-2\)</span>. <span class="math">\(F\)</span>-scores require two degrees of freedom, the first one however is always one in the main analysis of interest (we do not enter or consider e.g., interactions of the main effect of interest with covariates such as age, gender, etc.).</p>
-</div>
-</div>
-<div id="p-curve-for-each-individual-dataset" class="section level1">
-<h1>P-curve for each individual dataset</h1>
-<p>We need to source code from the p-curve app. This p-curve report is based on the p-curve app 4.0 (accessed 25.02.2015) via code from the <a href="http://p-curve.com/app4/App%204.0%20p-curve%202016%2001%2011.r">app</a>. We have heavily adapted this code, however.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">source</span>(<span class="st">&quot;pcurve.R&quot;</span>)</code></pre>
-<p>Compute p-curves for each dataset.</p>
-<pre class="sourceCode r"><code class="sourceCode r">pc &lt;-<span class="st"> </span>all_data %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(dataset) %&gt;%
-<span class="st">  </span><span class="kw">select</span>(unique_ID, t, F, n_1, n_2, participant_design, d) %&gt;%
-<span class="st">  </span><span class="kw">filter</span>(!<span class="kw">is.na</span>(t)|!<span class="kw">is.na</span>(F)) %&gt;%
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">df2 =</span> <span class="kw">ifelse</span>(participant_design ==<span class="st"> &quot;between&quot;</span>, (n_1 +<span class="st"> </span>n_2)-<span class="dv">2</span>, n_1<span class="dv">-1</span>),
-         <span class="dt">value =</span> <span class="kw">ifelse</span>(<span class="kw">is.na</span>(t), F, t**<span class="dv">2</span>), <span class="co"># turn ts into Fs by squaring them</span>
-         <span class="dt">test =</span> <span class="kw">ifelse</span>(<span class="kw">is.na</span>(t), <span class="st">&quot;F&quot;</span>, <span class="st">&quot;t&quot;</span>), 
-         <span class="dt">df1 =</span> <span class="dv">1</span>) %&gt;%<span class="st">  </span><span class="co"># In the source script, the authors always have 2 dfs, but </span>
-<span class="st">                    </span><span class="co"># df1 is always 1 (both for t and for F), </span>
-<span class="st">                    </span><span class="co"># we always look at the main result of ANOVAs</span>
-<span class="st">  </span><span class="kw">do</span>(<span class="kw">p_curve</span>(.))</code></pre>
-<p>Plot p-curves.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(pc, <span class="kw">aes</span>(<span class="dt">x =</span> p, <span class="dt">y =</span> value, <span class="dt">col =</span> measure, <span class="dt">lty =</span> measure)) +<span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_line</span>() +
-<span class="st">  </span><span class="kw">facet_wrap</span>(~dataset)</code></pre>
-<p><img src="p-curves_files/figure-html/unnamed-chunk-2-1.png" title="" alt="" width="672" /></p>
-<p>It’s clear that things look pretty reasonable across datasets.</p>
+<p>Let’s put everything together.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(all_data,
+       <span class="kw">aes</span>(<span class="dt">x =</span> mean_age/<span class="dv">365</span>, <span class="dt">y =</span> d_calc, <span class="dt">col =</span> dataset)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> n), <span class="dt">alpha =</span> .<span class="dv">5</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method=</span><span class="st">&quot;lm&quot;</span>, <span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">size =</span> <span class="fl">1.5</span>, 
+              <span class="kw">aes</span>(<span class="dt">weight =</span> <span class="dv">1</span>/d_var_calc), <span class="dt">formula =</span> y ~<span class="st"> </span><span class="kw">log</span>(x)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Age (years)&quot;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Effect size (d)&quot;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>,
+        <span class="dt">legend.key =</span> <span class="kw">element_blank</span>(),
+        <span class="dt">legend.background =</span> <span class="kw">element_rect</span>(<span class="dt">fill =</span> <span class="st">&quot;transparent&quot;</span>)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">scale_color_discrete</span>(<span class="dt">guide =</span> <span class="kw">guide_legend</span>(<span class="dt">nrow=</span><span class="dv">2</span>, 
+                                             <span class="dt">title =</span> <span class="st">&quot;&quot;</span>)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">ylim</span>(<span class="kw">c</span>(-<span class="dv">1</span>, <span class="dv">3</span>))</code></pre>
+<p><img src="metameta_files/figure-html/unnamed-chunk-1-1.png" title="" alt="" width="672" /></p>
+<p>Plot without ME, to fcous on the first two years.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="kw">filter</span>(all_data, 
+              mean_age &lt;<span class="st"> </span><span class="dv">365</span> *<span class="st"> </span><span class="fl">1.5</span>,
+              dataset !=<span class="st"> &quot;Mutual exclusivity&quot;</span>),
+       <span class="kw">aes</span>(<span class="dt">x =</span> mean_age/<span class="dv">365</span>, <span class="dt">y =</span> d_calc, <span class="dt">col =</span> dataset)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> n), <span class="dt">alpha =</span> .<span class="dv">5</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method=</span><span class="st">&quot;lm&quot;</span>, <span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">size =</span> <span class="fl">1.5</span>, 
+              <span class="kw">aes</span>(<span class="dt">weight =</span> <span class="dv">1</span>/d_var_calc), <span class="dt">formula =</span> y ~<span class="st"> </span><span class="kw">log</span>(x)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Age (years)&quot;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Effect size (d)&quot;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>,
+        <span class="dt">legend.key =</span> <span class="kw">element_blank</span>(),
+        <span class="dt">legend.background =</span> <span class="kw">element_rect</span>(<span class="dt">fill =</span> <span class="st">&quot;transparent&quot;</span>)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">scale_color_discrete</span>(<span class="dt">guide =</span> <span class="kw">guide_legend</span>(<span class="dt">nrow=</span><span class="dv">2</span>, 
+                                             <span class="dt">title =</span> <span class="st">&quot;&quot;</span>)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">ylim</span>(<span class="kw">c</span>(-<span class="dv">1</span>, <span class="dv">3</span>))</code></pre>
+<p><img src="metameta_files/figure-html/unnamed-chunk-2-1.png" title="" alt="" width="672" /></p>
 </div>
 
 
