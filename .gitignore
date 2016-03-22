@@ -12,3 +12,8 @@ rsconnect/
 dashboard/figure/
 dashboard/cache/
 dashboard/rmarkdown/*.html
+reports/*.html
+reports/libs
+reports/*_cache/
+reports/*_files
+

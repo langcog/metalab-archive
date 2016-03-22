@@ -2,6 +2,7 @@ html_document:
   self_contained: false
   lib_dir: libs
   toc: true
+  toc_float: true
   theme: united
   highlight: tango
   code_folding: hide
