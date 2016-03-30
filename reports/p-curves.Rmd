@@ -1,7 +1,7 @@
 ---
 title: "P-Curves"
 author: "Christina Bergmann"
-date: "`r Sys.Date()`"
+date: "This report was rendered on `r Sys.Date()` and will be automatically re-rendered nightly, reflecting any changes in the data or code."
 ---
 
 ```{r, setup, include = FALSE}
