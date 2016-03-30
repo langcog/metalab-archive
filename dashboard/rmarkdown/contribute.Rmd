@@ -1,5 +1,12 @@
 We welcome researchers interested in contributing to Metalab. Please contact us at metalab-project@googlegroups.com
 
+Currently, the following topics are in the process of becoming a meta-analysis and we are looking for contributors:
+
+* Segmenting words from an artificial stream of speech, an extension of [*InWordDB*](http://inworddb.acristia.org); contact: [*Christina Bergmann*](http://sites.google.com/site/chbergma)
+* Detecting mispronunciations of known words, without a learning phase in the lab; contact: [*Christina Bergmann*](http://sites.google.com/site/chbergma)
+
+Here are a few resources on creating meta-analyses compatible with Metalab:
+
 * [*Metalab MA template*](https://docs.google.com/spreadsheets/d/12Y_2BcFSu48t0F8a_xrY1Ro2fJoCIV1h8O627WNcrjY/edit?usp=sharing)
 * [*Code book*](https://docs.google.com/document/d/1szXxrv75qTVx-4adlLrwmjWSDIBJfMH09dzh9733mog/edit?usp=sharing)
 * [*Interrogating PubMed via a  script*](https://gist.github.com/mcfrank/c1ec74df1427278cbe53)
