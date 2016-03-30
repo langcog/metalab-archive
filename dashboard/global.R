@@ -71,7 +71,8 @@ subjects <- all_data %>%
 datasets <- datasets %>%
   rename(dataset = name) %>%
   left_join(studies) %>%
-  left_join(subjects)
+  left_join(subjects) %>%
+  rename(name = dataset)
 
 all_data <- all_data %>%
   filter(!is.na(d_calc))
