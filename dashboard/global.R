@@ -57,17 +57,19 @@ all_data <- cached_data %>%
          mean_age_months = mean_age / avg_month)
 
 studies <- all_data %>%
-  group_by(filename) %>%
+  group_by(dataset) %>%
   summarise(num_experiments = n(),
             num_papers = length(unique(unique_ID)))
 
 subjects <- all_data %>%
   rowwise() %>%
   mutate(n_total = sum(c(n_1, n_2), na.rm = TRUE)) %>%
-  group_by(filename) %>%
+  distinct(dataset, unique_ID, same_infant) %>%
+  group_by(dataset) %>%
   summarise(num_subjects = sum(n_total))
 
 datasets <- datasets %>%
+  rename(dataset = name) %>%
   left_join(studies) %>%
   left_join(subjects)
 
