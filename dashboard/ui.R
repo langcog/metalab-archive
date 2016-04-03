@@ -198,26 +198,29 @@ tab_power <- tabItem(
       width = 6,
       box(width = NULL, status = "danger", solidHeader = TRUE,
           title = "Experiment planning",
-          selectInput("dataset_name_pwr", "Get effect size from meta-analysis",
+          p("Select a meta-analysis and a set of moderators to see statistical power estimates 
+            using the estimated effect size for that phenomenon."),
+          selectInput("dataset_name_pwr", "Meta-analysis",
                       choices = datasets$name),
           #           selectInput("standard_pwr", "Or use a standard effect size",
           #                       selected = NA,
           #                       choices = list("Small (.2)"=.2, "Medium (.5)"=.5, "Large (.8)"=.8)),
           # uiOutput("moderator_input_pwr"),
-          uiOutput("es_slider"),
+          # 
           strong("Power by number of participants"),
-          plotOutput("power"),
-          br(),
           p("Statistical power to detect a difference between
-            conditions at p < .05 with the selected effect size, plotted by
-            conditions. Red dot shows power with currently selected N from simulation. Dashed
-            lines show 80% power and necessary sample size."))),
+            conditions at p < .05. Dashed line shows 80% power, dotted line 
+            shows necessary sample size to achieve that level of power."),
+          plotOutput("power"))),
     column(
       width = 6,
       box(width = NULL, status = "danger", solidHeader = TRUE,
           title = "Experiment simulation",
           sliderInput("N", "Number of infants per group (N)",
                       min = 4, max = 120, value = 16, step = 2),
+          sliderInput("d_pwr", "Effect size (Cohen's d)",
+                      min = 0, max = 2, step = .1,
+                      value = .5),
           fluidRow(
             column(width = 6,
                    radioButtons("control", "Conditions",
