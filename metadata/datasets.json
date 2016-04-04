@@ -202,10 +202,29 @@
 		"reliability": "no",
 		"last_update": "2015-12-14",
 		"link_fields": "",
-		"short_desc": "Correlations between infant speech perception and later vocabulary.",
+		"short_desc": "Longitudinal correlations between infant speech perception and later vocabulary.",
 		"description": "Correlations between infant (4-12 months) performance in a speech perception task that is plausibly affected by language experience, on the one hand, and vocabulary, on the other, concurrently and/or longitudinally. Also contains some data points from infant processing of non-speech stimuli.",
 		"curator": "Alex Cristia",
 		"src": "images/datasets/phonotactics.png",
+		"longitudinal": "TRUE"
+	},
+	{
+		"name": "Pointing and vocabulary",
+		"short_name": "Pointing",
+		"key": "1ywuzdzvNE2H86_sM8heX33QUolzV3phJlQeonnkH4NM",
+		"filename": "data/pointing.csv",
+		"citation": "Colonnesi et al., (2010)",
+		"link": "http://www.sciencedirect.com/science/article/pii/S0273229710000377",
+		"full_citation": "Colonnesia, C., Stamsa, G. J., Kostera, I., & Noomb, M. J. (2010). The relation between pointing and language development: A meta-analysis. Developmental Review, 30, 352–366.",
+		"doi": "10.1016/j.dr.2010.10.001",
+		"systematic": "yes",
+		"reliability": "yes",
+		"last update": "2010-12-01",
+		"link_fields": "",
+		"short_desc": "Longitudinal correlations between declarative pointing and later vocabulary.",
+		"description": "The pointing gesture has been argued to be related to the development of language. This meta-analysis explores the relationship between pointing and language development, both concurrently and longitudinlly.",
+		"curator": "Molly Lewis",
+		"src": "gaze_alt.png",
 		"longitudinal": "TRUE"
 	}
 ]
