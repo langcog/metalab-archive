@@ -1,7 +1,6 @@
 ```{r include=FALSE, echo=FALSE}
 library(shiny)
 knitr::opts_chunk$set(message = FALSE, warning = FALSE, cache = FALSE)
-datasets <- shiny_data$datasets
 ```
 
 ## Overview 
@@ -17,6 +16,13 @@ methods, and ages. Using our power calculator, researchers can use these
 estimates to plan appropriate sample sizes for prospective studies. More
 generally, MetaLab can be used as a theoretical tool for exploring patterns in
 development across language acquisition domains.
+
+## Documentation 
+
++ For more information about individual datasets, see the `Datasets` tab.
++ For information about the field structure of the site, see the `Field Specification` tab. 
++ Individual meta-analyses with other available resources also have their own documentation tabs.
++ For information about doing meta-analyses and contributing to MetaLab, see the `Contributors` page.
 
 ## Citation
 
