@@ -36,7 +36,6 @@ compute_es <- function(participant_design, x_1 = NA, x_2 = NA, x_dif = NA,
       d_calc <- sqrt(f * (n_1 + n_2) / (n_1 * n_2))
     }
     if (complete(n_1, n_2, d_calc)) {
-      # TODO: is this missing a term?
       d_var_calc <- ((n_1 + n_2) / (n_1 * n_2)) + (d_calc ^ 2 / (2 * (n_1 + n_2)))
     } else if (complete(r)) {
       d_calc <- 2 * r / sqrt(1 - r ^ 2)
@@ -88,9 +87,9 @@ compute_es <- function(participant_design, x_1 = NA, x_2 = NA, x_dif = NA,
       d_calc <- sqrt(f / n_1)
     }
     if (complete(n_1, d_calc)) {
-      #d_var_calc <- (1 / n_1) + (d_calc ^ 2 / (2 * n_1)) 
-      d_var_calc <- (2/n_1) + (d_calc ^ 2 / (4 * n_1))  # changed by ML 4/2/16
-      
+      #d_var_calc <- (1 / n_1) + (d_calc ^ 2 / (2 * n_1))
+      d_var_calc <- (2/n_1) + (d_calc ^ 2 / (4 * n_1))
+
     } else if (complete(r)) {
       d_calc <- 2 * r / sqrt(1 - r ^ 2)
       d_var_calc <- 4 * r_var / ((1 - r ^ 2) ^ 3)
@@ -141,18 +140,31 @@ compute_es <- function(participant_design, x_1 = NA, x_2 = NA, x_dif = NA,
     if (complete(n_1, n_2, d_calc)) {
       d_var_calc <- ((n_1 + n_2) / (n_1 * n_2)) + (d_calc ^ 2 / (2 * (n_1 + n_2)))
     } else if (complete(n_1, d_calc)) {
-      d_var_calc <- (1 / n_1) + (d_calc ^ 2 / (2 * n_1)) #TODO: x2 factor
+      d_var_calc <- (2/n_1) + (d_calc ^ 2 / (4 * n_1))
     }
   }
 
-  g_calc <- d_calc * (1 - 3 / (4 * sum(n_1, n_2, na.rm = TRUE) - 5))
+  df <- if (participant_design == "between") {
+    sum(n_1, n_2, na.rm = TRUE) - 2
+  } else {
+    n_1 - 1
+  }
+  J <- 1 - 3 / (4 * (df - 1))
+  g_calc <- d_calc * J
+  g_var_calc <- J ^ 2 * d_var_calc
 
-  #TODO: should within have a = 4?
-  a <- ifelse(participant_design == "between", ((n_1 + n_2) ^ 2) / (n_1 * n_2), 4)
-  r_calc = d_calc / sqrt(d_calc ^ 2 + a)
+  a <- if (participant_design == "between") ((n_1 + n_2) ^ 2) / (n_1 * n_2) else 4
+  r_calc <- d_calc / sqrt(d_calc ^ 2 + a)
+  r_var_calc <- a ^ 2 * d_var_calc / (d_calc ^ 2 + a) ^ 3
+  #r_var_calc <- (1 - r_calc ^ 2) ^ 2 / (n_1 - 1)
 
-  #TODO: g_var_calc and r_var_calc
+  log_odds_calc <- d_calc * pi / sqrt(3)
+  log_odds_var_calc <- d_var_calc * pi ^ 2 / 3
+
   return(data.frame("d_calc" = d_calc, "d_var_calc" = d_var_calc,
-                    "g_calc" = g_calc, "r_calc" = r_calc))
+                    "g_calc" = g_calc, "g_var_calc" = g_var_calc,
+                    "r_calc" = r_calc, "r_var_calc" = r_var_calc,
+                    "log_odds_calc" = log_odds_calc,
+                    "log_odds_var_calc" = log_odds_var_calc))
 
 }

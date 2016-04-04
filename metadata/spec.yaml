@@ -117,6 +117,9 @@
       - WOP:
           fullname:     word-object pairing
           description:  one object on screen, paired with a word
+      - pointing:
+          fullname:     pointing
+          description:  comprehension and/or production of the pointing gesture
   required:     yes
 
 - field:        dependent_measure
@@ -138,6 +141,7 @@
     - heart_rate:
     - body_movement:
     - facial_expression:
+    - vocabulary_size:        in number of words
   required:     yes
 
 - field:        participant_design
