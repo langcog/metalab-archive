@@ -1,0 +1,17 @@
+```{r include=FALSE, echo=FALSE}
+library(shiny)
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, cache = FALSE)
+datasets <- shiny_data$datasets
+```
+
+## Individual meta-analyses
+
+For more information on phonemic discrimination and word segmentation MAs, please see the relevant tabs. 
+
+```{r results='asis', echo=FALSE}
+for (i in 1:nrow(datasets)) {
+  dataset <- datasets[i,]
+  cat(sprintf("### %s \n * [%s](%s) \n * N papers = %s, N effect sizes = %s \n * %s \n\n",
+              dataset$name, dataset$citation, dataset$link, dataset$num_papers, dataset$num_experiments, dataset$description))
+}
+```
