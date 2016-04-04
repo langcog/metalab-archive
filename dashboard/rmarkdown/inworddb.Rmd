@@ -6,10 +6,31 @@ One of the first things infants seem to extract and encode in their memory are r
 
 Links with more information:
 
-* [Overview website](https://sites.google.com/site/inworddb/)
+* [Dedicated website](https://sites.google.com/site/inworddb/)
 * [Data](https://docs.google.com/spreadsheets/d/1djn_-iE4uOs6yRmvBgzYAhB5guzfo3-3wnC7LJVLCe8/edit)
-* [Codebook](https://sites.google.com/site/inworddb/db/files/InWordDB%20FieldNames.pdf?attredirects=0&d=1)
+* [A complete list of sources](https://sites.google.com/site/inworddb/db/sources)
 
-References:
+**Curator**
 
-* Bergmann, C. & Cristia, A. (2015). Development of infants’ segmentation of words from native speech: A meta-analytic approach. Online first publication in Developmental Science. doi: 10.1111/desc.12341
+[*Christina Bergmann*](http://sites.google.com/site/chbergma/home/contact)
+
+
+**References**
+
+* Bergmann, C. & Cristia, A. (2015). Development of infants’ segmentation of words from native speech: A meta-analytic approach. Online first publication in *Developmental Science*. doi: [10.1111/desc.12341](http://onlinelibrary.wiley.com/doi/10.1111/desc.12341/abstract)
+
+
+**Acknowledgements**
+
+The following people enriched this meta-analysis by contributing additional data:
+
+* Laura Bosch
+* Anne Christophe
+* Marieke van Heugten
+* Elizabeth Johnson
+* Rochelle Newman
+* Jon Willits and Jenny Saffran
+* Rushen Shi
+* Leher Singh
+* the Plymouth babylab
+* Emily Mason-Apps
