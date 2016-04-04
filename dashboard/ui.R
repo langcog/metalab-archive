@@ -75,7 +75,7 @@ tab_home <- tabItem(
         fluidRow(
           column(width = 3, img(src = dataset$src, height = 70, width = 110)),
           column(width = 9, h4(strong(dataset$name)),
-                 p(dataset$description)))
+                 p(dataset$short_desc)))
       )
     })
   )

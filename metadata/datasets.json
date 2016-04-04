@@ -12,7 +12,9 @@
 		"reliability": "",
 		"last_update": "2012-01-01",
 		"link_fields": "http://earlyliteracylearning.org/cellreviews/cellreviews_v5_n1.pdf",
-		"description": "Looking times as a function of whether infant-directed vs. adult-directed speech is presented as stimulation.",
+		"short_desc": "Looking times as a function of whether infant-directed vs. adult-directed speech is presented as stimulation.",
+		"description": "",
+		"curator": "Alex Cristia",
 		"src": "images/datasets/ids.png"
 	},
 	{
@@ -28,7 +30,9 @@
 		"reliability": "no",
 		"last_update": "",
 		"link_fields": "",
-		"description": "Infants' categorization judgments in the presence and absence of labels.",
+		"short_desc": "Infants' categorization judgments in the presence and absence of labels.",
+		"description": "",
+		"curator": "Molly Lewis",
 		"src": "images/datasets/dinosaur.png"
 	},
 	{
@@ -44,7 +48,9 @@
 		"reliability": "no",
 		"last_update": "2016-2-1",
 		"link_fields": "",
-		"description": "Gaze following using standard multi-alternative forced-choice paradigms.",
+		"short_desc": "Gaze following using standard multi-alternative forced-choice paradigms.",
+		"description": "",
+		"curator": "Molly Lewis",
 		"src": "images/datasets/gaze.png"
 	},
 	{
@@ -60,7 +66,9 @@
 		"reliability": "no",
 		"last_update": "2015-12-14",
 		"link_fields": "https://drive.google.com/file/d/0B_tr1H-CJ3AIb1VpeUtqalhxNkU/view",
-		"description": "Discrimination of native-language vowels, including results from behavioral, electrophysiological, and neuroimaging methods.",
+		"short_desc": "Discrimination of native-language vowels, including results from behavioral, electrophysiological, and neuroimaging methods.",
+		"description": "",
+		"curator": "Sho Tsuji",
 		"src": "images/datasets/discrim.png"
 	},
 	{
@@ -76,7 +84,9 @@
 		"reliability": "no",
 		"last_update": "2015-12-14",
 		"link_fields": "https://drive.google.com/file/d/0B_tr1H-CJ3AIb1VpeUtqalhxNkU/view",
-		"description": "Discrimination of non-native vowels, including results from behavioral, electrophysiological, and neuroimaging methods.",
+		"short_desc": "Discrimination of non-native vowels, including results from behavioral, electrophysiological, and neuroimaging methods.",
+		"description": "",
+		"curator": "Sho Tsuji",
 		"src": "images/datasets/discrim.png"
 	},
 	{
@@ -92,8 +102,10 @@
 		"reliability": "no",
 		"last_update": "2015-12-14",
 		"link_fields": "https://osf.io/vhwzq/",
+		"short_desc": "Infants' ability to learn phonotactic generalizations from a short exposure.",
 		"description": "Laboratory experiments in which infants are exposed to a set of pseudo-words that could support a phonotactic generalization, and thereafter tested on their preference between new types that follow or violate the familiarized phonotactics.",
-		"src": "images/datasets/dinosaur.png"
+		"curator": "Alex Cristia",
+		"src": "images/datasets/phonotactics.png"
 	},
 	{
 		"name": "Sound learning",
@@ -108,7 +120,9 @@
 		"reliability": "no",
 		"last_update": "2015-12-14",
 		"link_fields": "https://osf.io/vhwzq/",
+		"short_desc": "Infants' ability to learn sound categories from their acoustic distribution.",
 		"description": "Laboratory experiments in which infants are exposed to a set of syllables that have been generated using a bimodal distribution of acoustic cues or not, and infants are tested on their discrimination of two sounds differing along the same dimension.",
+		"curator": "Alex Cristia",
 		"src": "images/datasets/distrib.png"
 	},
 	{
@@ -124,7 +138,9 @@
 		"reliability": "no",
 		"last_update": "2015-12-14",
 		"link_fields": "https://sites.google.com/site/inworddb/db/files/InWordDB%20FieldNames.pdf?attredirects=0&d=1",
-		"description": "Recognition of familiarized words from running, natural speech using behavioral methods.",
+		"short_desc": "Recognition of familiarized words from running, natural speech using behavioral methods.",
+		"description": "",
+		"curator": "Christina Bergmann",
 		"src": "images/datasets/segmentation.png"
 	},
 	{
@@ -140,7 +156,9 @@
 		"reliability": "",
 		"last_update": "2016-2-1",
 		"link_fields": "",
-		"description": "Online word recognition of familiar words using two-alternative forced choice preferential looking.",
+		"short_desc": "Online word recognition of familiar words using two-alternative forced choice preferential looking.",
+		"description": "",
+		"curator": "Molly Lewis",
 		"src": "images/datasets/word_rec.png"
 	},
 	{
@@ -156,7 +174,9 @@
 		"reliability": "no",
 		"last_update": "",
 		"link_fields": "",
-		"description": "Mapping of novel words reflecting children's inference that novel words tend to refer to novel objects.",
+		"short_desc": "Mapping of novel words reflecting children's inference that novel words tend to refer to novel objects.",
+		"description": "",
+		"curator": "Molly Lewis",
 		"src": "images/datasets/zot.png"
 	},
 	{
@@ -172,7 +192,9 @@
 		"reliability": "no",
 		"last_update": "2015-12-14",
 		"link_fields": "",
+		"short_desc": "",
 		"description": "Correlations between infant (4-12 months) performance in a speech perception task that is plausibly affected by language experience, on the one hand, and vocabulary, on the other, concurrently and/or longitudinally. Also contains some data points from infant processing of non-speech stimuli.",
+		"curator": "Alex Cristia",
 		"src": "images/datasets/phonotactics.png"
 	}
 ]
