@@ -4,6 +4,8 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE, cache = FALSE)
 datasets <- shiny_data$datasets
 ```
 
+## Overview 
+
 MetaLab is a research tool for aggregating across studies in the language 
 acquisition literature. Currently, MetaLab contains
 `r as.integer(sum(as.numeric(datasets$num_experiments), na.rm = TRUE))` effect sizes across
@@ -16,13 +18,10 @@ estimates to plan appropriate sample sizes for prospective studies. More
 generally, MetaLab can be used as a theoretical tool for exploring patterns in
 development across language acquisition domains.
 
+## Citation
 
-Individual meta-analyses:
+Currently, papers on the system are in preparation. Please contact [metalab-project@googlegroups.com]() for citation information. 
 
-```{r results='asis', echo=FALSE}
-for (i in 1:nrow(datasets)) {
-  dataset <- datasets[i,]
-  cat(sprintf("  * __%s__ [%s](%s) [N papers = %s, N effect sizes = %s]\n\n    %s\n\n",
-              dataset$name, dataset$citation, dataset$link, dataset$num_papers, dataset$num_experiments, dataset$description))
-}
-```
+## Caveat
+
+Please note that data and visualizations are under development at the moment (Spring 2016) and should not be taken as definitive.
