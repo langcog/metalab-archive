@@ -167,20 +167,20 @@ tab_visualizations <- tabItem(
       box(width = NULL, status = "danger",
           fluidRow(
             column(width = 10,
-                   p(strong("Violin plot"), "of effect size density")),
-            column(width = 2,
-                   downloadButton("download_violin", "Save",
-                                  class = "btn-xs pull-right"))),
-          plotOutput("violin")),
-      box(width = NULL, status = "danger",
-          fluidRow(
-            column(width = 10,
                    p(strong("Funnel plot"), "of bias in effect sizes")),
             column(width = 2,
                    downloadButton("download_funnel", "Save",
                                   class = "btn-xs pull-right"))),
           plotOutput("funnel"),
-          div(class = "text-center", textOutput("funnel_test")))
+          div(class = "text-center", textOutput("funnel_test"))),
+      box(width = NULL, status = "danger",
+          fluidRow(
+            column(width = 10,
+                   p(strong("Violin plot"), "of effect size density")),
+            column(width = 2,
+                   downloadButton("download_violin", "Save",
+                                  class = "btn-xs pull-right"))),
+          plotOutput("violin"))
     ),
     column(
       width = 6,

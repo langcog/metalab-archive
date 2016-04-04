@@ -127,6 +127,8 @@ shinyServer(function(input, output, session) {
   ########### SCATTER PLOT ###########
   
   scatter <- function() {
+    req(input$scatter_curve)
+    
     labels <- if (mod_group() == "all_mod") NULL else
       setNames(paste(data()[[mod_group()]], "  "), data()[[mod_group()]])
     
@@ -230,26 +232,35 @@ shinyServer(function(input, output, session) {
     }
     
     lower_lim <- max(d$se) + .05 * max(d$se)
-    left_lim <- ifelse(center - lower_lim * 1.96 < min(d$es),
-                       center - lower_lim * 1.96,
-                       min(d$es))
-    right_lim <- ifelse(center + lower_lim * 1.96 > max(d$es),
-                        center + lower_lim * 1.96,
-                        max(d$es))
-    funnel <- data.frame(x = c(center - lower_lim * 1.96, center,
+    funnel95 <- data.frame(x = c(center - lower_lim * 1.96, center,
                                center + lower_lim * 1.96),
                          y = c(-lower_lim, 0, -lower_lim))
     
+    left_lim99 <- ifelse(center - lower_lim * 3.29 < min(d$es),
+                         center - lower_lim * 3.29,
+                         min(d$es))
+    right_lim99 <- ifelse(center + lower_lim * 3.29 > max(d$es),
+                          center + lower_lim * 3.29,
+                          max(d$es))
+    funnel99 <- data.frame(x = c(center - lower_lim * 3.29, center,
+                                 center + lower_lim * 3.29),
+                           y = c(-lower_lim, 0, -lower_lim))
+
     ggplot(d, aes(x = es, y = -se)) +
-      scale_x_continuous(limits = c(left_lim, right_lim)) +
+      scale_x_continuous(limits = c(left_lim99, right_lim99)) +
       scale_y_continuous(expand = c(0, 0),
                          breaks = round(seq(0, -max(d$se), length.out = 5), 2),
                          labels = round(seq(0, max(d$se), length.out = 5), 2)) +
-      geom_polygon(data = funnel, aes(x = x, y = y), fill = "white") +
+      geom_polygon(data = funnel95, aes(x = x, y = y), alpha = .5, fill = "white") +
+      geom_polygon(data = funnel99, aes(x = x, y = y), alpha = .5, fill = "white") +
       geom_vline(xintercept = center, linetype = "dotted", color = "black",
                  size = .5) +
       geom_point() +
       xlab(xlabel) +
+      geom_text(x = center + lower_lim * 1.96, y = -lower_lim + lower_lim/30, 
+                label = "p < .05", vjust="bottom") + 
+      geom_text(x = center + lower_lim * 3.29, y = -lower_lim + lower_lim/30, 
+                label = "p < .01", vjust="bottom") + 
       ylab("Standard error\n") +
       theme(panel.background = element_rect(fill = "grey"),
             panel.grid.major =  element_line(colour = "darkgrey", size = 0.2),
