@@ -35,15 +35,15 @@ pretty.p <- function(x) {
 }
 
 shinyServer(function(input, output, session) {
-
+  
   #############################################################################
   # MODELS AND REACTIVES
-
+  
   ########### DATA ###########
   data <- reactive({
     filter(all_data, dataset == input$dataset_name)
   })
-
+  
   table_data <- reactive({
     all_data %>%
       filter(dataset == input$table_dataset_name) %>%
@@ -51,12 +51,12 @@ shinyServer(function(input, output, session) {
              -dataset, -short_name, -filename, -response_mode_exposure_phase, -all_mod,
              -Comments, -exposure.details, -test.details)
   })
-
+  
   output$dataset_table <- DT::renderDataTable(
     table_data(), style = "bootstrap", rownames = FALSE,
     options = list(scrollX = TRUE, autoWidth = TRUE, pageLength = 20)
   )
-
+  
   ########### MODEL ###########
   model <- reactive({
     if (length(input$moderators) == 0) {
@@ -67,13 +67,13 @@ shinyServer(function(input, output, session) {
           slab = as.character(unique_ID), data = data(), method = "REML")
     }
   })
-
+  
   ########### NO MODERATORS MODEL ###########
   no_mod_model <- reactive({
     rma(d_calc, vi = d_var_calc, slab = as.character(unique_ID),
         data = data(), method = "REML")
   })
-
+  
   mod_group <- reactive({
     if (length(input$moderators) == 0) {
       "all_mod"
@@ -88,7 +88,7 @@ shinyServer(function(input, output, session) {
       "all_mod"
     }
   })
-
+  
   output$moderator_input <- renderUI({
     mod_choices <- list("Age" = "mean_age",
                         "Response mode" = "response_mode",
@@ -97,14 +97,14 @@ shinyServer(function(input, output, session) {
     checkboxGroupInput("moderators", label = "Moderators", valid_mod_choices,
                        inline = TRUE)
   })
-
+  
   output$studies_box <- renderValueBox({
     valueBox(
       nrow(data()), "Studies", icon = icon("list", lib = "glyphicon"),
       color = "red"
     )
   })
-
+  
   output$effect_size_box <- renderValueBox({
     valueBox(
       sprintf("%.2f", no_mod_model()$b[,1][["intrcpt"]]), "Effect Size",
@@ -112,7 +112,7 @@ shinyServer(function(input, output, session) {
       color = "red"
     )
   })
-
+  
   output$effect_size_var_box <- renderValueBox({
     valueBox(
       sprintf("%.2f", no_mod_model()$se[1]), "Effect Size SE",
@@ -120,31 +120,38 @@ shinyServer(function(input, output, session) {
       color = "red"
     )
   })
-
+  
   #############################################################################
   # PLOTS
-
+  
   ########### SCATTER PLOT ###########
-
+  
   scatter <- function() {
     labels <- if (mod_group() == "all_mod") NULL else
       setNames(paste(data()[[mod_group()]], "  "), data()[[mod_group()]])
-    ggplot(data(), aes_string(x = "mean_age_months", y = "d_calc",
-                              colour = mod_group())) +
+    
+    p <- ggplot(data(), aes_string(x = "mean_age_months", y = "d_calc",
+                                   colour = mod_group())) +
       geom_jitter(aes(size = n), alpha = 0.5) +
-      geom_smooth(method = "lm", se = FALSE) +
       geom_hline(yintercept = 0, linetype = "dashed") +
       scale_colour_solarized(name = "", labels = labels,
                              guide = if (mod_group() == "all_mod") FALSE else "legend") +
       scale_size_continuous(guide = FALSE) +
       xlab("\nMean Subject Age (Months)") +
       ylab("Effect Size\n")
+    
+    if (input$scatter_curve == "lm") {
+      p + geom_smooth(method = "lm", aes(weight = 1/d_var_calc), se = FALSE)
+    } else if (input$scatter_curve == "loess") {
+      p + geom_smooth(method = "loess", se = FALSE, aes(weight = 1/d_var_calc), span = 1)
+    }
+    
   }
-
+  
   output$scatter <- renderPlot(scatter())
-
+  
   ########### VIOLIN PLOT ###########
-
+  
   violin <- function() {
     plt <- ggplot(data(), aes_string(x = mod_group(), y = "d_calc",
                                      colour = mod_group())) +
@@ -160,13 +167,13 @@ shinyServer(function(input, output, session) {
       plt
     }
   }
-
+  
   output$violin <- renderPlot(
     violin(), width = function() min(length(unique(data()[[mod_group()]])) * 200, 475)
   )
-
+  
   ########### FOREST PLOT ###########
-
+  
   forest <- function() {
     f <- fitted(model())
     p <- predict(model())
@@ -186,10 +193,10 @@ shinyServer(function(input, output, session) {
       arrange_(.dots = list(sprintf("desc(%s)", input$forest_sort),
                             "desc(effects)")) %>%
       mutate(unique_ID = factor(unique_ID, levels = unique_ID))
-
+    
     labels <- if (mod_group() == "all_mod") NULL else
       setNames(paste(data()[[mod_group()]], "  "), data()[[mod_group()]])
-
+    
     qplot(unique_ID, effects, ymin = effects.cil, ymax = effects.cih,
           geom = "linerange",
           data = forest_data) +
@@ -204,12 +211,12 @@ shinyServer(function(input, output, session) {
       xlab("") +
       ylab("Effect Size")
   }
-
+  
   output$forest <- renderPlot(forest(),
                               height = function() nrow(data()) * 10 + 100)
-
+  
   ########### FUNNEL PLOT ###########
-
+  
   funnel <- function() {
     if (length(input$moderators) == 0) {
       d <- data.frame(se = sqrt(model()$vi), es = model()$yi)
@@ -221,7 +228,7 @@ shinyServer(function(input, output, session) {
       center <- 0
       xlabel <- "\nResidual"
     }
-
+    
     lower_lim <- max(d$se) + .05 * max(d$se)
     left_lim <- ifelse(center - lower_lim * 1.96 < min(d$es),
                        center - lower_lim * 1.96,
@@ -232,7 +239,7 @@ shinyServer(function(input, output, session) {
     funnel <- data.frame(x = c(center - lower_lim * 1.96, center,
                                center + lower_lim * 1.96),
                          y = c(-lower_lim, 0, -lower_lim))
-
+    
     ggplot(d, aes(x = es, y = -se)) +
       scale_x_continuous(limits = c(left_lim, right_lim)) +
       scale_y_continuous(expand = c(0, 0),
@@ -248,18 +255,18 @@ shinyServer(function(input, output, session) {
             panel.grid.major =  element_line(colour = "darkgrey", size = 0.2),
             panel.grid.minor =  element_line(colour = "darkgrey", size = 0.5))
   }
-
+  
   output$funnel <- renderPlot(funnel())
   output$funnel_test <- renderText({
     funnel_test <- regtest.rma(model())
     sprintf("Regression test for funnel plot asymmetry: z = %.3g, p = %.3g. Interpret with caution due to the possible presence of confounding moderators.",
             funnel_test$zval, funnel_test$pval)
   })
-
-
+  
+  
   #############################################################################
   # DOWNLOAD HANDLERS
-
+  
   plot_download_handler <- function(plot_name, plot_fun) {
     downloadHandler(
       filename = function() {
@@ -272,29 +279,29 @@ shinyServer(function(input, output, session) {
       }
     )
   }
-
+  
   output$download_scatter <- plot_download_handler("scatter", scatter)
   output$download_violin <- plot_download_handler("violin", violin)
   output$download_funnel <- plot_download_handler("funnel", funnel)
   output$download_forest <- plot_download_handler("forest", forest)
-
+  
   output$download_data <- downloadHandler(
     filename = function() sprintf("%s.csv", input$dataset_name),
     content = function(file) {
       write_csv(data(), file)
     }
   )
-
+  
   output$table_download_data <- downloadHandler(
     filename = function() sprintf("%s.csv", input$table_dataset_name),
     content = function(file) {
       write_csv(table_data(), file)
     }
   )
-
+  
   #############################################################################
   # POWER ANALYSIS
-
+  
   conds <- reactive({
     if (input$control) {
       groups <- factor(c("Experimental","Control",
@@ -307,18 +314,18 @@ shinyServer(function(input, output, session) {
                                      "Shorter looking predicted"))) %>%
       group_by(group, condition)
   })
-
+  
   ########### DATA ###########
   pwrdata <- reactive({
     filter(all_data, dataset == input$dataset_name_pwr)
   })
-
+  
   ########### PWR MODEL ###########
   pwr_no_mod_model <- reactive({
     rma(d_calc, vi = d_var_calc, slab = as.character(unique_ID),
         data = pwrdata(), method = "REML")
   })
-
+  
   pwrmodel <- reactive({
     if (length(input$pwr_moderators) == 0) {
       pwr_no_mod_model()
@@ -348,9 +355,9 @@ shinyServer(function(input, output, session) {
   
   output$pwr_moderator_input <- renderUI({
     mod_choices <- list("Age" = "mean_age_months") 
-#     ,
-#                         "Response mode" = "response_mode",
-#                         "Exposure phase" = "exposure_phase")
+    #     ,
+    #                         "Response mode" = "response_mode",
+    #                         "Exposure phase" = "exposure_phase")
     valid_mod_choices <- mod_choices %>% 
       keep(~length(unique(pwrdata()[[.x]])) > 1)
     
@@ -379,9 +386,9 @@ shinyServer(function(input, output, session) {
     }
     
     max_n <- min(max(60, 
-                 pwr.p.test(h = d_pwr,
-                            sig.level = .05,
-                            power = .9)$n), 
+                     pwr.p.test(h = d_pwr,
+                                sig.level = .05,
+                                power = .9)$n), 
                  200)
     
     pwrs <- data.frame(ns = seq(5, max_n, 5),
@@ -401,7 +408,7 @@ shinyServer(function(input, output, session) {
       xlab("Number of participants (N)")
   })
   
-
+  
   ########### GENERATE DATA #############
   pwr_sim_data <- reactive({
     if (input$go | !input$go) {
@@ -421,7 +428,7 @@ shinyServer(function(input, output, session) {
         )
     }
   })
-
+  
   ########### MEANS FOR PLOTTING #############
   ms <- reactive({
     pwr_sim_data() %>%
@@ -431,11 +438,11 @@ shinyServer(function(input, output, session) {
                 sem = sem(looking.time)) %>%
       rename_("interval" = input$interval)
   })
-
+  
   ########### BAR GRAPH #############
   output$bar <- renderPlot({
     req(input$d_pwr)
-
+    
     pos <- position_dodge(width = .25)
     ggplot(ms(), aes(x = group, y = mean, fill = condition,
                      colour = condition)) +
@@ -459,33 +466,33 @@ shinyServer(function(input, output, session) {
                              labels = setNames(paste(ms()$condition, "  "),
                                                ms()$condition))
   })
-
+  
   ########### STATISTICAL TEST OUTPUTS #############
   output$stat <- renderText({
-
+    
     longer_exp <- filter(pwr_sim_data(), condition == "Longer looking predicted",
                          group == "Experimental")$looking.time
     shorter_exp <- filter(pwr_sim_data(), condition == "Shorter looking predicted",
                           group == "Experimental")$looking.time
     p.e <- t.test(longer_exp, shorter_exp, paired = TRUE)$p.value
-
+    
     stat.text <- paste("A t test of the experimental condition is ",
                        ifelse(p.e > .05, "non", ""),
                        "significant at p = ",
                        pretty.p(p.e),
                        ". ",
                        sep = "")
-
+    
     if (input$control) {
-
+      
       longer_ctl <- filter(pwr_sim_data(), condition == "Longer looking predicted",
                            group == "Control")$looking.time
       shorter_ctl <- filter(pwr_sim_data(), condition == "Shorter looking predicted",
                             group == "Control")$looking.time
       p.c <- t.test(longer_ctl, shorter_ctl, paired = TRUE)$p.value
-
+      
       a <- anova(lm(looking.time ~ group * condition, data = pwr_sim_data()))
-
+      
       return(paste(stat.text,
                    "A t test of the control condition is ",
                    ifelse(p.c > .05, "non", ""),
@@ -499,14 +506,14 @@ shinyServer(function(input, output, session) {
                    ".",
                    sep = ""))
     }
-
+    
     return(stat.text)
   })
-
-
+  
+  
   #############################################################################
   # SPECIFICATION TABLES
-
+  
   get_property <- function(property, property_fun = function(x) x) {
     map_chr(spec, function(entry) {
       if (property %in% names(entry) && !is.null(entry[[property]]))
@@ -514,9 +521,9 @@ shinyServer(function(input, output, session) {
       else ""
     })
   }
-
+  
   spec <- yaml.load_file("../metadata/spec.yaml")
-
+  
   process_options <- function(options) {
     if (class(options) == "list") {
       opts <- names(unlist(options, recursive = FALSE))
@@ -535,12 +542,12 @@ shinyServer(function(input, output, session) {
     unite(`format/options`, format, options, sep = "") %>%
     split(.$required) %>%
     map(~.x %>% select(-required))
-
+  
   spec_derived <- yaml.load_file("../metadata/spec_derived.yaml") %>%
     transpose() %>%
     simplify_all() %>%
     as_data_frame()
-
+  
   make_datatable <- function(df) {
     DT::datatable(df,
                   style = "bootstrap", rownames = FALSE,
@@ -548,9 +555,9 @@ shinyServer(function(input, output, session) {
                   options = list(paging = FALSE, searching = FALSE,
                                  dom = "t"))
   }
-
+  
   output$req_table <- DT::renderDataTable(make_datatable(spec_data[["TRUE"]]))
   output$opt_table <- DT::renderDataTable(make_datatable(spec_data[["FALSE"]]))
   output$drv_table <- DT::renderDataTable(make_datatable(spec_derived))
-
+  
 })

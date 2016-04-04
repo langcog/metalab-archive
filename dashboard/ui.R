@@ -159,6 +159,10 @@ tab_visualizations <- tabItem(
             column(width = 2,
                    downloadButton("download_scatter", "Save",
                                   class = "btn-xs pull-right"))),
+          selectInput("scatter_curve", label = "Curve type",
+                      choices = c("Locally-linear regression (loess)" = "loess", 
+                                  "Weighted linear model (lm)" = "lm"), 
+                      selected = "loess"),
           plotOutput("scatter")),
       box(width = NULL, status = "danger",
           fluidRow(
