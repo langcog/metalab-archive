@@ -48,7 +48,8 @@ shinyServer(function(input, output, session) {
     all_data %>%
       filter(dataset == input$table_dataset_name) %>%
       select(-passages, -long_cite, -stimuli_notes, -method_notes, -general_notes,
-             -dataset, -short_name, -filename, -response_mode_exposure_phase, -all_mod)
+             -dataset, -short_name, -filename, -response_mode_exposure_phase, -all_mod,
+             -Comments, -exposure.details, -test.details)
   })
 
   output$dataset_table <- DT::renderDataTable(

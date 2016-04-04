@@ -89,17 +89,17 @@ tab_documentation <- tabItem(
   tabBox(width = "100%", status = "danger",
          tabPanel("Overview",
                   includeRmd("rmarkdown/overview.Rmd", list("datasets" = datasets))),
-         tabPanel("InPhonDB",
-                  includeRmd("rmarkdown/inphondb.Rmd")),
-         tabPanel("InWordDB",
-                  includeRmd("rmarkdown/inworddb.Rmd")),
          tabPanel("Field Specification",
                   h3("Required fields"),
                   DT::dataTableOutput("req_table"),
                   h3("Optional fields"),
                   DT::dataTableOutput("opt_table"),
                   h3("Derived fields"),
-                  DT::dataTableOutput("drv_table"))
+                  DT::dataTableOutput("drv_table")),
+         tabPanel("Phonemic Discrimination",
+                  includeRmd("rmarkdown/inphondb.Rmd")),
+         tabPanel("Word Segmentation",
+                  includeRmd("rmarkdown/inworddb.Rmd"))
   )
 )
 
