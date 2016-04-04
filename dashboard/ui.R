@@ -21,6 +21,8 @@ sidebar <- dashboardSidebar(
              icon = icon("list")),
     menuItem("Documentation", tabName = "documentation",
              icon = icon("file")),
+    menuItem("Contribute", tabName = "contribute",
+             icon = icon("upload")),
     menuItem("Team", tabName = "team",
              icon = icon("users")),
     menuItem("Source code", icon = icon("file-code-o"),
@@ -87,19 +89,32 @@ tab_documentation <- tabItem(
   tabBox(width = "100%", status = "danger",
          tabPanel("Overview",
                   includeRmd("rmarkdown/overview.Rmd", list("datasets" = datasets))),
-         tabPanel("Motivation and Background",
-                  includeRmd("rmarkdown/background.Rmd")),
-         tabPanel("Building a MA",
-                  includeRmd("rmarkdown/building.Rmd")),
-         tabPanel("Contribute to MetaLab",
-                  includeRmd("rmarkdown/contribute.Rmd")),
-         tabPanel("MetaLab Data Specification",
+         tabPanel("InPhonDB",
+                  includeRmd("rmarkdown/inphondb.Rmd")),
+         tabPanel("InWordDB",
+                  includeRmd("rmarkdown/inworddb.Rmd")),
+         tabPanel("Field Specification",
                   h3("Required fields"),
                   DT::dataTableOutput("req_table"),
                   h3("Optional fields"),
                   DT::dataTableOutput("opt_table"),
                   h3("Derived fields"),
                   DT::dataTableOutput("drv_table"))
+  )
+)
+
+#############################################################################
+# Contribute
+
+tab_contribute <- tabItem(
+  tabName = "contribute",
+  tabBox(width = "100%", status = "danger",
+         tabPanel("Motivation and Background",
+                  includeRmd("rmarkdown/background.Rmd")),
+         tabPanel("Building a MA",
+                  includeRmd("rmarkdown/building.Rmd")),
+         tabPanel("Contribute to MetaLab",
+                  includeRmd("rmarkdown/contribute.Rmd"))
   )
 )
 
@@ -292,8 +307,8 @@ tab_team <- tabItem(
 #############################################################################
 # DASHBOARD STRUCTURE
 
-tabs <- c(list(tab_home, tab_data, tab_visualizations,
-               tab_power, tab_documentation, tab_team), report_tabs)
+tabs <- c(list(tab_home, tab_visualizations, tab_power, tab_data,
+               tab_documentation, tab_contribute, tab_team), report_tabs)
 
 body <- dashboardBody(
   includeCSS("www/custom.css"),

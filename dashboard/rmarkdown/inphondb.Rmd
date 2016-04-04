@@ -1,0 +1,16 @@
+```{r include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, cache = FALSE)
+```
+
+Even before birth, infants are listening to us. In a world full of sounds, they must learn to attend to certain sound contrasts more than others in order to parse speech effectively. What are infants' patterns of perception and discrimination at each step of this trip? On this website, we nucleate meta-analyses bearing on this key question. We now hold the largest database of infant vowel discrimination research, in a public format.
+
+Links with more information:
+
+* [Overview website](https://sites.google.com/site/inphondb/)
+* [Native data](https://docs.google.com/spreadsheets/d/13ytBtSP9ZUNDeW5K2uf_VfyTFOILivTFZN1YBLZtmuU/edit) and [Non-native data](https://docs.google.com/spreadsheets/d/1K7iCsLUXTB8GXbynuQ9aJOM6O-EcrnDDlmYspdW_Sh8/edit)
+* [Codebook](https://drive.google.com/file/d/0B_tr1H-CJ3AIb1VpeUtqalhxNkU/view)
+
+References:
+
+* Tsuji, S. & Cristia, A. (2014). Perceptual attunement in vowels: A meta-analysis. Developmental Psychobiology, 56, 179-191.
+* Tsuji, S., & Cristia, A. (2013). 50 years of infant vowel discrimination research: what have we learned? Journal of the Phonetic Society of Japan, 17(3), 1-11.
