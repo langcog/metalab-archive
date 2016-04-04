@@ -325,9 +325,11 @@ shinyServer(function(input, output, session) {
     } else {
       mods <- paste(input$pwr_moderators, collapse = "+")
       rma(as.formula(paste("d_calc ~", mods)), vi = d_var_calc,
-          slab = as.character(unique_ID), data = data(), method = "REML")
+          slab = as.character(unique_ID), data = pwrdata(), method = "REML")
     }
   })
+  
+  ########### MODERATOR CHOICE #############
   
   pwr_mod_group <- reactive({
     if (length(input$pwr_moderators) == 0) {
@@ -345,9 +347,10 @@ shinyServer(function(input, output, session) {
   })
   
   output$pwr_moderator_input <- renderUI({
-    mod_choices <- list("Age" = "mean_age",
-                        "Response mode" = "response_mode",
-                        "Exposure phase" = "exposure_phase")
+    mod_choices <- list("Age" = "mean_age_months") 
+#     ,
+#                         "Response mode" = "response_mode",
+#                         "Exposure phase" = "exposure_phase")
     valid_mod_choices <- mod_choices %>% 
       keep(~length(unique(pwrdata()[[.x]])) > 1)
     
@@ -357,19 +360,45 @@ shinyServer(function(input, output, session) {
   })
   
   output$pwr_moderator_choices <- renderUI({
-    req(input$pwr_moderators)
-    print(input$pwr_moderators)
-    
-    if (input$pwr_moderators == "") {
-      br()
-    } 
-    
-    if (any(input$pwr_moderators == "mean_age")) {
-      sliderInput("pwr_age", 
+    if (any(input$pwr_moderators == "mean_age_months")) {
+      sliderInput("pwr_age_months", 
                   "Age of experimental participants",
-                  min = 0, max = max(pwrdata()$mean_age), 
-                  value = mean(pwrdata()$mean_age))
+                  min = 0, max = ceiling(max(pwrdata()$mean_age_months)), 
+                  value = round(mean(pwrdata()$mean_age_months)), 
+                  step = 1)
     }
+  })
+  
+  ########### POWER COMPUTATIONS #############
+  output$power <- renderPlot({
+    if (any(input$pwr_moderators == "mean_age_months")) {
+      req(input$pwr_age_months)
+      d_pwr <- predict(pwrmodel(), newmods=matrix(input$pwr_age_months))$pred
+    } else {
+      d_pwr <- pwrmodel()$b[,1][["intrcpt"]]
+    }
+    
+    max_n <- min(max(60, 
+                 pwr.p.test(h = d_pwr,
+                            sig.level = .05,
+                            power = .9)$n), 
+                 200)
+    
+    pwrs <- data.frame(ns = seq(5, max_n, 5),
+                       ps = pwr.p.test(h = d_pwr,
+                                       n = seq(5, max_n, 5),
+                                       sig.level = .05)$power)
+    
+    qplot(ns, ps, geom = c("point","line"),
+          data = pwrs) +
+      geom_hline(yintercept = .8, lty = 2) +
+      geom_vline(xintercept = pwr.p.test(h = d_pwr,
+                                         sig.level = .05,
+                                         power = .8)$n, lty = 3) +
+      ylim(c(0,1)) +
+      xlim(c(0,max_n)) + 
+      ylab("Power to reject the null at p < .05") +
+      xlab("Number of participants (N)")
   })
   
 
@@ -422,6 +451,7 @@ shinyServer(function(input, output, session) {
                      colour = "black") +
       xlab("Group") +
       ylab("Simulated Looking Time") +
+      ylim(c(0,20)) + 
       scale_fill_solarized(name = "",
                            labels = setNames(paste(ms()$condition, "  "),
                                              ms()$condition)) +
@@ -439,7 +469,7 @@ shinyServer(function(input, output, session) {
                           group == "Experimental")$looking.time
     p.e <- t.test(longer_exp, shorter_exp, paired = TRUE)$p.value
 
-    stat.text <- paste("A t.test of the experimental condition is ",
+    stat.text <- paste("A t test of the experimental condition is ",
                        ifelse(p.e > .05, "non", ""),
                        "significant at p = ",
                        pretty.p(p.e),
@@ -457,7 +487,7 @@ shinyServer(function(input, output, session) {
       a <- anova(lm(looking.time ~ group * condition, data = pwr_sim_data()))
 
       return(paste(stat.text,
-                   "A t.test of the control condition is ",
+                   "A t test of the control condition is ",
                    ifelse(p.c > .05, "non", ""),
                    "significant at p = ",
                    pretty.p(p.c),
@@ -471,31 +501,6 @@ shinyServer(function(input, output, session) {
     }
 
     return(stat.text)
-  })
-
-  ########### POWER COMPUTATIONS #############
-  output$power <- renderPlot({
-    d_pwr <- pwrmodel()$b[,1][["intrcpt"]]
-    
-    max_n <- max(60, 
-                 pwr.p.test(h = d_pwr,
-                            sig.level = .05,
-                            power = .9)$n)
-    
-    pwrs <- data.frame(ns = seq(5, max_n, 5),
-                       ps = pwr.p.test(h = d_pwr,
-                                       n = seq(5, max_n, 5),
-                                       sig.level = .05)$power)
-    
-    qplot(ns, ps, geom = c("point","line"),
-          data = pwrs) +
-      geom_hline(yintercept = .8, lty = 2) +
-      geom_vline(xintercept = pwr.p.test(h = d_pwr,
-                                         sig.level = .05,
-                                         power = .8)$n, lty = 3) +
-      ylim(c(0,1)) +
-      ylab("Power to reject the null at p < .05") +
-      xlab("Number of participants (N)")
   })
 
 

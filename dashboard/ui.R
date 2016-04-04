@@ -218,7 +218,7 @@ tab_power <- tabItem(
       box(width = NULL, status = "danger", solidHeader = TRUE,
           title = "Experiment planning",
           p("Select a meta-analysis and a set of moderators to see statistical power estimates
-            using the estimated effect size for that phenomenon."),
+            using the estimated effect size for that phenomenon. (Currently supports age only)."),
           selectInput("dataset_name_pwr", "Meta-analysis",
                       choices = datasets$name),
           uiOutput("pwr_moderator_input"),
@@ -232,6 +232,10 @@ tab_power <- tabItem(
       width = 6,
       box(width = NULL, status = "danger", solidHeader = TRUE,
           title = "Experiment simulation",
+          p("Run a simulation of a looking-time experiment, choosing an effect size and 
+             a number of participants per group. See the results of statistical comparisons for 
+             within-subjects effects (t-test) and for comparison with a negative control group 
+            (ANOVA interaction)."),
           sliderInput("N", "Number of infants per group (N)",
                       min = 4, max = 120, value = 16, step = 2),
           sliderInput("d_pwr", "Effect size (Cohen's d)",
