@@ -202,11 +202,8 @@ tab_power <- tabItem(
             using the estimated effect size for that phenomenon."),
           selectInput("dataset_name_pwr", "Meta-analysis",
                       choices = datasets$name),
-          #           selectInput("standard_pwr", "Or use a standard effect size",
-          #                       selected = NA,
-          #                       choices = list("Small (.2)"=.2, "Medium (.5)"=.5, "Large (.8)"=.8)),
-          # uiOutput("moderator_input_pwr"),
-          # 
+          uiOutput("pwr_moderator_input"),
+          uiOutput("pwr_moderator_choices"),
           strong("Power by number of participants"),
           p("Statistical power to detect a difference between
             conditions at p < .05. Dashed line shows 80% power, dotted line 

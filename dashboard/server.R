@@ -286,8 +286,6 @@ shinyServer(function(input, output, session) {
   #############################################################################
   # POWER ANALYSIS
 
-  #input <- list(control = FALSE, N = 16)
-
   conds <- reactive({
     if (input$control) {
       groups <- factor(c("Experimental","Control",
@@ -307,12 +305,64 @@ shinyServer(function(input, output, session) {
   })
 
   ########### PWR MODEL ###########
-  pwrmodel <- reactive({
+  pwr_no_mod_model <- reactive({
     rma(d_calc, vi = d_var_calc, slab = as.character(unique_ID),
         data = pwrdata(), method = "REML")
   })
 
-
+  pwrmodel <- reactive({
+    if (length(input$pwr_moderators) == 0) {
+      pwr_no_mod_model()
+    } else {
+      mods <- paste(input$pwr_moderators, collapse = "+")
+      rma(as.formula(paste("d_calc ~", mods)), vi = d_var_calc,
+          slab = as.character(unique_ID), data = data(), method = "REML")
+    }
+  })
+  
+  pwr_mod_group <- reactive({
+    if (length(input$pwr_moderators) == 0) {
+      "all_mod"
+    } else if ("response_mode" %in% input$pwr_moderators &
+               "exposure_phase" %in% input$pwr_moderators) {
+      "response_mode_exposure_phase"
+    } else if ("response_mode" %in% input$pwr_moderators) {
+      "response_mode"
+    } else if ("exposure_phase" %in% input$pwr_moderators) {
+      "exposure_phase"
+    } else if ("mean_age" %in% input$pwr_moderators) {
+      "all_mod"
+    }
+  })
+  
+  output$pwr_moderator_input <- renderUI({
+    mod_choices <- list("Age" = "mean_age",
+                        "Response mode" = "response_mode",
+                        "Exposure phase" = "exposure_phase")
+    valid_mod_choices <- mod_choices %>% 
+      keep(~length(unique(pwrdata()[[.x]])) > 1)
+    
+    checkboxGroupInput("pwr_moderators", label = "Moderators", 
+                       valid_mod_choices,
+                       inline = TRUE)
+  })
+  
+  output$pwr_moderator_choices <- renderUI({
+    req(input$pwr_moderators)
+    print(input$pwr_moderators)
+    
+    if (input$pwr_moderators == "") {
+      br()
+    } 
+    
+    if (any(input$pwr_moderators == "mean_age")) {
+      sliderInput("pwr_age", 
+                  "Age of experimental participants",
+                  min = 0, max = max(pwrdata()$mean_age), 
+                  value = mean(pwrdata()$mean_age))
+    }
+  })
+  
 
   ########### GENERATE DATA #############
   pwr_sim_data <- reactive({
@@ -323,10 +373,10 @@ shinyServer(function(input, output, session) {
             rep(.$group == "Experimental" &
                   .$condition == "Longer looking predicted", input$N),
             rnorm(n = input$N,
-                  mean = pwrmu + (input$d * pwrsd) / 2,
+                  mean = pwrmu + (input$d_pwr * pwrsd) / 2,
                   sd = pwrsd),
             rnorm(n = input$N,
-                  mean = pwrmu - (input$d * pwrsd) / 2,
+                  mean = pwrmu - (input$d_pwr * pwrsd) / 2,
                   sd = pwrsd)
           )
         )
@@ -370,32 +420,6 @@ shinyServer(function(input, output, session) {
                              labels = setNames(paste(ms()$condition, "  "),
                                                ms()$condition))
   })
-
-  ########### SCATTER PLOT #############
-  #   output$scatter <- renderPlot({
-  #     print(ms())
-  #     print(data())
-  #     pos <- position_jitterdodge(jitter.width = .1,
-  #                                 dodge.width = .25)
-  #     qplot(group, looking.time, fill = condition,
-  #           colour = condition,
-  #           group = condition,
-  #           position = pos,
-  #           geom="point",
-  #           data = data()) +
-  #       geom_linerange(data = ms(),
-  #                      aes(x = group, y = mean,
-  #                          fill = condition,
-  #                          ymin = mean - interval,
-  #                          ymax = mean + interval),
-  #                      position = pos,
-  #                      size = 2,
-  #                      colour = "black") +
-  #       xlab("Group") +
-  #       ylab("Looking Time") +
-  #       ylim(c(0, ceiling(max(data()$looking.time)/5)*5))
-  #   })
-  #
 
   ########### STATISTICAL TEST OUTPUTS #############
   output$stat <- renderText({
@@ -442,29 +466,22 @@ shinyServer(function(input, output, session) {
 
   ########### POWER COMPUTATIONS #############
   output$power <- renderPlot({
-    req(input$d)
+    d_pwr <- pwrmodel()$b[,1][["intrcpt"]]
     
-    max_n <- max(100, 
-                 pwr.p.test(h = input$d,
+    max_n <- max(60, 
+                 pwr.p.test(h = d_pwr,
                             sig.level = .05,
                             power = .9)$n)
     
-    ns <- seq(5, max_n, 5)
-    
-    pwrs <- data.frame(ns = ns,
-                       ps = pwr.p.test(h = input$d,
-                                       n = ns,
+    pwrs <- data.frame(ns = seq(5, max_n, 5),
+                       ps = pwr.p.test(h = d_pwr,
+                                       n = seq(5, max_n, 5),
                                        sig.level = .05)$power)
-    
-    this.pwr <- data.frame(ns = input$N,
-                           ps = pwr.p.test(h = input$d,
-                                           n = input$N,
-                                           sig.level = .05)$power)
     
     qplot(ns, ps, geom = c("point","line"),
           data = pwrs) +
       geom_hline(yintercept = .8, lty = 2) +
-      geom_vline(xintercept = pwr.p.test(h = input$d,
+      geom_vline(xintercept = pwr.p.test(h = d_pwr,
                                          sig.level = .05,
                                          power = .8)$n, lty = 3) +
       ylim(c(0,1)) +
