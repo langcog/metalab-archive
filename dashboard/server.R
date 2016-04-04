@@ -312,16 +312,7 @@ shinyServer(function(input, output, session) {
         data = pwrdata(), method = "REML")
   })
 
-  ########### GET ES #############
-  output$es_slider <- renderUI({
 
-    es_slider_val <- pwrmodel()$b[,1][["intrcpt"]]
-    print(es_slider_val)
-
-    sliderInput("d", "Effect size (Cohen's d)",
-                min = 0, max = 2, step = .1,
-                value = es_slider_val)
-  })
 
   ########### GENERATE DATA #############
   pwr_sim_data <- reactive({
@@ -355,7 +346,7 @@ shinyServer(function(input, output, session) {
 
   ########### BAR GRAPH #############
   output$bar <- renderPlot({
-    req(input$d)
+    req(input$d_pwr)
 
     pos <- position_dodge(width = .25)
     ggplot(ms(), aes(x = group, y = mean, fill = condition,
@@ -452,77 +443,33 @@ shinyServer(function(input, output, session) {
   ########### POWER COMPUTATIONS #############
   output$power <- renderPlot({
     req(input$d)
-
-    if (input$control) {
-      ns <- seq(5, 120, 5)
-      pwrs <- data.frame(ns = ns,
-                         Experimental = pwr.p.test(h = input$d,
-                                                   n = ns,
-                                                   sig.level = .05)$power,
-                         Interaction = pwr.2p.test(h = input$d,
-                                                   n = ns,
-                                                   sig.level = .05)$power) %>%
-        gather(condition, ps, Experimental, Interaction)
-
-
-      this.pwr <- data.frame(ns = rep(input$N, 2),
-                             ps = c(pwr.p.test(h = input$d,
-                                               n = input$N,
-                                               sig.level = .05)$power,
-                                    pwr.2p.test(h = input$d,
-                                                n = input$N,
-                                                sig.level = .05)$power),
-                             condition = c("Experimental", "Interaction"))
-      qplot(ns, ps, col = condition,
-            geom = c("point","line"),
-            data = pwrs) +
-        geom_point(data = this.pwr,
-                   col = "red", size = 6) +
-        geom_label(data = this.pwr,
-                   label = "simulation",
-                   nudge_x = 10,
-                   col = "red") +
-        geom_hline(yintercept = .8, lty = 2) +
-        geom_vline(xintercept = pwr.p.test(h = input$d,
-                                           sig.level = .05,
-                                           power = .8)$n, lty = 2) +
-        geom_vline(xintercept = pwr.2p.test(h = input$d,
-                                            sig.level = .05,
-                                            power = .8)$n, lty = 2) +
-        ylim(c(0,1)) +
-        ylab("Power to reject the null at p < .05") +
-        xlab("Number of participants (N)") +
-        scale_colour_solarized(name = "",
-                               labels = setNames(paste(pwrs$condition, "  "),
-                                                 pwrs$condition))
-
-    } else {
-      ns <- seq(5, 120, 5)
-      pwrs <- data.frame(ns = ns,
-                         ps = pwr.p.test(h = input$d,
-                                         n = ns,
-                                         sig.level = .05)$power)
-
-      this.pwr <- data.frame(ns = input$N,
-                             ps = pwr.p.test(h = input$d,
-                                             n = input$N,
-                                             sig.level = .05)$power)
-      qplot(ns, ps, geom = c("point","line"),
-            data = pwrs) +
-        geom_point(data = this.pwr,
-                   col = "red", size = 6) +
-        geom_label(data = this.pwr,
-                   label = "simulation",
-                   nudge_x = 10,
-                   col = "red") +
-        geom_hline(yintercept = .8, lty = 2) +
-        geom_vline(xintercept = pwr.p.test(h = input$d,
-                                           sig.level = .05,
-                                           power = .8)$n, lty = 2) +
-        ylim(c(0,1)) +
-        ylab("Power to reject the null at p < .05") +
-        xlab("Number of participants (N)")
-    }
+    
+    max_n <- max(100, 
+                 pwr.p.test(h = input$d,
+                            sig.level = .05,
+                            power = .9)$n)
+    
+    ns <- seq(5, max_n, 5)
+    
+    pwrs <- data.frame(ns = ns,
+                       ps = pwr.p.test(h = input$d,
+                                       n = ns,
+                                       sig.level = .05)$power)
+    
+    this.pwr <- data.frame(ns = input$N,
+                           ps = pwr.p.test(h = input$d,
+                                           n = input$N,
+                                           sig.level = .05)$power)
+    
+    qplot(ns, ps, geom = c("point","line"),
+          data = pwrs) +
+      geom_hline(yintercept = .8, lty = 2) +
+      geom_vline(xintercept = pwr.p.test(h = input$d,
+                                         sig.level = .05,
+                                         power = .8)$n, lty = 3) +
+      ylim(c(0,1)) +
+      ylab("Power to reject the null at p < .05") +
+      xlab("Number of participants (N)")
   })
 
 
