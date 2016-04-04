@@ -21,6 +21,8 @@ sidebar <- dashboardSidebar(
              icon = icon("list")),
     menuItem("Documentation", tabName = "documentation",
              icon = icon("file")),
+    menuItem("Contribute", tabName = "contribute",
+             icon = icon("upload")),
     menuItem("Team", tabName = "team",
              icon = icon("users")),
     menuItem("Source code", icon = icon("file-code-o"),
@@ -87,19 +89,32 @@ tab_documentation <- tabItem(
   tabBox(width = "100%", status = "danger",
          tabPanel("Overview",
                   includeRmd("rmarkdown/overview.Rmd", list("datasets" = datasets))),
-         tabPanel("Motivation and Background",
-                  includeRmd("rmarkdown/background.Rmd")),
-         tabPanel("Building a MA",
-                  includeRmd("rmarkdown/building.Rmd")),
-         tabPanel("Contribute to MetaLab",
-                  includeRmd("rmarkdown/contribute.Rmd")),
-         tabPanel("MetaLab Data Specification",
+         tabPanel("Field Specification",
                   h3("Required fields"),
                   DT::dataTableOutput("req_table"),
                   h3("Optional fields"),
                   DT::dataTableOutput("opt_table"),
                   h3("Derived fields"),
-                  DT::dataTableOutput("drv_table"))
+                  DT::dataTableOutput("drv_table")),
+         tabPanel("Phonemic Discrimination",
+                  includeRmd("rmarkdown/inphondb.Rmd")),
+         tabPanel("Word Segmentation",
+                  includeRmd("rmarkdown/inworddb.Rmd"))
+  )
+)
+
+#############################################################################
+# Contribute
+
+tab_contribute <- tabItem(
+  tabName = "contribute",
+  tabBox(width = "100%", status = "danger",
+         tabPanel("Motivation and Background",
+                  includeRmd("rmarkdown/background.Rmd")),
+         tabPanel("Building a MA",
+                  includeRmd("rmarkdown/building.Rmd")),
+         tabPanel("Contribute to MetaLab",
+                  includeRmd("rmarkdown/contribute.Rmd"))
   )
 )
 
@@ -111,8 +126,12 @@ tab_data <- tabItem(
   box(width = "100%", status = "danger",
       fluidRow(
       column(width = 5,
-        selectInput("table_dataset_name", label = "Dataset",
-                    choices = datasets$name))),
+             selectInput("table_dataset_name", label = "Dataset",
+                    choices = datasets$name)),
+      column(width = 7,
+             downloadButton("table_download_data", "Download data",
+                            class = "btn-xs pull-right"))
+      ),
       DT::dataTableOutput("dataset_table")
   )
 )
@@ -198,7 +217,7 @@ tab_power <- tabItem(
       width = 6,
       box(width = NULL, status = "danger", solidHeader = TRUE,
           title = "Experiment planning",
-          p("Select a meta-analysis and a set of moderators to see statistical power estimates 
+          p("Select a meta-analysis and a set of moderators to see statistical power estimates
             using the estimated effect size for that phenomenon."),
           selectInput("dataset_name_pwr", "Meta-analysis",
                       choices = datasets$name),
@@ -206,7 +225,7 @@ tab_power <- tabItem(
           uiOutput("pwr_moderator_choices"),
           strong("Power by number of participants"),
           p("Statistical power to detect a difference between
-            conditions at p < .05. Dashed line shows 80% power, dotted line 
+            conditions at p < .05. Dashed line shows 80% power, dotted line
             shows necessary sample size to achieve that level of power."),
           plotOutput("power"))),
     column(
@@ -285,8 +304,8 @@ tab_team <- tabItem(
 #############################################################################
 # DASHBOARD STRUCTURE
 
-tabs <- c(list(tab_home, tab_data, tab_visualizations,
-               tab_power, tab_documentation, tab_team), report_tabs)
+tabs <- c(list(tab_home, tab_visualizations, tab_power, tab_data,
+               tab_documentation, tab_contribute, tab_team), report_tabs)
 
 body <- dashboardBody(
   includeCSS("www/custom.css"),

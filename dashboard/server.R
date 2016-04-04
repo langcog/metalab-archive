@@ -48,7 +48,8 @@ shinyServer(function(input, output, session) {
     all_data %>%
       filter(dataset == input$table_dataset_name) %>%
       select(-passages, -long_cite, -stimuli_notes, -method_notes, -general_notes,
-             -dataset, -short_name, -filename, -response_mode_exposure_phase, -all_mod)
+             -dataset, -short_name, -filename, -response_mode_exposure_phase, -all_mod,
+             -Comments, -exposure.details, -test.details)
   })
 
   output$dataset_table <- DT::renderDataTable(
@@ -204,7 +205,8 @@ shinyServer(function(input, output, session) {
       ylab("Effect Size")
   }
 
-  output$forest <- renderPlot(forest(), height = function() nrow(data()) * 10)
+  output$forest <- renderPlot(forest(),
+                              height = function() nrow(data()) * 10 + 100)
 
   ########### FUNNEL PLOT ###########
 
@@ -232,7 +234,7 @@ shinyServer(function(input, output, session) {
                          y = c(-lower_lim, 0, -lower_lim))
 
     ggplot(d, aes(x = es, y = -se)) +
-      scale_x_continuous(limits = c(left_lim,right_lim)) +
+      scale_x_continuous(limits = c(left_lim, right_lim)) +
       scale_y_continuous(expand = c(0, 0),
                          breaks = round(seq(0, -max(d$se), length.out = 5), 2),
                          labels = round(seq(0, max(d$se), length.out = 5), 2)) +
@@ -250,7 +252,7 @@ shinyServer(function(input, output, session) {
   output$funnel <- renderPlot(funnel())
   output$funnel_test <- renderText({
     funnel_test <- regtest.rma(model())
-    sprintf("Regression test for funnel plot asymmetry: z = %.3g, p = %.3g",
+    sprintf("Regression test for funnel plot asymmetry: z = %.3g, p = %.3g. Interpret with caution due to the possible presence of confounding moderators.",
             funnel_test$zval, funnel_test$pval)
   })
 
@@ -280,6 +282,13 @@ shinyServer(function(input, output, session) {
     filename = function() sprintf("%s.csv", input$dataset_name),
     content = function(file) {
       write_csv(data(), file)
+    }
+  )
+
+  output$table_download_data <- downloadHandler(
+    filename = function() sprintf("%s.csv", input$table_dataset_name),
+    content = function(file) {
+      write_csv(table_data(), file)
     }
   )
 

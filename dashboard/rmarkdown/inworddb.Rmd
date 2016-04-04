@@ -1,0 +1,15 @@
+```{r include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, cache = FALSE)
+```
+
+One of the first things infants seem to extract and encode in their memory are recurring words. In this database, we nucleate meta-analyses bearing on how infants encode words. We have started with an analysis of studies on infants' extraction of words from native, natural speech as evidenced in paradigms built on listening times.
+
+Links with more information:
+
+* [Overview website](https://sites.google.com/site/inworddb/)
+* [Data](https://docs.google.com/spreadsheets/d/1djn_-iE4uOs6yRmvBgzYAhB5guzfo3-3wnC7LJVLCe8/edit)
+* [Codebook](https://sites.google.com/site/inworddb/db/files/InWordDB%20FieldNames.pdf?attredirects=0&d=1)
+
+References:
+
+* Bergmann, C. & Cristia, A. (2015). Development of infants’ segmentation of words from native speech: A meta-analytic approach. Online first publication in Developmental Science. doi: 10.1111/desc.12341
