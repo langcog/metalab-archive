@@ -41,17 +41,17 @@ sidebar <- dashboardSidebar(
 
 tab_home <- tabItem(
   tabName = "home",
-#  wellPanel(
-    div(class = "text-center",
-        fluidRow(column(
-          width = 12,
-          h1("MetaLab", class = "jumbo"),
-          p(class = "lead", "Interactive tools for community-augmented meta-analysis,",
-            br(),
-            "power analysis, and experimental planning in language acquisition research")
-        )
-        )
-#    )
+  #  wellPanel(
+  div(class = "text-center",
+      fluidRow(column(
+        width = 12,
+        h1("MetaLab", class = "jumbo"),
+        p(class = "lead", "Interactive tools for community-augmented meta-analysis,",
+          br(),
+          "power analysis, and experimental planning in language acquisition research")
+      )
+      )
+      #    )
   ),
   fluidRow(
     column(width = 2),
@@ -125,12 +125,12 @@ tab_data <- tabItem(
   tabName = "data",
   box(width = "100%", status = "danger",
       fluidRow(
-      column(width = 5,
-             selectInput("table_dataset_name", label = "Dataset",
-                    choices = datasets$name)),
-      column(width = 7,
-             downloadButton("table_download_data", "Download data",
-                            class = "btn-xs pull-right"))
+        column(width = 5,
+               selectInput("table_dataset_name", label = "Dataset",
+                           choices = datasets$name)),
+        column(width = 7,
+               downloadButton("table_download_data", "Download data",
+                              class = "btn-xs pull-right"))
       ),
       DT::dataTableOutput("dataset_table")
   )
@@ -159,11 +159,12 @@ tab_visualizations <- tabItem(
             column(width = 2,
                    downloadButton("download_scatter", "Save",
                                   class = "btn-xs pull-right"))),
-          selectInput("scatter_curve", label = "Curve type",
-                      choices = c("Locally-linear regression (loess)" = "loess", 
-                                  "Weighted linear model (lm)" = "lm"), 
-                      selected = "loess"),
-          plotOutput("scatter")),
+          column(width = 6,
+                 selectInput("scatter_curve", label = "Curve type",
+                             choices = c("Locally-linear regression (loess)" = "loess", 
+                                         "Weighted linear model (lm)" = "lm"), 
+                             selected = "loess")),
+          plotOutput("scatter"), height = 530),
       box(width = NULL, status = "danger",
           fluidRow(
             column(width = 10,
@@ -298,13 +299,13 @@ person_content <- function(person) {
 tab_team <- tabItem(
   tabName = "team",
   box(status = "danger", width = "100%",
-    h3("Meet the MetaLab team"), br(),
-    map(split(people, ceiling(seq_along(people) / 4)),
-        function(people_row) {
-          fluidRow(
-            map(people_row[1:length(people_row)], person_content)
-          )
-        })
+      h3("Meet the MetaLab team"), br(),
+      map(split(people, ceiling(seq_along(people) / 4)),
+          function(people_row) {
+            fluidRow(
+              map(people_row[1:length(people_row)], person_content)
+            )
+          })
   )
 )
 
