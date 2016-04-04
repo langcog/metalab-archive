@@ -111,8 +111,12 @@ tab_data <- tabItem(
   box(width = "100%", status = "danger",
       fluidRow(
       column(width = 5,
-        selectInput("table_dataset_name", label = "Dataset",
-                    choices = datasets$name))),
+             selectInput("table_dataset_name", label = "Dataset",
+                    choices = datasets$name)),
+      column(width = 7,
+             downloadButton("table_download_data", "Download data",
+                            class = "btn-xs pull-right"))
+      ),
       DT::dataTableOutput("dataset_table")
   )
 )
@@ -198,7 +202,7 @@ tab_power <- tabItem(
       width = 6,
       box(width = NULL, status = "danger", solidHeader = TRUE,
           title = "Experiment planning",
-          p("Select a meta-analysis and a set of moderators to see statistical power estimates 
+          p("Select a meta-analysis and a set of moderators to see statistical power estimates
             using the estimated effect size for that phenomenon."),
           selectInput("dataset_name_pwr", "Meta-analysis",
                       choices = datasets$name),
@@ -206,10 +210,10 @@ tab_power <- tabItem(
           #                       selected = NA,
           #                       choices = list("Small (.2)"=.2, "Medium (.5)"=.5, "Large (.8)"=.8)),
           # uiOutput("moderator_input_pwr"),
-          # 
+          #
           strong("Power by number of participants"),
           p("Statistical power to detect a difference between
-            conditions at p < .05. Dashed line shows 80% power, dotted line 
+            conditions at p < .05. Dashed line shows 80% power, dotted line
             shows necessary sample size to achieve that level of power."),
           plotOutput("power"))),
     column(

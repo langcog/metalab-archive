@@ -204,7 +204,8 @@ shinyServer(function(input, output, session) {
       ylab("Effect Size")
   }
 
-  output$forest <- renderPlot(forest(), height = function() nrow(data()) * 10)
+  output$forest <- renderPlot(forest(),
+                              height = function() nrow(data()) * 10 + 100)
 
   ########### FUNNEL PLOT ###########
 
@@ -280,6 +281,13 @@ shinyServer(function(input, output, session) {
     filename = function() sprintf("%s.csv", input$dataset_name),
     content = function(file) {
       write_csv(data(), file)
+    }
+  )
+
+  output$table_download_data <- downloadHandler(
+    filename = function() sprintf("%s.csv", input$table_dataset_name),
+    content = function(file) {
+      write_csv(table_data(), file)
     }
   )
 
@@ -443,24 +451,24 @@ shinyServer(function(input, output, session) {
   ########### POWER COMPUTATIONS #############
   output$power <- renderPlot({
     req(input$d)
-    
-    max_n <- max(100, 
+
+    max_n <- max(100,
                  pwr.p.test(h = input$d,
                             sig.level = .05,
                             power = .9)$n)
-    
+
     ns <- seq(5, max_n, 5)
-    
+
     pwrs <- data.frame(ns = ns,
                        ps = pwr.p.test(h = input$d,
                                        n = ns,
                                        sig.level = .05)$power)
-    
+
     this.pwr <- data.frame(ns = input$N,
                            ps = pwr.p.test(h = input$d,
                                            n = input$N,
                                            sig.level = .05)$power)
-    
+
     qplot(ns, ps, geom = c("point","line"),
           data = pwrs) +
       geom_hline(yintercept = .8, lty = 2) +
