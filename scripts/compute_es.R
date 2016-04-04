@@ -88,7 +88,9 @@ compute_es <- function(participant_design, x_1 = NA, x_2 = NA, x_dif = NA,
       d_calc <- sqrt(f / n_1)
     }
     if (complete(n_1, d_calc)) {
-      d_var_calc <- (1 / n_1) + (d_calc ^ 2 / (2 * n_1)) #TODO: x2 factor
+      #d_var_calc <- (1 / n_1) + (d_calc ^ 2 / (2 * n_1)) 
+      d_var_calc <- (2/n_1) + (d_calc ^ 2 / (4 * n_1))  # changed by ML 4/2/16
+      
     } else if (complete(r)) {
       d_calc <- 2 * r / sqrt(1 - r ^ 2)
       d_var_calc <- 4 * r_var / ((1 - r ^ 2) ^ 3)

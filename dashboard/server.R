@@ -232,7 +232,7 @@ shinyServer(function(input, output, session) {
                          y = c(-lower_lim, 0, -lower_lim))
 
     ggplot(d, aes(x = es, y = -se)) +
-      scale_x_continuous(limits = c(left_lim,right_lim)) +
+      scale_x_continuous(limits = c(left_lim, right_lim)) +
       scale_y_continuous(expand = c(0, 0),
                          breaks = round(seq(0, -max(d$se), length.out = 5), 2),
                          labels = round(seq(0, max(d$se), length.out = 5), 2)) +
