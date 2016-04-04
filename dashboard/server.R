@@ -152,6 +152,12 @@ shinyServer(function(input, output, session) {
   
   output$scatter <- renderPlot(scatter())
   
+  output$longitudinal <- reactive({
+    req(input$dataset_name)
+    
+    datasets$longitudinal[datasets$name == input$dataset_name]
+  })
+  
   ########### VIOLIN PLOT ###########
   
   violin <- function() {
