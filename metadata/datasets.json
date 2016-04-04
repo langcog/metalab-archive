@@ -224,7 +224,7 @@
 		"short_desc": "Longitudinal correlations between declarative pointing and later vocabulary.",
 		"description": "The pointing gesture has been argued to be related to the development of language. This meta-analysis explores the relationship between pointing and language development, both concurrently and longitudinlly.",
 		"curator": "Molly Lewis",
-		"src": "gaze_alt.png",
+		"src": "images/datasets/pointing.png",
 		"longitudinal": "TRUE"
 	}
 ]

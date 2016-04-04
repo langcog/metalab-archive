@@ -154,7 +154,8 @@ tab_visualizations <- tabItem(
                       choices = datasets$name),
           uiOutput("moderator_input")
       ),
-      conditionalPanel(condition = "output.longitudinal == FALSE",
+      # verbatimTextOutput("longitudinal"),
+      conditionalPanel(condition = "output.longitudinal == 'FALSE'",
         box(width = NULL, status = "danger",
             fluidRow(
               column(width = 10,

@@ -154,9 +154,11 @@ shinyServer(function(input, output, session) {
   
   output$longitudinal <- reactive({
     req(input$dataset_name)
-    
-    datasets$longitudinal[datasets$name == input$dataset_name]
+
+    filter(datasets, name == input$dataset_name)$longitudinal
   })
+  
+  outputOptions(output, "longitudinal", suspendWhenHidden=FALSE)
   
   ########### VIOLIN PLOT ###########
   
