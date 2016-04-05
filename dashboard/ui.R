@@ -152,6 +152,11 @@ tab_visualizations <- tabItem(
           br(),
           selectInput("dataset_name", label = "Dataset",
                       choices = datasets$name),
+          selectInput("ma_method", label = "Meta-analytic model",
+                      choices = c("Random effects with maximum likelihood (recommended)" = "REML", 
+                                  "Fixed effects" = "FE", 
+                                  "Empirical Bayes" = "EB"), 
+                      selected = "REML"),
           uiOutput("moderator_input")
       ),
       # verbatimTextOutput("longitudinal"),

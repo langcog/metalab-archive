@@ -64,14 +64,14 @@ shinyServer(function(input, output, session) {
     } else {
       mods <- paste(input$moderators, collapse = "+")
       rma(as.formula(paste("d_calc ~", mods)), vi = d_var_calc,
-          slab = as.character(unique_ID), data = data(), method = "REML")
+          slab = as.character(unique_ID), data = data(), method = input$ma_method)
     }
   })
   
   ########### NO MODERATORS MODEL ###########
   no_mod_model <- reactive({
     rma(d_calc, vi = d_var_calc, slab = as.character(unique_ID),
-        data = data(), method = "REML")
+        data = data(), method = input$ma_method)
   })
   
   mod_group <- reactive({
