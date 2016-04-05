@@ -154,7 +154,7 @@ shinyServer(function(input, output, session) {
   
   output$longitudinal <- reactive({
     req(input$dataset_name)
-
+    
     filter(datasets, name == input$dataset_name)$longitudinal
   })
   
@@ -241,8 +241,8 @@ shinyServer(function(input, output, session) {
     
     lower_lim <- max(d$se) + .05 * max(d$se)
     funnel95 <- data.frame(x = c(center - lower_lim * 1.96, center,
-                               center + lower_lim * 1.96),
-                         y = c(-lower_lim, 0, -lower_lim))
+                                 center + lower_lim * 1.96),
+                           y = c(-lower_lim, 0, -lower_lim))
     
     left_lim99 <- ifelse(center - lower_lim * 3.29 < min(d$es),
                          center - lower_lim * 3.29,
@@ -253,7 +253,7 @@ shinyServer(function(input, output, session) {
     funnel99 <- data.frame(x = c(center - lower_lim * 3.29, center,
                                  center + lower_lim * 3.29),
                            y = c(-lower_lim, 0, -lower_lim))
-
+    
     ggplot(d, aes(x = es, y = -se)) +
       scale_x_continuous(limits = c(left_lim99, right_lim99)) +
       scale_y_continuous(expand = c(0, 0),
@@ -373,10 +373,9 @@ shinyServer(function(input, output, session) {
   })
   
   output$pwr_moderator_input <- renderUI({
-    mod_choices <- list("Age" = "mean_age_months") 
-    #     ,
-    #                         "Response mode" = "response_mode",
-    #                         "Exposure phase" = "exposure_phase")
+    mod_choices <- list("Age" = "mean_age_months",
+                        "Response mode" = "response_mode",
+                        "Exposure phase" = "exposure_phase")
     valid_mod_choices <- mod_choices %>% 
       keep(~length(unique(pwrdata()[[.x]])) > 1)
     
@@ -385,25 +384,85 @@ shinyServer(function(input, output, session) {
                        inline = TRUE)
   })
   
+  ########### RENDER UI FOR MODERATOR CHOICES #############
   output$pwr_moderator_choices <- renderUI({
+    uis <- list()
+    
     if (any(input$pwr_moderators == "mean_age_months")) {
-      sliderInput("pwr_age_months", 
-                  "Age of experimental participants",
-                  min = 0, max = ceiling(max(pwrdata()$mean_age_months)), 
-                  value = round(mean(pwrdata()$mean_age_months)), 
-                  step = 1)
+      uis <- c(uis, 
+               list(sliderInput("pwr_age_months", 
+                                "Age of experimental participants",
+                                min = 0, max = ceiling(max(pwrdata()$mean_age_months)), 
+                                value = round(mean(pwrdata()$mean_age_months)), 
+                                step = 1)))
     }
+    
+    if (any(input$pwr_moderators == "response_mode")) {
+      uis <- c(uis, 
+               list(selectInput("pwr_response_mode", 
+                                "Response mode",
+                                choices = unique(pwrdata()$response_mode))))
+    }
+    
+    if (any(input$pwr_moderators == "exposure_phase")) {
+      uis <- c(uis, 
+               list(selectInput("pwr_exposure_phase", 
+                                "Exposure phase",
+                                choices = unique(pwrdata()$exposure_phase))))
+    }
+    
+    return(uis)
   })
   
   ########### POWER COMPUTATIONS #############
   output$power <- renderPlot({
-    if (any(input$pwr_moderators == "mean_age_months")) {
-      req(input$pwr_age_months)
-      d_pwr <- predict(pwrmodel(), newmods=matrix(input$pwr_age_months))$pred
-    } else {
+    # this is awful because RMA makes factors and dummy-codes them, so newpred 
+    # needs to have this structure. 
+    
+    if (length(input$pwr_moderators > 0)) {
+      newpred_mat <- matrix(nrow=0, ncol=0)
+      
+      if (any(input$pwr_moderators == "mean_age_months")) {
+        req(input$pwr_age_months)
+        newpred_mat <- c(newpred_mat, input$pwr_age_months)
+      }
+      
+      if (any(input$pwr_moderators == "response_mode")) {
+        req(input$pwr_response_mode)
+        
+        f_response_mode <- factor(pwrdata()$response_mode)
+        n <- length(levels(f_response_mode))
+        
+        response_pred <- rep(0, n)
+        response_pred[seq(1:n)[levels(f_response_mode) == input$pwr_response_mode]] <- 1
+        
+        # remove intercept
+        response_pred <- response_pred[-1]
+        
+        newpred_mat <- c(newpred_mat, response_pred)
+      }
+      
+      if (any(input$pwr_moderators == "exposure_phase")) {
+        req(input$pwr_exposure_phase)
+        
+        f_exp_phase <- factor(pwrdata()$exposure_phase)
+        n <- length(levels(f_exp_phase))
+        
+        exposure_pred <- rep(0, n)
+        exposure_pred[seq(1:n)[levels(fep) == input$pwr_exposure_phase]] <- 1
+        
+        # remove intercept
+        exposure_pred <- exposure_pred[-1]
+        
+        newpred_mat <- c(newpred_mat, exposure_pred)
+      }
+      
+      d_pwr <- predict(pwrmodel(), newmods=newpred_mat)$pred
+    } else { # special case when there are no predictors, predict doesn't work
       d_pwr <- pwrmodel()$b[,1][["intrcpt"]]
     }
     
+    ## now do the actual power analysis plot
     max_n <- min(max(60, 
                      pwr.p.test(h = d_pwr,
                                 sig.level = .05,
