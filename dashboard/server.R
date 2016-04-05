@@ -384,7 +384,7 @@ shinyServer(function(input, output, session) {
       valid_mod_choices <- valid_mod_choices %>% 
         keep(~.x != "mean_age_months")
     }
-
+    
     checkboxGroupInput("pwr_moderators", label = "Moderators", 
                        valid_mod_choices,
                        inline = TRUE)
@@ -514,7 +514,7 @@ shinyServer(function(input, output, session) {
   })
   
   ########### MEANS FOR PLOTTING #############
-  ms <- reactive({
+  pwr_ms <- reactive({
     pwr_sim_data() %>%
       group_by(group, condition) %>%
       summarise(mean = mean(looking.time),
@@ -523,17 +523,18 @@ shinyServer(function(input, output, session) {
       rename_("interval" = input$interval)
   })
   
-  ########### BAR GRAPH #############
-  output$bar <- renderPlot({
+  ########### POWER ANALYSIS - BAR GRAPH #############
+  output$pwr_bar <- renderPlot({
     req(input$d_pwr)
     
     pos <- position_dodge(width = .25)
-    ggplot(ms(), aes(x = group, y = mean, fill = condition,
+    
+    ggplot(pwr_ms(), aes(x = group, y = mean, fill = condition,
                      colour = condition)) +
       geom_bar(position = pos,
                stat = "identity",
                width = .25) +
-      geom_linerange(data = ms(),
+      geom_linerange(data = pwr_ms(),
                      aes(x = group, y = mean,
                          fill = condition,
                          ymin = mean - interval,
@@ -544,12 +545,37 @@ shinyServer(function(input, output, session) {
       ylab("Simulated Looking Time") +
       ylim(c(0,20)) + 
       scale_fill_solarized(name = "",
-                           labels = setNames(paste(ms()$condition, "  "),
-                                             ms()$condition)) +
+                           labels = setNames(paste(pwr_ms()$condition, "  "),
+                                             pwr_ms()$condition)) +
       scale_colour_solarized(name = "",
-                             labels = setNames(paste(ms()$condition, "  "),
-                                               ms()$condition))
+                             labels = setNames(paste(pwr_ms()$condition, "  "),
+                                               pwr_ms()$condition))
   })
+  
+  ########### POWER ANALYSIS - SCATTER PLOT #############
+  output$pwr_scatter <- renderPlot({
+    req(input$d_pwr)
+    
+    pos <- position_jitterdodge(jitter.width = .1,
+                                dodge.width = .25)
+    
+    ggplot(pwr_sim_data(), 
+           aes(x = group, y = looking.time, fill = condition,
+               colour = condition)) + 
+      geom_point(position = pos) +
+      geom_linerange(data = pwr_ms(),
+                     aes(x = group, y = mean,
+                         fill = condition,
+                         ymin = mean - interval,
+                         ymax = mean + interval),
+                     position = pos,
+                     size = 2,
+                     colour = "black") +
+      xlab("Group") +
+      ylab("Looking Time") +
+      ylim(c(0, ceiling(max(pwr_sim_data()$looking.time)/5)*5))
+  })
+  
   
   ########### STATISTICAL TEST OUTPUTS #############
   output$stat <- renderText({
