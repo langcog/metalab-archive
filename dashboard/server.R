@@ -379,6 +379,12 @@ shinyServer(function(input, output, session) {
     valid_mod_choices <- mod_choices %>% 
       keep(~length(unique(pwrdata()[[.x]])) > 1)
     
+    # remove age moderator in longitudinal 
+    if (filter(datasets, name == input$dataset_name_pwr)$longitudinal) {
+      valid_mod_choices <- valid_mod_choices %>% 
+        keep(~.x != "mean_age_months")
+    }
+
     checkboxGroupInput("pwr_moderators", label = "Moderators", 
                        valid_mod_choices,
                        inline = TRUE)
