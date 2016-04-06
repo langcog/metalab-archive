@@ -22,7 +22,7 @@ development across language acquisition domains.
 + For more information about individual datasets, see the `Datasets` tab.
 + For information about the field structure of the site, see the `Field Specification` tab. 
 + Individual meta-analyses with other available resources also have their own documentation tabs.
-+ For information about doing meta-analyses and contributing to MetaLab, see the `Contributors` page.
++ For information about doing meta-analyses and contributing to MetaLab, see the `Contribute` page.
 
 ## Citation
 
