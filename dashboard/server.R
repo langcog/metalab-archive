@@ -64,13 +64,13 @@ shinyServer(function(input, output, session) {
     } else {
       mods <- paste(input$moderators, collapse = "+")
       rma(as.formula(paste("d_calc ~", mods)), vi = d_var_calc,
-          slab = as.character(unique_ID), data = data(), method = input$ma_method)
+          slab = as.character(short_cite), data = data(), method = input$ma_method)
     }
   })
   
   ########### NO MODERATORS MODEL ###########
   no_mod_model <- reactive({
-    rma(d_calc, vi = d_var_calc, slab = as.character(unique_ID),
+    rma(d_calc, vi = d_var_calc, slab = as.character(short_cite),
         data = data(), method = input$ma_method)
   })
   
@@ -195,23 +195,23 @@ shinyServer(function(input, output, session) {
              effects.cih = effects +
                qnorm(alpha / 2, lower.tail = FALSE) * sqrt(variances),
              estimate = as.numeric(f),
-             unique_ID = names(f),
+             short_cite = names(f),
              estimate.cil = p$ci.lb,
              estimate.cih = p$ci.ub,
              identity = 1) %>%
-      left_join(mutate(data(), unique_ID = make.unique(unique_ID))) %>%
+      left_join(mutate(data(), short_cite = make.unique(short_cite))) %>%
       arrange_(.dots = list(sprintf("desc(%s)", input$forest_sort),
                             "desc(effects)")) %>%
-      mutate(unique_ID = factor(unique_ID, levels = unique_ID))
+      mutate(short_cite = factor(short_cite, levels = short_cite))
     
     labels <- if (mod_group() == "all_mod") NULL else
       setNames(paste(data()[[mod_group()]], "  "), data()[[mod_group()]])
     
-    qplot(unique_ID, effects, ymin = effects.cil, ymax = effects.cih,
+    qplot(short_cite, effects, ymin = effects.cil, ymax = effects.cih,
           geom = "linerange",
           data = forest_data) +
       geom_point(aes(y = effects, size = n)) +
-      geom_pointrange(aes_string(x = "unique_ID", y = "estimate",
+      geom_pointrange(aes_string(x = "short_cite", y = "estimate",
                                  ymin = "estimate.cil", ymax = "estimate.cih",
                                  colour = mod_group())) +
       coord_flip() +
