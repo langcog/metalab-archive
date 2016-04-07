@@ -16,5 +16,3 @@ reports/*.html
 reports/libs
 reports/*_cache/
 reports/*_files
-
-packrat/lib*/
