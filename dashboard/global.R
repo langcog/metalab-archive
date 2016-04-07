@@ -1,11 +1,22 @@
-#library(jsonlite)
+library(shiny)
+library(shinydashboard)
 library(dplyr)
-#library(yaml)
-#library(lazyeval)
+library(tidyr)
+library(ggplot2)
 library(purrr)
-#library(stringr)
+library(langcog)
+
+theme_set(theme_mikabr(base_family = "Ubuntu") +
+            theme(legend.position = "top",
+                  legend.key = element_blank(),
+                  legend.background = element_rect(fill = "transparent")))
 
 fields <- yaml::yaml.load_file("../metadata/spec.yaml")
+fields_derived <- yaml::yaml.load_file("../metadata/spec_derived.yaml") %>%
+  transpose() %>%
+  simplify_all() %>%
+  as_data_frame()
+
 reports <- yaml::yaml.load_file("../metadata/reports.yaml")
 people <- yaml::yaml.load_file("../metadata/people.yaml")
 
@@ -21,9 +32,6 @@ datasets <- jsonlite::fromJSON("../metadata/datasets.json") %>%
   filter(filename %in% cached_data)
 
 load_dataset <- function(filename) {
-
-  # dataset_contents <- read.csv(paste0("../", filename),
-  #                              stringsAsFactors = FALSE) %>%
   file.path("..", "data", filename) %>%
     feather::read_feather() %>%
     mutate(filename = filename,
@@ -32,23 +40,6 @@ load_dataset <- function(filename) {
            year = ifelse(grepl("submitted", unique_ID), Inf,
                          stringr::str_extract(unique_ID, "([:digit:]{4})"))
     )
-
-  # # Coerce each field's values to the field's type
-  # for (field in fields) {
-  #   if (field$field %in% names(dataset_contents)) {
-  #     if (field$type == "string") {
-  #       dots <- list(interp(~as.character(var), var = as.name(field$field)))
-  #       dataset_contents <- dataset_contents %>%
-  #         mutate_(.dots = setNames(dots, field$field))
-  #     } else if (field$type == "numeric") {
-  #       dots <- list(interp(~as.numeric(var), var = as.name(field$field)))
-  #       dataset_contents <- dataset_contents %>%
-  #         mutate_(.dots = setNames(dots, field$field))
-  #     }
-  #   }
-  # }
-
-  #dataset_contents
 }
 
 avg_month <- 365.2425 / 12.0

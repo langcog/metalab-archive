@@ -1,7 +1,3 @@
-library(shiny)
-library(shinydashboard)
-library(DT)
-
 header <- dashboardHeader(title = "MetaLab")
 
 sidebar <- dashboardSidebar(
@@ -30,8 +26,9 @@ sidebar <- dashboardSidebar(
   ),
   tags$footer(
     class = "footer",
-    p("Questions or comments?", br(), a("metalab-project@googlegroups.com",
-                                        href = "mailto:metalab-project@googlegroups.com"),
+    p("Questions or comments?", br(),
+      a("metalab-project@googlegroups.com",
+        href = "mailto:metalab-project@googlegroups.com"),
       class = "small", align = "center")
   )
 )
@@ -41,28 +38,28 @@ sidebar <- dashboardSidebar(
 
 tab_home <- tabItem(
   tabName = "home",
-  #  wellPanel(
   div(class = "text-center",
-      fluidRow(column(
-        width = 12,
-        h1("MetaLab", class = "jumbo"),
-        p(class = "lead", "Interactive tools for community-augmented meta-analysis,",
-          br(),
-          "power analysis, and experimental planning in language acquisition research")
+      fluidRow(
+        column(
+          width = 12,
+          h1("MetaLab", class = "jumbo"),
+          p(class = "lead",
+            "Interactive tools for community-augmented meta-analysis,", br(),
+            "power analysis, and experimental planning in language acquisition
+            research")
+        )
       )
-      )
-      #    )
   ),
   fluidRow(
     column(width = 2),
     valueBox(nrow(datasets),
              "Meta-analyses", color = "red", width = 2, icon = icon("cubes")),
-    valueBox(as.integer(sum(as.numeric(datasets$num_papers), na.rm = TRUE)),
+    valueBox(datasets$num_papers %>% sum(na.rm = TRUE) %>% as.integer(),
              "Papers", color = "red", width = 2, icon = icon("file-text-o")),
-    valueBox(as.integer(sum(as.numeric(datasets$num_experiments), na.rm = TRUE)),
+    valueBox(datasets$num_experiments %>% sum(na.rm = TRUE) %>% as.integer(),
              "Effect sizes", color = "red", width = 2, icon = icon("list")),
-    valueBox(format(as.integer(sum(as.numeric(datasets$num_subjects), na.rm = TRUE)),
-                    big.mark = ","),
+    valueBox(datasets$num_subjects %>% sum(na.rm = TRUE) %>% as.integer() %>%
+               format(big.mark = ","),
              "Participants", color = "red", width = 2, icon = icon("child")),
     column(width = 2)
   ),
@@ -90,7 +87,8 @@ tab_documentation <- tabItem(
          tabPanel("Overview",
                   includeRmd("rmarkdown/overview.Rmd")),
          tabPanel("Datasets",
-                  includeRmd("rmarkdown/datasets.Rmd", list("datasets" = datasets))),
+                  includeRmd("rmarkdown/datasets.Rmd",
+                             list("datasets" = datasets))),
          tabPanel("Field Specification",
                   h3("Required fields"),
                   DT::dataTableOutput("req_table"),
@@ -106,7 +104,7 @@ tab_documentation <- tabItem(
 )
 
 #############################################################################
-# Contribute
+# CONTRIBUTE
 
 tab_contribute <- tabItem(
   tabName = "contribute",
@@ -141,6 +139,13 @@ tab_data <- tabItem(
 #############################################################################
 # VISUALIZATIONS
 
+ma_choices <- c("Random effects with maximum likelihood (recommended)" = "REML",
+                "Fixed effects" = "FE",
+                "Empirical Bayes" = "EB")
+
+scatter_choices <- c("Locally-linear regression (loess)" = "loess",
+                     "Weighted linear model (lm)" = "lm")
+
 tab_visualizations <- tabItem(
   tabName = "visualizations",
   fluidRow(
@@ -153,26 +158,25 @@ tab_visualizations <- tabItem(
           selectInput("dataset_name", label = "Dataset",
                       choices = datasets$name),
           selectInput("ma_method", label = "Meta-analytic model",
-                      choices = c("Random effects with maximum likelihood (recommended)" = "REML",
-                                  "Fixed effects" = "FE",
-                                  "Empirical Bayes" = "EB"),
-                      selected = "REML"),
+                      choices = ma_choices, selected = "REML"),
           uiOutput("moderator_input")
       ),
-      conditionalPanel(condition = "output.longitudinal == 'FALSE'",
-                       box(width = NULL, status = "danger",
-                           fluidRow(
-                             column(width = 10,
-                                    p(strong("Scatter plot"), "of effect sizes over age")),
-                             column(width = 2,
-                                    downloadButton("download_scatter", "Save",
-                                                   class = "btn-xs pull-right"))),
-                           column(width = 7,
-                                  selectInput("scatter_curve", label = "Curve type",
-                                              choices = c("Locally-linear regression (loess)" = "loess",
-                                                          "Weighted linear model (lm)" = "lm"),
-                                              selected = "loess")),
-                           plotOutput("scatter"), height = 530)
+      conditionalPanel(
+        condition = "output.longitudinal == 'FALSE'",
+        box(width = NULL, status = "danger",
+            fluidRow(
+              column(
+                width = 10,
+                p(strong("Scatter plot"), "of effect sizes over age")),
+              column(
+                width = 2,
+                downloadButton("download_scatter", "Save",
+                               class = "btn-xs pull-right"))),
+            column(
+              width = 7,
+              selectInput("scatter_curve", label = "Curve type",
+                          choices = scatter_choices, selected = "loess")),
+            plotOutput("scatter"), height = 530)
       ),
       box(width = NULL, status = "danger",
           fluidRow(
@@ -231,8 +235,9 @@ tab_power <- tabItem(
       width = 6,
       box(width = NULL, status = "danger", solidHeader = TRUE,
           title = "Experiment planning",
-          p("Select a meta-analysis and a set of moderators to see statistical power estimates
-            using the estimated effect size for that phenomenon. (Currently supports age only)."),
+          p("Select a meta-analysis and a set of moderators to see statistical
+             power estimates using the estimated effect size for that
+             phenomenon. (Currently supports age only)."),
           selectInput("dataset_name_pwr", "Meta-analysis",
                       choices = datasets$name),
           uiOutput("pwr_moderator_input"),
@@ -246,25 +251,29 @@ tab_power <- tabItem(
       width = 6,
       box(width = NULL, status = "danger", solidHeader = TRUE,
           title = "Experiment simulation",
-          p("Run a simulation of a looking-time experiment, choosing an effect size and
-             a number of participants per group. See the results of statistical comparisons for
-             within-subjects effects (t-test) and for comparison with a negative control group
-            (ANOVA interaction)."),
+          p(
+            "Run a simulation of a looking-time experiment, choosing an effect
+             size and a number of participants per group. See the results of
+             statistical comparisons for within-subjects effects (t-test) and
+             for comparison with a negative control group (ANOVA interaction)."
+          ),
           sliderInput("N", "Number of infants per group (N)",
                       min = 4, max = 120, value = 16, step = 2),
           sliderInput("d_pwr", "Effect size (Cohen's d)",
                       min = 0, max = 2, step = .1,
                       value = .5),
           fluidRow(
-            column(width = 6,
-                   radioButtons("control", "Conditions",
-                                choices = list("Experimental only" = FALSE,
-                                               "Experimental & control" = TRUE))),
-            column(width = 6,
-                   radioButtons("interval", "Type of error bars",
-                                choices = list("Standard error of the mean" = "sem",
-                                               "95% confidence interval" = "ci"),
-                                selected = "ci"))
+            column(
+              width = 6,
+              radioButtons("control", "Conditions",
+                           choices = list("Experimental only" = FALSE,
+                                          "Experimental & control" = TRUE))),
+            column(
+              width = 6,
+              radioButtons("interval", "Type of error bars",
+                           choices = list("Standard error of the mean" = "sem",
+                                          "95% confidence interval" = "ci"),
+                           selected = "ci"))
           ),
           selectInput("pwr_bar", "Plot type",
                       choices = list("Bar graph" = TRUE,
@@ -289,8 +298,9 @@ tab_power <- tabItem(
 # REPORTS
 
 report_tabs <- map(reports, function(report) {
-  report_url <- sprintf("https://rawgit.com/langcog/metalab/gh-pages/reports/%s.html",
-                        report$file)
+  report_url <- sprintf(
+    "https://rawgit.com/langcog/metalab/gh-pages/reports/%s.html", report$file
+  )
   tabItem(
     tabName = report$file,
     tags$iframe(src = report_url, width = 1000, height = 1200, frameBorder = 0))
