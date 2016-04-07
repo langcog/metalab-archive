@@ -19,6 +19,9 @@ pretty.p <- function(x) {
   as.character(signif(x, digits = 3))
 }
 
+# input <- list(dataset_name = "Gaze following", es_type = "d",
+#               ma_method = "REML", moderators = "mean_age")
+
 shinyServer(function(input, output, session) {
 
   ##############################################################################
@@ -42,21 +45,36 @@ shinyServer(function(input, output, session) {
   )
 
   ########### MODEL ###########
+
+  es <- reactive({
+    sprintf("%s_calc", input$es_type)
+  })
+
+  es_var <- reactive({
+    sprintf("%s_var_calc", input$es_type)
+  })
+
   model <- reactive({
     if (length(input$moderators) == 0) {
       no_mod_model()
     } else {
       mods <- paste(input$moderators, collapse = "+")
-      metafor::rma(as.formula(paste("d_calc ~", mods)), vi = d_var_calc,
-                   slab = as.character(short_cite), data = data(),
+      rma_formula <- as.formula(sprintf("%s ~ %s", es(), mods))
+      metafor::rma(rma_formula, #vi = as.name(es_var()),
+                   vi = data()[[es_var()]],
+                   slab = short_cite, data = data(),
                    method = input$ma_method)
     }
   })
 
   ########### NO MODERATORS MODEL ###########
   no_mod_model <- reactive({
-    metafor::rma(d_calc, vi = d_var_calc, slab = as.character(short_cite),
-                 data = data(), method = input$ma_method)
+    # metafor::rma(d_calc, vi = d_var_calc, slab = as.character(short_cite),
+    #              data = data(), method = input$ma_method)
+    # metafor::rma(as.name(es()), vi = as.name(es_var()),
+    #              slab = short_cite, data = data(), method = input$ma_method)
+    metafor::rma(yi = data()[[es()]], vi = data()[[es_var()]],
+                 slab = data()[["short_cite"]], method = input$ma_method)
   })
 
   mod_group <- reactive({
@@ -118,7 +136,7 @@ shinyServer(function(input, output, session) {
       setNames(paste(data()[[mod_group()]], "  "), data()[[mod_group()]])
 
     guide <- if (mod_group() == "all_mod") FALSE else "legend"
-    p <- ggplot(data(), aes_string(x = "mean_age_months", y = "d_calc",
+    p <- ggplot(data(), aes_string(x = "mean_age_months", y = es(),
                                    colour = mod_group())) +
       geom_jitter(aes(size = n), alpha = 0.5) +
       geom_hline(yintercept = 0, linetype = "dashed") +
@@ -128,10 +146,11 @@ shinyServer(function(input, output, session) {
       ylab("Effect Size\n")
 
     if (input$scatter_curve == "lm") {
-      p + geom_smooth(aes(weight = 1 / d_var_calc), method = "lm", se = FALSE)
+      p + geom_smooth(aes_string(weight = sprintf("1 / %s", es_var())),
+                      method = "lm", se = FALSE)
     } else if (input$scatter_curve == "loess") {
-      p + geom_smooth(aes(weight = 1 / d_var_calc), method = "loess",
-                      se = FALSE, span = 1)
+      p + geom_smooth(aes_string(weight = sprintf("1 / %s", es_var())),
+                      method = "loess", se = FALSE, span = 1)
     }
 
   }
@@ -144,12 +163,12 @@ shinyServer(function(input, output, session) {
     filter(datasets, name == input$dataset_name)$longitudinal
   })
 
-  outputOptions(output, "longitudinal", suspendWhenHidden=FALSE)
+  outputOptions(output, "longitudinal", suspendWhenHidden = FALSE)
 
   ########### VIOLIN PLOT ###########
 
   violin <- function() {
-    plt <- ggplot(data(), aes_string(x = mod_group(), y = "d_calc",
+    plt <- ggplot(data(), aes_string(x = mod_group(), y = es(),
                                      colour = mod_group())) +
       geom_violin() +
       geom_jitter(height = 0) +
@@ -255,9 +274,9 @@ shinyServer(function(input, output, session) {
       geom_point() +
       xlab(xlabel) +
       geom_text(x = center + lower_lim * 1.96, y = -lower_lim + lower_lim / 30,
-                label = "p < .05", vjust="bottom") +
+                label = "p < .05", vjust = "bottom") +
       geom_text(x = center + lower_lim * 3.29, y = -lower_lim + lower_lim / 30,
-                label = "p < .01", vjust="bottom") +
+                label = "p < .01", vjust = "bottom") +
       ylab("Standard error\n") +
       theme(panel.background = element_rect(fill = "grey"),
             panel.grid.major =  element_line(colour = "darkgrey", size = 0.2),
@@ -651,10 +670,9 @@ shinyServer(function(input, output, session) {
     map(~.x %>% select(-required))
 
   make_datatable <- function(df) {
-    df %>%
-      DT::datatable(style = "bootstrap", rownames = FALSE, escape = FALSE,
-                    options = list(paging = FALSE, searching = FALSE,
-                                   dom = "t")) %>%
+    DT::datatable(df, style = "bootstrap", rownames = FALSE, escape = FALSE,
+                  options = list(paging = FALSE, searching = FALSE,
+                                 dom = "t")) %>%
       DT::renderDataTable()
   }
 

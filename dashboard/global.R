@@ -32,8 +32,7 @@ datasets <- jsonlite::fromJSON("../metadata/datasets.json") %>%
   filter(filename %in% cached_data)
 
 load_dataset <- function(filename) {
-  file.path("..", "data", filename) %>%
-    feather::read_feather() %>%
+  feather::read_feather(file.path("..", "data", filename)) %>%
     mutate(filename = filename,
            response_mode_exposure_phase = sprintf(
              "%s \n %s", response_mode, exposure_phase),

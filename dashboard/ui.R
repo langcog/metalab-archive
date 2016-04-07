@@ -146,6 +146,11 @@ ma_choices <- c("Random effects with maximum likelihood (recommended)" = "REML",
 scatter_choices <- c("Locally-linear regression (loess)" = "loess",
                      "Weighted linear model (lm)" = "lm")
 
+es_choices <- c("Cohen's d" = "d",
+                "Hedges' g" = "g",
+                "Pearson r" = "r",
+                "Log odds ratio" = "log_odds")
+
 tab_visualizations <- tabItem(
   tabName = "visualizations",
   fluidRow(
@@ -159,7 +164,17 @@ tab_visualizations <- tabItem(
                       choices = datasets$name),
           selectInput("ma_method", label = "Meta-analytic model",
                       choices = ma_choices, selected = "REML"),
-          uiOutput("moderator_input")
+          fluidRow(
+            column(
+              width = 4,
+              selectInput("es_type", label = "Effect size type",
+                          choices = es_choices, selected = "d")
+            ),
+            column(
+              width = 8,
+              uiOutput("moderator_input")
+            )
+          )
       ),
       conditionalPanel(
         condition = "output.longitudinal == 'FALSE'",
