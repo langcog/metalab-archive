@@ -1,16 +1,11 @@
 suppressMessages(suppressWarnings({
-  library(jsonlite)
-  library(RCurl)
   library(dplyr)
-  library(yaml)
   library(purrr)
-  library(lazyeval)
-  library(Hmisc)
 }))
 
 source("scripts/compute_es.R")
-datasets <- fromJSON(txt = "metadata/datasets.json")
-fields <- yaml.load_file("metadata/spec.yaml")
+datasets <- jsonlite::fromJSON(txt = "metadata/datasets.json")
+fields <- yaml::yaml.load_file("metadata/spec.yaml")
 
 
 # Validate dataset's values for a given field
@@ -23,7 +18,8 @@ validate_dataset_field <- function(dataset_name, dataset_contents, field) {
         } else {
           options <- field$options
         }
-        invalid_values <- setdiff(unique(dataset_contents[[field$field]]), options)
+        invalid_values <- unique(dataset_contents[[field$field]]) %>%
+          setdiff(options)
         if (!is.null(field$nullable) && field$nullable) {
           invalid_values <- na.omit(invalid_values)
         }
@@ -71,14 +67,13 @@ fetch_dataset <- function(dataset_meta) {
   )
 
   tryCatch({
-    dataset_contents <- read.csv(textConnection(getURL(dataset_url)),
-                                 stringsAsFactors = FALSE)
-    return(dataset_contents)
+    dataset_url %>%
+      httr::GET() %>%
+      httr::content(col_names = TRUE, col_types = NULL, encoding = "UTF-8")
   },
   error = function(e) {
     cat(sprintf("Can't load dataset '%s' with key '%s'.\n", dataset_meta$name,
                 dataset_meta$key))
-    return(NULL)
   })
 
 }
@@ -87,47 +82,55 @@ fetch_dataset <- function(dataset_meta) {
 # Manipulate a dataset's contents to prepare it for saving
 tidy_dataset <- function(dataset_meta, dataset_contents) {
 
-  # # Coerce each field's values to the field's type
-  # for (field in fields) {
-  #   if (field$field %in% names(dataset_contents)) {
-  #     if (field$type == "string") {
-  #       dots = list(interp(~as.character(var), var = as.name(field$field)))
-  #       dataset_contents <- dataset_contents %>%
-  #         mutate_(.dots = setNames(dots, field$field))
-  #     } else if (field$type == "numeric") {
-  #       dots = list(interp(~as.numeric(var), var = as.name(field$field)))
-  #       dataset_contents <- dataset_contents %>%
-  #         mutate_(.dots = setNames(dots, field$field))
-  #     }
-  #   }
-  # }
+  # Coerce each field's values to the field's type, discard any columns not in
+  # field spec, add NA columns for missing (optional) fields
+  dataset_data <- data_frame(row = 1:nrow(dataset_contents))
+  for (field in fields) {
+    if (field$field %in% names(dataset_contents)) {
+      if (field$type == "string") {
+        field_fun <- as.character
+      } else if (field$type == "numeric") {
+        field_fun <- as.numeric
+      } else {
+        field_fun <- function(x) x
+      }
+      dataset_data[,field$field] <- field_fun(dataset_contents[[field$field]])
+    } else {
+      dataset_data[,field$field] <- NA
+    }
+  }
 
   # Impute values for missing correlations
   set.seed(111)
-  if (all(is.na(dataset_contents$corr))) {
-    dataset_contents$corr_imputed <- NA
+  if (all(is.na(dataset_data$corr))) {
+    dataset_data$corr_imputed <- NA
   } else {
-    dataset_contents$corr_imputed <- as.numeric(impute(dataset_contents$corr, fun = "random"))
+    dataset_data$corr_imputed <- dataset_data$corr %>%
+      Hmisc::impute(fun = "random") %>%
+      as.numeric()
   }
 
   # Compute effect sizes and variances
-  dataset_data <- dataset_contents %>%
-    mutate(r = NA, SD_dif = NA) %>%  #TODO: deal with these fields
-    mutate(num = row_number()) %>%
-    split(.$num) %>%
+  dataset_data_calc <- dataset_data %>%
+    #mutate(r = NA, SD_dif = NA) %>%  #TODO: deal with these fields
+    #mutate(num = row_number()) %>%
+    #split(.$num) %>%
+    split(.$row) %>%
     map_df(~bind_cols(
-      .x, compute_es(.x$participant_design, .x$x_1, .x$x_2, .x$x_dif, .x$SD_1,
-                     .x$SD_2, .x$SD_dif, .x$n_1, .x$n_2, .x$t, .x$F, .x$d,
-                     .x$d_var, .x$corr, .x$corr_imputed, .x$r, .x$unique_ID,
-                     .x$expt_num, .x$special_cases_measures, .x$contrast_sampa))) %>%
-    select(-num)
+      .x, compute_es(
+        .x$participant_design, .x$x_1, .x$x_2, .x$x_dif, .x$SD_1, .x$SD_2,
+        .x$SD_dif, .x$n_1, .x$n_2, .x$t, .x$F, .x$d, .x$d_var, .x$corr,
+        .x$corr_imputed, .x$r, .x$unique_ID, .x$expt_num,
+        .x$special_cases_measures, .x$contrast_sampa
+      ))) %>%
+    select(-row)
 
   # Add any other derived values
   method_options <- keep(fields, ~.x$field == "method")[[1]]$options
   method_names <- unlist(map(method_options, ~.x[[names(.x)]]$fullname))
   names(method_names) <- unlist(map(method_options, names))
 
-  dataset_data %>%
+  dataset_data_calc %>%
     mutate(dataset = dataset_meta[["name"]],
            short_name = dataset_meta[["short_name"]],
            method = unlist(method_names[method])) %>%
@@ -141,7 +144,8 @@ tidy_dataset <- function(dataset_meta, dataset_contents) {
 
 # Save a dataset's contents to a csv file
 save_dataset <- function(dataset_meta, dataset_data) {
-  write.csv(dataset_data, dataset_meta$file, row.names = FALSE)
+  #write.csv(dataset_data, dataset_meta$file, row.names = FALSE)
+  feather::write_feather(dataset_data, file.path("data", dataset_meta$filename))
   cat(sprintf("Dataset '%s' saved successfully.\n", dataset_meta$name))
 }
 

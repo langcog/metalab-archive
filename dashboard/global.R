@@ -1,13 +1,13 @@
-library(jsonlite)
+#library(jsonlite)
 library(dplyr)
-library(yaml)
-library(lazyeval)
+#library(yaml)
+#library(lazyeval)
 library(purrr)
-library(stringr)
+#library(stringr)
 
-fields <- yaml.load_file("../metadata/spec.yaml")
-reports <- yaml.load_file("../metadata/reports.yaml")
-people <- yaml.load_file("../metadata/people.yaml")
+fields <- yaml::yaml.load_file("../metadata/spec.yaml")
+reports <- yaml::yaml.load_file("../metadata/reports.yaml")
+people <- yaml::yaml.load_file("../metadata/people.yaml")
 
 includeRmd <- function(path, shiny_data = NULL) {
   shiny:::dependsOnFile(path)
@@ -15,38 +15,40 @@ includeRmd <- function(path, shiny_data = NULL) {
   includeHTML(gsub(".Rmd", ".html", path))
 }
 
-cached_data <- list.files("../data/") %>% map_chr(~paste0("data/", .x))
+cached_data <- list.files("../data/")
 
-datasets <- fromJSON("../metadata/datasets.json") %>%
+datasets <- jsonlite::fromJSON("../metadata/datasets.json") %>%
   filter(filename %in% cached_data)
 
 load_dataset <- function(filename) {
 
-  dataset_contents <- read.csv(paste0("../", filename),
-                               stringsAsFactors = FALSE) %>%
+  # dataset_contents <- read.csv(paste0("../", filename),
+  #                              stringsAsFactors = FALSE) %>%
+  file.path("..", "data", filename) %>%
+    feather::read_feather() %>%
     mutate(filename = filename,
            response_mode_exposure_phase = sprintf(
              "%s \n %s", response_mode, exposure_phase),
            year = ifelse(grepl("submitted", unique_ID), Inf,
-                         str_extract(unique_ID, "([:digit:]{4})"))
+                         stringr::str_extract(unique_ID, "([:digit:]{4})"))
     )
 
-  # Coerce each field's values to the field's type
-  for (field in fields) {
-    if (field$field %in% names(dataset_contents)) {
-      if (field$type == "string") {
-        dots <- list(interp(~as.character(var), var = as.name(field$field)))
-        dataset_contents <- dataset_contents %>%
-          mutate_(.dots = setNames(dots, field$field))
-      } else if (field$type == "numeric") {
-        dots <- list(interp(~as.numeric(var), var = as.name(field$field)))
-        dataset_contents <- dataset_contents %>%
-          mutate_(.dots = setNames(dots, field$field))
-      }
-    }
-  }
+  # # Coerce each field's values to the field's type
+  # for (field in fields) {
+  #   if (field$field %in% names(dataset_contents)) {
+  #     if (field$type == "string") {
+  #       dots <- list(interp(~as.character(var), var = as.name(field$field)))
+  #       dataset_contents <- dataset_contents %>%
+  #         mutate_(.dots = setNames(dots, field$field))
+  #     } else if (field$type == "numeric") {
+  #       dots <- list(interp(~as.numeric(var), var = as.name(field$field)))
+  #       dataset_contents <- dataset_contents %>%
+  #         mutate_(.dots = setNames(dots, field$field))
+  #     }
+  #   }
+  # }
 
-  dataset_contents
+  #dataset_contents
 }
 
 avg_month <- 365.2425 / 12.0

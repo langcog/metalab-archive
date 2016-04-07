@@ -153,13 +153,12 @@ tab_visualizations <- tabItem(
           selectInput("dataset_name", label = "Dataset",
                       choices = datasets$name),
           selectInput("ma_method", label = "Meta-analytic model",
-                      choices = c("Random effects with maximum likelihood (recommended)" = "REML", 
-                                  "Fixed effects" = "FE", 
-                                  "Empirical Bayes" = "EB"), 
+                      choices = c("Random effects with maximum likelihood (recommended)" = "REML",
+                                  "Fixed effects" = "FE",
+                                  "Empirical Bayes" = "EB"),
                       selected = "REML"),
           uiOutput("moderator_input")
       ),
-      # verbatimTextOutput("longitudinal"),
       conditionalPanel(condition = "output.longitudinal == 'FALSE'",
                        box(width = NULL, status = "danger",
                            fluidRow(
@@ -168,10 +167,10 @@ tab_visualizations <- tabItem(
                              column(width = 2,
                                     downloadButton("download_scatter", "Save",
                                                    class = "btn-xs pull-right"))),
-                           column(width = 6,
+                           column(width = 7,
                                   selectInput("scatter_curve", label = "Curve type",
-                                              choices = c("Locally-linear regression (loess)" = "loess", 
-                                                          "Weighted linear model (lm)" = "lm"), 
+                                              choices = c("Locally-linear regression (loess)" = "loess",
+                                                          "Weighted linear model (lm)" = "lm"),
                                               selected = "loess")),
                            plotOutput("scatter"), height = 530)
       ),
@@ -247,9 +246,9 @@ tab_power <- tabItem(
       width = 6,
       box(width = NULL, status = "danger", solidHeader = TRUE,
           title = "Experiment simulation",
-          p("Run a simulation of a looking-time experiment, choosing an effect size and 
-             a number of participants per group. See the results of statistical comparisons for 
-             within-subjects effects (t-test) and for comparison with a negative control group 
+          p("Run a simulation of a looking-time experiment, choosing an effect size and
+             a number of participants per group. See the results of statistical comparisons for
+             within-subjects effects (t-test) and for comparison with a negative control group
             (ANOVA interaction)."),
           sliderInput("N", "Number of infants per group (N)",
                       min = 4, max = 120, value = 16, step = 2),
@@ -267,10 +266,10 @@ tab_power <- tabItem(
                                                "95% confidence interval" = "ci"),
                                 selected = "ci"))
           ),
-          selectInput("pwr_bar", "Plot type", 
-                      choices = list("Bar graph" = TRUE, 
-                                     "Scatter plot" = FALSE), 
-                      selected = TRUE), 
+          selectInput("pwr_bar", "Plot type",
+                      choices = list("Bar graph" = TRUE,
+                                     "Scatter plot" = FALSE),
+                      selected = TRUE),
           actionButton("go", label = "Sample Again"),
           hr(),
           strong("Simulated data"),
