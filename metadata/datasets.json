@@ -114,7 +114,7 @@
 		"longitudinal": "FALSE"
 	},
 	{
-		"name": "Sound learning",
+		"name": "Statistical sound category learning",
 		"short_name": "sounds",
 		"key": "1rZl-Ub5qOE_WJwHg23g8ijgANdRC82PQUXRbh6TJeKQ",
 		"filename": "AGL_soundsDL",
@@ -143,7 +143,7 @@
 		"doi": "10.1111/desc.12341",
 		"systematic": "yes",
 		"reliability": "no",
-		"last_update": "2015-12-14",
+		"last_update": "2016-04-04",
 		"link_fields": "https://sites.google.com/site/inworddb/db/files/InWordDB%20FieldNames.pdf?attredirects=0&d=1",
 		"short_desc": "Recognition of familiarized words from running, natural speech using behavioral methods.",
 		"description": "Recognition of familiarized words from running, natural speech using behavioral methods applied to infants 0 - 20 months of age.",
@@ -222,7 +222,7 @@
 		"last_update": "2010-12-01",
 		"link_fields": "",
 		"short_desc": "Longitudinal correlations between declarative pointing and later vocabulary.",
-		"description": "The pointing gesture has been argued to be related to the development of language. This meta-analysis explores the relationship between pointing and language development, both concurrently and longitudinlly.",
+		"description": "The pointing gesture has been argued to be related to the development of language. This meta-analysis explores the relationship between pointing and language development, both concurrently and longitudinally.",
 		"curator": "Molly Lewis",
 		"src": "images/datasets/pointing.png",
 		"longitudinal": "TRUE"
