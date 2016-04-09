@@ -16,7 +16,8 @@
 		"description": "Looking times as a function of whether infant-directed vs. adult-directed speech is presented as stimulation, in infants aged 0 - 12 months.",
 		"curator": "Alex Cristia",
 		"src": "images/datasets/ids.png",
-		"longitudinal": "FALSE"
+		"longitudinal": "FALSE",
+		"moderators": []
 	},
 	{
 		"name": "Label advantage in concept learning",
@@ -35,7 +36,8 @@
 		"description": "Previous research suggests that labels support the formation of novel categories in young children. This meta-analysis includes studies exploring this question that use a paradigm similar to Balaban and Waxman (1997), resulting in a selection of experiments using behavioral methods on infants 3 to 18 months.",
 		"curator": "Molly Lewis",
 		"src": "images/datasets/dinosaur.png",
-		"longitudinal": "FALSE"
+		"longitudinal": "FALSE",
+		"moderators": ["audio_condition"]
 	},
 	{
 		"name": "Gaze following",
@@ -54,7 +56,8 @@
 		"description": "Gaze-following using standard multi-alternative forced-choice paradigms, in infants and children from 3 months to two years.",
 		"curator": "Molly Lewis",
 		"src": "images/datasets/gaze.png",
-		"longitudinal": "FALSE"
+		"longitudinal": "FALSE",
+		"moderators": []
 	},
 	{
 		"name": "Vowel discrimination (native)",
@@ -73,7 +76,8 @@
 		"description": "Discrimination of native-language vowels, including results from behavioral, electrophysiological, and neuroimaging methods applied to infants 0 - 14 months of age.",
 		"curator": "Sho Tsuji",
 		"src": "images/datasets/discrim.png",
-		"longitudinal": "FALSE"
+		"longitudinal": "FALSE",
+		"moderators": []
 	},
 	{
 		"name": "Vowel discrimination (non-native)",
@@ -92,7 +96,8 @@
 		"description": "Discrimination of non-native language vowels, including results from behavioral, electrophysiological, and neuroimaging methods applied to infants 0 - 14 months of age.",
 		"curator": "Sho Tsuji",
 		"src": "images/datasets/discrim.png",
-		"longitudinal": "FALSE"
+		"longitudinal": "FALSE",
+		"moderators": []
 	},
 	{
 		"name": "Phonotactic learning",
@@ -111,7 +116,8 @@
 		"description": "Laboratory experiments in which infants are exposed to a set of pseudo-words that could support a phonotactic generalization, and thereafter tested on their preference between new types that follow or violate the familiarized phonotactics.",
 		"curator": "Alex Cristia",
 		"src": "images/datasets/phonotactics.png",
-		"longitudinal": "FALSE"
+		"longitudinal": "FALSE",
+		"moderators": []
 	},
 	{
 		"name": "Statistical sound category learning",
@@ -130,7 +136,8 @@
 		"description": "Laboratory experiments in which infants are exposed to a set of syllables that have been generated using a bimodal distribution of acoustic cues or not, and infants are tested on their discrimination of two sounds differing along the same dimension.",
 		"curator": "Alex Cristia",
 		"src": "images/datasets/distrib.png",
-		"longitudinal": "FALSE"
+		"longitudinal": "FALSE",
+		"moderators": []
 	},
 	{
 		"name": "Word segmentation",
@@ -149,7 +156,8 @@
 		"description": "Recognition of familiarized words from running, natural speech using behavioral methods applied to infants 0 - 20 months of age.",
 		"curator": "Christina Bergmann",
 		"src": "images/datasets/segmentation.png",
-		"longitudinal": "FALSE"
+		"longitudinal": "FALSE",
+		"moderators": []
 	},
 	{
 		"name": "Online word recognition",
@@ -168,7 +176,8 @@
 		"description": "Online word recognition of familiar words using two-alternative forced choice preferential looking. Experiments in this MA follow Fernald et al. (1998) and were included based on their reporting of reaction time as well as effect size.",
 		"curator": "Molly Lewis",
 		"src": "images/datasets/word_rec.png",
-		"longitudinal": "FALSE"
+		"longitudinal": "FALSE",
+		"moderators": []
 	},
 	{
 		"name": "Mutual exclusivity",
@@ -187,7 +196,8 @@
 		"description": "Mutual exclusivity is the bias for children to assume a novel word refers to a novel object, in the presence of one novel and one familiar object. This meta-analysis covers behavioral experiments on infants aged 14 months to 5 years.",
 		"curator": "Molly Lewis",
 		"src": "images/datasets/zot.png",
-		"longitudinal": "FALSE"
+		"longitudinal": "FALSE",
+		"moderators": []
 	},
 	{
 		"name": "Individual variation in infant speech perception tasks",
@@ -206,7 +216,8 @@
 		"description": "Correlations between infant (4-12 months) performance in a speech perception task that is plausibly affected by language experience, on the one hand, and vocabulary, on the other, concurrently and/or longitudinally. Also contains some data points from infant processing of non-speech stimuli.",
 		"curator": "Alex Cristia",
 		"src": "images/datasets/phonotactics.png",
-		"longitudinal": "TRUE"
+		"longitudinal": "TRUE",
+		"moderators": []
 	},
 	{
 		"name": "Pointing and vocabulary",
@@ -225,6 +236,7 @@
 		"description": "The pointing gesture has been argued to be related to the development of language. This meta-analysis explores the relationship between pointing and language development, both concurrently and longitudinally.",
 		"curator": "Molly Lewis",
 		"src": "images/datasets/pointing.png",
-		"longitudinal": "TRUE"
+		"longitudinal": "TRUE",
+		"moderators": []
 	}
 ]

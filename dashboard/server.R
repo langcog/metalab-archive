@@ -19,8 +19,11 @@ pretty.p <- function(x) {
   as.character(signif(x, digits = 3))
 }
 
-# input <- list(dataset_name = "Gaze following", es_type = "d",
-#               ma_method = "REML", moderators = "mean_age")
+# input <- list(dataset_name = "Label advantage in concept learning",
+#               es_type = "d", ma_method = "REML", scatter_curve = "lm",
+#               moderators = c("audio_condition", "response_mode"),
+#               forest_sort = "effects")
+#              moderators = NULL)
 
 shinyServer(function(input, output, session) {
 
@@ -28,15 +31,53 @@ shinyServer(function(input, output, session) {
   # MODELS AND REACTIVES
 
   ########### DATA ###########
+
+  categorical_mods <- reactive({
+    if (is.null(input$moderators)) {
+      return(NULL)
+    }
+    keep(input$moderators, function(mod) {
+      # assumes all derived fields are non-categorical, which may change?
+      !(mod %in% fields_derived$field) &&
+        keep(fields, ~.x$field == mod)[[1]]$type %in% c("string", "options")
+    })
+  })
+
+  mod_group <- reactive({
+    if (length(categorical_mods())) {
+      paste(categorical_mods(), collapse = "_")
+    } else {
+      "all_mod"
+    }
+  })
+
+  combine_mods <- function(df, cols) {
+    if (mod_group() != "all_mod" && length(cols) > 1) {
+      df[[mod_group()]] <- do.call(paste, c(map(cols, ~df[[.x]]), sep = "\n"))
+    }
+    df
+  }
+
   data <- reactive({
-    filter(all_data, dataset == input$dataset_name)
+    req(input$dataset_name)
+    all_data %>% filter(dataset == input$dataset_name)
+  })
+
+  mod_data <- reactive({
+    dots <- if (is.null(input$moderators)) {
+      NULL
+    } else {
+      sprintf("!is.na(%s)", input$moderators)
+    }
+    data() %>%
+      filter_(.dots = dots) %>%
+      combine_mods(categorical_mods())
   })
 
   table_data <- reactive({
     all_data %>%
       filter(dataset == input$table_dataset_name) %>%
-      select(-long_cite, -dataset, -short_name, -filename,
-             -response_mode_exposure_phase, -all_mod)
+      select(-long_cite, -dataset, -short_name, -filename, -all_mod)
   })
 
   output$dataset_table <- DT::renderDataTable(
@@ -44,7 +85,7 @@ shinyServer(function(input, output, session) {
     options = list(scrollX = TRUE, autoWidth = TRUE, pageLength = 20)
   )
 
-  ########### MODEL ###########
+  ########### MODELS ###########
 
   es <- reactive({
     sprintf("%s_calc", input$es_type)
@@ -60,43 +101,35 @@ shinyServer(function(input, output, session) {
     } else {
       mods <- paste(input$moderators, collapse = "+")
       rma_formula <- as.formula(sprintf("%s ~ %s", es(), mods))
-      metafor::rma(rma_formula, #vi = as.name(es_var()),
-                   vi = data()[[es_var()]],
-                   slab = short_cite, data = data(),
+      metafor::rma(rma_formula, vi = mod_data()[[es_var()]],
+                   slab = short_cite, data = mod_data(),
                    method = input$ma_method)
     }
   })
 
-  ########### NO MODERATORS MODEL ###########
   no_mod_model <- reactive({
-    # metafor::rma(d_calc, vi = d_var_calc, slab = as.character(short_cite),
-    #              data = data(), method = input$ma_method)
-    # metafor::rma(as.name(es()), vi = as.name(es_var()),
-    #              slab = short_cite, data = data(), method = input$ma_method)
     metafor::rma(yi = data()[[es()]], vi = data()[[es_var()]],
                  slab = data()[["short_cite"]], method = input$ma_method)
   })
 
-  mod_group <- reactive({
-    if (length(input$moderators) == 0) {
-      "all_mod"
-    } else if ("response_mode" %in% input$moderators &
-               "exposure_phase" %in% input$moderators) {
-      "response_mode_exposure_phase"
-    } else if ("response_mode" %in% input$moderators) {
-      "response_mode"
-    } else if ("exposure_phase" %in% input$moderators) {
-      "exposure_phase"
-    } else if ("mean_age" %in% input$moderators) {
-      "all_mod"
-    }
-  })
+
+  ########### UI ELEMENTS ###########
+
+  display_name <- function(fields) {
+    sp <- gsub("_", " ", fields)
+    paste0(toupper(substring(sp, 1, 1)), substring(sp, 2))
+  }
 
   output$moderator_input <- renderUI({
-    mod_choices <- list("Age" = "mean_age",
-                        "Response mode" = "response_mode",
-                        "Exposure phase" = "exposure_phase")
-    valid_mod_choices <- mod_choices %>% keep(~length(unique(data()[[.x]])) > 1)
+    req(input$dataset_name)
+    custom_mods <- datasets %>%
+      filter(name == input$dataset_name) %>%
+      .$moderators %>%
+      unlist()
+    mod_choices <- c("mean_age", "response_mode", "exposure_phase", custom_mods)
+    valid_mod_choices <- mod_choices %>%
+      set_names(display_name(.)) %>%
+      keep(~length(unique(data()[[.x]])) > 1)
     checkboxGroupInput("moderators", label = "Moderators", valid_mod_choices,
                        inline = TRUE)
   })
@@ -133,11 +166,11 @@ shinyServer(function(input, output, session) {
     req(input$scatter_curve)
 
     labels <- if (mod_group() == "all_mod") NULL else
-      setNames(paste(data()[[mod_group()]], "  "), data()[[mod_group()]])
+      setNames(paste(mod_data()[[mod_group()]], "  "), mod_data()[[mod_group()]])
 
     guide <- if (mod_group() == "all_mod") FALSE else "legend"
-    p <- ggplot(data(), aes_string(x = "mean_age_months", y = es(),
-                                   colour = mod_group())) +
+    p <- ggplot(mod_data(), aes_string(x = "mean_age_months", y = es(),
+                                       colour = mod_group())) +
       geom_jitter(aes(size = n), alpha = 0.5) +
       geom_hline(yintercept = 0, linetype = "dashed") +
       scale_colour_solarized(name = "", labels = labels, guide = guide) +
@@ -159,7 +192,6 @@ shinyServer(function(input, output, session) {
 
   output$longitudinal <- reactive({
     req(input$dataset_name)
-
     filter(datasets, name == input$dataset_name)$longitudinal
   })
 
@@ -168,8 +200,8 @@ shinyServer(function(input, output, session) {
   ########### VIOLIN PLOT ###########
 
   violin <- function() {
-    plt <- ggplot(data(), aes_string(x = mod_group(), y = es(),
-                                     colour = mod_group())) +
+    plt <- ggplot(mod_data(), aes_string(x = mod_group(), y = es(),
+                                         colour = mod_group())) +
       geom_violin() +
       geom_jitter(height = 0) +
       geom_hline(yintercept = 0, linetype = "dotted", color = "grey") +
@@ -185,7 +217,7 @@ shinyServer(function(input, output, session) {
 
   output$violin <- renderPlot(
     violin(),
-    width = function() min(length(unique(data()[[mod_group()]])) * 200, 475)
+    width = function() min(length(unique(mod_data()[[mod_group()]])) * 200, 475)
   )
 
   ########### FOREST PLOT ###########
@@ -205,13 +237,13 @@ shinyServer(function(input, output, session) {
              estimate.cil = p$ci.lb,
              estimate.cih = p$ci.ub,
              identity = 1) %>%
-      left_join(mutate(data(), short_cite = make.unique(short_cite))) %>%
+      left_join(mutate(mod_data(), short_cite = make.unique(short_cite))) %>%
       arrange_(.dots = list(sprintf("desc(%s)", input$forest_sort),
                             "desc(effects)")) %>%
       mutate(short_cite = factor(short_cite, levels = short_cite))
 
     labels <- if (mod_group() == "all_mod") NULL else
-      setNames(paste(data()[[mod_group()]], "  "), data()[[mod_group()]])
+      setNames(paste(mod_data()[[mod_group()]], "  "), mod_data()[[mod_group()]])
 
     guide <- if (mod_group() == "all_mod") FALSE else "legend"
     qplot(short_cite, effects, ymin = effects.cil, ymax = effects.cih,
@@ -229,7 +261,7 @@ shinyServer(function(input, output, session) {
   }
 
   output$forest <- renderPlot(forest(),
-                              height = function() nrow(data()) * 10 + 100)
+                              height = function() nrow(mod_data()) * 10 + 100)
 
   ########### FUNNEL PLOT ###########
 

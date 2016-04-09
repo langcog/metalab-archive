@@ -34,8 +34,8 @@ datasets <- jsonlite::fromJSON("../metadata/datasets.json") %>%
 load_dataset <- function(filename) {
   feather::read_feather(file.path("..", "data", filename)) %>%
     mutate(filename = filename,
-           response_mode_exposure_phase = sprintf(
-             "%s \n %s", response_mode, exposure_phase),
+           # response_mode_exposure_phase = sprintf(
+           #   "%s \n %s", response_mode, exposure_phase),
            year = ifelse(grepl("submitted", unique_ID), Inf,
                          stringr::str_extract(unique_ID, "([:digit:]{4})"))
     )

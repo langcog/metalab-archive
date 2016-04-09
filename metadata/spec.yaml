@@ -361,3 +361,10 @@
   example:
   required:     no
 
+- field:        audio_condition
+  description:
+  type:         string
+  format:
+  example:
+  required:     no
+
