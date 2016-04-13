@@ -1,0 +1,86 @@
+---
+title: "A Quantitative Synthesis of Early Language Acquisition Using Meta-Analysis"
+shorttitle: "A Quantitative Synthesis"
+author: 
+  - name:  Molly Lewis*
+    affiliation: 1
+  - name: Mika Braginsky*
+    affiliation: 1
+  - name: Sho Tsuji
+    affiliation: 2
+  - name: Christina Bergmann
+    affiliation: 2
+  - name: Page Piccinini
+    affiliation: 2
+  - name: Alejandrina Cristia
+    affiliation: 2
+  - name: Michael C. Frank
+    affiliation: 1
+affiliation:
+  - id: 1
+    institution: Department Psychology, Stanford University
+  - id: 2
+    institution: Laboratoire de Sciences Cognitives et Psycholinguistique, ENS
+    
+abstract: |
+  replicability, etc.
+  
+note: |  
+  Correspondence concerning this article should be addressed to Molly Lewis, Psychology Department, Stanford University. 450 Serra Mall, Stanford, CA 94305. E-mail: mll@stanford.edu.
+  
+  \*Contributed equally to this work.
+  
+keywords: "replicability, reproducibility, meta-analysis, developmental psychology, language acquisition"
+
+wordcount: "XXX"
+
+class: man
+lang: american
+figsintext: yes
+lineno: no
+bibliography:
+  - references.bib
+  - r-references.bib
+
+output: papaja::apa6_pdf
+---
+
+```{r message = FALSE, warning = FALSE}
+require("papaja")
+apa_prepare_doc() # Prepare document for rendering
+```
+
+# Introduction
+italics - *R* 
+html - [RMarkdown](http://rmarkdown.rstudio.com/)
+
+citations - [e.g., @bauer_2014; @bem_2011] 
+citations - @bauer_2014 → Baumer et al. (2014).
+As you may have heard, recently, interest in reproducible research has been growing.
+
+# Method
+adf
+
+# Results
+adf
+
+# Discussion
+asdf
+
+#### Author Contributions
+asdf
+
+#### Acknowledgments
+asdf
+
+
+#### References
+kk
+
+```{r create_r-references}
+r_refs(file = "r-references.bib")
+```
+
+\setlength{\parindent}{-0.5in}
+\setlength{\leftskip}{0.5in}
+\setlength{\parskip}{8pt}

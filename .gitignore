@@ -16,4 +16,8 @@ reports/*.html
 reports/libs
 reports/*_cache/
 reports/*_files
+write-ups/metalab_update/metalab_update_files/
+write-ups/metalab_update/*.tex
+
+
 
