@@ -330,3 +330,41 @@
   format:       n of group 3;x of group 3;x of group 4;Number of factor levels;F/t
   example:      20;5.83;;3;4.49
   required:     no
+
+
+- field:        x_dif
+  description:
+  type:         numeric
+  format:
+  example:
+  required:     no
+
+
+- field:        SD_dif
+  description:
+  type:         numeric
+  format:
+  example:
+  required:     no
+
+- field:        r
+  description:
+  type:         numeric
+  format:
+  example:
+  required:     no
+
+- field:        contrast_sampa
+  description:
+  type:         string
+  format:
+  example:
+  required:     no
+
+- field:        audio_condition
+  description:
+  type:         string
+  format:
+  example:
+  required:     no
+

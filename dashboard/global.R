@@ -1,13 +1,24 @@
-library(jsonlite)
+library(shiny)
+library(shinydashboard)
 library(dplyr)
-library(yaml)
-library(lazyeval)
+library(tidyr)
+library(ggplot2)
 library(purrr)
-library(stringr)
+library(langcog)
 
-fields <- yaml.load_file("../metadata/spec.yaml")
-reports <- yaml.load_file("../metadata/reports.yaml")
-people <- yaml.load_file("../metadata/people.yaml")
+theme_set(theme_mikabr(base_family = "Ubuntu") +
+            theme(legend.position = "top",
+                  legend.key = element_blank(),
+                  legend.background = element_rect(fill = "transparent")))
+
+fields <- yaml::yaml.load_file("../metadata/spec.yaml")
+fields_derived <- yaml::yaml.load_file("../metadata/spec_derived.yaml") %>%
+  transpose() %>%
+  simplify_all() %>%
+  as_data_frame()
+
+reports <- yaml::yaml.load_file("../metadata/reports.yaml")
+people <- yaml::yaml.load_file("../metadata/people.yaml")
 
 includeRmd <- function(path, shiny_data = NULL) {
   shiny:::dependsOnFile(path)
@@ -15,38 +26,19 @@ includeRmd <- function(path, shiny_data = NULL) {
   includeHTML(gsub(".Rmd", ".html", path))
 }
 
-cached_data <- list.files("../data/") %>% map_chr(~paste0("data/", .x))
+cached_data <- list.files("../data/")
 
-datasets <- fromJSON("../metadata/datasets.json") %>%
+datasets <- jsonlite::fromJSON("../metadata/datasets.json") %>%
   filter(filename %in% cached_data)
 
 load_dataset <- function(filename) {
-
-  dataset_contents <- read.csv(paste0("../", filename),
-                               stringsAsFactors = FALSE) %>%
+  feather::read_feather(file.path("..", "data", filename)) %>%
     mutate(filename = filename,
-           response_mode_exposure_phase = sprintf(
-             "%s \n %s", response_mode, exposure_phase),
+           # response_mode_exposure_phase = sprintf(
+           #   "%s \n %s", response_mode, exposure_phase),
            year = ifelse(grepl("submitted", unique_ID), Inf,
-                         str_extract(unique_ID, "([:digit:]{4})"))
+                         stringr::str_extract(unique_ID, "([:digit:]{4})"))
     )
-
-  # Coerce each field's values to the field's type
-  for (field in fields) {
-    if (field$field %in% names(dataset_contents)) {
-      if (field$type == "string") {
-        dots <- list(interp(~as.character(var), var = as.name(field$field)))
-        dataset_contents <- dataset_contents %>%
-          mutate_(.dots = setNames(dots, field$field))
-      } else if (field$type == "numeric") {
-        dots <- list(interp(~as.numeric(var), var = as.name(field$field)))
-        dataset_contents <- dataset_contents %>%
-          mutate_(.dots = setNames(dots, field$field))
-      }
-    }
-  }
-
-  dataset_contents
 }
 
 avg_month <- 365.2425 / 12.0

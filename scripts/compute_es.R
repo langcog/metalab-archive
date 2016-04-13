@@ -2,13 +2,10 @@ library(dplyr)
 library(purrr)
 library(assertthat)
 
-
 complete <- function(...) {
   args = list(...)
   !any(unlist(map(args, ~(is.null(.x) || is.na(.x)))))
 }
-
-
 
 on_failure(`%in%`) <- function(call, env) {
   paste0(deparse(call$x), " is not in ", deparse(call$table))
@@ -19,7 +16,6 @@ compute_es <- function(participant_design, x_1 = NA, x_2 = NA, x_dif = NA,
                        t = NA, f = NA, d = NA, d_var = NA, corr = NA,
                        corr_imputed = NA, r = NA, unique_ID = NA, expt_num = NA,
                        special_cases_measures = NA, contrast_sampa = NA) {
-
 
   assert_that(participant_design %in% c("between", "within_two", "within_one"))
 
@@ -156,7 +152,6 @@ compute_es <- function(participant_design, x_1 = NA, x_2 = NA, x_dif = NA,
   a <- if (participant_design == "between") ((n_1 + n_2) ^ 2) / (n_1 * n_2) else 4
   r_calc <- d_calc / sqrt(d_calc ^ 2 + a)
   r_var_calc <- a ^ 2 * d_var_calc / (d_calc ^ 2 + a) ^ 3
-  #r_var_calc <- (1 - r_calc ^ 2) ^ 2 / (n_1 - 1)
 
   log_odds_calc <- d_calc * pi / sqrt(3)
   log_odds_var_calc <- d_var_calc * pi ^ 2 / 3

@@ -31,3 +31,7 @@ body {
 .nav-tabs-custom .nav-tabs li.active {
   border-top-color: red;
 }
+
+#moderator_input .shiny-options-group span {
+  font-size: 11px;
+}

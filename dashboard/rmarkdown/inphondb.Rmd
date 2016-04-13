@@ -10,7 +10,8 @@ Links with more information:
 * [Native data](https://docs.google.com/spreadsheets/d/13ytBtSP9ZUNDeW5K2uf_VfyTFOILivTFZN1YBLZtmuU/edit) and [Non-native data](https://docs.google.com/spreadsheets/d/1K7iCsLUXTB8GXbynuQ9aJOM6O-EcrnDDlmYspdW_Sh8/edit)
 * [Codebook](https://drive.google.com/file/d/0B_tr1H-CJ3AIb1VpeUtqalhxNkU/view)
 
-References:
 
-* Tsuji, S. & Cristia, A. (2014). Perceptual attunement in vowels: A meta-analysis. Developmental Psychobiology, 56, 179-191.
-* Tsuji, S., & Cristia, A. (2013). 50 years of infant vowel discrimination research: what have we learned? Journal of the Phonetic Society of Japan, 17(3), 1-11.
+**References**
+
+* Tsuji, S. & Cristia, A. (2014). Perceptual attunement in vowels: A meta-analysis. *Developmental Psychobiology, 56*, 179-191.
+* Tsuji, S., & Cristia, A. (2013). 50 years of infant vowel discrimination research: what have we learned? *Journal of the Phonetic Society of Japan, 17*(3), 1-11.
