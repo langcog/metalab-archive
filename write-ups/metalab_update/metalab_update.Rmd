@@ -51,12 +51,30 @@ apa_prepare_doc() # Prepare document for rendering
 ```
 
 # Introduction
-italics - *R* 
-html - [RMarkdown](http://rmarkdown.rstudio.com/)
+Psychologists hope to build  generalizable theories about human behavior---theories that hold true beyond particulars of an individual study. The field has grown concerned as a result in the face of recent high-profile evidence that an effect observed in one study may not be the same in another [@bem_2011] (``replicability crisis''; Ioannidis, 2005; Nosek, 2012, 2015). Some of this variability is to be expected, however---the question we should instead be asking is, do the data provide support for the theory, even if they are noisy? Furthermore, to build parsimonious theories of human behavior, we should seek to explain not just individual phenemenon, but entire literatures of research. What is needed, then, is a tool for aggregating noisy data across studies within a phenomenon, as well as a common language for comparing effects across phenomenona.
 
-citations - [e.g., @bauer_2014; @bem_2011] 
-citations - @bauer_2014 → Baumer et al. (2014).
-As you may have heard, recently, interest in reproducible research has been growing.
+Meta-analytic methods provide a powerful tool for doing just this. The basic unit of meta-analysis---the effect size---provides an estimate of the *size* of an effect, as well as a measure of uncertainty around this point estimate. With  such a continuous measure of success, we can apply the same reasoning we use to aggregate  noisy measurements over  participants in a single study: By assuming each *study*, rather than participant, is sampled from a population, we can appeal to the classical statistical framework to combine estimates of the effect size for a given phenomenon.
+
+This quantitative approach provides a rich tool kit for synthesizing across literatures. By describing different phenomena using the same unit of measurement, we are able to compare effects in different domains. Rather than simply concluding that two effects are both ``real,'' we can ask more fine-grained questions: Is effect *X* bigger than effect *Y*? Does a moderator influence effect *X* in the same way as effect *Y*? This type of continuous analysis supports building quantitative models, and specifying theories that are more precise and constraining.
+
+In addition to these theoretical motivations, there are practical reasons for conducting a quantitative synthesis. When planning an experiment, an estimate of the size of an effect on the basis of prior literature can inform the sample size needed to achieve a desired level of power. Meta-analytic estimates of effect sizes can also aid in design choices: If a certain paradigm tends to have overall larger effect sizes than another, the strategic researcher might select this paradigm in order to maximize the power of a study.
+
+In practice, however, the feasability of this meta-analytic approach relies on the field’s commitment to practices that facilitate cumulative science. These practices apply to all stages of the research process. At the stage of experimental planning, researchers must pre-specify analytical descision to limit ``researcher'' degrees of freedom (Simmons, 2011; Simonsohn, 2014a, 2014b, 2014c). At the stage of completion, researchers should share a result regardless of its significance (Rosenthal, 1979; Fanelli 2012). And, at the stage of sharing, researchers must provide enough information about the method for another lab to conduct a close replication. Critically,r eports must also contain complete descriptions of both data and analytical decisions so that effect sizes can be calculcated for the purposes of meta-analysis,
+
+In the present paper, we use meta-analytic methods to provide a quantitative synthesis of an entire field of psychological research: language acquisition.  We think this field is a particularly informative case study. It may be particularly vulnerable to false findings because running children is expensive (Ioanndis, 2005), and thus:
+
++ sample sizes are small 
++ replications difficult and rare
++ Recent attention about practices in developmental research (Peterson, 2016)
+
+We have two goals:
+
++ Describe the state of the field in terms of its participation in practices that are prerequisites to cumulative science, and ultimately, a theoretical synthesis
++ Provide a preliminary theoretical synthesis of the field
+
+Towards this end, we introduce [Metalab](http://metalab.stanford.edu/).
+
+
 
 # Method
 adf
@@ -71,14 +89,19 @@ asdf
 asdf
 
 #### Acknowledgments
-asdf
+italics - *R* 
+html - [RMarkdown](http://rmarkdown.rstudio.com/)
+
+citations - [e.g., @bauer_2014; @bem_2011] 
+citations - @bauer_2014 → Baumer et al. (2014).
+As you may have heard, recently, interest in reproducible research has been growing.
 
 
 #### References
 kk
 
 ```{r create_r-references}
-r_refs(file = "r-references.bib")
+r_refs(file = "metalab_update.bib")
 ```
 
 \setlength{\parindent}{-0.5in}
