@@ -19,11 +19,11 @@ pretty.p <- function(x) {
   as.character(signif(x, digits = 3))
 }
 
-# input <- list(dataset_name = "Label advantage in concept learning",
-#               es_type = "d", ma_method = "REML", scatter_curve = "lm",
-#               moderators = c("audio_condition", "response_mode"),
-#               forest_sort = "effects")
-#              moderators = NULL)
+input <- list(dataset_name = "Label advantage in concept learning",
+              es_type = "d", ma_method = "REML", scatter_curve = "lm",
+              moderators = c("audio_condition", "response_mode"),
+              forest_sort = "effects")
+#             moderators = NULL)
 
 shinyServer(function(input, output, session) {
 
@@ -243,9 +243,10 @@ shinyServer(function(input, output, session) {
       mutate(short_cite = factor(short_cite, levels = short_cite))
 
     labels <- if (mod_group() == "all_mod") NULL else
-      setNames(paste(mod_data()[[mod_group()]], "  "), mod_data()[[mod_group()]])
-
+      setNames(paste(mod_data()[[mod_group()]], "  "),
+               mod_data()[[mod_group()]])
     guide <- if (mod_group() == "all_mod") FALSE else "legend"
+
     qplot(short_cite, effects, ymin = effects.cil, ymax = effects.cih,
           geom = "linerange",
           data = forest_data) +
@@ -267,15 +268,16 @@ shinyServer(function(input, output, session) {
 
   funnel <- function() {
     if (length(input$moderators) == 0) {
-      d <- data.frame(se = sqrt(model()$vi), es = model()$yi)
+      d <- data_frame(se = sqrt(model()$vi), es = model()$yi)
       center <- mean(d$es)
       xlabel <- "\nEffect Size"
     } else {
       r <- rstandard(model())
-      d <- data.frame(se = r$se, es = r$resid)
+      d <- data_frame(se = r$se, es = r$resid)
       center <- 0
       xlabel <- "\nResidual"
     }
+    d[[mod_group()]] <- mod_data()[[mod_group()]]
 
     lower_lim <- max(d$se) + .05 * max(d$se)
     funnel95 <- data.frame(x = c(center - lower_lim * 1.96, center,
@@ -292,7 +294,13 @@ shinyServer(function(input, output, session) {
                                  center + lower_lim * 3.29),
                            y = c(-lower_lim, 0, -lower_lim))
 
+    labels <- if (mod_group() == "all_mod") NULL else
+      setNames(paste(mod_data()[[mod_group()]], "  "),
+               mod_data()[[mod_group()]])
+    guide <- if (mod_group() == "all_mod") FALSE else "legend"
+
     ggplot(d, aes(x = es, y = -se)) +
+      scale_colour_solarized(name = "", labels = labels, guide = guide) +
       scale_x_continuous(limits = c(left_lim99, right_lim99)) +
       scale_y_continuous(expand = c(0, 0),
                          breaks = round(seq(0, -max(d$se), length.out = 5), 2),
@@ -303,12 +311,14 @@ shinyServer(function(input, output, session) {
                    fill = "white") +
       geom_vline(xintercept = center, linetype = "dotted", color = "black",
                  size = .5) +
-      geom_point() +
+      geom_point(aes_string(colour = mod_group())) +
       xlab(xlabel) +
-      geom_text(x = center + lower_lim * 1.96, y = -lower_lim + lower_lim / 30,
-                label = "p < .05", vjust = "bottom") +
-      geom_text(x = center + lower_lim * 3.29, y = -lower_lim + lower_lim / 30,
-                label = "p < .01", vjust = "bottom") +
+      geom_text(x = center + lower_lim * 1.96 / 2,
+                y = -lower_lim + lower_lim / 30, family = font,
+                label = "p < .05", vjust = "bottom", hjust = "center") +
+      geom_text(x = (center + lower_lim * 1.96) + (lower_lim * 3.29 - lower_lim * 1.96) / 2,
+                y = -lower_lim + lower_lim / 30, family = font,
+                label = "p < .01", vjust = "bottom", hjust = "center") +
       ylab("Standard error\n") +
       theme(panel.background = element_rect(fill = "grey"),
             panel.grid.major =  element_line(colour = "darkgrey", size = 0.2),
@@ -704,12 +714,12 @@ shinyServer(function(input, output, session) {
   make_datatable <- function(df) {
     DT::datatable(df, style = "bootstrap", rownames = FALSE, escape = FALSE,
                   options = list(paging = FALSE, searching = FALSE,
-                                 dom = "t")) %>%
-      DT::renderDataTable()
+                                 dom = "t"))# %>%
+
   }
 
-  output$req_table <- fields_data[["TRUE"]] %>% make_datatable()
-  output$opt_table <- fields_data[["FALSE"]]  %>% make_datatable()
-  output$drv_table <- fields_derived %>% make_datatable()
+  output$req_table <- fields_data[["TRUE"]] %>% make_datatable() %>% DT::renderDataTable()
+  output$opt_table <- fields_data[["FALSE"]]  %>% make_datatable() %>% DT::renderDataTable()
+  output$drv_table <- fields_derived %>% make_datatable() %>% DT::renderDataTable()
 
 })
