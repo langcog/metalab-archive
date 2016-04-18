@@ -172,7 +172,7 @@ shinyServer(function(input, output, session) {
     p <- ggplot(mod_data(), aes_string(x = "mean_age_months", y = es(),
                                        colour = mod_group())) +
       geom_jitter(aes(size = n), alpha = 0.5) +
-      geom_hline(yintercept = 0, linetype = "dashed") +
+      geom_hline(yintercept = 0, linetype = "dashed", color = "grey") +
       scale_colour_solarized(name = "", labels = labels, guide = guide) +
       scale_size_continuous(guide = FALSE) +
       xlab("\nMean Subject Age (Months)") +
@@ -200,16 +200,21 @@ shinyServer(function(input, output, session) {
   ########### VIOLIN PLOT ###########
 
   violin <- function() {
-    plt <- ggplot(mod_data(), aes_string(x = mod_group(), y = es(),
+    plt_data <- mod_data()
+    mod_factor <- factor(plt_data[[mod_group()]])
+    plt_data[[mod_group()]] <- factor(plt_data[[mod_group()]],
+                                      levels = rev(levels(mod_factor)))
+    plt <- ggplot(plt_data, aes_string(x = mod_group(), y = es(),
                                          colour = mod_group())) +
+      coord_flip() +
       geom_violin() +
       geom_jitter(height = 0) +
-      geom_hline(yintercept = 0, linetype = "dotted", color = "grey") +
+      geom_hline(yintercept = 0, linetype = "dashed", color = "grey") +
       scale_colour_solarized(name = "", guide = FALSE) +
       xlab("") +
       ylab("Effect Size\n")
     if (mod_group() == "all_mod") {
-      plt + theme(axis.ticks.x = element_blank())
+      plt + theme(axis.ticks.y = element_blank())
     } else {
       plt
     }
@@ -217,7 +222,7 @@ shinyServer(function(input, output, session) {
 
   output$violin <- renderPlot(
     violin(),
-    width = function() min(length(unique(mod_data()[[mod_group()]])) * 200, 475)
+    height = function() length(unique(mod_data()[[mod_group()]])) * 90 + 70
   )
 
   ########### FOREST PLOT ###########
@@ -254,6 +259,7 @@ shinyServer(function(input, output, session) {
       geom_pointrange(aes_string(x = "short_cite", y = "estimate",
                                  ymin = "estimate.cil", ymax = "estimate.cih",
                                  colour = mod_group())) +
+      geom_hline(yintercept = 0, linetype = "dashed", color = "grey") +
       coord_flip() +
       scale_size_continuous(guide = FALSE) +
       scale_colour_solarized(name = "", labels = labels, guide = guide) +
@@ -309,8 +315,8 @@ shinyServer(function(input, output, session) {
                    fill = "white") +
       geom_polygon(aes(x = x, y = y), data = funnel99, alpha = .5,
                    fill = "white") +
-      geom_vline(xintercept = center, linetype = "dotted", color = "black",
-                 size = .5) +
+      geom_vline(xintercept = center, linetype = "dotted", color = "black") +
+      geom_vline(xintercept = 0, linetype = "dashed", color = "grey") +
       geom_point(aes_string(colour = mod_group())) +
       xlab(xlabel) +
       geom_text(x = center + lower_lim * 1.96 / 2,
@@ -712,14 +718,15 @@ shinyServer(function(input, output, session) {
     map(~.x %>% select(-required))
 
   make_datatable <- function(df) {
-    DT::datatable(df, style = "bootstrap", rownames = FALSE, escape = FALSE,
-                  options = list(paging = FALSE, searching = FALSE,
-                                 dom = "t"))# %>%
-
+    DT::renderDataTable(
+      df, style = "bootstrap", rownames = FALSE, escape = FALSE,
+      options = list(paging = FALSE, searching = FALSE,
+                     dom = "t")
+    )
   }
 
-  output$req_table <- fields_data[["TRUE"]] %>% make_datatable() %>% DT::renderDataTable()
-  output$opt_table <- fields_data[["FALSE"]]  %>% make_datatable() %>% DT::renderDataTable()
-  output$drv_table <- fields_derived %>% make_datatable() %>% DT::renderDataTable()
+  output$req_table <- make_datatable(fields_data[["TRUE"]])
+  output$opt_table <- make_datatable(fields_data[["FALSE"]])
+  output$drv_table <- make_datatable(fields_derived)
 
 })

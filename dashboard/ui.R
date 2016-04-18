@@ -209,8 +209,8 @@ tab_visualizations <- tabItem(
             column(width = 2,
                    downloadButton("download_violin", "Save",
                                   class = "btn-xs pull-right"))),
-          plotOutput("violin"))
-    ),
+          plotOutput("violin", height = "auto")
+    )),
     column(
       width = 6,
       fluidRow(
@@ -359,6 +359,9 @@ tabs <- c(list(tab_home, tab_visualizations, tab_power, tab_data,
 
 body <- dashboardBody(
   includeCSS("www/custom.css"),
+  tags$style(type = "text/css",
+             ".shiny-output-error { visibility: hidden; }",
+             ".shiny-output-error:before { visibility: hidden; }"),
   do.call(tabItems, tabs)
 )
 
