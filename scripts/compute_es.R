@@ -149,7 +149,11 @@ compute_es <- function(participant_design, x_1 = NA, x_2 = NA, x_dif = NA,
   g_calc <- d_calc * J
   g_var_calc <- J ^ 2 * d_var_calc
 
-  a <- if (participant_design == "between") ((n_1 + n_2) ^ 2) / (n_1 * n_2) else 4
+  if (participant_design == "between") {
+    a <- (sum(n_1, n_2, na.rm = TRUE) ^ 2) / prod(n_1, n_2, na.rm = TRUE)
+  } else {
+    a <- 4
+  }
   r_calc <- d_calc / sqrt(d_calc ^ 2 + a)
   r_var_calc <- a ^ 2 * d_var_calc / (d_calc ^ 2 + a) ^ 3
 
