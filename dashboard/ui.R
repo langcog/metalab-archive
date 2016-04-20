@@ -336,7 +336,8 @@ report_tabs <- map(reports, function(report) {
 person_content <- function(person) {
   box(width = 3, align = "center", status = "danger", solidHeader = TRUE,
       img(src = person$image, width = 180, height = 180),
-      h4(strong(person$name)), person$affiliation, br(),
+      a(h4(strong(person$name)), href = person$website, target = "_blank"),
+      person$affiliation, br(),
       a(person$email, href = sprintf("mailto:%s", person$email)), br(),
       tags$small(
         map(unlist(strsplit(person$tags, ", ")),
