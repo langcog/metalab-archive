@@ -7,7 +7,7 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
-<meta name="viewport" content="width=device-width, initial-scale=1">
+
 
 <meta name="author" content="Molly Lewis and Christina Bergmann" />
 
@@ -45,6 +45,9 @@ code > span.ot { color: #8f5902; }
 code > span.al { color: #ef2929; }
 code > span.fu { color: #000000; }
 code > span.er { font-weight: bold; }
+div.sourceCode {
+  overflow-x: visible;
+}
 </style>
 <style type="text/css">
   pre:not([class]) {
@@ -53,25 +56,7 @@ code > span.er { font-weight: bold; }
 </style>
 
 
-
-</head>
-
-<body>
-
-<style type = "text/css">
-.main-container {
-  max-width: 940px;
-  margin-left: auto;
-  margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
-}
-img {
-  max-width:100%;
-  height: auto;
-}
+<style type="text/css">
 h1 {
   font-size: 34px;
 }
@@ -92,6 +77,27 @@ h5 {
 }
 h6 {
   font-size: 12px;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -222,9 +228,10 @@ div.tocify {
 </ul>
 </div>
 
+
 <h1 class="title">Reproducibility Analyses</h1>
 <h4 class="author"><em>Molly Lewis and Christina Bergmann</em></h4>
-<h4 class="date"><em>This report was rendered on 2016-03-29 and will be automatically re-rendered nightly, reflecting any changes in the data or code.</em></h4>
+<h4 class="date"><em>This report was rendered on 2016-04-20 and will be automatically re-rendered nightly, reflecting any changes in the data or code.</em></h4>
 
 </div>
 
@@ -278,7 +285,7 @@ counts =<span class="st"> </span>counts %&gt;%
        <span class="dt">axis.line =</span> <span class="kw">element_line</span>(<span class="dt">colour =</span> <span class="st">&quot;black&quot;</span>),
        <span class="dt">text =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">20</span>),
        <span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">30</span>, <span class="dt">hjust =</span> <span class="dv">1</span>))</code></pre>
-<p><img src="reproducibility_files/figure-html/unnamed-chunk-1-1.png" title="" alt="" width="1056" /> This analysis is in practice difficult because our many of our source MA’s include effect sizes that were included by the coders. Similarly, the proportion of coded gender in many cases reflects only that the coder chose not to code that, not that this information was not present. Nevertheless, this analysis gives us a good sense of the the proportion of papers that report means and standard deviations (about two-thirds).</p>
+<p><img src="reproducibility_files/figure-html/unnamed-chunk-1-1.png" /><!-- --> This analysis is in practice difficult because our many of our source MA’s include effect sizes that were included by the coders. Similarly, the proportion of coded gender in many cases reflects only that the coder chose not to code that, not that this information was not present. Nevertheless, this analysis gives us a good sense of the the proportion of papers that report means and standard deviations (about two-thirds).</p>
 <p>By MA</p>
 <pre class="sourceCode r"><code class="sourceCode r">counts =<span class="st"> </span>all_data %&gt;%
 <span class="st">            </span><span class="kw">group_by</span>(dataset) %&gt;%
@@ -309,7 +316,7 @@ counts =<span class="st"> </span>counts %&gt;%
                <span class="dt">y =</span> n/total),  ## FIX THIS
            <span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>,
            <span class="dt">position =</span> <span class="st">&quot;fill&quot;</span>) +<span class="st"> </span>
-<span class="st">  </span><span class="kw">facet_wrap</span>(~dataset, <span class="dt">nrow=</span><span class="dv">3</span>, <span class="dt">ncol=</span><span class="dv">2</span>) +
+<span class="st">  </span><span class="kw">facet_wrap</span>(~dataset, <span class="dt">ncol=</span><span class="dv">2</span>) +
 <span class="st">  </span><span class="kw">ylim</span>(<span class="dv">0</span>,<span class="dv">1</span>) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Proportion coded&quot;</span>) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Coded variable&quot;</span>) +<span class="st"> </span>
@@ -325,7 +332,7 @@ counts =<span class="st"> </span>counts %&gt;%
         <span class="dt">text =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">20</span>),
         <span class="dt">strip.background  =</span> <span class="kw">element_blank</span>(), 
         <span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">30</span>, <span class="dt">hjust =</span> <span class="dv">1</span>))</code></pre>
-<p><img src="reproducibility_files/figure-html/unnamed-chunk-2-1.png" title="" alt="" width="960" /></p>
+<p><img src="reproducibility_files/figure-html/unnamed-chunk-2-1.png" /><!-- --></p>
 </div>
 <div id="sample-sizes-and-exclusions" class="section level1">
 <h1>Sample sizes and exclusions</h1>
@@ -337,7 +344,7 @@ counts =<span class="st"> </span>counts %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">n_total =</span> <span class="kw">ifelse</span>(!<span class="kw">is.na</span>(n_2), n_1 +<span class="st"> </span>n_2, n_1)) %&gt;%
 <span class="st">  </span><span class="kw">select</span>(dataset, d_calc, 
          mean_age_1, n_total,
-         n_excluded, num_trials, method)
+         n_excluded_1, num_trials, method)
  
 <span class="kw">ggplot</span>(all, <span class="kw">aes</span>(<span class="dt">x =</span> mean_age_1, <span class="dt">y =</span> n_total, <span class="dt">color =</span> dataset)) +
 <span class="st">  </span><span class="kw">geom_point</span>() +
@@ -345,7 +352,7 @@ counts =<span class="st"> </span>counts %&gt;%
 <span class="st">  </span><span class="kw">facet_wrap</span>(~dataset, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>) +
 <span class="st">  </span><span class="kw">theme_bw</span>() +
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre>
-<p><img src="reproducibility_files/figure-html/unnamed-chunk-3-1.png" title="" alt="" width="960" /></p>
+<p><img src="reproducibility_files/figure-html/unnamed-chunk-3-1.png" /><!-- --></p>
 </div>
 <div id="do-sample-sizes-vary-with-effect-sizes" class="section level2">
 <h2>Do sample sizes vary with effect sizes?</h2>
@@ -373,7 +380,7 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Residual effect size&quot;</span>) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">facet_wrap</span>(~dataset, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>) +
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre>
-<p><img src="reproducibility_files/figure-html/unnamed-chunk-5-1.png" title="" alt="" width="960" /></p>
+<p><img src="reproducibility_files/figure-html/unnamed-chunk-5-1.png" /><!-- --></p>
 <p>If sample size and effect sizes were appropriately coupled, we should expect sample to decrease as effect size increases. Across 3 meta-analyses, we find the opposite pattern: sample size increases with effect size. This suggest that researchers either are not prospectively planning their sample sizes based on effect size estimates.</p>
 </div>
 <div id="does-the-number-of-excluded-infants-affect-effect-sizes" class="section level2">
@@ -398,9 +405,8 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <span class="st">            </span><span class="kw">rename</span>(<span class="dt">residual.d.age =</span> <span class="st">`</span><span class="dt">residuals.age.method$resid</span><span class="st">`</span>, 
                    <span class="dt">residual.d.s.age =</span> <span class="st">`</span><span class="dt">residuals.age.method$z</span><span class="st">`</span>) <span class="co"># standardized</span></code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">exclusions =<span class="st"> </span>all_data %&gt;%
-<span class="st">  </span><span class="kw">filter</span>(!<span class="kw">is.na</span>(n_excluded_1) |<span class="st"> </span>!<span class="kw">is.na</span>(n_excluded)) %&gt;%
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">n_excluded =</span> <span class="kw">ifelse</span>(<span class="kw">is.na</span>(n_excluded), n_excluded_1,
-                             n_excluded),
+<span class="st">  </span><span class="kw">filter</span>(!<span class="kw">is.na</span>(n_excluded_1) ||<span class="st"> </span>!<span class="kw">is.na</span>(n_excluded_2)) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">n_excluded =</span>  <span class="kw">ifelse</span>(!<span class="kw">is.na</span>(n_excluded_2), n_excluded_1 +<span class="st"> </span>n_excluded_2, n_excluded_1),
          <span class="dt">n_total =</span> <span class="kw">ifelse</span>(!<span class="kw">is.na</span>(n_2), n_1 +<span class="st"> </span>n_2, n_1)) %&gt;%
 <span class="st">  </span><span class="kw">select</span>(dataset, d_calc, 
          mean_age_1, n_total,
@@ -418,7 +424,7 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">theme_bw</span>() +<span class="st"> </span>
 <span class="st">  </span><span class="kw">facet_wrap</span>(~dataset, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>) +
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre>
-<p><img src="reproducibility_files/figure-html/unnamed-chunk-7-1.png" title="" alt="" width="960" /></p>
+<p><img src="reproducibility_files/figure-html/unnamed-chunk-7-1.png" /><!-- --></p>
 </div>
 <div id="does-proportion-excluded-vary-as-a-function-of-age" class="section level2">
 <h2>Does proportion excluded vary as a function of age?</h2>
@@ -433,7 +439,7 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">theme_bw</span>()  +<span class="st"> </span>
 <span class="st">  </span><span class="kw">facet_wrap</span>(~dataset, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>) +
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre>
-<p><img src="reproducibility_files/figure-html/Exclusions_nExcluded-1.png" title="" alt="" width="960" /></p>
+<p><img src="reproducibility_files/figure-html/Exclusions_nExcluded-1.png" /><!-- --></p>
 </div>
 </div>
 <div id="publication-bias" class="section level1">
@@ -452,7 +458,7 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">theme_bw</span>() +
 <span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;published year&quot;</span>) +
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre>
-<p><img src="reproducibility_files/figure-html/unnamed-chunk-8-1.png" title="" alt="" width="960" /> We see a bias of year here: Studies conducted early on in a literature tend to have larger effect sizes than later studies.</p>
+<p><img src="reproducibility_files/figure-html/unnamed-chunk-8-1.png" /><!-- --> We see a bias of year here: Studies conducted early on in a literature tend to have larger effect sizes than later studies.</p>
 </div>
 <div id="does-age-vary-as-a-function-of-year" class="section level2">
 <h2>Does age vary as a function of year?</h2>
@@ -463,7 +469,7 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">theme_bw</span>() +
 <span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;published year&quot;</span>)  +
 <span class="st">    </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre>
-<p><img src="reproducibility_files/figure-html/unnamed-chunk-9-1.png" title="" alt="" width="960" /> In some literatures, we see a trend toward looking for the phenomenon in younger children over time.</p>
+<p><img src="reproducibility_files/figure-html/unnamed-chunk-9-1.png" /><!-- --> In some literatures, we see a trend toward looking for the phenomenon in younger children over time.</p>
 </div>
 <div id="does-effect-size-vary-as-a-function-of-number-of-authors" class="section level2">
 <h2>Does effect size vary as a function of number of authors?</h2>
@@ -484,7 +490,7 @@ all_data %&gt;%
 <span class="st">  </span><span class="kw">facet_wrap</span>(~dataset, <span class="dt">scales =</span> <span class="st">&quot;free_y&quot;</span>) +
 <span class="st">  </span><span class="kw">theme_bw</span>()+
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre>
-<p><img src="reproducibility_files/figure-html/unnamed-chunk-10-1.png" title="" alt="" width="960" /></p>
+<p><img src="reproducibility_files/figure-html/unnamed-chunk-10-1.png" /><!-- --></p>
 </div>
 </div>
 <div id="individual-meta-analysis-power" class="section level1">
@@ -568,7 +574,7 @@ for (i in <span class="dv">1</span>:<span class="kw">length</span>(datasets)) {
   taf &lt;-<span class="st"> </span><span class="kw">trimfill</span>(res)
   <span class="kw">funnel</span>(taf, <span class="dt">main =</span> datasets[i])
 }</code></pre>
-<p><img src="reproducibility_files/figure-html/Trim and Fill-1.png" title="" alt="" width="672" /><img src="reproducibility_files/figure-html/Trim and Fill-2.png" title="" alt="" width="672" /><img src="reproducibility_files/figure-html/Trim and Fill-3.png" title="" alt="" width="672" /><img src="reproducibility_files/figure-html/Trim and Fill-4.png" title="" alt="" width="672" /><img src="reproducibility_files/figure-html/Trim and Fill-5.png" title="" alt="" width="672" /><img src="reproducibility_files/figure-html/Trim and Fill-6.png" title="" alt="" width="672" /></p>
+<p><img src="reproducibility_files/figure-html/Trim%20and%20Fill-1.png" /><!-- --><img src="reproducibility_files/figure-html/Trim%20and%20Fill-2.png" /><!-- --><img src="reproducibility_files/figure-html/Trim%20and%20Fill-3.png" /><!-- --><img src="reproducibility_files/figure-html/Trim%20and%20Fill-4.png" /><!-- --><img src="reproducibility_files/figure-html/Trim%20and%20Fill-5.png" /><!-- --><img src="reproducibility_files/figure-html/Trim%20and%20Fill-6.png" /><!-- --><img src="reproducibility_files/figure-html/Trim%20and%20Fill-7.png" /><!-- --><img src="reproducibility_files/figure-html/Trim%20and%20Fill-8.png" /><!-- --><img src="reproducibility_files/figure-html/Trim%20and%20Fill-9.png" /><!-- --><img src="reproducibility_files/figure-html/Trim%20and%20Fill-10.png" /><!-- --><img src="reproducibility_files/figure-html/Trim%20and%20Fill-11.png" /><!-- --></p>
 </div>
 
 

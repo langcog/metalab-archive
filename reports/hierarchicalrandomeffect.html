@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Sho Tsuji and Christina Bergmann" />
+
+
+<title>Hierarchical Random Effects in Meta-Analyses: Do they change stuff?</title>
+
+<script src="libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="libs/tocify-1.9.1/jquery.tocify.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+pre, code { background-color: #f8f8f8; }
+code > span.kw { color: #204a87; font-weight: bold; }
+code > span.dt { color: #204a87; }
+code > span.dv { color: #0000cf; }
+code > span.bn { color: #0000cf; }
+code > span.fl { color: #0000cf; }
+code > span.ch { color: #4e9a06; }
+code > span.st { color: #4e9a06; }
+code > span.co { color: #8f5902; font-style: italic; }
+code > span.ot { color: #8f5902; }
+code > span.al { color: #ef2929; }
+code > span.fu { color: #000000; }
+code > span.er { font-weight: bold; }
+div.sourceCode {
+  overflow-x: visible;
+}
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="libs/navigation-1.0/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<script src="libs/navigation-1.0/codefolding.js"></script>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+
+<script>
+$(document).ready(function ()  {
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: "h1.title, .toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.9em;
+  padding-left: 5px;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="text-muted">Code</span> <span class="text-muted caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All</a></li>
+</ul>
+</div>
+
+
+<h1 class="title">Hierarchical Random Effects in Meta-Analyses: Do they change stuff?</h1>
+<h4 class="author"><em>Sho Tsuji and Christina Bergmann</em></h4>
+<h4 class="date"><em>This report was rendered on 2016-04-20 and will be automatically re-rendered nightly, reflecting any changes in the data or code.</em></h4>
+
+</div>
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Each effect size is nested within an experiment which is in turn nested within a paper (this includes unpublished reports, theses, and the likes). It can be assumed that effect sizes within these nested structures are not independent. Here we explore whether and how accounting for this possible correlation affects both a random effects base model and a moderator analysis. As example we chose InWordDB.</p>
+</div>
+<div id="base-model" class="section level1">
+<h1>Base Model</h1>
+<p>Standard random effects model, no moderators. First we run the model without accounting for any hierarchical structure (as reported in the publication by Bergmann &amp; Cristia 2015; note that differences in effect size estimation are due to an updated dataset here that also includes nonnative studies, as compared to the paper).</p>
+<pre class="sourceCode r"><code class="sourceCode r">inworddb &lt;-<span class="st"> </span><span class="kw">droplevels</span>(all_data[all_data$short_name==<span class="st">&quot;inworddb&quot;</span>, ])
+
+StandardMod &lt;-<span class="st"> </span><span class="kw">rma</span>(g_calc, g_var_calc, <span class="dt">data =</span> inworddb)
+<span class="kw">summary</span>(StandardMod)</code></pre>
+<pre><code>## 
+## Random-Effects Model (k = 286; tau^2 estimator: REML)
+## 
+##    logLik   deviance        AIC        BIC       AICc  
+## -149.5440   299.0881   303.0881   310.3931   303.1307  
+## 
+## tau^2 (estimated amount of total heterogeneity): 0.1148 (SE = 0.0125)
+## tau (square root of estimated tau^2 value):      0.3389
+## I^2 (total heterogeneity / total variability):   81.37%
+## H^2 (total variability / sampling variability):  5.37
+## 
+## Test for Heterogeneity: 
+## Q(df = 285) = 1347.9098, p-val &lt; .0001
+## 
+## Model Results:
+## 
+## estimate       se     zval     pval    ci.lb    ci.ub          
+##   0.1822   0.0230   7.9242   &lt;.0001   0.1371   0.2273      *** 
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div id="two-level-model-paper" class="section level2">
+<h2>Two Level Model: Paper</h2>
+<p>We first add a level for the paper a given effect size was reported in. These effect sizes presumably stem from a batch of studies that were conducted in the same lab in a very similar fashion and by the same set of experimenters, introducing possible correlations.</p>
+<pre class="sourceCode r"><code class="sourceCode r">PerPaperMod &lt;-<span class="st"> </span><span class="kw">rma.mv</span>(g_calc, g_var_calc, <span class="dt">random =</span> ~<span class="st"> </span><span class="dv">1</span> |<span class="st"> </span>short_cite, <span class="dt">data =</span> inworddb)
+<span class="kw">summary</span>(PerPaperMod)</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 286; method: REML)
+## 
+##    logLik   Deviance        AIC        BIC       AICc  
+## -324.8584   649.7168   653.7168   661.0218   653.7594  
+## 
+## Variance Components: 
+## 
+##             estim    sqrt  nlvls  fixed      factor
+## sigma^2    0.0426  0.2063     64     no  short_cite
+## 
+## Test for Heterogeneity: 
+## Q(df = 285) = 1347.9098, p-val &lt; .0001
+## 
+## Model Results:
+## 
+## estimate       se     zval     pval    ci.lb    ci.ub          
+##   0.1480   0.0285   5.1928   &lt;.0001   0.0922   0.2039      *** 
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+<div id="three-level-model-paper-and-experiment" class="section level2">
+<h2>Three Level Model: Paper and Experiment</h2>
+<p>Nested within paper, we introduce a level for experiment number. Experiments can report several effect sizes, for example when infants are run in conditions; slight variations of the same study which are presumed to be even more similar than effect sizes within a paper. A caveat is that conventions on what counts as experiment and what counts as conditions within an experiment might differ across papers.</p>
+<pre class="sourceCode r"><code class="sourceCode r">PerExpPaperMod &lt;-<span class="st"> </span><span class="kw">rma.mv</span>(g_calc, g_var_calc, <span class="dt">random =</span> ~<span class="st"> </span><span class="kw">factor</span>(expt_num) |<span class="st">  </span>short_cite, <span class="dt">data =</span> inworddb)
+<span class="kw">summary</span>(PerExpPaperMod)</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 286; method: REML)
+## 
+##    logLik   Deviance        AIC        BIC       AICc  
+## -244.3049   488.6098   494.6098   505.5673   494.6952  
+## 
+## Variance Components: 
+## 
+## outer factor: short_cite       (nlvls = 64)
+## inner factor: factor(expt_num) (nlvls = 15)
+## 
+##             estim    sqrt  fixed
+## tau^2      0.0706  0.2658     no
+## rho        0.2384             no
+## 
+## Test for Heterogeneity: 
+## Q(df = 285) = 1347.9098, p-val &lt; .0001
+## 
+## Model Results:
+## 
+## estimate       se     zval     pval    ci.lb    ci.ub          
+##   0.1534   0.0278   5.5163   &lt;.0001   0.0989   0.2079      *** 
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>To summarize, all these models differ in their effect size estimates, but do not change the statistical outcome. The effect remains small but significantly above 0. Adding the level of experiment number did not dramatically change the result.</p>
+</div>
+</div>
+<div id="moderator-model-from-the-paper" class="section level1">
+<h1>Moderator Model from the Paper</h1>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Centering mean age</span>
+inworddb$ageC &lt;-<span class="st"> </span>inworddb$mean_age-<span class="kw">mean</span>(inworddb$mean_age)
+
+StandardMod &lt;-<span class="st"> </span><span class="kw">rma</span>(g_calc, g_var_calc, <span class="dt">mod =</span> ageC, <span class="dt">data =</span> inworddb)
+<span class="kw">summary</span>(StandardMod)</code></pre>
+<pre><code>## 
+## Mixed-Effects Model (k = 286; tau^2 estimator: REML)
+## 
+##    logLik   deviance        AIC        BIC       AICc  
+## -149.5873   299.1747   305.1747   316.1216   305.2604  
+## 
+## tau^2 (estimated amount of residual heterogeneity):     0.1155 (SE = 0.0126)
+## tau (square root of estimated tau^2 value):             0.3398
+## I^2 (residual heterogeneity / unaccounted variability): 81.43%
+## H^2 (unaccounted variability / sampling variability):   5.39
+## R^2 (amount of heterogeneity accounted for):            0.00%
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 284) = 1347.0650, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2): 
+## QM(df = 1) = 0.0026, p-val = 0.9590
+## 
+## Model Results:
+## 
+##          estimate      se    zval    pval    ci.lb   ci.ub     
+## intrcpt    0.1822  0.0230  7.9080  &lt;.0001   0.1371  0.2274  ***
+## mods       0.0000  0.0003  0.0514  0.9590  -0.0005  0.0006     
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div id="two-level-model-paper-1" class="section level2">
+<h2>Two Level Model: Paper</h2>
+<pre class="sourceCode r"><code class="sourceCode r">PerPaperMod &lt;-<span class="st"> </span><span class="kw">rma.mv</span>(g_calc, g_var_calc, <span class="dt">mod =</span> ageC, <span class="dt">random =</span> ~<span class="st"> </span><span class="dv">1</span> |<span class="st"> </span>short_cite, <span class="dt">data =</span> inworddb)
+<span class="kw">summary</span>(PerPaperMod)</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 286; method: REML)
+## 
+##    logLik   Deviance        AIC        BIC       AICc  
+## -321.3824   642.7648   648.7648   659.7117   648.8505  
+## 
+## Variance Components: 
+## 
+##             estim    sqrt  nlvls  fixed      factor
+## sigma^2    0.0487  0.2206     64     no  short_cite
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 284) = 1347.0650, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2): 
+## QM(df = 1) = 8.0314, p-val = 0.0046
+## 
+## Model Results:
+## 
+##          estimate      se    zval    pval   ci.lb   ci.ub     
+## intrcpt    0.1451  0.0302  4.8076  &lt;.0001  0.0859  0.2042  ***
+## mods       0.0006  0.0002  2.8340  0.0046  0.0002  0.0010   **
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+<div id="three-level-model-paper-and-experiment-1" class="section level2">
+<h2>Three Level Model: Paper and Experiment</h2>
+<pre class="sourceCode r"><code class="sourceCode r">PerExpPaperMod &lt;-<span class="st"> </span><span class="kw">rma.mv</span>(g_calc, g_var_calc, <span class="dt">mod =</span> ageC, <span class="dt">random =</span> ~<span class="st"> </span><span class="kw">factor</span>(expt_num) |<span class="st">  </span>short_cite, <span class="dt">data =</span> inworddb)
+<span class="kw">summary</span>(PerExpPaperMod)</code></pre>
+<pre><code>## 
+## Multivariate Meta-Analysis Model (k = 286; method: REML)
+## 
+##    logLik   Deviance        AIC        BIC       AICc  
+## -241.7889   483.5779   491.5779   506.1738   491.7212  
+## 
+## Variance Components: 
+## 
+## outer factor: short_cite       (nlvls = 64)
+## inner factor: factor(expt_num) (nlvls = 15)
+## 
+##             estim    sqrt  fixed
+## tau^2      0.0760  0.2757     no
+## rho        0.2985             no
+## 
+## Test for Residual Heterogeneity: 
+## QE(df = 284) = 1347.0650, p-val &lt; .0001
+## 
+## Test of Moderators (coefficient(s) 2): 
+## QM(df = 1) = 5.6924, p-val = 0.0170
+## 
+## Model Results:
+## 
+##          estimate      se    zval    pval   ci.lb   ci.ub     
+## intrcpt    0.1509  0.0296  5.1004  &lt;.0001  0.0929  0.2089  ***
+## mods       0.0006  0.0003  2.3859  0.0170  0.0001  0.0011    *
+## 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>To summarize, introducing hierarchical structure changed the outcome for the moderator test. Age (centered) now has a small, but significant, effect on effect sizes. This is not the case when ignoring the nested structure of effect sizes. This result mirrors the reported analyses in Bergmann &amp; Cristia (2015) that there is a small, positive effect of age when only considering papers which test at least two age groups in the same set-up.</p>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

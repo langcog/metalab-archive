@@ -7,7 +7,7 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
-<meta name="viewport" content="width=device-width, initial-scale=1">
+
 
 <meta name="author" content="Molly Lewis, Mika Braginsky, &amp; Mike Frank" />
 
@@ -45,6 +45,9 @@ code > span.ot { color: #8f5902; }
 code > span.al { color: #ef2929; }
 code > span.fu { color: #000000; }
 code > span.er { font-weight: bold; }
+div.sourceCode {
+  overflow-x: visible;
+}
 </style>
 <style type="text/css">
   pre:not([class]) {
@@ -53,25 +56,7 @@ code > span.er { font-weight: bold; }
 </style>
 
 
-
-</head>
-
-<body>
-
-<style type = "text/css">
-.main-container {
-  max-width: 940px;
-  margin-left: auto;
-  margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
-}
-img {
-  max-width:100%;
-  height: auto;
-}
+<style type="text/css">
 h1 {
   font-size: 34px;
 }
@@ -92,6 +77,27 @@ h5 {
 }
 h6 {
   font-size: 12px;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -222,9 +228,10 @@ div.tocify {
 </ul>
 </div>
 
+
 <h1 class="title">Meta-meta analsyis</h1>
 <h4 class="author"><em>Molly Lewis, Mika Braginsky, &amp; Mike Frank</em></h4>
-<h4 class="date"><em>This report was rendered on 2016-03-29 and will be automatically re-rendered nightly, reflecting any changes in the data or code.</em></h4>
+<h4 class="date"><em>This report was rendered on 2016-04-20 and will be automatically re-rendered nightly, reflecting any changes in the data or code.</em></h4>
 
 </div>
 
@@ -245,7 +252,7 @@ div.tocify {
 <span class="st">  </span><span class="kw">scale_color_discrete</span>(<span class="dt">guide =</span> <span class="kw">guide_legend</span>(<span class="dt">nrow=</span><span class="dv">2</span>, 
                                              <span class="dt">title =</span> <span class="st">&quot;&quot;</span>)) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">ylim</span>(<span class="kw">c</span>(-<span class="dv">1</span>, <span class="dv">3</span>))</code></pre>
-<p><img src="metameta_files/figure-html/unnamed-chunk-1-1.png" title="" alt="" width="672" /></p>
+<p><img src="metameta_files/figure-html/unnamed-chunk-1-1.png" /><!-- --></p>
 <p>Plot without ME, to fcous on the first two years.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="kw">filter</span>(all_data, 
               mean_age &lt;<span class="st"> </span><span class="dv">365</span> *<span class="st"> </span><span class="fl">1.5</span>,
@@ -262,7 +269,7 @@ div.tocify {
 <span class="st">  </span><span class="kw">scale_color_discrete</span>(<span class="dt">guide =</span> <span class="kw">guide_legend</span>(<span class="dt">nrow=</span><span class="dv">2</span>, 
                                              <span class="dt">title =</span> <span class="st">&quot;&quot;</span>)) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">ylim</span>(<span class="kw">c</span>(-<span class="dv">1</span>, <span class="dv">3</span>))</code></pre>
-<p><img src="metameta_files/figure-html/unnamed-chunk-2-1.png" title="" alt="" width="672" /></p>
+<p><img src="metameta_files/figure-html/unnamed-chunk-2-1.png" /><!-- --></p>
 </div>
 
 
