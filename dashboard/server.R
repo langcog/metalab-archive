@@ -267,9 +267,29 @@ shinyServer(function(input, output, session) {
       ylab("Effect Size")
   }
 
+  forest_summary <- function() {
+    pred_data <- data.frame(predictor = names(coef(model())), 
+                            coef = coef(model()))
+    
+    labels <- if (mod_group() == "all_mod") NULL else
+      setNames(paste(mod_data()[[mod_group()]], "  "),
+               mod_data()[[mod_group()]])
+    guide <- if (mod_group() == "all_mod") FALSE else "legend"
+    
+    qplot(predictor, coef, data = pred_data) +
+      coord_flip() +
+      scale_size_continuous(guide = FALSE) +
+      scale_colour_solarized(name = "", labels = labels, guide = guide) +
+      xlab("") +
+      ylab("Effect Size")
+  }
+  
   output$forest <- renderPlot(forest(),
                               height = function() nrow(mod_data()) * 10 + 100)
 
+  output$forest_summary <- renderPlot(forest_summary(),
+                                      height = 200)
+  
   ########### FUNNEL PLOT ###########
 
   funnel <- function() {

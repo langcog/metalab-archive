@@ -235,7 +235,8 @@ tab_visualizations <- tabItem(
                                       "model estimate" = "estimate",
                                       "alphabetical" = "unique_ID",
                                       "chronological" = "year"))),
-            plotOutput("forest", height = "auto")))
+            plotOutput("forest", height = "auto"),
+            plotOutput("forest_summary", height = "auto")))
     )
   )
 )
