@@ -101,7 +101,7 @@ ggplot(counts, aes(fill = coded)) +
                y = n/total),  ## FIX THIS
            stat = "identity",
            position = "fill") + 
-  facet_wrap(~dataset, nrow=3, ncol=2) +
+  facet_wrap(~dataset, ncol=2) +
   ylim(0,1) + 
   ylab("Proportion coded") + 
   xlab("Coded variable") + 
@@ -130,7 +130,7 @@ all = all_data %>%
   mutate(n_total = ifelse(!is.na(n_2), n_1 + n_2, n_1)) %>%
   select(dataset, d_calc, 
          mean_age_1, n_total,
-         n_excluded, num_trials, method)
+         n_excluded_1, num_trials, method)
  
 ggplot(all, aes(x = mean_age_1, y = n_total, color = dataset)) +
   geom_point() +
@@ -201,9 +201,8 @@ all_data = all_data %>%
  
 ```{r, fig.width = 10}
 exclusions = all_data %>%
-  filter(!is.na(n_excluded_1) | !is.na(n_excluded)) %>%
-  mutate(n_excluded = ifelse(is.na(n_excluded), n_excluded_1,
-                             n_excluded),
+  filter(!is.na(n_excluded_1) || !is.na(n_excluded_2)) %>%
+  mutate(n_excluded =  ifelse(!is.na(n_excluded_2), n_excluded_1 + n_excluded_2, n_excluded_1),
          n_total = ifelse(!is.na(n_2), n_1 + n_2, n_1)) %>%
   select(dataset, d_calc, 
          mean_age_1, n_total,
