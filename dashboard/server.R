@@ -22,8 +22,9 @@ pretty.p <- function(x) {
 input <- list(dataset_name = "Label advantage in concept learning",
               es_type = "d", ma_method = "REML", scatter_curve = "lm",
               forest_sort = "effects",
-              #              moderators = c("audio_condition", "response_mode"))
-              moderators = NULL)
+              #moderators = c("audio_condition", "response_mode"))
+              #moderators = NULL)
+              moderators = "mean_age")
 
 shinyServer(function(input, output, session) {
 
@@ -276,37 +277,47 @@ shinyServer(function(input, output, session) {
   }
 
   forest_summary <- function() {
-    pred_data <- data.frame(predictor = names(coef(model())), 
-                            coef = coef(model()), 
-                            ci.lb = summary(model())$ci.lb, 
+    pred_data <- data.frame(predictor = names(coef(model())),
+                            coef = coef(model()),
+                            ci.lb = summary(model())$ci.lb,
                             ci.ub = summary(model())$ci.ub)
-    
-    labels <- if (mod_group() == "all_mod") NULL else
-      setNames(paste(mod_data()[[mod_group()]], "  "),
-               mod_data()[[mod_group()]])
-    guide <- if (mod_group() == "all_mod") FALSE else "legend"
-    
-    ggplot(data = pred_data, 
-           aes(x = predictor, y = coef, ymin = ci.lb, ymax = ci.ub)) +
-      geom_pointrange() + 
-      coord_flip() +
-      scale_size_continuous(guide = FALSE) +
-      scale_colour_solarized(name = "", labels = labels, guide = guide) +
-      xlab("") +
-      ylab("Effect Size") + 
-      geom_hline(yintercept = 0, lty = 2, col = "black")
+
+    predictors <- data_frame(moderator = "", value = "", predictor = "intrcpt",
+                             print_predictor = "intercept")
+    if (!is.null(categorical_mods()) && length(categorical_mods())) {
+      mod_vals <- map_df(categorical_mods(),
+                         ~data_frame(moderator = .x,
+                                     value = unique(mod_data()[[.x]]))) %>%
+        mutate(predictor = paste0(moderator, value),
+               print_predictor = sprintf("%s: %s", moderator, value))
+      predictors <- predictors %>%
+        bind_rows(mod_vals)
+    }
+    if ("mean_age" %in% input$moderators) {
+      predictors <- predictors %>%
+        bind_rows(data_frame(moderator = "", value = "", predictor = "mean_age",
+                             print_predictor = "mean_age"))
+    }
+    pred_data %>% left_join(predictors) %>%
+      ggplot(aes(x = print_predictor, y = coef, ymin = ci.lb,
+                 ymax = ci.ub)) +
+        geom_pointrange() +
+        coord_flip() +
+        xlab("") +
+        ylab("Effect Size") +
+        geom_hline(yintercept = 0, linetype = "dashed", color = "grey")
   }
-  
+
   output$forest <- renderPlot(forest(),
                               height = function() nrow(mod_data()) * 10 + 100)
 
   output$forest_summary <- renderPlot(forest_summary(),
                                       height = 200)
-  
+
   output$forest_summary_text <- renderPrint({
     summary(model())
   })
-  
+
   ########### FUNNEL PLOT ###########
 
   funnel <- function() {
