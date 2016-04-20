@@ -244,12 +244,29 @@ tab_visualizations <- tabItem(
                                       "model estimate" = "estimate",
                                       "alphabetical" = "unique_ID",
                                       "chronological" = "year"))),
-            plotOutput("forest", height = "auto"),
-            plotOutput("forest_summary", height = "auto")))
+            plotOutput("forest", height = "auto")),
+        box(width = NULL, status = "danger",
+            fluidRow(
+              column(width = 12, 
+                     p(strong("Meta-analytic model summary")),
+                     tabsetPanel(
+                       tabPanel("Plot", plotOutput("forest_summary", height = "auto")),
+                       tabPanel("Model", verbatimTextOutput("forest_summary_text"))
+                     )
+              )
+            )
+                   
+#             fluidRow(
+#               
+#                      plotOutput("forest_summary", height = "auto")
+#               )
+#             )
+        )
+      )
     )
   )
 )
-
+     
 #############################################################################
 # POWER ANALYSIS
 

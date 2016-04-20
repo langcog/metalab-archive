@@ -277,19 +277,24 @@ shinyServer(function(input, output, session) {
 
   forest_summary <- function() {
     pred_data <- data.frame(predictor = names(coef(model())), 
-                            coef = coef(model()))
+                            coef = coef(model()), 
+                            ci.lb = summary(model())$ci.lb, 
+                            ci.ub = summary(model())$ci.ub)
     
     labels <- if (mod_group() == "all_mod") NULL else
       setNames(paste(mod_data()[[mod_group()]], "  "),
                mod_data()[[mod_group()]])
     guide <- if (mod_group() == "all_mod") FALSE else "legend"
     
-    qplot(predictor, coef, data = pred_data) +
+    ggplot(data = pred_data, 
+           aes(x = predictor, y = coef, ymin = ci.lb, ymax = ci.ub)) +
+      geom_pointrange() + 
       coord_flip() +
       scale_size_continuous(guide = FALSE) +
       scale_colour_solarized(name = "", labels = labels, guide = guide) +
       xlab("") +
-      ylab("Effect Size")
+      ylab("Effect Size") + 
+      geom_hline(yintercept = 0, lty = 2, col = "black")
   }
   
   output$forest <- renderPlot(forest(),
@@ -297,6 +302,10 @@ shinyServer(function(input, output, session) {
 
   output$forest_summary <- renderPlot(forest_summary(),
                                       height = 200)
+  
+  output$forest_summary_text <- renderPrint({
+    summary(model())
+  })
   
   ########### FUNNEL PLOT ###########
 
