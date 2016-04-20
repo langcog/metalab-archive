@@ -36,6 +36,18 @@ sidebar <- dashboardSidebar(
 #############################################################################
 # HOME
 
+dataset_box <- function(i) {
+  dataset <- datasets[i,]
+  box(
+    width = 12, status = "danger", solidHeader = TRUE,
+    fluidRow(
+      column(width = 3,
+             img(src = dataset$src, width = "100%", class = "dataset-img")),
+      column(width = 9, class = "dataset-txt",
+             h4(strong(dataset$name)), p(dataset$short_desc)))
+  )
+}
+
 tab_home <- tabItem(
   tabName = "home",
   div(class = "text-center",
@@ -65,16 +77,12 @@ tab_home <- tabItem(
   ),
   h3("Meta-analyses currently in MetaLab:"),
   fluidRow(
-    map(1:nrow(datasets), function(i) {
-      dataset <- datasets[i,]
-      box(
-        width = 6, status = "danger", solidHeader = TRUE,
-        fluidRow(
-          column(width = 3, img(src = dataset$src, height = 70, width = 110)),
-          column(width = 9, h4(strong(dataset$name)),
-                 p(dataset$short_desc)))
-      )
-    })
+    column(width = 6,
+           map(1:ceiling(nrow(datasets)/2), dataset_box)
+    ),
+    column(width = 6,
+           map(ceiling(nrow(datasets)/2 + 1):nrow(datasets), dataset_box)
+    )
   )
 )
 
@@ -210,7 +218,7 @@ tab_visualizations <- tabItem(
                    downloadButton("download_violin", "Save",
                                   class = "btn-xs pull-right"))),
           plotOutput("violin", height = "auto")
-    )),
+      )),
     column(
       width = 6,
       fluidRow(

@@ -35,3 +35,11 @@ body {
 #moderator_input .shiny-options-group span {
   font-size: 11px;
 }
+
+.dataset-txt {
+  padding-left: 0;
+}
+
+.dataset-img {
+  margin-top: 12px;
+}
