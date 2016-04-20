@@ -197,6 +197,7 @@ tab_visualizations <- tabItem(
                                class = "btn-xs pull-right"))),
             column(
               width = 7,
+              # uiOutput("select_scatter_curve")),
               selectInput("scatter_curve", label = "Curve type",
                           choices = scatter_choices, selected = "loess")),
             plotOutput("scatter"), height = 530)
@@ -239,7 +240,7 @@ tab_visualizations <- tabItem(
             column(
               width = 4,
               selectInput("forest_sort", label = "Sort order",
-                          choices = c("model fit" = "effects",
+                          choices = c("effect size" = "effects",
                                       "model estimate" = "estimate",
                                       "alphabetical" = "unique_ID",
                                       "chronological" = "year"))),

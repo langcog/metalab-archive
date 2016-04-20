@@ -21,9 +21,9 @@ pretty.p <- function(x) {
 
 input <- list(dataset_name = "Label advantage in concept learning",
               es_type = "d", ma_method = "REML", scatter_curve = "lm",
-              moderators = c("audio_condition", "response_mode"),
-              forest_sort = "effects")
-#             moderators = NULL)
+              forest_sort = "effects",
+              #              moderators = c("audio_condition", "response_mode"))
+              moderators = NULL)
 
 shinyServer(function(input, output, session) {
 
@@ -157,6 +157,13 @@ shinyServer(function(input, output, session) {
     )
   })
 
+  observeEvent(categorical_mods(), {
+    if (!is.null(categorical_mods())) {
+      updateSelectInput(session, "scatter_curve", selected = "lm")
+    }
+  })
+
+
   #############################################################################
   # PLOTS
 
@@ -178,6 +185,7 @@ shinyServer(function(input, output, session) {
       xlab("\nMean Subject Age (Months)") +
       ylab("Effect Size\n")
 
+    #curve <- if (is.null(categorical_mods())) input$scatter_curve else "lm"
     if (input$scatter_curve == "lm") {
       p + geom_smooth(aes_string(weight = sprintf("1 / %s", es_var())),
                       method = "lm", se = FALSE)
@@ -205,7 +213,7 @@ shinyServer(function(input, output, session) {
     plt_data[[mod_group()]] <- factor(plt_data[[mod_group()]],
                                       levels = rev(levels(mod_factor)))
     plt <- ggplot(plt_data, aes_string(x = mod_group(), y = es(),
-                                         colour = mod_group())) +
+                                       colour = mod_group())) +
       coord_flip() +
       geom_violin() +
       geom_jitter(height = 0) +
