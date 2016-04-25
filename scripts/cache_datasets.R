@@ -61,6 +61,11 @@ validate_dataset <- function(dataset_meta, dataset_contents) {
 # Get a dataset's contents from the google sheets
 fetch_dataset <- function(dataset_meta) {
 
+  if (dataset_meta$key == "") {
+    cat(sprintf("Can't load aataset '%s', key missing.\n", dataset_meta$name))
+    return()
+  }
+
   dataset_url <- sprintf(
     "https://docs.google.com/spreadsheets/d/%s/export?id=%s&format=csv",
     dataset_meta$key, dataset_meta$key
@@ -120,7 +125,7 @@ tidy_dataset <- function(dataset_meta, dataset_contents) {
       .x, compute_es(
         .x$participant_design, .x$x_1, .x$x_2, .x$x_dif, .x$SD_1, .x$SD_2,
         .x$SD_dif, .x$n_1, .x$n_2, .x$t, .x$F, .x$d, .x$d_var, .x$corr,
-        .x$corr_imputed, .x$r, .x$unique_ID, .x$expt_num,
+        .x$corr_imputed, .x$r, .x$study_ID, .x$expt_num,
         .x$special_cases_measures, .x$contrast_sampa
       ))) %>%
     select(-row)

@@ -37,8 +37,8 @@ load_dataset <- function(filename) {
     mutate(filename = filename,
            # response_mode_exposure_phase = sprintf(
            #   "%s \n %s", response_mode, exposure_phase),
-           year = ifelse(grepl("submitted", unique_ID), Inf,
-                         stringr::str_extract(unique_ID, "([:digit:]{4})"))
+           year = ifelse(grepl("submitted", study_ID), Inf,
+                         stringr::str_extract(study_ID, "([:digit:]{4})"))
     )
 }
 
@@ -52,12 +52,12 @@ all_data <- cached_data %>%
 studies <- all_data %>%
   group_by(dataset) %>%
   summarise(num_experiments = n(),
-            num_papers = length(unique(unique_ID)))
+            num_papers = length(unique(study_ID)))
 
 subjects <- all_data %>%
   rowwise() %>%
   mutate(n_total = sum(c(n_1, n_2), na.rm = TRUE)) %>%
-  distinct(dataset, unique_ID, same_infant) %>%
+  distinct(dataset, study_ID, same_infant) %>%
   group_by(dataset) %>%
   summarise(num_subjects = sum(n_total))
 

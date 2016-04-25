@@ -247,7 +247,7 @@ If studies are randomly sampled from the population of possible studies, effect 
 ## Do effect sizes vary as a function of year?
 ```{r, fig.width = 10}
 years.df = all_data %>%
-  mutate(year = as.numeric(unlist(lapply(strsplit(unlist(all_data$unique_ID),
+  mutate(year = as.numeric(unlist(lapply(strsplit(unlist(all_data$study_ID),
                                                   "[^0-9]+"),  function(x) unlist(x)[2])))) 
 
 ggplot(years.df , aes(x = year, y = residual.d.s, color = dataset)) +

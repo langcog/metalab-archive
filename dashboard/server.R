@@ -446,7 +446,7 @@ shinyServer(function(input, output, session) {
 
   ########### PWR MODEL ###########
   pwr_no_mod_model <- reactive({
-    metafor::rma(d_calc, vi = d_var_calc, slab = as.character(unique_ID),
+    metafor::rma(d_calc, vi = d_var_calc, slab = as.character(study_ID),
                  data = pwrdata(), method = "REML")
   })
 
@@ -456,7 +456,7 @@ shinyServer(function(input, output, session) {
     } else {
       mods <- paste(input$pwr_moderators, collapse = "+")
       metafor::rma(as.formula(paste("d_calc ~", mods)), vi = d_var_calc,
-                   slab = as.character(unique_ID), data = pwrdata(),
+                   slab = as.character(study_ID), data = pwrdata(),
                    method = "REML")
     }
   })

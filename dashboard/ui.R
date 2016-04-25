@@ -157,6 +157,7 @@ scatter_choices <- c("Locally-linear regression (loess)" = "loess",
 es_choices <- c("Cohen's d" = "d",
                 "Hedges' g" = "g",
                 "Pearson r" = "r",
+                "Fisher's z" = "z",
                 "Log odds ratio" = "log_odds")
 
 tab_visualizations <- tabItem(
@@ -242,7 +243,7 @@ tab_visualizations <- tabItem(
               selectInput("forest_sort", label = "Sort order",
                           choices = c("effect size" = "effects",
                                       "model estimate" = "estimate",
-                                      "alphabetical" = "unique_ID",
+                                      "alphabetical" = "study_ID",
                                       "chronological" = "year"))),
             plotOutput("forest", height = "auto")),
         box(width = NULL, status = "danger",

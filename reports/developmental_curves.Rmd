@@ -101,7 +101,7 @@ Focusing on the linear, log, and two predictor (linear and log) models, we built
 
 ```{r}
 all_data_preds <- all_data %>%
-  select(dataset, short_name, d_calc, d_var_calc, mean_age, unique_ID) %>%
+  select(dataset, short_name, d_calc, d_var_calc, mean_age, study_ID) %>%
   filter(complete.cases(.)) %>%
   mutate(lin_pred = predict(lin_lmer)) %>%
   mutate(log_pred = predict(log_lmer)) %>%
@@ -131,11 +131,11 @@ Overall this method looks pretty good. It seems like the linear predictor in the
 
 # Complex random effects structure (nested paper effects)
 
-We decided to expand our random effects structure to include paper (unique_ID) nested in meta-analysis (data set) to capture the fact that a given meta-analysis has a specific set of papers, and may have multiple entries from the same paper. Here we focused on the two predictor model. The simpler random effects model from above is repeated here for easy comparison. A Chi-squared test finds a significant difference between the models, with the model with the more complex random effects structure having a lower AIC.
+We decided to expand our random effects structure to include paper (study_ID) nested in meta-analysis (data set) to capture the fact that a given meta-analysis has a specific set of papers, and may have multiple entries from the same paper. Here we focused on the two predictor model. The simpler random effects model from above is repeated here for easy comparison. A Chi-squared test finds a significant difference between the models, with the model with the more complex random effects structure having a lower AIC.
 
 ```{r}
 lin_log_paper_lmer <- lmer(d_calc ~ mean_age + log(mean_age) + 
-                          (1 | dataset / unique_ID),
+                          (1 | dataset / study_ID),
                           weights = 1/d_var_calc, 
                           REML = F, data = all_data)
 
@@ -181,7 +181,7 @@ lin_log_slope_lmer <- lmer(d_calc ~ mean_age + log(mean_age) +
                           REML = F, data = all_data)
 
 lin_log_paper_slope_lmer <- lmer(d_calc ~ mean_age + log(mean_age) + 
-                          (log(mean_age)| dataset / unique_ID),
+                          (log(mean_age)| dataset / study_ID),
                           weights = 1/d_var_calc, 
                           REML = F, data = all_data)
 
@@ -245,12 +245,12 @@ To start we arbitrarily decided on two age groups, at least more than two months
 
 ```{r}
 multiage_data <- all_data_preds %>%
-  group_by(dataset, unique_ID) %>%
+  group_by(dataset, study_ID) %>%
   mutate(count_ages = length(unique(floor(mean_age/2)))) %>%
   filter(count_ages > 1)
 
 lin_log_paper_slope_multiage_lmer <- lmer(d_calc ~ mean_age + log(mean_age) + 
-                                     (log(mean_age) | dataset / unique_ID),
+                                     (log(mean_age) | dataset / study_ID),
                                      weights = 1/d_var_calc, 
                                      REML = F, data = multiage_data)
 
@@ -264,7 +264,7 @@ lin_log_paper_slope_multiage_preds <- predict(lin_log_paper_slope_multiage_lmer,
 
 multiage_data <- multiage_data %>%
   ungroup %>%
-  select(dataset, short_name, unique_ID, d_calc, mean_age, d_var_calc, lin_log_pred) %>%
+  select(dataset, short_name, study_ID, d_calc, mean_age, d_var_calc, lin_log_pred) %>%
   mutate(lin_log_paper_slope_multiage_pred = lin_log_paper_slope_multiage_preds)
 ```
 
@@ -289,12 +289,12 @@ We also did the same analysis, but further reducing the data set to only papers 
 
 ```{r}
 multiage_3_data <- all_data_preds %>%
-  group_by(dataset, unique_ID) %>%
+  group_by(dataset, study_ID) %>%
   mutate(count_ages = length(unique(floor(mean_age/2)))) %>%
   filter(count_ages > 2)
 
 lin_log_paper_slope_multiage_3_lmer <- lmer(d_calc ~ mean_age + log(mean_age) + 
-                                     (log(mean_age) | dataset / unique_ID),
+                                     (log(mean_age) | dataset / study_ID),
                                      weights = 1/d_var_calc, 
                                      REML = F, data = multiage_3_data)
 
@@ -308,7 +308,7 @@ lin_log_paper_slope_multiage_3_preds <- predict(lin_log_paper_slope_multiage_3_l
 
 multiage_3_data <- multiage_3_data %>%
   ungroup %>%
-  select(dataset, short_name, unique_ID, d_calc, mean_age, d_var_calc, lin_log_pred) %>%
+  select(dataset, short_name, study_ID, d_calc, mean_age, d_var_calc, lin_log_pred) %>%
   mutate(lin_log_paper_slope_multiage_3_pred = lin_log_paper_slope_multiage_3_preds)
 ```
 

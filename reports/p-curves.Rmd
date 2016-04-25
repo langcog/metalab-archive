@@ -39,7 +39,7 @@ Compute p-curves for each dataset.
 ```{r PlotEachDataSet}
 pc <- all_data %>%
   group_by(dataset) %>%
-  select(unique_ID, t, F, n_1, n_2, participant_design, d) %>%
+  select(study_ID, t, F, n_1, n_2, participant_design, d) %>%
   filter(!is.na(t)|!is.na(F)) %>%
   mutate(df2 = ifelse(participant_design == "between", (n_1 + n_2)-2, n_1-1),
          value = ifelse(is.na(t), F, t**2), # turn ts into Fs by squaring them

@@ -4,7 +4,7 @@
 # Required fields
 #----------------
 
-- field:        unique_ID
+- field:        study_ID
   description:  uniquely identifies a study
   type:         string
   format:       last name of first author, year, and letter if necessary
