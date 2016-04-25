@@ -94,6 +94,8 @@ tab_documentation <- tabItem(
   tabBox(width = "100%", status = "danger",
          tabPanel("Overview",
                   includeRmd("rmarkdown/overview.Rmd")),
+         tabPanel("Statistical Approach",
+                  includeRmd("rmarkdown/stats.Rmd")),
          tabPanel("Datasets",
                   includeRmd("rmarkdown/datasets.Rmd",
                              list("datasets" = datasets))),

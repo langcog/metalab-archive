@@ -1,0 +1,20 @@
+```{r include=FALSE, echo=FALSE}
+library(shiny)
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, cache = FALSE)
+```
+
+## Overview
+
+All analyses on the site are conducted with the [`metafor`](http://www.metafor-project.org/doku.php) package. 
+
+## Effect Size Computation
+
+Effect size computation is handled by a script, [`compute_es.R`](https://github.com/langcog/metalab/blob/master/scripts/compute_es.R).
+
+Several pre-existing MAs deal with special cases, and these are listed in the script. 
+
+Except where noted, formulas are from [Hedges & Olkin's textbook](http://www.amazon.com/Statistical-Methods-Meta-Analysis-Larry-Hedges/dp/0123363802). 
+
+## Statistical Models
+
+The visualizations page uses a standard random effects meta-analysis as the default, but allows several other models (all available in the `rma` function of `metafor`).
