@@ -43,3 +43,8 @@ body {
 .dataset-img {
   margin-top: 12px;
 }
+
+pre {
+  font-size: 11px;
+  font-family: Monaco, monospace;
+}

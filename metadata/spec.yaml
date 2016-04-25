@@ -302,27 +302,54 @@
   example:
   required:     no
 
-- field:        age_range
+- field:        age_range_1
   description:  difference between max age and min age of participants in days (1 month = 30.44 days; 1 year = 365.25 days)
   type:         numeric
   format:
   example:
   required:     no
 
-- field:        n_excluded
+- field:        age_range_2
+  description:  difference between max age and min age of participants in days (1 month = 30.44 days; 1 year = 365.25 days)
+  type:         numeric
+  format:
+  example:
+  required:     no
+
+- field:        n_excluded_1
   description:  number participants excluded for any reason
   type:         numeric
   format:
   example:
   required:     no
 
-- field:        gender
+- field:        n_excluded_2
+  description:  number participants excluded for any reason
+  type:         numeric
+  format:
+  example:
+  required:     no
+
+- field:        gender_1
   description:  proportion of female participants
   type:         numeric
   format:
   example:
   required:     no
 
+- field:        gender_2
+  description:  proportion of female participants
+  type:         numeric
+  format:
+  example:
+  required:     no
+
+- field:        num_trials
+  description:  proportion of female participants
+  type:         numeric
+  format:
+  example:
+  required:     no
 
 - field:        special_cases_measures
   description:  column to list variables for special cases of ES calculation
