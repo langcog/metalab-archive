@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd ..
+cd /home/ubuntu/metalab/
 rm -rf reports/out || exit 0;
 mkdir reports/out;
 
