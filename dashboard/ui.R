@@ -340,7 +340,7 @@ tab_power <- tabItem(
 
 report_tabs <- map(reports, function(report) {
   report_url <- sprintf(
-    "https://rawgit.com/langcog/metalab/gh-pages/reports/%s.html", report$file
+    "https://rawgit.com/langcog/metalab/gh-pages/%s.html", report$file
   )
   tabItem(
     tabName = report$file,
