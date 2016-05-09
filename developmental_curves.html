@@ -231,7 +231,7 @@ div.tocify {
 
 <h1 class="title">Developmental curve comparison</h1>
 <h4 class="author"><em>Page Piccinini and Michael Frank</em></h4>
-<h4 class="date"><em>This report was rendered on 2016-04-20 and will be automatically re-rendered nightly, reflecting any changes in the data or code.</em></h4>
+<h4 class="date"><em>This report was rendered on 2016-05-09 and will be automatically re-rendered nightly, reflecting any changes in the data or code.</em></h4>
 
 </div>
 
@@ -579,7 +579,7 @@ lin_log_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~
 </table>
 <p>Focusing on the linear, log, and two predictor (linear and log) models, we built predictions for all complete meta-analyses. The plot separated by meta-analysis is presented below. The linear and two predictor models are pretty similar, mainly being different at very early ages.</p>
 <pre class="sourceCode r"><code class="sourceCode r">all_data_preds &lt;-<span class="st"> </span>all_data %&gt;%
-<span class="st">  </span><span class="kw">select</span>(dataset, short_name, d_calc, d_var_calc, mean_age, unique_ID) %&gt;%
+<span class="st">  </span><span class="kw">select</span>(dataset, short_name, d_calc, d_var_calc, mean_age, study_ID) %&gt;%
 <span class="st">  </span><span class="kw">filter</span>(<span class="kw">complete.cases</span>(.)) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lin_pred =</span> <span class="kw">predict</span>(lin_lmer)) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">log_pred =</span> <span class="kw">predict</span>(log_lmer)) %&gt;%
@@ -589,9 +589,9 @@ lin_log_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~
 </div>
 <div id="complex-random-effects-structure-nested-paper-effects" class="section level1">
 <h1>Complex random effects structure (nested paper effects)</h1>
-<p>We decided to expand our random effects structure to include paper (unique_ID) nested in meta-analysis (data set) to capture the fact that a given meta-analysis has a specific set of papers, and may have multiple entries from the same paper. Here we focused on the two predictor model. The simpler random effects model from above is repeated here for easy comparison. A Chi-squared test finds a significant difference between the models, with the model with the more complex random effects structure having a lower AIC.</p>
+<p>We decided to expand our random effects structure to include paper (study_ID) nested in meta-analysis (data set) to capture the fact that a given meta-analysis has a specific set of papers, and may have multiple entries from the same paper. Here we focused on the two predictor model. The simpler random effects model from above is repeated here for easy comparison. A Chi-squared test finds a significant difference between the models, with the model with the more complex random effects structure having a lower AIC.</p>
 <pre class="sourceCode r"><code class="sourceCode r">lin_log_paper_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~<span class="st"> </span>mean_age +<span class="st"> </span><span class="kw">log</span>(mean_age) +<span class="st"> </span>
-<span class="st">                          </span>(<span class="dv">1</span> |<span class="st"> </span>dataset /<span class="st"> </span>unique_ID),
+<span class="st">                          </span>(<span class="dv">1</span> |<span class="st"> </span>dataset /<span class="st"> </span>study_ID),
                           <span class="dt">weights =</span> <span class="dv">1</span>/d_var_calc, 
                           <span class="dt">REML =</span> F, <span class="dt">data =</span> all_data)
 
@@ -713,7 +713,7 @@ all_data_preds &lt;-<span class="st"> </span>all_data_preds %&gt;%
                           <span class="dt">REML =</span> F, <span class="dt">data =</span> all_data)
 
 lin_log_paper_slope_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~<span class="st"> </span>mean_age +<span class="st"> </span><span class="kw">log</span>(mean_age) +<span class="st"> </span>
-<span class="st">                          </span>(<span class="kw">log</span>(mean_age)|<span class="st"> </span>dataset /<span class="st"> </span>unique_ID),
+<span class="st">                          </span>(<span class="kw">log</span>(mean_age)|<span class="st"> </span>dataset /<span class="st"> </span>study_ID),
                           <span class="dt">weights =</span> <span class="dv">1</span>/d_var_calc, 
                           <span class="dt">REML =</span> F, <span class="dt">data =</span> all_data)
 
@@ -1058,12 +1058,12 @@ all_data_preds &lt;-<span class="st"> </span>all_data_preds %&gt;%
 <h3>Two age groups</h3>
 <p>To start we arbitrarily decided on two age groups, at least more than two months apart. Below we build a new model only looking at data where papers had at least two age groups. The structure of the model is the same as the model with papers nested in meta-analysis and a random slope of mean age log transformed.</p>
 <pre class="sourceCode r"><code class="sourceCode r">multiage_data &lt;-<span class="st"> </span>all_data_preds %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(dataset, unique_ID) %&gt;%
+<span class="st">  </span><span class="kw">group_by</span>(dataset, study_ID) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">count_ages =</span> <span class="kw">length</span>(<span class="kw">unique</span>(<span class="kw">floor</span>(mean_age/<span class="dv">2</span>)))) %&gt;%
 <span class="st">  </span><span class="kw">filter</span>(count_ages &gt;<span class="st"> </span><span class="dv">1</span>)
 
 lin_log_paper_slope_multiage_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~<span class="st"> </span>mean_age +<span class="st"> </span><span class="kw">log</span>(mean_age) +<span class="st"> </span>
-<span class="st">                                     </span>(<span class="kw">log</span>(mean_age) |<span class="st"> </span>dataset /<span class="st"> </span>unique_ID),
+<span class="st">                                     </span>(<span class="kw">log</span>(mean_age) |<span class="st"> </span>dataset /<span class="st"> </span>study_ID),
                                      <span class="dt">weights =</span> <span class="dv">1</span>/d_var_calc, 
                                      <span class="dt">REML =</span> F, <span class="dt">data =</span> multiage_data)
 
@@ -1103,7 +1103,7 @@ lin_log_paper_slope_multiage_lmer &lt;-<span class="st"> </span><span class="kw"
 
 multiage_data &lt;-<span class="st"> </span>multiage_data %&gt;%
 <span class="st">  </span>ungroup %&gt;%
-<span class="st">  </span><span class="kw">select</span>(dataset, short_name, unique_ID, d_calc, mean_age, d_var_calc, lin_log_pred) %&gt;%
+<span class="st">  </span><span class="kw">select</span>(dataset, short_name, study_ID, d_calc, mean_age, d_var_calc, lin_log_pred) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lin_log_paper_slope_multiage_pred =</span> lin_log_paper_slope_multiage_preds)</code></pre>
 <p><img src="developmental_curves_files/figure-html/unnamed-chunk-14-1.png" /><!-- --></p>
 </div>
@@ -1111,12 +1111,12 @@ multiage_data &lt;-<span class="st"> </span>multiage_data %&gt;%
 <h3>Three age groups</h3>
 <p>We also did the same analysis, but further reducing the data set to only papers that included at least three different age groups.</p>
 <pre class="sourceCode r"><code class="sourceCode r">multiage_3_data &lt;-<span class="st"> </span>all_data_preds %&gt;%
-<span class="st">  </span><span class="kw">group_by</span>(dataset, unique_ID) %&gt;%
+<span class="st">  </span><span class="kw">group_by</span>(dataset, study_ID) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">count_ages =</span> <span class="kw">length</span>(<span class="kw">unique</span>(<span class="kw">floor</span>(mean_age/<span class="dv">2</span>)))) %&gt;%
 <span class="st">  </span><span class="kw">filter</span>(count_ages &gt;<span class="st"> </span><span class="dv">2</span>)
 
 lin_log_paper_slope_multiage_3_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~<span class="st"> </span>mean_age +<span class="st"> </span><span class="kw">log</span>(mean_age) +<span class="st"> </span>
-<span class="st">                                     </span>(<span class="kw">log</span>(mean_age) |<span class="st"> </span>dataset /<span class="st"> </span>unique_ID),
+<span class="st">                                     </span>(<span class="kw">log</span>(mean_age) |<span class="st"> </span>dataset /<span class="st"> </span>study_ID),
                                      <span class="dt">weights =</span> <span class="dv">1</span>/d_var_calc, 
                                      <span class="dt">REML =</span> F, <span class="dt">data =</span> multiage_3_data)
 
@@ -1156,7 +1156,7 @@ lin_log_paper_slope_multiage_3_lmer &lt;-<span class="st"> </span><span class="k
 
 multiage_3_data &lt;-<span class="st"> </span>multiage_3_data %&gt;%
 <span class="st">  </span>ungroup %&gt;%
-<span class="st">  </span><span class="kw">select</span>(dataset, short_name, unique_ID, d_calc, mean_age, d_var_calc, lin_log_pred) %&gt;%
+<span class="st">  </span><span class="kw">select</span>(dataset, short_name, study_ID, d_calc, mean_age, d_var_calc, lin_log_pred) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lin_log_paper_slope_multiage_3_pred =</span> lin_log_paper_slope_multiage_3_preds)</code></pre>
 <p><img src="developmental_curves_files/figure-html/unnamed-chunk-17-1.png" /><!-- --></p>
 </div>

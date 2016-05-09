@@ -5,3 +5,6 @@
 reports/*_cache/
 scripts/log/
 dashboard/rmarkdown/*.html
+*.RData
+dashboard/packrat
+*.Rout

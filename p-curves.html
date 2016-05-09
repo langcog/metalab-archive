@@ -231,7 +231,7 @@ div.tocify {
 
 <h1 class="title">P-Curves</h1>
 <h4 class="author"><em>Christina Bergmann</em></h4>
-<h4 class="date"><em>This report was rendered on 2016-04-20 and will be automatically re-rendered nightly, reflecting any changes in the data or code.</em></h4>
+<h4 class="date"><em>This report was rendered on 2016-05-09 and will be automatically re-rendered nightly, reflecting any changes in the data or code.</em></h4>
 
 </div>
 
@@ -253,7 +253,7 @@ div.tocify {
 <p>Compute p-curves for each dataset.</p>
 <pre class="sourceCode r"><code class="sourceCode r">pc &lt;-<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">group_by</span>(dataset) %&gt;%
-<span class="st">  </span><span class="kw">select</span>(unique_ID, t, F, n_1, n_2, participant_design, d) %&gt;%
+<span class="st">  </span><span class="kw">select</span>(study_ID, t, F, n_1, n_2, participant_design, d) %&gt;%
 <span class="st">  </span><span class="kw">filter</span>(!<span class="kw">is.na</span>(t)|!<span class="kw">is.na</span>(F)) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">df2 =</span> <span class="kw">ifelse</span>(participant_design ==<span class="st"> &quot;between&quot;</span>, (n_1 +<span class="st"> </span>n_2)-<span class="dv">2</span>, n_1<span class="dv">-1</span>),
          <span class="dt">value =</span> <span class="kw">ifelse</span>(<span class="kw">is.na</span>(t), F, t**<span class="dv">2</span>), <span class="co"># turn ts into Fs by squaring them</span>
