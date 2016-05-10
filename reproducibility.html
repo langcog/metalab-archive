@@ -311,7 +311,7 @@ counts =<span class="st"> </span>counts %&gt;%
        <span class="dt">axis.line =</span> <span class="kw">element_line</span>(<span class="dt">colour =</span> <span class="st">&quot;black&quot;</span>),
        <span class="dt">text =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">20</span>),
        <span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">30</span>, <span class="dt">hjust =</span> <span class="dv">1</span>))</code></pre></div>
-<p><img src="reproducibility_files/figure-html/unnamed-chunk-1-1.png" title="" alt="" width="1056" /> This analysis is in practice difficult because our many of our source MA’s include effect sizes that were included by the coders. Similarly, the proportion of coded gender in many cases reflects only that the coder chose not to code that, not that this information was not present. Nevertheless, this analysis gives us a good sense of the the proportion of papers that report means and standard deviations (about two-thirds).</p>
+<p><img src="/home/ubuntu/metalab/reports/out/reproducibility_files/figure-html/unnamed-chunk-1-1.png" title="" alt="" width="1056" /> This analysis is in practice difficult because our many of our source MA’s include effect sizes that were included by the coders. Similarly, the proportion of coded gender in many cases reflects only that the coder chose not to code that, not that this information was not present. Nevertheless, this analysis gives us a good sense of the the proportion of papers that report means and standard deviations (about two-thirds).</p>
 <p>By MA</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">counts =<span class="st"> </span>all_data %&gt;%
 <span class="st">            </span><span class="kw">group_by</span>(dataset) %&gt;%
@@ -358,7 +358,7 @@ counts =<span class="st"> </span>counts %&gt;%
         <span class="dt">text =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">20</span>),
         <span class="dt">strip.background  =</span> <span class="kw">element_blank</span>(), 
         <span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">30</span>, <span class="dt">hjust =</span> <span class="dv">1</span>))</code></pre></div>
-<p><img src="reproducibility_files/figure-html/unnamed-chunk-2-1.png" title="" alt="" width="960" /></p>
+<p><img src="/home/ubuntu/metalab/reports/out/reproducibility_files/figure-html/unnamed-chunk-2-1.png" title="" alt="" width="960" /></p>
 </div>
 <div id="sample-sizes-and-exclusions" class="section level1">
 <h1>Sample sizes and exclusions</h1>
@@ -378,7 +378,7 @@ counts =<span class="st"> </span>counts %&gt;%
 <span class="st">  </span><span class="kw">facet_wrap</span>(~dataset, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>) +
 <span class="st">  </span><span class="kw">theme_bw</span>() +
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre></div>
-<p><img src="reproducibility_files/figure-html/unnamed-chunk-3-1.png" title="" alt="" width="960" /></p>
+<p><img src="/home/ubuntu/metalab/reports/out/reproducibility_files/figure-html/unnamed-chunk-3-1.png" title="" alt="" width="960" /></p>
 </div>
 <div id="do-sample-sizes-vary-with-effect-sizes" class="section level2">
 <h2>Do sample sizes vary with effect sizes?</h2>
@@ -406,7 +406,7 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Residual effect size&quot;</span>) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">facet_wrap</span>(~dataset, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>) +
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre></div>
-<p><img src="reproducibility_files/figure-html/unnamed-chunk-5-1.png" title="" alt="" width="960" /></p>
+<p><img src="/home/ubuntu/metalab/reports/out/reproducibility_files/figure-html/unnamed-chunk-5-1.png" title="" alt="" width="960" /></p>
 <p>If sample size and effect sizes were appropriately coupled, we should expect sample to decrease as effect size increases. Across 3 meta-analyses, we find the opposite pattern: sample size increases with effect size. This suggest that researchers either are not prospectively planning their sample sizes based on effect size estimates.</p>
 </div>
 <div id="does-the-number-of-excluded-infants-affect-effect-sizes" class="section level2">
@@ -450,7 +450,7 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">theme_bw</span>() +<span class="st"> </span>
 <span class="st">  </span><span class="kw">facet_wrap</span>(~dataset, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>) +
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre></div>
-<p><img src="reproducibility_files/figure-html/unnamed-chunk-7-1.png" title="" alt="" width="960" /></p>
+<p><img src="/home/ubuntu/metalab/reports/out/reproducibility_files/figure-html/unnamed-chunk-7-1.png" title="" alt="" width="960" /></p>
 </div>
 <div id="does-proportion-excluded-vary-as-a-function-of-age" class="section level2">
 <h2>Does proportion excluded vary as a function of age?</h2>
@@ -465,7 +465,7 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">theme_bw</span>()  +<span class="st"> </span>
 <span class="st">  </span><span class="kw">facet_wrap</span>(~dataset, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>) +
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre></div>
-<p><img src="reproducibility_files/figure-html/Exclusions_nExcluded-1.png" title="" alt="" width="960" /></p>
+<p><img src="/home/ubuntu/metalab/reports/out/reproducibility_files/figure-html/Exclusions_nExcluded-1.png" title="" alt="" width="960" /></p>
 </div>
 </div>
 <div id="publication-bias" class="section level1">
@@ -484,7 +484,7 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">theme_bw</span>() +
 <span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;published year&quot;</span>) +
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre></div>
-<p><img src="reproducibility_files/figure-html/unnamed-chunk-8-1.png" title="" alt="" width="960" /> We see a bias of year here: Studies conducted early on in a literature tend to have larger effect sizes than later studies.</p>
+<p><img src="/home/ubuntu/metalab/reports/out/reproducibility_files/figure-html/unnamed-chunk-8-1.png" title="" alt="" width="960" /> We see a bias of year here: Studies conducted early on in a literature tend to have larger effect sizes than later studies.</p>
 </div>
 <div id="does-age-vary-as-a-function-of-year" class="section level2">
 <h2>Does age vary as a function of year?</h2>
@@ -495,7 +495,7 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">theme_bw</span>() +
 <span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;published year&quot;</span>)  +
 <span class="st">    </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre></div>
-<p><img src="reproducibility_files/figure-html/unnamed-chunk-9-1.png" title="" alt="" width="960" /> In some literatures, we see a trend toward looking for the phenomenon in younger children over time.</p>
+<p><img src="/home/ubuntu/metalab/reports/out/reproducibility_files/figure-html/unnamed-chunk-9-1.png" title="" alt="" width="960" /> In some literatures, we see a trend toward looking for the phenomenon in younger children over time.</p>
 </div>
 <div id="does-effect-size-vary-as-a-function-of-number-of-authors" class="section level2">
 <h2>Does effect size vary as a function of number of authors?</h2>
@@ -516,7 +516,7 @@ all_data %&gt;%
 <span class="st">  </span><span class="kw">facet_wrap</span>(~dataset, <span class="dt">scales =</span> <span class="st">&quot;free_y&quot;</span>) +
 <span class="st">  </span><span class="kw">theme_bw</span>()+
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre></div>
-<p><img src="reproducibility_files/figure-html/unnamed-chunk-10-1.png" title="" alt="" width="960" /></p>
+<p><img src="/home/ubuntu/metalab/reports/out/reproducibility_files/figure-html/unnamed-chunk-10-1.png" title="" alt="" width="960" /></p>
 </div>
 </div>
 <div id="individual-meta-analysis-power" class="section level1">
@@ -600,7 +600,7 @@ for (i in <span class="dv">1</span>:<span class="kw">length</span>(datasets)) {
   taf &lt;-<span class="st"> </span><span class="kw">trimfill</span>(res)
   <span class="kw">funnel</span>(taf, <span class="dt">main =</span> datasets[i])
 }</code></pre></div>
-<p><img src="reproducibility_files/figure-html/Trim%20and%20Fill-1.png" title="" alt="" width="672" /><img src="reproducibility_files/figure-html/Trim%20and%20Fill-2.png" title="" alt="" width="672" /><img src="reproducibility_files/figure-html/Trim%20and%20Fill-3.png" title="" alt="" width="672" /><img src="reproducibility_files/figure-html/Trim%20and%20Fill-4.png" title="" alt="" width="672" /><img src="reproducibility_files/figure-html/Trim%20and%20Fill-5.png" title="" alt="" width="672" /><img src="reproducibility_files/figure-html/Trim%20and%20Fill-6.png" title="" alt="" width="672" /><img src="reproducibility_files/figure-html/Trim%20and%20Fill-7.png" title="" alt="" width="672" /><img src="reproducibility_files/figure-html/Trim%20and%20Fill-8.png" title="" alt="" width="672" /><img src="reproducibility_files/figure-html/Trim%20and%20Fill-9.png" title="" alt="" width="672" /><img src="reproducibility_files/figure-html/Trim%20and%20Fill-10.png" title="" alt="" width="672" /><img src="reproducibility_files/figure-html/Trim%20and%20Fill-11.png" title="" alt="" width="672" /></p>
+<p><img src="/home/ubuntu/metalab/reports/out/reproducibility_files/figure-html/Trim and Fill-1.png" title="" alt="" width="672" /><img src="/home/ubuntu/metalab/reports/out/reproducibility_files/figure-html/Trim and Fill-2.png" title="" alt="" width="672" /><img src="/home/ubuntu/metalab/reports/out/reproducibility_files/figure-html/Trim and Fill-3.png" title="" alt="" width="672" /><img src="/home/ubuntu/metalab/reports/out/reproducibility_files/figure-html/Trim and Fill-4.png" title="" alt="" width="672" /><img src="/home/ubuntu/metalab/reports/out/reproducibility_files/figure-html/Trim and Fill-5.png" title="" alt="" width="672" /><img src="/home/ubuntu/metalab/reports/out/reproducibility_files/figure-html/Trim and Fill-6.png" title="" alt="" width="672" /><img src="/home/ubuntu/metalab/reports/out/reproducibility_files/figure-html/Trim and Fill-7.png" title="" alt="" width="672" /><img src="/home/ubuntu/metalab/reports/out/reproducibility_files/figure-html/Trim and Fill-8.png" title="" alt="" width="672" /><img src="/home/ubuntu/metalab/reports/out/reproducibility_files/figure-html/Trim and Fill-9.png" title="" alt="" width="672" /><img src="/home/ubuntu/metalab/reports/out/reproducibility_files/figure-html/Trim and Fill-10.png" title="" alt="" width="672" /><img src="/home/ubuntu/metalab/reports/out/reproducibility_files/figure-html/Trim and Fill-11.png" title="" alt="" width="672" /></p>
 </div>
 
 
