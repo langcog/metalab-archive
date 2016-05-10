@@ -27,24 +27,41 @@
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
+div.sourceCode { overflow-x: auto; }
 table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
   margin: 0; padding: 0; vertical-align: baseline; border: none; }
 table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
 td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
 td.sourceCode { padding-left: 5px; }
 pre, code { background-color: #f8f8f8; }
-code > span.kw { color: #204a87; font-weight: bold; }
-code > span.dt { color: #204a87; }
-code > span.dv { color: #0000cf; }
-code > span.bn { color: #0000cf; }
-code > span.fl { color: #0000cf; }
-code > span.ch { color: #4e9a06; }
-code > span.st { color: #4e9a06; }
-code > span.co { color: #8f5902; font-style: italic; }
-code > span.ot { color: #8f5902; }
-code > span.al { color: #ef2929; }
-code > span.fu { color: #000000; }
-code > span.er { font-weight: bold; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
 div.sourceCode {
   overflow-x: visible;
 }
@@ -77,6 +94,9 @@ h5 {
 }
 h6 {
   font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
 }
 </style>
 
@@ -131,6 +151,12 @@ $(document).ready(function () {
 
 <script>
 $(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
     // establish options
     var options = {
       selectors: "h1,h2,h3",
@@ -139,7 +165,7 @@ $(document).ready(function ()  {
       hashGenerator: function (text) {
         return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
       },
-      ignoreSelector: "h1.title, .toc-ignore",
+      ignoreSelector: ".toc-ignore",
       scrollTo: 0
     };
     options.showAndHide = true;
@@ -221,7 +247,7 @@ div.tocify {
 <div class="fluid-row" id="header">
 
 <div class="btn-group pull-right">
-<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="text-muted">Code</span> <span class="text-muted caret"></span></button>
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
 <ul class="dropdown-menu" style="min-width: 50px;">
 <li><a id="rmd-show-all-code" href="#">Show All</a></li>
 <li><a id="rmd-hide-all-code" href="#">Hide All</a></li>
@@ -229,9 +255,9 @@ div.tocify {
 </div>
 
 
-<h1 class="title">Developmental curve comparison</h1>
+<h1 class="title toc-ignore">Developmental curve comparison</h1>
 <h4 class="author"><em>Page Piccinini and Michael Frank</em></h4>
-<h4 class="date"><em>This report was rendered on 2016-05-09 and will be automatically re-rendered nightly, reflecting any changes in the data or code.</em></h4>
+<h4 class="date"><em>This report was rendered on 2016-05-10 and will be automatically re-rendered nightly, reflecting any changes in the data or code.</em></h4>
 
 </div>
 
@@ -249,9 +275,9 @@ div.tocify {
 <div id="simple-random-effects-structure" class="section level1">
 <h1>Simple random effects structure</h1>
 <p>Below is our data set separated by meta-analysis with four curve types: 1) linear, 2) logarithmic, 3) quadratic, and 4) both linear and logarithmic predictors.</p>
-<p><img src="developmental_curves_files/figure-html/unnamed-chunk-2-1.png" /><!-- --></p>
+<p><img src="developmental_curves_files/figure-html/unnamed-chunk-2-1.png" title="" alt="" width="672" /></p>
 <p>We ran mixed effects regressions where meta-analysis (data set) was included as a random intercept for our four models. We then ran Chi-squared tests to compare the different models to one another. Model comparison found the quadratic model to be a better fit than the linear model and the logarithmic model, but no difference between the linear and logarithmic model. The two predictor model (linear and log) also outperformed both the single predictor linear model and the single predictor logarithmic model.</p>
-<pre class="sourceCode r"><code class="sourceCode r">lin_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~<span class="st"> </span>mean_age +<span class="st"> </span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lin_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~<span class="st"> </span>mean_age +<span class="st"> </span>
 <span class="st">                </span>(<span class="dv">1</span> |<span class="st"> </span>dataset), 
                 <span class="dt">weights =</span> <span class="dv">1</span>/d_var_calc, 
                 <span class="dt">REML =</span> F, <span class="dt">data =</span> all_data)
@@ -271,7 +297,7 @@ lin_log_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~
                     <span class="dt">weights =</span> <span class="dv">1</span>/d_var_calc, 
                     <span class="dt">REML =</span> F, <span class="dt">data =</span> all_data)
 
-<span class="kw">kable</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(lin_lmer)))</code></pre>
+<span class="kw">kable</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(lin_lmer)))</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -296,7 +322,7 @@ lin_log_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~
 </tr>
 </tbody>
 </table>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(log_lmer)))</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(log_lmer)))</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -321,7 +347,7 @@ lin_log_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~
 </tr>
 </tbody>
 </table>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(quad_lmer)))</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(quad_lmer)))</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -346,7 +372,7 @@ lin_log_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~
 </tr>
 </tbody>
 </table>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(lin_log_lmer)))</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(lin_log_lmer)))</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -377,7 +403,7 @@ lin_log_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~
 </tr>
 </tbody>
 </table>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">anova</span>(lin_lmer, log_lmer))</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">anova</span>(lin_lmer, log_lmer))</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -417,7 +443,7 @@ lin_log_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~
 </tr>
 </tbody>
 </table>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">anova</span>(lin_lmer, quad_lmer))</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">anova</span>(lin_lmer, quad_lmer))</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -457,7 +483,7 @@ lin_log_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~
 </tr>
 </tbody>
 </table>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">anova</span>(log_lmer, quad_lmer))</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">anova</span>(log_lmer, quad_lmer))</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -497,7 +523,7 @@ lin_log_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~
 </tr>
 </tbody>
 </table>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">anova</span>(lin_lmer, lin_log_lmer))</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">anova</span>(lin_lmer, lin_log_lmer))</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -537,7 +563,7 @@ lin_log_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~
 </tr>
 </tbody>
 </table>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">anova</span>(log_lmer, lin_log_lmer))</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">anova</span>(log_lmer, lin_log_lmer))</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -578,24 +604,24 @@ lin_log_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~
 </tbody>
 </table>
 <p>Focusing on the linear, log, and two predictor (linear and log) models, we built predictions for all complete meta-analyses. The plot separated by meta-analysis is presented below. The linear and two predictor models are pretty similar, mainly being different at very early ages.</p>
-<pre class="sourceCode r"><code class="sourceCode r">all_data_preds &lt;-<span class="st"> </span>all_data %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">all_data_preds &lt;-<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">select</span>(dataset, short_name, d_calc, d_var_calc, mean_age, study_ID) %&gt;%
 <span class="st">  </span><span class="kw">filter</span>(<span class="kw">complete.cases</span>(.)) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lin_pred =</span> <span class="kw">predict</span>(lin_lmer)) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">log_pred =</span> <span class="kw">predict</span>(log_lmer)) %&gt;%
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lin_log_pred =</span> <span class="kw">predict</span>(lin_log_lmer))</code></pre>
-<p><img src="developmental_curves_files/figure-html/unnamed-chunk-5-1.png" /><!-- --></p>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lin_log_pred =</span> <span class="kw">predict</span>(lin_log_lmer))</code></pre></div>
+<p><img src="developmental_curves_files/figure-html/unnamed-chunk-5-1.png" title="" alt="" width="672" /></p>
 <p>Overall this method looks pretty good. It seems like the linear predictor in the two predictor model is smoothing the logs at the edges, and the random effects are working to capture cross data set variability.</p>
 </div>
 <div id="complex-random-effects-structure-nested-paper-effects" class="section level1">
 <h1>Complex random effects structure (nested paper effects)</h1>
 <p>We decided to expand our random effects structure to include paper (study_ID) nested in meta-analysis (data set) to capture the fact that a given meta-analysis has a specific set of papers, and may have multiple entries from the same paper. Here we focused on the two predictor model. The simpler random effects model from above is repeated here for easy comparison. A Chi-squared test finds a significant difference between the models, with the model with the more complex random effects structure having a lower AIC.</p>
-<pre class="sourceCode r"><code class="sourceCode r">lin_log_paper_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~<span class="st"> </span>mean_age +<span class="st"> </span><span class="kw">log</span>(mean_age) +<span class="st"> </span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lin_log_paper_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~<span class="st"> </span>mean_age +<span class="st"> </span><span class="kw">log</span>(mean_age) +<span class="st"> </span>
 <span class="st">                          </span>(<span class="dv">1</span> |<span class="st"> </span>dataset /<span class="st"> </span>study_ID),
                           <span class="dt">weights =</span> <span class="dv">1</span>/d_var_calc, 
                           <span class="dt">REML =</span> F, <span class="dt">data =</span> all_data)
 
-<span class="kw">kable</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(lin_log_paper_lmer)))</code></pre>
+<span class="kw">kable</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(lin_log_paper_lmer)))</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -626,7 +652,7 @@ lin_log_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~
 </tr>
 </tbody>
 </table>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(lin_log_lmer)))</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(lin_log_lmer)))</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -657,7 +683,7 @@ lin_log_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~
 </tr>
 </tbody>
 </table>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">anova</span>(lin_log_lmer, lin_log_paper_lmer))</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">anova</span>(lin_log_lmer, lin_log_paper_lmer))</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -698,16 +724,16 @@ lin_log_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~
 </tbody>
 </table>
 <p>We then predicted from this new, more complex model and compare it to the model without the nested paper random effects structure. Initial testing found that including the nested random effect in the predict algorithm led to massive overfitting, so just the simple random effects structure was used to compute predictions. Below is the figure comparing the two curves. The curves are very similar, suggesting that while adding the nesting of paper does significantly improve the model, visually the difference is very small.</p>
-<pre class="sourceCode r"><code class="sourceCode r">lin_log_paper_preds &lt;-<span class="st"> </span><span class="kw">predict</span>(lin_log_paper_lmer, <span class="dt">re.form =</span> ~<span class="st"> </span>(<span class="dv">1</span> |<span class="st"> </span>dataset))
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lin_log_paper_preds &lt;-<span class="st"> </span><span class="kw">predict</span>(lin_log_paper_lmer, <span class="dt">re.form =</span> ~<span class="st"> </span>(<span class="dv">1</span> |<span class="st"> </span>dataset))
 
 all_data_preds &lt;-<span class="st"> </span>all_data_preds %&gt;%
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lin_log_paper_pred =</span> lin_log_paper_preds)</code></pre>
-<p><img src="developmental_curves_files/figure-html/unnamed-chunk-8-1.png" /><!-- --></p>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lin_log_paper_pred =</span> lin_log_paper_preds)</code></pre></div>
+<p><img src="developmental_curves_files/figure-html/unnamed-chunk-8-1.png" title="" alt="" width="672" /></p>
 </div>
 <div id="complex-random-effects-structure-random-slope" class="section level1">
 <h1>Complex random effects structure (random slope)</h1>
 <p>Another way to make the random effects structure more complex is to add a random slope to the model. Two more models were built with a random slope by mean age log transformed, one without the nesting of paper, and one with the nesting of paper. Summaries of the new models with the random slope and the previous models without the random slope are below. Model comparison found that the model with nested structure and the slope was better than the simplest model (no nesting, no slope). The model with both the nested structure and the slope was also better than than the model with only the slope. Based on this it appears that the best model is one that includes both the nested random effects structure and a random slope of mean age log transformed.</p>
-<pre class="sourceCode r"><code class="sourceCode r">lin_log_slope_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~<span class="st"> </span>mean_age +<span class="st"> </span><span class="kw">log</span>(mean_age) +<span class="st"> </span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lin_log_slope_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~<span class="st"> </span>mean_age +<span class="st"> </span><span class="kw">log</span>(mean_age) +<span class="st"> </span>
 <span class="st">                          </span>(<span class="kw">log</span>(mean_age)|<span class="st"> </span>dataset),
                           <span class="dt">weights =</span> <span class="dv">1</span>/d_var_calc, 
                           <span class="dt">REML =</span> F, <span class="dt">data =</span> all_data)
@@ -717,7 +743,7 @@ lin_log_paper_slope_lmer &lt;-<span class="st"> </span><span class="kw">lmer</sp
                           <span class="dt">weights =</span> <span class="dv">1</span>/d_var_calc, 
                           <span class="dt">REML =</span> F, <span class="dt">data =</span> all_data)
 
-<span class="kw">kable</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(lin_log_slope_lmer)))</code></pre>
+<span class="kw">kable</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(lin_log_slope_lmer)))</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -748,7 +774,7 @@ lin_log_paper_slope_lmer &lt;-<span class="st"> </span><span class="kw">lmer</sp
 </tr>
 </tbody>
 </table>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(lin_log_paper_slope_lmer)))</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(lin_log_paper_slope_lmer)))</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -761,25 +787,25 @@ lin_log_paper_slope_lmer &lt;-<span class="st"> </span><span class="kw">lmer</sp
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">-0.4479072</td>
-<td align="right">1.6670579</td>
-<td align="right">-0.2686813</td>
+<td align="right">-0.4479036</td>
+<td align="right">1.6670542</td>
+<td align="right">-0.2686797</td>
 </tr>
 <tr class="even">
 <td align="left">mean_age</td>
 <td align="right">0.0014452</td>
 <td align="right">0.0005692</td>
-<td align="right">2.5388931</td>
+<td align="right">2.5388942</td>
 </tr>
 <tr class="odd">
 <td align="left">log(mean_age)</td>
-<td align="right">0.0480570</td>
-<td align="right">0.3059570</td>
-<td align="right">0.1570711</td>
+<td align="right">0.0480563</td>
+<td align="right">0.3059563</td>
+<td align="right">0.1570693</td>
 </tr>
 </tbody>
 </table>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(lin_log_lmer)))</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(lin_log_lmer)))</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -810,7 +836,7 @@ lin_log_paper_slope_lmer &lt;-<span class="st"> </span><span class="kw">lmer</sp
 </tr>
 </tbody>
 </table>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(lin_log_paper_lmer)))</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(lin_log_paper_lmer)))</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -841,7 +867,7 @@ lin_log_paper_slope_lmer &lt;-<span class="st"> </span><span class="kw">lmer</sp
 </tr>
 </tbody>
 </table>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">anova</span>(lin_log_lmer, lin_log_slope_lmer))</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">anova</span>(lin_log_lmer, lin_log_slope_lmer))</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -881,7 +907,7 @@ lin_log_paper_slope_lmer &lt;-<span class="st"> </span><span class="kw">lmer</sp
 </tr>
 </tbody>
 </table>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">anova</span>(lin_log_lmer, lin_log_paper_slope_lmer))</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">anova</span>(lin_log_lmer, lin_log_paper_slope_lmer))</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -921,7 +947,7 @@ lin_log_paper_slope_lmer &lt;-<span class="st"> </span><span class="kw">lmer</sp
 </tr>
 </tbody>
 </table>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">anova</span>(lin_log_paper_lmer, lin_log_slope_lmer))</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">anova</span>(lin_log_paper_lmer, lin_log_slope_lmer))</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -961,7 +987,7 @@ lin_log_paper_slope_lmer &lt;-<span class="st"> </span><span class="kw">lmer</sp
 </tr>
 </tbody>
 </table>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">anova</span>(lin_log_paper_lmer, lin_log_paper_slope_lmer))</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">anova</span>(lin_log_paper_lmer, lin_log_paper_slope_lmer))</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1001,7 +1027,7 @@ lin_log_paper_slope_lmer &lt;-<span class="st"> </span><span class="kw">lmer</sp
 </tr>
 </tbody>
 </table>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">anova</span>(lin_log_slope_lmer, lin_log_paper_slope_lmer))</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(<span class="kw">anova</span>(lin_log_slope_lmer, lin_log_paper_slope_lmer))</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1042,14 +1068,14 @@ lin_log_paper_slope_lmer &lt;-<span class="st"> </span><span class="kw">lmer</sp
 </tbody>
 </table>
 <p>As before, predictions were built for the new models and plotted on the data. Overall the models do look pretty similar in terms of their predicted fit of the data.</p>
-<pre class="sourceCode r"><code class="sourceCode r">lin_log_slope_preds &lt;-<span class="st"> </span><span class="kw">predict</span>(lin_log_slope_lmer, <span class="dt">re.form =</span> ~<span class="st"> </span>(<span class="kw">log</span>(mean_age) |<span class="st"> </span>dataset))
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lin_log_slope_preds &lt;-<span class="st"> </span><span class="kw">predict</span>(lin_log_slope_lmer, <span class="dt">re.form =</span> ~<span class="st"> </span>(<span class="kw">log</span>(mean_age) |<span class="st"> </span>dataset))
 lin_log_paper_slope_preds &lt;-<span class="st"> </span><span class="kw">predict</span>(lin_log_paper_slope_lmer, <span class="dt">re.form =</span> ~<span class="st"> </span>(<span class="kw">log</span>(mean_age) |<span class="st"> </span>dataset))
 
 
 all_data_preds &lt;-<span class="st"> </span>all_data_preds %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lin_log_slope_pred =</span> lin_log_slope_preds) %&gt;%
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lin_log_paper_slope_pred =</span> lin_log_paper_slope_preds)</code></pre>
-<p><img src="developmental_curves_files/figure-html/unnamed-chunk-11-1.png" /><!-- --></p>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lin_log_paper_slope_pred =</span> lin_log_paper_slope_preds)</code></pre></div>
+<p><img src="developmental_curves_files/figure-html/unnamed-chunk-11-1.png" title="" alt="" width="672" /></p>
 </div>
 <div id="subset-to-only-those-papers-with-multiple-ages" class="section level1">
 <h1>Subset to only those papers with multiple ages</h1>
@@ -1057,7 +1083,7 @@ all_data_preds &lt;-<span class="st"> </span>all_data_preds %&gt;%
 <div id="two-age-groups" class="section level3">
 <h3>Two age groups</h3>
 <p>To start we arbitrarily decided on two age groups, at least more than two months apart. Below we build a new model only looking at data where papers had at least two age groups. The structure of the model is the same as the model with papers nested in meta-analysis and a random slope of mean age log transformed.</p>
-<pre class="sourceCode r"><code class="sourceCode r">multiage_data &lt;-<span class="st"> </span>all_data_preds %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">multiage_data &lt;-<span class="st"> </span>all_data_preds %&gt;%
 <span class="st">  </span><span class="kw">group_by</span>(dataset, study_ID) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">count_ages =</span> <span class="kw">length</span>(<span class="kw">unique</span>(<span class="kw">floor</span>(mean_age/<span class="dv">2</span>)))) %&gt;%
 <span class="st">  </span><span class="kw">filter</span>(count_ages &gt;<span class="st"> </span><span class="dv">1</span>)
@@ -1067,7 +1093,7 @@ lin_log_paper_slope_multiage_lmer &lt;-<span class="st"> </span><span class="kw"
                                      <span class="dt">weights =</span> <span class="dv">1</span>/d_var_calc, 
                                      <span class="dt">REML =</span> F, <span class="dt">data =</span> multiage_data)
 
-<span class="kw">kable</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(lin_log_paper_slope_multiage_lmer)))</code></pre>
+<span class="kw">kable</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(lin_log_paper_slope_multiage_lmer)))</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1080,37 +1106,37 @@ lin_log_paper_slope_multiage_lmer &lt;-<span class="st"> </span><span class="kw"
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">-0.0943659</td>
-<td align="right">1.7166935</td>
-<td align="right">-0.0549696</td>
+<td align="right">-0.0942701</td>
+<td align="right">1.7166388</td>
+<td align="right">-0.0549155</td>
 </tr>
 <tr class="even">
 <td align="left">mean_age</td>
-<td align="right">0.0020190</td>
+<td align="right">0.0020191</td>
 <td align="right">0.0006754</td>
-<td align="right">2.9893771</td>
+<td align="right">2.9894468</td>
 </tr>
 <tr class="odd">
 <td align="left">log(mean_age)</td>
-<td align="right">-0.0581718</td>
-<td align="right">0.3195886</td>
-<td align="right">-0.1820208</td>
+<td align="right">-0.0581898</td>
+<td align="right">0.3195798</td>
+<td align="right">-0.1820822</td>
 </tr>
 </tbody>
 </table>
 <p>Predictions were calculated for the new model and visually compared to the simple model on the full data set with no nested random effects and no random slope. The plot below suggests that for this reduced data set, the addition of the nested random effects and random slope does differ greatly from the simpler model.</p>
-<pre class="sourceCode r"><code class="sourceCode r">lin_log_paper_slope_multiage_preds &lt;-<span class="st"> </span><span class="kw">predict</span>(lin_log_paper_slope_multiage_lmer, <span class="dt">re.form =</span> ~<span class="st"> </span>(<span class="kw">log</span>(mean_age)|<span class="st"> </span>dataset))
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lin_log_paper_slope_multiage_preds &lt;-<span class="st"> </span><span class="kw">predict</span>(lin_log_paper_slope_multiage_lmer, <span class="dt">re.form =</span> ~<span class="st"> </span>(<span class="kw">log</span>(mean_age)|<span class="st"> </span>dataset))
 
 multiage_data &lt;-<span class="st"> </span>multiage_data %&gt;%
 <span class="st">  </span>ungroup %&gt;%
 <span class="st">  </span><span class="kw">select</span>(dataset, short_name, study_ID, d_calc, mean_age, d_var_calc, lin_log_pred) %&gt;%
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lin_log_paper_slope_multiage_pred =</span> lin_log_paper_slope_multiage_preds)</code></pre>
-<p><img src="developmental_curves_files/figure-html/unnamed-chunk-14-1.png" /><!-- --></p>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lin_log_paper_slope_multiage_pred =</span> lin_log_paper_slope_multiage_preds)</code></pre></div>
+<p><img src="developmental_curves_files/figure-html/unnamed-chunk-14-1.png" title="" alt="" width="672" /></p>
 </div>
 <div id="three-age-groups" class="section level3">
 <h3>Three age groups</h3>
 <p>We also did the same analysis, but further reducing the data set to only papers that included at least three different age groups.</p>
-<pre class="sourceCode r"><code class="sourceCode r">multiage_3_data &lt;-<span class="st"> </span>all_data_preds %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">multiage_3_data &lt;-<span class="st"> </span>all_data_preds %&gt;%
 <span class="st">  </span><span class="kw">group_by</span>(dataset, study_ID) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">count_ages =</span> <span class="kw">length</span>(<span class="kw">unique</span>(<span class="kw">floor</span>(mean_age/<span class="dv">2</span>)))) %&gt;%
 <span class="st">  </span><span class="kw">filter</span>(count_ages &gt;<span class="st"> </span><span class="dv">2</span>)
@@ -1120,7 +1146,7 @@ lin_log_paper_slope_multiage_3_lmer &lt;-<span class="st"> </span><span class="k
                                      <span class="dt">weights =</span> <span class="dv">1</span>/d_var_calc, 
                                      <span class="dt">REML =</span> F, <span class="dt">data =</span> multiage_3_data)
 
-<span class="kw">kable</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(lin_log_paper_slope_multiage_3_lmer)))</code></pre>
+<span class="kw">kable</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(lin_log_paper_slope_multiage_3_lmer)))</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1133,32 +1159,32 @@ lin_log_paper_slope_multiage_3_lmer &lt;-<span class="st"> </span><span class="k
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">0.9667988</td>
-<td align="right">2.0901450</td>
-<td align="right">0.4625510</td>
+<td align="right">0.9667332</td>
+<td align="right">2.0902180</td>
+<td align="right">0.4625035</td>
 </tr>
 <tr class="even">
 <td align="left">mean_age</td>
 <td align="right">0.0029846</td>
 <td align="right">0.0007705</td>
-<td align="right">3.8735383</td>
+<td align="right">3.8734947</td>
 </tr>
 <tr class="odd">
 <td align="left">log(mean_age)</td>
-<td align="right">-0.2973990</td>
-<td align="right">0.3907472</td>
-<td align="right">-0.7611035</td>
+<td align="right">-0.2973866</td>
+<td align="right">0.3907592</td>
+<td align="right">-0.7610482</td>
 </tr>
 </tbody>
 </table>
 <p>Predictions were calculated for the new model and visually compared to the simple model on the full data set with no nested random effects and no random slope. The plot below suggests that for this further reduced data set, the difference becomes the two models becomes even more apparent.</p>
-<pre class="sourceCode r"><code class="sourceCode r">lin_log_paper_slope_multiage_3_preds &lt;-<span class="st"> </span><span class="kw">predict</span>(lin_log_paper_slope_multiage_3_lmer, <span class="dt">re.form =</span> ~<span class="st"> </span>(<span class="kw">log</span>(mean_age)|<span class="st"> </span>dataset))
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lin_log_paper_slope_multiage_3_preds &lt;-<span class="st"> </span><span class="kw">predict</span>(lin_log_paper_slope_multiage_3_lmer, <span class="dt">re.form =</span> ~<span class="st"> </span>(<span class="kw">log</span>(mean_age)|<span class="st"> </span>dataset))
 
 multiage_3_data &lt;-<span class="st"> </span>multiage_3_data %&gt;%
 <span class="st">  </span>ungroup %&gt;%
 <span class="st">  </span><span class="kw">select</span>(dataset, short_name, study_ID, d_calc, mean_age, d_var_calc, lin_log_pred) %&gt;%
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lin_log_paper_slope_multiage_3_pred =</span> lin_log_paper_slope_multiage_3_preds)</code></pre>
-<p><img src="developmental_curves_files/figure-html/unnamed-chunk-17-1.png" /><!-- --></p>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lin_log_paper_slope_multiage_3_pred =</span> lin_log_paper_slope_multiage_3_preds)</code></pre></div>
+<p><img src="developmental_curves_files/figure-html/unnamed-chunk-17-1.png" title="" alt="" width="672" /></p>
 </div>
 </div>
 <div id="conclusions" class="section level1">

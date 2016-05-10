@@ -27,24 +27,41 @@
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
+div.sourceCode { overflow-x: auto; }
 table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
   margin: 0; padding: 0; vertical-align: baseline; border: none; }
 table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
 td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
 td.sourceCode { padding-left: 5px; }
 pre, code { background-color: #f8f8f8; }
-code > span.kw { color: #204a87; font-weight: bold; }
-code > span.dt { color: #204a87; }
-code > span.dv { color: #0000cf; }
-code > span.bn { color: #0000cf; }
-code > span.fl { color: #0000cf; }
-code > span.ch { color: #4e9a06; }
-code > span.st { color: #4e9a06; }
-code > span.co { color: #8f5902; font-style: italic; }
-code > span.ot { color: #8f5902; }
-code > span.al { color: #ef2929; }
-code > span.fu { color: #000000; }
-code > span.er { font-weight: bold; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
 div.sourceCode {
   overflow-x: visible;
 }
@@ -77,6 +94,9 @@ h5 {
 }
 h6 {
   font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
 }
 </style>
 
@@ -131,6 +151,12 @@ $(document).ready(function () {
 
 <script>
 $(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
     // establish options
     var options = {
       selectors: "h1,h2,h3",
@@ -139,7 +165,7 @@ $(document).ready(function ()  {
       hashGenerator: function (text) {
         return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
       },
-      ignoreSelector: "h1.title, .toc-ignore",
+      ignoreSelector: ".toc-ignore",
       scrollTo: 0
     };
     options.showAndHide = true;
@@ -221,7 +247,7 @@ div.tocify {
 <div class="fluid-row" id="header">
 
 <div class="btn-group pull-right">
-<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="text-muted">Code</span> <span class="text-muted caret"></span></button>
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
 <ul class="dropdown-menu" style="min-width: 50px;">
 <li><a id="rmd-show-all-code" href="#">Show All</a></li>
 <li><a id="rmd-hide-all-code" href="#">Hide All</a></li>
@@ -229,9 +255,9 @@ div.tocify {
 </div>
 
 
-<h1 class="title">Reproducibility Analyses</h1>
+<h1 class="title toc-ignore">Reproducibility Analyses</h1>
 <h4 class="author"><em>Molly Lewis and Christina Bergmann</em></h4>
-<h4 class="date"><em>This report was rendered on 2016-05-09 and will be automatically re-rendered nightly, reflecting any changes in the data or code.</em></h4>
+<h4 class="date"><em>This report was rendered on 2016-05-10 and will be automatically re-rendered nightly, reflecting any changes in the data or code.</em></h4>
 
 </div>
 
@@ -243,7 +269,7 @@ div.tocify {
 <div id="data-availabilityreporting-standards" class="section level1">
 <h1>Data availability/reporting standards</h1>
 <p>An important component of reproducbility is complete description of data in published report. This is critical both for evaluating an individual study, but also for the purposes of a cumulative science (e.g. meta-analysis). Here we explore the extent to which papers report desired statistics such as test-statistics mean and standard deviation, effect sizes and test statistics.</p>
-<pre class="sourceCode r"><code class="sourceCode r">counts =<span class="st"> </span>all_data %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">counts =<span class="st"> </span>all_data %&gt;%
 <span class="st">            </span><span class="kw">summarise</span>(<span class="dt">test_statistic =</span> <span class="kw">sum</span>(!<span class="kw">is.na</span>(t) |<span class="st"> </span>!<span class="kw">is.na</span>(F) |<span class="st"> </span>!<span class="kw">is.na</span>(r)),
                       <span class="dt">means =</span> <span class="kw">sum</span>(!<span class="kw">is.na</span>(x_1)),
                       <span class="dt">SD =</span> <span class="kw">sum</span>(!<span class="kw">is.na</span>(SD_1)),
@@ -284,10 +310,10 @@ counts =<span class="st"> </span>counts %&gt;%
         <span class="dt">panel.grid.minor =</span> <span class="kw">element_blank</span>(),
        <span class="dt">axis.line =</span> <span class="kw">element_line</span>(<span class="dt">colour =</span> <span class="st">&quot;black&quot;</span>),
        <span class="dt">text =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">20</span>),
-       <span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">30</span>, <span class="dt">hjust =</span> <span class="dv">1</span>))</code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/reproducibility_files/figure-html/unnamed-chunk-1-1.png" /><!-- --> This analysis is in practice difficult because our many of our source MA’s include effect sizes that were included by the coders. Similarly, the proportion of coded gender in many cases reflects only that the coder chose not to code that, not that this information was not present. Nevertheless, this analysis gives us a good sense of the the proportion of papers that report means and standard deviations (about two-thirds).</p>
+       <span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">30</span>, <span class="dt">hjust =</span> <span class="dv">1</span>))</code></pre></div>
+<p><img src="reproducibility_files/figure-html/unnamed-chunk-1-1.png" title="" alt="" width="1056" /> This analysis is in practice difficult because our many of our source MA’s include effect sizes that were included by the coders. Similarly, the proportion of coded gender in many cases reflects only that the coder chose not to code that, not that this information was not present. Nevertheless, this analysis gives us a good sense of the the proportion of papers that report means and standard deviations (about two-thirds).</p>
 <p>By MA</p>
-<pre class="sourceCode r"><code class="sourceCode r">counts =<span class="st"> </span>all_data %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">counts =<span class="st"> </span>all_data %&gt;%
 <span class="st">            </span><span class="kw">group_by</span>(dataset) %&gt;%
 <span class="st">            </span><span class="kw">summarise</span>(<span class="dt">test_statistic =</span> <span class="kw">sum</span>(!<span class="kw">is.na</span>(t) |<span class="st"> </span>!<span class="kw">is.na</span>(F)),
                       <span class="dt">means =</span> <span class="kw">sum</span>(!<span class="kw">is.na</span>(x_1)),
@@ -331,8 +357,8 @@ counts =<span class="st"> </span>counts %&gt;%
         <span class="dt">axis.line =</span> <span class="kw">element_line</span>(<span class="dt">colour =</span> <span class="st">&quot;black&quot;</span>),
         <span class="dt">text =</span> <span class="kw">element_text</span>(<span class="dt">size=</span><span class="dv">20</span>),
         <span class="dt">strip.background  =</span> <span class="kw">element_blank</span>(), 
-        <span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">30</span>, <span class="dt">hjust =</span> <span class="dv">1</span>))</code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/reproducibility_files/figure-html/unnamed-chunk-2-1.png" /><!-- --></p>
+        <span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">30</span>, <span class="dt">hjust =</span> <span class="dv">1</span>))</code></pre></div>
+<p><img src="reproducibility_files/figure-html/unnamed-chunk-2-1.png" title="" alt="" width="960" /></p>
 </div>
 <div id="sample-sizes-and-exclusions" class="section level1">
 <h1>Sample sizes and exclusions</h1>
@@ -340,7 +366,7 @@ counts =<span class="st"> </span>counts %&gt;%
 <div id="how-do-sample-sizes-vary-as-a-function-of-age" class="section level2">
 <h2>How do sample sizes vary as a function of age?</h2>
 <p>Given that effect size broadly increases with age, we would expect sample sizes to decrease. Broadly, the data are consistent with this. Phonemic discriminatiion (native) is an exception, but this may be due to differences in method (?).</p>
-<pre class="sourceCode r"><code class="sourceCode r">all =<span class="st"> </span>all_data %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">all =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">n_total =</span> <span class="kw">ifelse</span>(!<span class="kw">is.na</span>(n_2), n_1 +<span class="st"> </span>n_2, n_1)) %&gt;%
 <span class="st">  </span><span class="kw">select</span>(dataset, d_calc, 
          mean_age_1, n_total,
@@ -351,14 +377,14 @@ counts =<span class="st"> </span>counts %&gt;%
 <span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>) +
 <span class="st">  </span><span class="kw">facet_wrap</span>(~dataset, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>) +
 <span class="st">  </span><span class="kw">theme_bw</span>() +
-<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/reproducibility_files/figure-html/unnamed-chunk-3-1.png" /><!-- --></p>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre></div>
+<p><img src="reproducibility_files/figure-html/unnamed-chunk-3-1.png" title="" alt="" width="960" /></p>
 </div>
 <div id="do-sample-sizes-vary-with-effect-sizes" class="section level2">
 <h2>Do sample sizes vary with effect sizes?</h2>
 <p>Here we explore a more direct test that sample sizes are coupled with effect sizes. We test this by looking at the relationship between sample sizes and effect size, after residualizing out the effect of (1) phenomenon, (2) age, and (3) method.</p>
 <p>Compute residuals.</p>
-<pre class="sourceCode r"><code class="sourceCode r">full.model =<span class="st"> </span><span class="kw">rma</span>(d_calc ~<span class="st"> </span>method +<span class="st"> </span>dataset +<span class="st"> </span>mean_age_1, 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">full.model =<span class="st"> </span><span class="kw">rma</span>(d_calc ~<span class="st"> </span>method +<span class="st"> </span>dataset +<span class="st"> </span>mean_age_1, 
         <span class="dt">vi =</span> d_var_calc, <span class="dt">data =</span> all_data, <span class="dt">method =</span> <span class="st">&quot;REML&quot;</span>)
 
 residuals =<span class="st"> </span><span class="kw">rstandard</span>(full.model)
@@ -367,8 +393,8 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <span class="st">            </span><span class="kw">bind_cols</span>(<span class="kw">as.data.frame</span>(residuals$resid),
                       <span class="kw">as.data.frame</span>(residuals$z)) %&gt;%
 <span class="st">            </span><span class="kw">rename</span>(<span class="dt">residual.d =</span> <span class="st">`</span><span class="dt">residuals$resid</span><span class="st">`</span>, 
-                   <span class="dt">residual.d.s =</span> <span class="st">`</span><span class="dt">residuals$z</span><span class="st">`</span>) <span class="co"># standardized</span></code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">ns_ds =<span class="st"> </span>all_data %&gt;%
+                   <span class="dt">residual.d.s =</span> <span class="st">`</span><span class="dt">residuals$z</span><span class="st">`</span>) <span class="co"># standardized</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ns_ds =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">n_total =</span> <span class="kw">ifelse</span>(!<span class="kw">is.na</span>(n_2), n_1 +<span class="st"> </span>n_2, n_1)) %&gt;%
 <span class="st">  </span><span class="kw">select</span>(dataset, d_calc, residual.d.s,
          mean_age_1, n_total) 
@@ -379,8 +405,8 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">theme_bw</span>() +
 <span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Residual effect size&quot;</span>) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">facet_wrap</span>(~dataset, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>) +
-<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/reproducibility_files/figure-html/unnamed-chunk-5-1.png" /><!-- --></p>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre></div>
+<p><img src="reproducibility_files/figure-html/unnamed-chunk-5-1.png" title="" alt="" width="960" /></p>
 <p>If sample size and effect sizes were appropriately coupled, we should expect sample to decrease as effect size increases. Across 3 meta-analyses, we find the opposite pattern: sample size increases with effect size. This suggest that researchers either are not prospectively planning their sample sizes based on effect size estimates.</p>
 </div>
 <div id="does-the-number-of-excluded-infants-affect-effect-sizes" class="section level2">
@@ -394,7 +420,7 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <li>what’s up with the n_excluded &gt; n?</li>
 </ul>
 <p>Compute residuals.</p>
-<pre class="sourceCode r"><code class="sourceCode r">age.method =<span class="st"> </span><span class="kw">rma</span>(mean_age_1 ~<span class="st"> </span>method +<span class="st"> </span>dataset, 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">age.method =<span class="st"> </span><span class="kw">rma</span>(mean_age_1 ~<span class="st"> </span>method +<span class="st"> </span>dataset, 
         <span class="dt">vi =</span> d_var_calc, <span class="dt">data =</span> all_data, <span class="dt">method =</span> <span class="st">&quot;REML&quot;</span>)
 
 residuals.age.method =<span class="st"> </span><span class="kw">rstandard</span>(age.method)
@@ -403,8 +429,8 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <span class="st">            </span><span class="kw">bind_cols</span>(<span class="kw">as.data.frame</span>(residuals.age.method$resid),
                       <span class="kw">as.data.frame</span>(residuals.age.method$z)) %&gt;%
 <span class="st">            </span><span class="kw">rename</span>(<span class="dt">residual.d.age =</span> <span class="st">`</span><span class="dt">residuals.age.method$resid</span><span class="st">`</span>, 
-                   <span class="dt">residual.d.s.age =</span> <span class="st">`</span><span class="dt">residuals.age.method$z</span><span class="st">`</span>) <span class="co"># standardized</span></code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">exclusions =<span class="st"> </span>all_data %&gt;%
+                   <span class="dt">residual.d.s.age =</span> <span class="st">`</span><span class="dt">residuals.age.method$z</span><span class="st">`</span>) <span class="co"># standardized</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">exclusions =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">filter</span>(!<span class="kw">is.na</span>(n_excluded_1) ||<span class="st"> </span>!<span class="kw">is.na</span>(n_excluded_2)) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">n_excluded =</span>  <span class="kw">ifelse</span>(!<span class="kw">is.na</span>(n_excluded_2), n_excluded_1 +<span class="st"> </span>n_excluded_2, n_excluded_1),
          <span class="dt">n_total =</span> <span class="kw">ifelse</span>(!<span class="kw">is.na</span>(n_2), n_1 +<span class="st"> </span>n_2, n_1)) %&gt;%
@@ -423,13 +449,13 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;d&quot;</span>) +
 <span class="st">  </span><span class="kw">theme_bw</span>() +<span class="st"> </span>
 <span class="st">  </span><span class="kw">facet_wrap</span>(~dataset, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>) +
-<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/reproducibility_files/figure-html/unnamed-chunk-7-1.png" /><!-- --></p>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre></div>
+<p><img src="reproducibility_files/figure-html/unnamed-chunk-7-1.png" title="" alt="" width="960" /></p>
 </div>
 <div id="does-proportion-excluded-vary-as-a-function-of-age" class="section level2">
 <h2>Does proportion excluded vary as a function of age?</h2>
 <p>Again, if there is no bias we should see no relationship. In contrast, we see some evidence that proportion excluded increases with age. This is difficult to interpret though, for the reasons described above.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(exclusions, <span class="kw">aes</span>(<span class="dt">x =</span> residual.d.s.age, <span class="dt">y =</span> prop_excluded,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(exclusions, <span class="kw">aes</span>(<span class="dt">x =</span> residual.d.s.age, <span class="dt">y =</span> prop_excluded,
                        <span class="dt">color =</span> dataset)) +
 <span class="st">  </span><span class="kw">geom_point</span>() +
 <span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>) +
@@ -438,8 +464,8 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;proportion excluded&quot;</span>) +
 <span class="st">  </span><span class="kw">theme_bw</span>()  +<span class="st"> </span>
 <span class="st">  </span><span class="kw">facet_wrap</span>(~dataset, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>) +
-<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/reproducibility_files/figure-html/Exclusions_nExcluded-1.png" /><!-- --></p>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre></div>
+<p><img src="reproducibility_files/figure-html/Exclusions_nExcluded-1.png" title="" alt="" width="960" /></p>
 </div>
 </div>
 <div id="publication-bias" class="section level1">
@@ -447,7 +473,7 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <p>If studies are randomly sampled from the population of possible studies, effect sizes should not be bias. Here we examine this assumption, using residualized effect sizes.</p>
 <div id="do-effect-sizes-vary-as-a-function-of-year" class="section level2">
 <h2>Do effect sizes vary as a function of year?</h2>
-<pre class="sourceCode r"><code class="sourceCode r">years.df =<span class="st"> </span>all_data %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">years.df =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">year =</span> <span class="kw">as.numeric</span>(<span class="kw">unlist</span>(<span class="kw">lapply</span>(<span class="kw">strsplit</span>(<span class="kw">unlist</span>(all_data$study_ID),
                                                   <span class="st">&quot;[^0-9]+&quot;</span>),  function(x) <span class="kw">unlist</span>(x)[<span class="dv">2</span>])))) 
 
@@ -457,24 +483,24 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">facet_wrap</span>(~<span class="st"> </span>dataset, <span class="dt">scales =</span> <span class="st">&quot;free_y&quot;</span>) +
 <span class="st">  </span><span class="kw">theme_bw</span>() +
 <span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;published year&quot;</span>) +
-<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/reproducibility_files/figure-html/unnamed-chunk-8-1.png" /><!-- --> We see a bias of year here: Studies conducted early on in a literature tend to have larger effect sizes than later studies.</p>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre></div>
+<p><img src="reproducibility_files/figure-html/unnamed-chunk-8-1.png" title="" alt="" width="960" /> We see a bias of year here: Studies conducted early on in a literature tend to have larger effect sizes than later studies.</p>
 </div>
 <div id="does-age-vary-as-a-function-of-year" class="section level2">
 <h2>Does age vary as a function of year?</h2>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(years.df , <span class="kw">aes</span>(<span class="dt">x =</span> year, <span class="dt">y =</span> residual.d.s.age, <span class="dt">color =</span> dataset)) +
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(years.df , <span class="kw">aes</span>(<span class="dt">x =</span> year, <span class="dt">y =</span> residual.d.s.age, <span class="dt">color =</span> dataset)) +
 <span class="st">  </span><span class="kw">geom_point</span>() +
 <span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>) +
 <span class="st">  </span><span class="kw">facet_wrap</span>(~<span class="st"> </span>dataset, <span class="dt">scales =</span> <span class="st">&quot;free_y&quot;</span>) +
 <span class="st">  </span><span class="kw">theme_bw</span>() +
 <span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;published year&quot;</span>)  +
-<span class="st">    </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/reproducibility_files/figure-html/unnamed-chunk-9-1.png" /><!-- --> In some literatures, we see a trend toward looking for the phenomenon in younger children over time.</p>
+<span class="st">    </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre></div>
+<p><img src="reproducibility_files/figure-html/unnamed-chunk-9-1.png" title="" alt="" width="960" /> In some literatures, we see a trend toward looking for the phenomenon in younger children over time.</p>
 </div>
 <div id="does-effect-size-vary-as-a-function-of-number-of-authors" class="section level2">
 <h2>Does effect size vary as a function of number of authors?</h2>
 <p>Not really enough data to do this analysis. (maybe cut?)</p>
-<pre class="sourceCode r"><code class="sourceCode r">all_data$short_cite2 =<span class="st"> </span><span class="kw">str_replace_all</span>(all_data$short_cite, <span class="st">&quot; &quot;</span>, <span class="st">&quot;&quot;</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">all_data$short_cite2 =<span class="st"> </span><span class="kw">str_replace_all</span>(all_data$short_cite, <span class="st">&quot; &quot;</span>, <span class="st">&quot;&quot;</span>)
 all_data$short_cite2 =<span class="st"> </span><span class="kw">str_replace_all</span>(all_data$short_cite2, <span class="st">&quot;&amp;&quot;</span>, <span class="st">&quot;,&quot;</span>)
 all_data$num_authors =<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">lapply</span>(<span class="kw">lapply</span>(all_data$short_cite2, 
                                      function(x) <span class="kw">unlist</span>(<span class="kw">strsplit</span>(x, <span class="st">&#39;,+&#39;</span>))), 
@@ -489,8 +515,8 @@ all_data %&gt;%
 <span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>) +
 <span class="st">  </span><span class="kw">facet_wrap</span>(~dataset, <span class="dt">scales =</span> <span class="st">&quot;free_y&quot;</span>) +
 <span class="st">  </span><span class="kw">theme_bw</span>()+
-<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/reproducibility_files/figure-html/unnamed-chunk-10-1.png" /><!-- --></p>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</code></pre></div>
+<p><img src="reproducibility_files/figure-html/unnamed-chunk-10-1.png" title="" alt="" width="960" /></p>
 </div>
 </div>
 <div id="individual-meta-analysis-power" class="section level1">
@@ -498,7 +524,7 @@ all_data %&gt;%
 <div id="what-is-the-power-to-determine-if-the-overall-effect-is-greater-than-zero" class="section level2">
 <h2>What is the power to determine if the overall effect is greater than zero?</h2>
 <p>Here I calculated the power to detect an effect using a random effect model (Hedges &amp; Pigott, 2001; Valentine, Pigott, &amp; Rothstein, 2010). Note that this information is redundant with confidence intervals on the estimated effect size, and the power in all of these MAs is essentially 1. Below, I ran a simulation sampling n papers from each meta-analysis, and calculating power. We need surprisingly few studies to get relatively high power.</p>
-<pre class="sourceCode r"><code class="sourceCode r">calculate_ma_power &lt;-<span class="st"> </span>function(sample_data) {
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">calculate_ma_power &lt;-<span class="st"> </span>function(sample_data) {
   ALPHA &lt;-<span class="st">  </span>.<span class="dv">05</span>
   NTAILS &lt;-<span class="st">  </span><span class="dv">2</span>
   c_crit &lt;-<span class="st">  </span><span class="kw">qnorm</span>(ALPHA/NTAILS, <span class="dt">lower.tail =</span> F)
@@ -553,7 +579,7 @@ power_data &lt;-<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">scale_fill_solarized</span>(<span class="dt">guide =</span> <span class="ot">FALSE</span>) +
 <span class="st">  </span><span class="kw">theme_bw</span>() +
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">text =</span> <span class="kw">element_text</span>(<span class="dt">family =</span> <span class="st">&quot;Open Sans&quot;</span>),
-        <span class="dt">panel.grid.minor =</span> <span class="kw">element_blank</span>())</code></pre>
+        <span class="dt">panel.grid.minor =</span> <span class="kw">element_blank</span>())</code></pre></div>
 </div>
 <div id="what-is-the-power-to-determine-if-theres-a-moderator-e.g.age" class="section level2">
 <h2>What is the power to determine if there’s a moderator (e.g. age)?</h2>
@@ -564,7 +590,7 @@ power_data &lt;-<span class="st"> </span>all_data %&gt;%
 <h1>Trim-and-fill</h1>
 <p>Corrects for selective reporting on the basis of effect size (fewer small effects; Duval &amp; Tweedie, 2000a, 2000b). The routines and plotting tools stem from the R library “metafor” (Viechtbauer).</p>
 <p>[TODO: Adapt to Metalab style]</p>
-<pre class="sourceCode r"><code class="sourceCode r">### fit random-effects model and plot
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">### fit random-effects model and plot
 
 datasets =<span class="st"> </span><span class="kw">unique</span>(all_data$short_name)
 
@@ -573,8 +599,8 @@ for (i in <span class="dv">1</span>:<span class="kw">length</span>(datasets)) {
   res &lt;-<span class="st"> </span><span class="kw">rma</span>(d_calc, d_var_calc, <span class="dt">data =</span> my_data)
   taf &lt;-<span class="st"> </span><span class="kw">trimfill</span>(res)
   <span class="kw">funnel</span>(taf, <span class="dt">main =</span> datasets[i])
-}</code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/reproducibility_files/figure-html/Trim%20and%20Fill-1.png" /><!-- --><img src="/Users/mikabr/projects/lab/metalab/reports/out/reproducibility_files/figure-html/Trim%20and%20Fill-2.png" /><!-- --><img src="/Users/mikabr/projects/lab/metalab/reports/out/reproducibility_files/figure-html/Trim%20and%20Fill-3.png" /><!-- --><img src="/Users/mikabr/projects/lab/metalab/reports/out/reproducibility_files/figure-html/Trim%20and%20Fill-4.png" /><!-- --><img src="/Users/mikabr/projects/lab/metalab/reports/out/reproducibility_files/figure-html/Trim%20and%20Fill-5.png" /><!-- --><img src="/Users/mikabr/projects/lab/metalab/reports/out/reproducibility_files/figure-html/Trim%20and%20Fill-6.png" /><!-- --><img src="/Users/mikabr/projects/lab/metalab/reports/out/reproducibility_files/figure-html/Trim%20and%20Fill-7.png" /><!-- --><img src="/Users/mikabr/projects/lab/metalab/reports/out/reproducibility_files/figure-html/Trim%20and%20Fill-8.png" /><!-- --><img src="/Users/mikabr/projects/lab/metalab/reports/out/reproducibility_files/figure-html/Trim%20and%20Fill-9.png" /><!-- --><img src="/Users/mikabr/projects/lab/metalab/reports/out/reproducibility_files/figure-html/Trim%20and%20Fill-10.png" /><!-- --><img src="/Users/mikabr/projects/lab/metalab/reports/out/reproducibility_files/figure-html/Trim%20and%20Fill-11.png" /><!-- --></p>
+}</code></pre></div>
+<p><img src="reproducibility_files/figure-html/Trim%20and%20Fill-1.png" title="" alt="" width="672" /><img src="reproducibility_files/figure-html/Trim%20and%20Fill-2.png" title="" alt="" width="672" /><img src="reproducibility_files/figure-html/Trim%20and%20Fill-3.png" title="" alt="" width="672" /><img src="reproducibility_files/figure-html/Trim%20and%20Fill-4.png" title="" alt="" width="672" /><img src="reproducibility_files/figure-html/Trim%20and%20Fill-5.png" title="" alt="" width="672" /><img src="reproducibility_files/figure-html/Trim%20and%20Fill-6.png" title="" alt="" width="672" /><img src="reproducibility_files/figure-html/Trim%20and%20Fill-7.png" title="" alt="" width="672" /><img src="reproducibility_files/figure-html/Trim%20and%20Fill-8.png" title="" alt="" width="672" /><img src="reproducibility_files/figure-html/Trim%20and%20Fill-9.png" title="" alt="" width="672" /><img src="reproducibility_files/figure-html/Trim%20and%20Fill-10.png" title="" alt="" width="672" /><img src="reproducibility_files/figure-html/Trim%20and%20Fill-11.png" title="" alt="" width="672" /></p>
 </div>
 
 

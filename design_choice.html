@@ -27,24 +27,41 @@
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
+div.sourceCode { overflow-x: auto; }
 table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
   margin: 0; padding: 0; vertical-align: baseline; border: none; }
 table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
 td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
 td.sourceCode { padding-left: 5px; }
 pre, code { background-color: #f8f8f8; }
-code > span.kw { color: #204a87; font-weight: bold; }
-code > span.dt { color: #204a87; }
-code > span.dv { color: #0000cf; }
-code > span.bn { color: #0000cf; }
-code > span.fl { color: #0000cf; }
-code > span.ch { color: #4e9a06; }
-code > span.st { color: #4e9a06; }
-code > span.co { color: #8f5902; font-style: italic; }
-code > span.ot { color: #8f5902; }
-code > span.al { color: #ef2929; }
-code > span.fu { color: #000000; }
-code > span.er { font-weight: bold; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
 div.sourceCode {
   overflow-x: visible;
 }
@@ -77,6 +94,9 @@ h5 {
 }
 h6 {
   font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
 }
 </style>
 
@@ -131,6 +151,12 @@ $(document).ready(function () {
 
 <script>
 $(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
     // establish options
     var options = {
       selectors: "h1,h2,h3",
@@ -139,7 +165,7 @@ $(document).ready(function ()  {
       hashGenerator: function (text) {
         return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
       },
-      ignoreSelector: "h1.title, .toc-ignore",
+      ignoreSelector: ".toc-ignore",
       scrollTo: 0
     };
     options.showAndHide = true;
@@ -221,7 +247,7 @@ div.tocify {
 <div class="fluid-row" id="header">
 
 <div class="btn-group pull-right">
-<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="text-muted">Code</span> <span class="text-muted caret"></span></button>
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
 <ul class="dropdown-menu" style="min-width: 50px;">
 <li><a id="rmd-show-all-code" href="#">Show All</a></li>
 <li><a id="rmd-hide-all-code" href="#">Hide All</a></li>
@@ -229,9 +255,9 @@ div.tocify {
 </div>
 
 
-<h1 class="title">Design Choice Analyses</h1>
+<h1 class="title toc-ignore">Design Choice Analyses</h1>
 <h4 class="author"><em>Molly Lewis</em></h4>
-<h4 class="date"><em>This report was rendered on 2016-05-09 and will be automatically re-rendered nightly, reflecting any changes in the data or code.</em></h4>
+<h4 class="date"><em>This report was rendered on 2016-05-10 and will be automatically re-rendered nightly, reflecting any changes in the data or code.</em></h4>
 
 </div>
 
@@ -243,7 +269,7 @@ div.tocify {
 <div id="data-available-for-each-design-choice-variable" class="section level2">
 <h2>Data available for each design choice variable</h2>
 <p>Method</p>
-<pre class="sourceCode r"><code class="sourceCode r">all_data$method =<span class="st"> </span><span class="kw">as.factor</span>(all_data$method)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">all_data$method =<span class="st"> </span><span class="kw">as.factor</span>(all_data$method)
 method.pd =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">group_by</span>(method, dataset) %&gt;%
 <span class="st">  </span><span class="kw">filter</span>(<span class="kw">n</span>() &gt;<span class="st"> </span><span class="dv">3</span>) %&gt;%
@@ -253,10 +279,10 @@ method.pd =<span class="st"> </span>all_data %&gt;%
 <span class="st">         </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>) +
 <span class="st">         </span><span class="kw">xlab</span>(<span class="st">&quot;method&quot;</span>) +
 <span class="st">         </span><span class="kw">ylab</span>(<span class="st">&quot;N effect sizes&quot;</span>) +
-<span class="st">      </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>))</code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/design_choice_files/figure-html/unnamed-chunk-1-1.png" /><!-- --></p>
+<span class="st">      </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>))</code></pre></div>
+<p><img src="design_choice_files/figure-html/unnamed-chunk-1-1.png" title="" alt="" width="672" /></p>
 <p>Response Mode</p>
-<pre class="sourceCode r"><code class="sourceCode r">all_data$response_mode =<span class="st"> </span><span class="kw">as.factor</span>(all_data$response_mode)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">all_data$response_mode =<span class="st"> </span><span class="kw">as.factor</span>(all_data$response_mode)
 
 response.pd =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">group_by</span>(response_mode, dataset) %&gt;%
@@ -266,10 +292,10 @@ response.pd =<span class="st"> </span>all_data %&gt;%
 <span class="st">         </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>) +
 <span class="st">         </span><span class="kw">xlab</span>(<span class="st">&quot;response mode&quot;</span>) +
 <span class="st">         </span><span class="kw">ylab</span>(<span class="st">&quot;N effect sizes&quot;</span>) +
-<span class="st">  </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>))</code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/design_choice_files/figure-html/unnamed-chunk-2-1.png" /><!-- --></p>
+<span class="st">  </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>))</code></pre></div>
+<p><img src="design_choice_files/figure-html/unnamed-chunk-2-1.png" title="" alt="" width="672" /></p>
 <p>Dependent Measure</p>
-<pre class="sourceCode r"><code class="sourceCode r">all_data$dependent_measure=<span class="st"> </span><span class="kw">as.factor</span>(all_data$dependent_measure)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">all_data$dependent_measure=<span class="st"> </span><span class="kw">as.factor</span>(all_data$dependent_measure)
 dm.pd =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">group_by</span>(dependent_measure, dataset) %&gt;%
 <span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n =</span> <span class="kw">n</span>())
@@ -278,10 +304,10 @@ dm.pd =<span class="st"> </span>all_data %&gt;%
 <span class="st">         </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>) +
 <span class="st">         </span><span class="kw">xlab</span>(<span class="st">&quot;method&quot;</span>) +
 <span class="st">         </span><span class="kw">ylab</span>(<span class="st">&quot;N effect sizes&quot;</span>) +
-<span class="st">         </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>))</code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/design_choice_files/figure-html/unnamed-chunk-3-1.png" /><!-- --></p>
+<span class="st">         </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>))</code></pre></div>
+<p><img src="design_choice_files/figure-html/unnamed-chunk-3-1.png" title="" alt="" width="672" /></p>
 <p>Participant design</p>
-<pre class="sourceCode r"><code class="sourceCode r">all_data$participant_design =<span class="st"> </span><span class="kw">as.factor</span>(all_data$participant_design)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">all_data$participant_design =<span class="st"> </span><span class="kw">as.factor</span>(all_data$participant_design)
 participant_design.pd =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">group_by</span>(participant_design, dataset) %&gt;%
 <span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n =</span> <span class="kw">n</span>())
@@ -290,12 +316,12 @@ participant_design.pd =<span class="st"> </span>all_data %&gt;%
 <span class="st">         </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>) +
 <span class="st">         </span><span class="kw">xlab</span>(<span class="st">&quot;participant design&quot;</span>) +
 <span class="st">         </span><span class="kw">ylab</span>(<span class="st">&quot;N effect sizes&quot;</span>) +
-<span class="st">      </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>))</code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/design_choice_files/figure-html/unnamed-chunk-4-1.png" /><!-- --></p>
+<span class="st">      </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>))</code></pre></div>
+<p><img src="design_choice_files/figure-html/unnamed-chunk-4-1.png" title="" alt="" width="672" /></p>
 </div>
 <div id="design-choice-variables-by-age" class="section level2">
 <h2>Design choice variables by age</h2>
-<pre class="sourceCode r"><code class="sourceCode r">age.response_mode.pd =<span class="st"> </span>all_data %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">age.response_mode.pd =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">mean_age =</span> <span class="kw">cut_width</span>(mean_age,  <span class="dt">width=</span> <span class="dv">180</span>, <span class="dt">boundary =</span> <span class="dv">0</span>))  %&gt;%
 <span class="st">  </span><span class="kw">group_by</span>(mean_age, response_mode) %&gt;%
 <span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n =</span> <span class="kw">n</span>()) %&gt;%
@@ -305,15 +331,15 @@ participant_design.pd =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">geom_point</span>() +
 <span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">group =</span> response_mode)) +
 <span class="st">  </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>)) +
-<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Response Mode&quot;</span>)</code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/design_choice_files/figure-html/unnamed-chunk-5-1.png" /><!-- --></p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(age.response_mode.pd, <span class="kw">aes</span>(<span class="dt">x =</span> mean_age, <span class="dt">y =</span> n, <span class="dt">color =</span> response_mode)) +
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Response Mode&quot;</span>)</code></pre></div>
+<p><img src="design_choice_files/figure-html/unnamed-chunk-5-1.png" title="" alt="" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(age.response_mode.pd, <span class="kw">aes</span>(<span class="dt">x =</span> mean_age, <span class="dt">y =</span> n, <span class="dt">color =</span> response_mode)) +
 <span class="st">  </span><span class="kw">geom_point</span>() +
 <span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">group =</span> response_mode)) +
 <span class="st">  </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>)) +
-<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Response Mode&quot;</span>)</code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/design_choice_files/figure-html/unnamed-chunk-5-2.png" /><!-- --></p>
-<pre class="sourceCode r"><code class="sourceCode r">age.method.pd =<span class="st"> </span>all_data %&gt;%
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Response Mode&quot;</span>)</code></pre></div>
+<p><img src="design_choice_files/figure-html/unnamed-chunk-5-2.png" title="" alt="" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">age.method.pd =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">mean_age =</span> <span class="kw">cut_width</span>(mean_age,  <span class="dt">width=</span> <span class="dv">180</span>, <span class="dt">boundary =</span> <span class="dv">0</span>))  %&gt;%
 <span class="st">  </span><span class="kw">group_by</span>(mean_age, method) %&gt;%
 <span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n =</span> <span class="kw">n</span>()) %&gt;%
@@ -323,15 +349,15 @@ participant_design.pd =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">geom_point</span>() +
 <span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">group =</span> method)) +
 <span class="st">  </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>)) +
-<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Method&quot;</span>)</code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/design_choice_files/figure-html/unnamed-chunk-5-3.png" /><!-- --></p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(age.method.pd, <span class="kw">aes</span>(<span class="dt">x =</span> mean_age, <span class="dt">y =</span> n, <span class="dt">color =</span> method)) +
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Method&quot;</span>)</code></pre></div>
+<p><img src="design_choice_files/figure-html/unnamed-chunk-5-3.png" title="" alt="" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(age.method.pd, <span class="kw">aes</span>(<span class="dt">x =</span> mean_age, <span class="dt">y =</span> n, <span class="dt">color =</span> method)) +
 <span class="st">  </span><span class="kw">geom_point</span>() +
 <span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">group =</span> method)) +
 <span class="st">  </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>)) +
-<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Method&quot;</span>)</code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/design_choice_files/figure-html/unnamed-chunk-5-4.png" /><!-- --></p>
-<pre class="sourceCode r"><code class="sourceCode r">age.dm.pd =<span class="st"> </span>all_data %&gt;%
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Method&quot;</span>)</code></pre></div>
+<p><img src="design_choice_files/figure-html/unnamed-chunk-5-4.png" title="" alt="" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">age.dm.pd =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">mean_age =</span> <span class="kw">cut_width</span>(mean_age,  <span class="dt">width=</span> <span class="dv">180</span>, <span class="dt">boundary =</span> <span class="dv">0</span>))  %&gt;%
 <span class="st">  </span><span class="kw">group_by</span>(mean_age, dependent_measure) %&gt;%
 <span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n =</span> <span class="kw">n</span>()) %&gt;%
@@ -341,15 +367,15 @@ participant_design.pd =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">geom_point</span>() +
 <span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">group =</span> dependent_measure)) +
 <span class="st">  </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>)) +
-<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Dependent Measure&quot;</span>)</code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/design_choice_files/figure-html/unnamed-chunk-5-5.png" /><!-- --></p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(age.dm.pd, <span class="kw">aes</span>(<span class="dt">x =</span> mean_age, <span class="dt">y =</span> n, <span class="dt">color =</span> dependent_measure)) +
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Dependent Measure&quot;</span>)</code></pre></div>
+<p><img src="design_choice_files/figure-html/unnamed-chunk-5-5.png" title="" alt="" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(age.dm.pd, <span class="kw">aes</span>(<span class="dt">x =</span> mean_age, <span class="dt">y =</span> n, <span class="dt">color =</span> dependent_measure)) +
 <span class="st">  </span><span class="kw">geom_point</span>() +
 <span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">group =</span> dependent_measure)) +
 <span class="st">  </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>)) +
-<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Dependent Measure&quot;</span>)</code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/design_choice_files/figure-html/unnamed-chunk-5-6.png" /><!-- --></p>
-<pre class="sourceCode r"><code class="sourceCode r">age.pd.pd =<span class="st"> </span>all_data %&gt;%
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Dependent Measure&quot;</span>)</code></pre></div>
+<p><img src="design_choice_files/figure-html/unnamed-chunk-5-6.png" title="" alt="" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">age.pd.pd =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">mean_age =</span> <span class="kw">cut_width</span>(mean_age,  <span class="dt">width=</span> <span class="dv">90</span>, <span class="dt">boundary =</span> <span class="dv">0</span>))  %&gt;%
 <span class="st">  </span><span class="kw">group_by</span>(mean_age, participant_design) %&gt;%
 <span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n =</span> <span class="kw">n</span>()) %&gt;%
@@ -359,21 +385,21 @@ participant_design.pd =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">geom_point</span>() +
 <span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">group =</span> participant_design)) +
 <span class="st">  </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>)) +
-<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Participant Design&quot;</span>)</code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/design_choice_files/figure-html/unnamed-chunk-5-7.png" /><!-- --></p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(age.pd.pd, <span class="kw">aes</span>(<span class="dt">x =</span> mean_age, <span class="dt">y =</span> n, <span class="dt">color =</span> participant_design)) +
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Participant Design&quot;</span>)</code></pre></div>
+<p><img src="design_choice_files/figure-html/unnamed-chunk-5-7.png" title="" alt="" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(age.pd.pd, <span class="kw">aes</span>(<span class="dt">x =</span> mean_age, <span class="dt">y =</span> n, <span class="dt">color =</span> participant_design)) +
 <span class="st">  </span><span class="kw">geom_point</span>() +
 <span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">group =</span> participant_design)) +
 <span class="st">  </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>)) +
-<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Participant Design&quot;</span>)</code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/design_choice_files/figure-html/unnamed-chunk-5-8.png" /><!-- --></p>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Participant Design&quot;</span>)</code></pre></div>
+<p><img src="design_choice_files/figure-html/unnamed-chunk-5-8.png" title="" alt="" width="672" /></p>
 </div>
 <div id="effect-size-by-design-choice-variables" class="section level2">
 <h2>Effect size by design choice variables</h2>
 <div id="by-dataset" class="section level3">
 <h3>By dataset</h3>
 <p>Get residual effect size, controling for age and phenonmenon</p>
-<pre class="sourceCode r"><code class="sourceCode r">full.model =<span class="st"> </span><span class="kw">rma</span>(d_calc ~<span class="st"> </span>dataset +<span class="st"> </span>mean_age_1, 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">full.model =<span class="st"> </span><span class="kw">rma</span>(d_calc ~<span class="st"> </span>dataset +<span class="st"> </span>mean_age_1, 
         <span class="dt">vi =</span> d_var_calc, <span class="dt">data =</span> all_data, <span class="dt">method =</span> <span class="st">&quot;REML&quot;</span>)
 
 residuals =<span class="st"> </span><span class="kw">rstandard</span>(full.model)
@@ -382,8 +408,8 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <span class="st">            </span><span class="kw">bind_cols</span>(<span class="kw">as.data.frame</span>(residuals$resid),
                       <span class="kw">as.data.frame</span>(residuals$z)) %&gt;%
 <span class="st">            </span><span class="kw">rename</span>(<span class="dt">residual.d =</span> <span class="st">`</span><span class="dt">residuals$resid</span><span class="st">`</span>, 
-                   <span class="dt">residual.d.s =</span> <span class="st">`</span><span class="dt">residuals$z</span><span class="st">`</span>) <span class="co"># standardized</span></code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">method.pd =<span class="st"> </span>all_data %&gt;%
+                   <span class="dt">residual.d.s =</span> <span class="st">`</span><span class="dt">residuals$z</span><span class="st">`</span>) <span class="co"># standardized</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">method.pd =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">group_by</span>(method, dataset) %&gt;%
 <span class="st">  </span><span class="kw">summarise</span>(<span class="dt">residual.d =</span> <span class="kw">mean</span>(residual.d),
             <span class="dt">n =</span> <span class="kw">n</span>())
@@ -392,9 +418,9 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> n)) +
 <span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">group =</span> dataset)) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>)) +
-<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Method&quot;</span>)</code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/design_choice_files/figure-html/unnamed-chunk-7-1.png" /><!-- --></p>
-<pre class="sourceCode r"><code class="sourceCode r">response.pd =<span class="st"> </span>all_data %&gt;%
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Method&quot;</span>)</code></pre></div>
+<p><img src="design_choice_files/figure-html/unnamed-chunk-7-1.png" title="" alt="" width="960" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">response.pd =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">group_by</span>(response_mode, dataset) %&gt;%
 <span class="st">  </span><span class="kw">summarise</span>(<span class="dt">residual.d =</span> <span class="kw">mean</span>(residual.d),
             <span class="dt">n =</span> <span class="kw">n</span>())
@@ -403,9 +429,9 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> n)) +
 <span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">group =</span> dataset)) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>)) +
-<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Response Mode&quot;</span>)</code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/design_choice_files/figure-html/unnamed-chunk-7-2.png" /><!-- --></p>
-<pre class="sourceCode r"><code class="sourceCode r">dm.pd =<span class="st"> </span>all_data %&gt;%
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Response Mode&quot;</span>)</code></pre></div>
+<p><img src="design_choice_files/figure-html/unnamed-chunk-7-2.png" title="" alt="" width="960" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dm.pd =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">group_by</span>(dependent_measure, dataset) %&gt;%
 <span class="st">  </span><span class="kw">summarise</span>(<span class="dt">residual.d =</span> <span class="kw">mean</span>(residual.d),
             <span class="dt">n =</span> <span class="kw">n</span>())
@@ -414,9 +440,9 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> n)) +
 <span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">group =</span> dataset)) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>)) +
-<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Dependent Measure&quot;</span>)</code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/design_choice_files/figure-html/unnamed-chunk-7-3.png" /><!-- --></p>
-<pre class="sourceCode r"><code class="sourceCode r">participant_design.pd =<span class="st"> </span>all_data %&gt;%
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Dependent Measure&quot;</span>)</code></pre></div>
+<p><img src="design_choice_files/figure-html/unnamed-chunk-7-3.png" title="" alt="" width="960" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">participant_design.pd =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">group_by</span>(participant_design, dataset) %&gt;%
 <span class="st">  </span><span class="kw">summarise</span>(<span class="dt">residual.d =</span> <span class="kw">mean</span>(residual.d),
             <span class="dt">n =</span> <span class="kw">n</span>())
@@ -425,12 +451,12 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> n)) +
 <span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">group =</span> dataset)) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>)) +
-<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Participant Design&quot;</span>)</code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/design_choice_files/figure-html/unnamed-chunk-7-4.png" /><!-- --></p>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Participant Design&quot;</span>)</code></pre></div>
+<p><img src="design_choice_files/figure-html/unnamed-chunk-7-4.png" title="" alt="" width="960" /></p>
 </div>
 <div id="across-datasets" class="section level3">
 <h3>Across datasets</h3>
-<pre class="sourceCode r"><code class="sourceCode r">method.pd.all =<span class="st"> </span>all_data %&gt;%
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">method.pd.all =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">group_by</span>(method) %&gt;%
 <span class="st">  </span><span class="kw">multi_boot_standard</span>(<span class="dt">column =</span> <span class="st">&quot;residual.d&quot;</span>) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">method =</span> <span class="kw">reorder</span>(method, mean))
@@ -442,9 +468,9 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;residual effect size&quot;</span>) +
 <span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;method&quot;</span>) +
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>) +
-<span class="st">  </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>)) </code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/design_choice_files/figure-html/unnamed-chunk-8-1.png" /><!-- --></p>
-<pre class="sourceCode r"><code class="sourceCode r">response.pd.all =<span class="st"> </span>all_data %&gt;%
+<span class="st">  </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>)) </code></pre></div>
+<p><img src="design_choice_files/figure-html/unnamed-chunk-8-1.png" title="" alt="" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">response.pd.all =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">group_by</span>(response_mode) %&gt;%
 <span class="st">  </span><span class="kw">multi_boot_standard</span>(<span class="dt">column =</span> <span class="st">&quot;residual.d&quot;</span>) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">response_mode =</span> <span class="kw">reorder</span>(response_mode, mean))
@@ -456,9 +482,9 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;residual effect size&quot;</span>) +
 <span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;response mode&quot;</span>) +
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>) +
-<span class="st">  </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>)) </code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/design_choice_files/figure-html/unnamed-chunk-8-2.png" /><!-- --></p>
-<pre class="sourceCode r"><code class="sourceCode r">dm.pd.all =<span class="st"> </span>all_data %&gt;%
+<span class="st">  </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>)) </code></pre></div>
+<p><img src="design_choice_files/figure-html/unnamed-chunk-8-2.png" title="" alt="" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dm.pd.all =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">group_by</span>(dependent_measure) %&gt;%
 <span class="st">  </span><span class="kw">multi_boot_standard</span>(<span class="dt">column =</span> <span class="st">&quot;residual.d&quot;</span>) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">dependent_measure =</span> <span class="kw">reorder</span>(dependent_measure, mean))
@@ -470,9 +496,9 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;residual effect size&quot;</span>) +
 <span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;dependent measure&quot;</span>) +
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>) +
-<span class="st">  </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>)) </code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/design_choice_files/figure-html/unnamed-chunk-8-3.png" /><!-- --></p>
-<pre class="sourceCode r"><code class="sourceCode r">participant_design.pd.all =<span class="st"> </span>all_data %&gt;%
+<span class="st">  </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>)) </code></pre></div>
+<p><img src="design_choice_files/figure-html/unnamed-chunk-8-3.png" title="" alt="" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">participant_design.pd.all =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">group_by</span>(participant_design) %&gt;%
 <span class="st">  </span><span class="kw">multi_boot_standard</span>(<span class="dt">column =</span> <span class="st">&quot;residual.d&quot;</span>) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">participant_design =</span> <span class="kw">reorder</span>(participant_design, mean))
@@ -484,8 +510,8 @@ all_data =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;residual effect size&quot;</span>) +
 <span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;participant design&quot;</span>) +
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>) +
-<span class="st">  </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>)) </code></pre>
-<p><img src="/Users/mikabr/projects/lab/metalab/reports/out/design_choice_files/figure-html/unnamed-chunk-8-4.png" /><!-- --></p>
+<span class="st">  </span><span class="kw">theme</span> (<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">90</span>, <span class="dt">hjust =</span> <span class="dv">1</span>, <span class="dt">vjust =</span> .<span class="dv">5</span>)) </code></pre></div>
+<p><img src="design_choice_files/figure-html/unnamed-chunk-8-4.png" title="" alt="" width="672" /></p>
 </div>
 </div>
 <div id="effect-sizes-by-age-and-design-choice" class="section level2">

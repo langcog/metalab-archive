@@ -27,24 +27,41 @@
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
+div.sourceCode { overflow-x: auto; }
 table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
   margin: 0; padding: 0; vertical-align: baseline; border: none; }
 table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
 td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
 td.sourceCode { padding-left: 5px; }
 pre, code { background-color: #f8f8f8; }
-code > span.kw { color: #204a87; font-weight: bold; }
-code > span.dt { color: #204a87; }
-code > span.dv { color: #0000cf; }
-code > span.bn { color: #0000cf; }
-code > span.fl { color: #0000cf; }
-code > span.ch { color: #4e9a06; }
-code > span.st { color: #4e9a06; }
-code > span.co { color: #8f5902; font-style: italic; }
-code > span.ot { color: #8f5902; }
-code > span.al { color: #ef2929; }
-code > span.fu { color: #000000; }
-code > span.er { font-weight: bold; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
 div.sourceCode {
   overflow-x: visible;
 }
@@ -77,6 +94,9 @@ h5 {
 }
 h6 {
   font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
 }
 </style>
 
@@ -131,6 +151,12 @@ $(document).ready(function () {
 
 <script>
 $(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
     // establish options
     var options = {
       selectors: "h1,h2,h3",
@@ -139,7 +165,7 @@ $(document).ready(function ()  {
       hashGenerator: function (text) {
         return text.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
       },
-      ignoreSelector: "h1.title, .toc-ignore",
+      ignoreSelector: ".toc-ignore",
       scrollTo: 0
     };
     options.showAndHide = true;
@@ -221,7 +247,7 @@ div.tocify {
 <div class="fluid-row" id="header">
 
 <div class="btn-group pull-right">
-<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="text-muted">Code</span> <span class="text-muted caret"></span></button>
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
 <ul class="dropdown-menu" style="min-width: 50px;">
 <li><a id="rmd-show-all-code" href="#">Show All</a></li>
 <li><a id="rmd-hide-all-code" href="#">Hide All</a></li>
@@ -229,9 +255,9 @@ div.tocify {
 </div>
 
 
-<h1 class="title">Hierarchical Random Effects in Meta-Analyses: Do they change stuff?</h1>
+<h1 class="title toc-ignore">Hierarchical Random Effects in Meta-Analyses: Do they change stuff?</h1>
 <h4 class="author"><em>Sho Tsuji and Christina Bergmann</em></h4>
-<h4 class="date"><em>This report was rendered on 2016-05-09 and will be automatically re-rendered nightly, reflecting any changes in the data or code.</em></h4>
+<h4 class="date"><em>This report was rendered on 2016-05-10 and will be automatically re-rendered nightly, reflecting any changes in the data or code.</em></h4>
 
 </div>
 
@@ -243,10 +269,10 @@ div.tocify {
 <div id="base-model" class="section level1">
 <h1>Base Model</h1>
 <p>Standard random effects model, no moderators. First we run the model without accounting for any hierarchical structure (as reported in the publication by Bergmann &amp; Cristia 2015; note that differences in effect size estimation are due to an updated dataset here that also includes nonnative studies, as compared to the paper).</p>
-<pre class="sourceCode r"><code class="sourceCode r">inworddb &lt;-<span class="st"> </span><span class="kw">droplevels</span>(all_data[all_data$short_name==<span class="st">&quot;inworddb&quot;</span>, ])
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">inworddb &lt;-<span class="st"> </span><span class="kw">droplevels</span>(all_data[all_data$short_name==<span class="st">&quot;inworddb&quot;</span>, ])
 
 StandardMod &lt;-<span class="st"> </span><span class="kw">rma</span>(g_calc, g_var_calc, <span class="dt">data =</span> inworddb)
-<span class="kw">summary</span>(StandardMod)</code></pre>
+<span class="kw">summary</span>(StandardMod)</code></pre></div>
 <pre><code>## 
 ## Random-Effects Model (k = 286; tau^2 estimator: REML)
 ## 
@@ -271,8 +297,8 @@ StandardMod &lt;-<span class="st"> </span><span class="kw">rma</span>(g_calc, g_
 <div id="two-level-model-paper" class="section level2">
 <h2>Two Level Model: Paper</h2>
 <p>We first add a level for the paper a given effect size was reported in. These effect sizes presumably stem from a batch of studies that were conducted in the same lab in a very similar fashion and by the same set of experimenters, introducing possible correlations.</p>
-<pre class="sourceCode r"><code class="sourceCode r">PerPaperMod &lt;-<span class="st"> </span><span class="kw">rma.mv</span>(g_calc, g_var_calc, <span class="dt">random =</span> ~<span class="st"> </span><span class="dv">1</span> |<span class="st"> </span>short_cite, <span class="dt">data =</span> inworddb)
-<span class="kw">summary</span>(PerPaperMod)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">PerPaperMod &lt;-<span class="st"> </span><span class="kw">rma.mv</span>(g_calc, g_var_calc, <span class="dt">random =</span> ~<span class="st"> </span><span class="dv">1</span> |<span class="st"> </span>short_cite, <span class="dt">data =</span> inworddb)
+<span class="kw">summary</span>(PerPaperMod)</code></pre></div>
 <pre><code>## 
 ## Multivariate Meta-Analysis Model (k = 286; method: REML)
 ## 
@@ -298,8 +324,8 @@ StandardMod &lt;-<span class="st"> </span><span class="kw">rma</span>(g_calc, g_
 <div id="three-level-model-paper-and-experiment" class="section level2">
 <h2>Three Level Model: Paper and Experiment</h2>
 <p>Nested within paper, we introduce a level for experiment number. Experiments can report several effect sizes, for example when infants are run in conditions; slight variations of the same study which are presumed to be even more similar than effect sizes within a paper. A caveat is that conventions on what counts as experiment and what counts as conditions within an experiment might differ across papers.</p>
-<pre class="sourceCode r"><code class="sourceCode r">PerExpPaperMod &lt;-<span class="st"> </span><span class="kw">rma.mv</span>(g_calc, g_var_calc, <span class="dt">random =</span> ~<span class="st"> </span><span class="kw">factor</span>(expt_num) |<span class="st">  </span>short_cite, <span class="dt">data =</span> inworddb)
-<span class="kw">summary</span>(PerExpPaperMod)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">PerExpPaperMod &lt;-<span class="st"> </span><span class="kw">rma.mv</span>(g_calc, g_var_calc, <span class="dt">random =</span> ~<span class="st"> </span><span class="kw">factor</span>(expt_num) |<span class="st">  </span>short_cite, <span class="dt">data =</span> inworddb)
+<span class="kw">summary</span>(PerExpPaperMod)</code></pre></div>
 <pre><code>## 
 ## Multivariate Meta-Analysis Model (k = 286; method: REML)
 ## 
@@ -330,11 +356,11 @@ StandardMod &lt;-<span class="st"> </span><span class="kw">rma</span>(g_calc, g_
 </div>
 <div id="moderator-model-from-the-paper" class="section level1">
 <h1>Moderator Model from the Paper</h1>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Centering mean age</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Centering mean age</span>
 inworddb$ageC &lt;-<span class="st"> </span>inworddb$mean_age-<span class="kw">mean</span>(inworddb$mean_age)
 
 StandardMod &lt;-<span class="st"> </span><span class="kw">rma</span>(g_calc, g_var_calc, <span class="dt">mod =</span> ageC, <span class="dt">data =</span> inworddb)
-<span class="kw">summary</span>(StandardMod)</code></pre>
+<span class="kw">summary</span>(StandardMod)</code></pre></div>
 <pre><code>## 
 ## Mixed-Effects Model (k = 286; tau^2 estimator: REML)
 ## 
@@ -363,8 +389,8 @@ StandardMod &lt;-<span class="st"> </span><span class="kw">rma</span>(g_calc, g_
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <div id="two-level-model-paper-1" class="section level2">
 <h2>Two Level Model: Paper</h2>
-<pre class="sourceCode r"><code class="sourceCode r">PerPaperMod &lt;-<span class="st"> </span><span class="kw">rma.mv</span>(g_calc, g_var_calc, <span class="dt">mod =</span> ageC, <span class="dt">random =</span> ~<span class="st"> </span><span class="dv">1</span> |<span class="st"> </span>short_cite, <span class="dt">data =</span> inworddb)
-<span class="kw">summary</span>(PerPaperMod)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">PerPaperMod &lt;-<span class="st"> </span><span class="kw">rma.mv</span>(g_calc, g_var_calc, <span class="dt">mod =</span> ageC, <span class="dt">random =</span> ~<span class="st"> </span><span class="dv">1</span> |<span class="st"> </span>short_cite, <span class="dt">data =</span> inworddb)
+<span class="kw">summary</span>(PerPaperMod)</code></pre></div>
 <pre><code>## 
 ## Multivariate Meta-Analysis Model (k = 286; method: REML)
 ## 
@@ -393,8 +419,8 @@ StandardMod &lt;-<span class="st"> </span><span class="kw">rma</span>(g_calc, g_
 </div>
 <div id="three-level-model-paper-and-experiment-1" class="section level2">
 <h2>Three Level Model: Paper and Experiment</h2>
-<pre class="sourceCode r"><code class="sourceCode r">PerExpPaperMod &lt;-<span class="st"> </span><span class="kw">rma.mv</span>(g_calc, g_var_calc, <span class="dt">mod =</span> ageC, <span class="dt">random =</span> ~<span class="st"> </span><span class="kw">factor</span>(expt_num) |<span class="st">  </span>short_cite, <span class="dt">data =</span> inworddb)
-<span class="kw">summary</span>(PerExpPaperMod)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">PerExpPaperMod &lt;-<span class="st"> </span><span class="kw">rma.mv</span>(g_calc, g_var_calc, <span class="dt">mod =</span> ageC, <span class="dt">random =</span> ~<span class="st"> </span><span class="kw">factor</span>(expt_num) |<span class="st">  </span>short_cite, <span class="dt">data =</span> inworddb)
+<span class="kw">summary</span>(PerExpPaperMod)</code></pre></div>
 <pre><code>## 
 ## Multivariate Meta-Analysis Model (k = 286; method: REML)
 ## 
