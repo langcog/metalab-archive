@@ -2,9 +2,9 @@
 .Rhistory
 .Rproj.user/
 *.Rproj
-reports/*_cache/
-scripts/log/
-dashboard/rmarkdown/*.html
+reports/
+scripts/
 *.RData
-dashboard/packrat
+dashboard
 *.Rout
+log/
