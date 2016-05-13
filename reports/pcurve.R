@@ -1,81 +1,147 @@
-###############################################################################
-# get_ncp - functions that find non-centrality parameter for f,chi distributions that gives some level of power
-# we don't use chi-square / z-scores, so I only add the getncp for F scores (t will be turned to F in this version of p-curve)
-ncp_error = function(ncp_est, power, x, df1, df2) 
-{  
-  pf(x, df1 = df1, df2 = df2, ncp = ncp_est) - (1 - power)   
-}
+# This code is heavely adopted from Simonsohn, Simmons and Nelson (2014a, 2014b, 2015) supplementary materials
+# Note: the original code handled several different test statistics; this code only handles F
 
-get_ncp <- function(df1, df2, power)   
-{      
-  xc = qf(p=.95, df1 = df1, df2 = df2) 
-  root <- uniroot(ncp_error, c(0, 35), x = xc, df1 = df1, df2 = df2, power = power)$root
-  
-  return(root)  
-}
-
-###############################################################################
-# prop33(pc) - Computes % of p-values that are smaller than pc, for the tests submitted to p-curve, if power is 33%
-prop33 <- function(pc, ncp33, df1, df2)
-{
-  #pc: critical  p-value
-  
-  #Overview:
-  #Creates a vector of the same length as the number of tests submitted to p-curve, significant and not,
-  #    and computes the proportion of p-values expected to be smaller than {pc} given the d.f. 
-  #    and outputs the entire vector, with NA values where needed
-  
-  #F-tests (& thus  t-tests)
-  prop= (1 - pf(qf(1 - pc, df1=df1, df2=df2), df1=df1, df2=df2, ncp=ncp33))
-  
-  #output it
-  return(prop)
-}
-
-###############################################################################
+######################## HELPER FUNCTIONS #################################
 # pbound: bound p-values and pp-values by precision of measurement to avoid errors
-pbound <- function(p) 
-{
-  pmin(pmax(p,2.2e-16),1-2.2e-16)
+pbound <- function(p) pmin(pmax(p, 2.2e-16), 1-2.2e-16)
+
+# stouffer: stouffer test for a vector of pp-values
+stouffer <- function(pp) sum(qnorm(pp), na.rm = TRUE) / sqrt(sum(!is.na(pp)))
+
+# get_ncp: finds non-centrality parameter for f distribution that gives some level of power
+get_ncp <- function(df1, df2, power, ALPHA) {      
+  ncp_error = function(ncp_est, power, x, df1, df2) {pf(x, df1 = df1, df2 = df2, ncp = ncp_est) - (1 - power)} # function uniroot funcitons over
+  xc = qf(p = 1-ALPHA, df1 = df1, df2 = df2) 
+  root <- uniroot(ncp_error, c(0, 35), x = xc, df1 = df1, df2 = df2, power = power)$root
+  root
 }
 
+# prop33: computes % of p-values that are smaller than critical p, for the tests submitted to p-curve, if power is 33%
+# creates a vector of the same length as the number of tests submitted to p-curve, significant and not,
+#    and computes the proportion of p-values expected to be smaller than {pc} given the df
+#    and outputs the entire vector, with NA values where needed
+prop33 <- function(pc, ncp33, df1, df2, ALPHA) {
+  prop = 1 - pf(qf(1 - pc, df1 = df1, df2 = df2), df1 = df1, df2 = df2, ncp = ncp33)
+}
 
-###############################################################################
-# p_curve 
-# main function that does the doing. 
-p_curve <- function(df){
-
-  # Recompute Ps and bound to level of precision desired
-  df <- df %>%
-    mutate(p = pbound(1 - pf(value, df1 = df1, df2 = df2)),
+# get_all_pc_data: computes f, df, p, pp, and ncp33 values
+get_all_pc_data <- function(df, ALPHA){
+  df %>%
+    filter(!is.na(t)|!is.na(F)) %>%
+    mutate(f.value = ifelse(is.na(t), F, t**2), # turn ts into Fs by squaring them
+           df2 = ifelse(participant_design == "between", (n_1 + n_2)-2, n_1-1),
+           df1 = 1,
+           p = pbound(1 - pf(f.value, df1 = df1, df2 = df2)), # recompute ps from df and bind to level of precision desired
            p_round = ceiling(p * 100) / 100) %>%
     rowwise %>% # need to do this rowwise because get_ncp is not vectorized
-    # NCP33 (noncentrality parameter giving each test in p-curve 33% power given the d.f. of the test)
-    mutate(ncp33 = get_ncp(df1, df2, power=1/3))
-  
-  pc_data <- data.frame(p = seq(.01,.05,.01)) %>%
-    group_by(p) %>%
-    mutate(observed = sum(df$p_round == p) / sum(df$p < .05), 
-           baseline = 1/5)
-
-  # Green line (Expected p-curve for 33% power)
-  # Proportion of tests expected to get <01, <02...
-  gcdf1=prop33(.01, df$ncp33, df$df1, df$df2)         #vector with proportion of p-values p<.01, with 33% power
-  gcdf2=prop33(.02, df$ncp33, df$df1, df$df2)         #              ""                   p<.02,      "
-  gcdf3=prop33(.03, df$ncp33, df$df1, df$df2)         #              ""                   p<.03,      "
-  gcdf4=prop33(.04, df$ncp33, df$df1, df$df2)         #              ""                   p<.04,      "
-  #Note: for p<.05 we know it is 33% power
-  
-  #5.1.2 Now compute difference, and divide by 1/3 to get the share of significant p-values in each bin      
-  pc_data$expected <- c(mean(gcdf1)*3,        #Average of the vector p<.01
-                        mean(gcdf2-gcdf1)*3,  #Difference between .02 and .01
-                        mean(gcdf3-gcdf2)*3,  #Difference between .03 and .02
-                        mean(gcdf4-gcdf3)*3,  #Difference between .04 and .03
-                        mean(1/3-gcdf4)*3)    #Difference between .05 and .04
-  #Because we have one row per test submitted, the average is weighted average, giving each test equal weight
-  pc_long <- pc_data %>% 
-    gather(measure, value, observed, baseline, expected)
-  
-  return(pc_long)
+    mutate(ncp33 = get_ncp(df1, df2, power = 1/3, ALPHA)) %>%
+    ungroup() %>%
+    mutate(ppr.full = as.numeric(ifelse(p < ALPHA, p/ALPHA, NA)),  #compute pp-values (prob of observing a significant p value at least as extreme if the null were true)if p<.05, ppr is 1/alpha*p-value, so 20*pvalue, otherwise missing. (essentially normalize probability by alpha) - assumes p values uniformly distributed?
+           ppr.half = as.numeric(ifelse(p < ALPHA/2, p/(ALPHA/2), NA)),
+           pp33.full = ifelse(p < ALPHA , 3 * (pf(f.value, df1, df2, ncp = ncp33) - 2/3), NA),
+           prop25 = 3 * prop33(ALPHA/2, ncp33, df1, df2, ALPHA), # share of p-values expected to be p<.025 if 33% power
+           pp33.half = ifelse(p < ALPHA/2, (1 / prop25) * (pf(f.value, df1, df2, ncp = ncp33) - (1 - prop25)), NA)) %>%
+    mutate_each(funs(pbound), c(ppr.full, ppr.half, pp33.full, pp33.half)) %>%
+    select(dataset, study_ID, d_var_calc, d_calc, p, p_round, f.value, df1, df2, ppr.full, ppr.half, pp33.full, pp33.half, ncp33)
 }
 
+
+# power_fit_f : create pp-values for how well a given power_est fits, and do KSD test 
+power_fit_f <- function(df, power_est, ALPHA){
+  ksd_value = df %>%
+    filter(p < ALPHA & f.value > 0) %>%
+    rowwise() %>%
+    mutate(ncp_est = ifelse(!is.na(df1), get_ncp(df1, df2, power_est, ALPHA), NA)) %>%
+    ungroup() %>%
+    mutate(p_larger = pf(f.value, df1, df2, ncp_est),  # prob f>fobs given ncp_est
+           ppr = (p_larger-(1-power_est))/power_est) %>%  # condition on p<.05
+    summarise(ksd = ks.test(ppr, punif)$statistic) %>% # Kolmogorov-Smirnov test on the resulting pprs
+    unlist() 
+  ksd_value
+}
+
+# es_fit_f: loss function for effect size estimation based on Kolmogorov-Smirnov test
+es_fit_f <- function(df, d_est, ALPHA) { ## THIS IS FOR T-DISTRIBUTION; how do I make convert to f? see powerfit.f above.                         
+  ksd_value = df %>%
+        ungroup() %>%
+        filter(p < ALPHA & f.value > 0) %>%
+        mutate(ncp_est = sqrt((df1 + 2)/4) * d_est, ## FIX THIS!!!!! Should be ncp for f.
+               fc = qf(.975, df1, df2),                     
+               power_est = 1 - pf(fc, df1, df2, ncp_est),
+               p_larger = pt(f.value, df = df1, ncp = ncp_est),
+               ppr = (p_larger-(1 - power_est))/power_est) %>%  
+         summarise(ksd = ks.test(ppr, punif)$statistic) %>%
+         unlist()
+  ksd_value 
+}
+
+# one_es_sample: get one es sample
+one_es_sample <- function(df) {
+  function(k) {
+    sampled.df = sample_n(df, nrow(df), replace = TRUE) 
+    optimize(es_fit_f, c(-.3, 2), df = sampled.df, ALPHA = ALPHA)$minimum
+  }
+}
+
+# boot_es: get many es samples and get sumary stats
+boot_es <- function(df, nboot) {
+  sample_values <- 1:nboot %>%
+    map(one_es_sample(df)) %>%
+    unlist()
+  data.frame(es_boot = mean(sample_values),
+             ci_lower = ci_lower(sample_values),
+             ci_upper = ci_upper(sample_values),
+             row.names = NULL)
+}
+
+######################## PRIMARY FUNCTIONS #################################
+
+# get_p_curve_df: data for pcurve plot
+get_p_curve_df <- function(df, ALPHA){
+  INCREMENT = .01
+  
+  # get observed and baseline pcurve data
+  pc_data <- data.frame(p = seq(INCREMENT, ALPHA, INCREMENT)) %>%
+    group_by(p) %>%
+    mutate(observed = sum(df$p_round == p) / sum(df$p < .05),  # observed line
+           baseline =  INCREMENT/ALPHA)  # baseline
+  
+  # get expected p-curve for 33% power data (i.e., proportion of tests expected to get <01, <02...)
+  gcdf = seq(INCREMENT, ALPHA, INCREMENT) %>%
+      map(function(x) prop33(x, df$ncp33,  df$df1,  df$df2, ALPHA))
+  
+  # Now compute difference, and divide by 1/3 to get the share of significant p-values in each bin      
+  pc_data$expected33 <- c(mean(gcdf[[1]])*3,      # average of the vector p<.01
+                        mean(gcdf[[2]]-gcdf[[1]])*3,  # difference between .02 and .01
+                        mean(gcdf[[3]]-gcdf[[2]])*3,  # difference between .03 and .02, etc. 
+                        mean(gcdf[[4]]-gcdf[[3]])*3,
+                        mean(gcdf[[5]]-gcdf[[4]])*3)
+  
+  pc_long <- pc_data %>% 
+    gather(measure, value, observed, baseline, expected33)
+  
+  pc_long
+}
+
+# stouffer_test: stouffer method for evaluating skew, from "Better P-curves", alt. to Fischer's method which is sensitive to outliers; do for both full and half)
+stouffer_test <- function(df, ALPHA){
+    df %>%
+      select(ppr.full, pp33.full, ppr.half, pp33.half) %>%
+      gather("pp.measure", "pp.value", 1:4) %>%
+      group_by(pp.measure) %>%
+      summarise(Z.pp = stouffer(pp.value)) %>%
+      mutate(p.Z.pp = pnorm(Z.pp),
+             sig = p.Z.pp < ALPHA)  
+}
+
+# get_pc_power: estimate best fitting power
+get_pc_power <- function(d, ALPHA) {
+  optimize(power_fit_f, c(.06, .999), df = d, ALPHA = ALPHA)$minimum 
+}
+
+# get_pc_es: estimate best fitting es with CI
+get_pc_es <- function(d, ALPHA){
+  d %>%
+    do(boot_es(., 5)) %>%
+    cbind(es_mean = optimize(es_fit_f, c(-.3, 2), df = d, ALPHA = ALPHA)$minimum)
+}
