@@ -1,4 +1,4 @@
-# This code is heavely adopted from Simonsohn, Simmons and Nelson (2014a, 2014b, 2015) supplementary materials
+# This code is heavily adopted from Simonsohn, Simmons and Nelson (2014a, 2014b, 2015) supplementary materials
 # Note: the original code handled several different test statistics; this code only handles F
 
 ######################## HELPER FUNCTIONS #################################
@@ -14,14 +14,6 @@ get_ncp <- function(df1, df2, power, ALPHA) {
   xc = qf(p = 1-ALPHA, df1 = df1, df2 = df2) 
   root <- uniroot(ncp_error, c(0, 35), x = xc, df1 = df1, df2 = df2, power = power)$root
   root
-}
-
-# prop33: computes % of p-values that are smaller than critical p, for the tests submitted to p-curve, if power is 33%
-# creates a vector of the same length as the number of tests submitted to p-curve, significant and not,
-#    and computes the proportion of p-values expected to be smaller than {pc} given the df
-#    and outputs the entire vector, with NA values where needed
-prop33 <- function(pc, ncp33, df1, df2, ALPHA) {
-  prop = 1 - pf(qf(1 - pc, df1 = df1, df2 = df2), df1 = df1, df2 = df2, ncp = ncp33)
 }
 
 # get_all_pc_data: computes f, df, p, pp, and ncp33 values
@@ -43,6 +35,14 @@ get_all_pc_data <- function(df, ALPHA){
            pp33.half = ifelse(p < ALPHA/2, (1 / prop25) * (pf(f.value, df1, df2, ncp = ncp33) - (1 - prop25)), NA)) %>%
     mutate_each(funs(pbound), c(ppr.full, ppr.half, pp33.full, pp33.half)) %>%
     select(dataset, study_ID, d_var_calc, d_calc, p, p_round, f.value, df1, df2, ppr.full, ppr.half, pp33.full, pp33.half, ncp33)
+}
+
+# prop33: computes % of p-values that are smaller than critical p, for the tests submitted to p-curve, if power is 33%
+# creates a vector of the same length as the number of tests submitted to p-curve, significant and not,
+#    and computes the proportion of p-values expected to be smaller than {pc} given the df
+#    and outputs the entire vector, with NA values where needed
+prop33 <- function(pc, ncp33, df1, df2, ALPHA) {
+  prop = 1 - pf(qf(1 - pc, df1 = df1, df2 = df2), df1 = df1, df2 = df2, ncp = ncp33)
 }
 
 
@@ -88,9 +88,9 @@ boot_es <- function(df, nboot) {
   sample_values <- 1:nboot %>%
     map(one_es_sample(df)) %>%
     unlist()
-  data.frame(es_boot = mean(sample_values),
-             ci_lower = ci_lower(sample_values),
-             ci_upper = ci_upper(sample_values),
+  data.frame(d_boot_pc = mean(sample_values),
+             ci.lb_pc = ci_lower(sample_values),
+             ci.ub_pc = ci_upper(sample_values),
              row.names = NULL)
 }
 
@@ -143,5 +143,5 @@ get_pc_power <- function(d, ALPHA) {
 get_pc_es <- function(d, ALPHA){
   d %>%
     do(boot_es(., 5)) %>%
-    cbind(es_mean = optimize(es_fit_f, c(-.3, 2), df = d, ALPHA = ALPHA)$minimum)
+    cbind(d_mean_pc = optimize(es_fit_f, c(-.3, 2), df = d, ALPHA = ALPHA)$minimum)
 }

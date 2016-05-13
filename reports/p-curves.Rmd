@@ -13,6 +13,7 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(langcog)
+library(metafor)
 ```
 
 # Introduction
@@ -39,7 +40,7 @@ ALPHA = .05
 ```
 
 Get all data necessary to calculate p-curves
-```{r PlotEachDataSet}
+```{r}
 pc.data <- get_all_pc_data(all_data, ALPHA)
 ```
 
@@ -69,19 +70,34 @@ pc.data %>%
 
 ## Get p-curves es estimates.
 ```{r}
-pc.data %>%
+pc_es = pc.data %>%
   group_by(dataset) %>%
-  do(data.frame(get_pc_es(., ALPHA))) 
+  do(data.frame(get_pc_es(., ALPHA)))
 
-# get mefafor es
-#metafor::rma(rma_formula, vi = mod_data()[[es_var()]],
-    #         slab = short_cite, data = mod_data(),
-     #        method = input$ma_method)
+obs_es =  all_data %>%
+  group_by(dataset) %>%
+  summarise(d_obs = summary(rma(d_calc,d_var_calc,
+             slab = short_cite, 
+             data = .))$b[1],
+            ci_lb_obs = summary(rma(d_calc,d_var_calc,
+             slab = short_cite, 
+             data = .))$ci.lb[1],
+            ci_ub_obs = summary(rma(d_calc,d_var_calc,
+             slab = short_cite, 
+             data = .))$ci.ub[1]) 
+
+all_es = left_join(obs_es, pc_es) %>%
+  gather("d", "val", c(2,5,8)) %>%
+   #gather("d2", "val2", 3:5) %>%
+  as.data.frame()
+
+
 
 # TO DO:
  # get metafor estimates of effect size
  # plot stuff
- # why are some datasets missing?
+ # why are some datasets missing? -> we only have test statistics for 6/11- is there a way to recover this?
  # check code!!
+# do orwin's thing
 
 ```
