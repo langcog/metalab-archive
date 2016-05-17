@@ -1,0 +1,379 @@
+\documentclass[american,floatsintext,man]{apa6}
+
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+
+% Table formatting
+\usepackage{longtable,booktabs}
+\usepackage[counterclockwise]{rotating}   % Landscape page setup for large tables
+\usepackage{multirow}		% Table styling
+\usepackage{tabularx}		% Control Column width
+\usepackage[flushleft]{threeparttable}	% Allows for three part tables with a specified notes section
+\usepackage{threeparttablex}            % Lets threeparttable work with longtable
+\usepackage{longtable}              % Allows tables to break across pages
+
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            pdfauthor={},
+            pdftitle={A Quantitative Synthesis of Early Language Acquisition Using Meta-Analysis},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=black,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+
+\setlength{\parindent}{0pt}
+%\setlength{\parskip}{0pt plus 0pt minus 0pt}
+
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+
+\setcounter{secnumdepth}{0}
+\ifxetex
+  \usepackage{polyglossia}
+  \setmainlanguage{}
+\else
+  \usepackage[american]{babel}
+\fi
+
+% Manuscript styling
+\captionsetup{font=singlespacing,justification=justified}
+\usepackage{csquotes}
+
+
+
+\usepackage{tikz} % Variable definition to generate author note
+
+% fix for \tightlist problem in pandoc 1.14
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+% Essential manuscript parts
+  \title{A Quantitative Synthesis of Early Language Acquisition Using
+Meta-Analysis}
+
+  \shorttitle{A Quantitative Synthesis}
+
+
+  \author{
+          Molly Lewis\textsuperscript{1},
+          Mika Braginsky\textsuperscript{1},
+          Sho Tsuji\textsuperscript{2},
+          Christina Bergmann\textsuperscript{2},
+          Page Piccinini\textsuperscript{2},
+          Alejandrina Cristia\textsuperscript{2},
+          Michael C. Frank\textsuperscript{1}  }
+
+  \def\affdep{{"", "", "", "", "", "", ""}}%
+  \def\affcity{{"", "", "", "", "", "", ""}}%
+
+  \affiliation{
+    \vspace{0.5cm}
+          \textsuperscript{1} Department Psychology, Stanford University\\
+          \textsuperscript{2} Laboratoire de Sciences Cognitives et Psycholinguistique, ENS  }
+
+
+%   \def\affinst{{"init", "Department Psychology, Stanford University", "Laboratoire de Sciences Cognitives et Psycholinguistique, ENS"}}%
+%   \def\affstate{{"init", "", ""}}%
+%   \def\affcntry{{"init", "", ""}}%
+
+  \note{
+    \vspace{1cm}
+    Author note
+
+    \raggedright
+    \setlength{\parindent}{0.4in}
+
+    \newcounter{author}
+
+%     %     %       %       \setcounter{author}{0}
+%         %           \addtocounter{author}{1}
+%         %         \expandafter\edef\csname authorid\endcsname{\theauthor}
+%         Molly Lewis, \pgfmathparse{\affdep[\authorid]} \pgfmathresult, \pgfmathparse{\affinst[\authorid]} \pgfmathresult, \pgfmathparse{\affcity[\authorid]} \pgfmathresult, \pgfmathparse{\affstate[\authorid]} \pgfmathresult, \pgfmathparse{\affcntry[\authorid]} \pgfmathresult
+%       %     ;
+%     %       %       \setcounter{author}{0}
+%         %           \addtocounter{author}{1}
+%         %         \expandafter\edef\csname authorid\endcsname{\theauthor}
+%         Mika Braginsky, \pgfmathparse{\affdep[\authorid]} \pgfmathresult, \pgfmathparse{\affinst[\authorid]} \pgfmathresult, \pgfmathparse{\affcity[\authorid]} \pgfmathresult, \pgfmathparse{\affstate[\authorid]} \pgfmathresult, \pgfmathparse{\affcntry[\authorid]} \pgfmathresult
+%       %     ;
+%     %       %       \setcounter{author}{0}
+%         %           \addtocounter{author}{2}
+%         %         \expandafter\edef\csname authorid\endcsname{\theauthor}
+%         Sho Tsuji, \pgfmathparse{\affdep[\authorid]} \pgfmathresult, \pgfmathparse{\affinst[\authorid]} \pgfmathresult, \pgfmathparse{\affcity[\authorid]} \pgfmathresult, \pgfmathparse{\affstate[\authorid]} \pgfmathresult, \pgfmathparse{\affcntry[\authorid]} \pgfmathresult
+%       %     ;
+%     %       %       \setcounter{author}{0}
+%         %           \addtocounter{author}{2}
+%         %         \expandafter\edef\csname authorid\endcsname{\theauthor}
+%         Christina Bergmann, \pgfmathparse{\affdep[\authorid]} \pgfmathresult, \pgfmathparse{\affinst[\authorid]} \pgfmathresult, \pgfmathparse{\affcity[\authorid]} \pgfmathresult, \pgfmathparse{\affstate[\authorid]} \pgfmathresult, \pgfmathparse{\affcntry[\authorid]} \pgfmathresult
+%       %     ;
+%     %       %       \setcounter{author}{0}
+%         %           \addtocounter{author}{2}
+%         %         \expandafter\edef\csname authorid\endcsname{\theauthor}
+%         Page Piccinini, \pgfmathparse{\affdep[\authorid]} \pgfmathresult, \pgfmathparse{\affinst[\authorid]} \pgfmathresult, \pgfmathparse{\affcity[\authorid]} \pgfmathresult, \pgfmathparse{\affstate[\authorid]} \pgfmathresult, \pgfmathparse{\affcntry[\authorid]} \pgfmathresult
+%       %     ;
+%     %       %       \setcounter{author}{0}
+%         %           \addtocounter{author}{2}
+%         %         \expandafter\edef\csname authorid\endcsname{\theauthor}
+%         Alejandrina Cristia, \pgfmathparse{\affdep[\authorid]} \pgfmathresult, \pgfmathparse{\affinst[\authorid]} \pgfmathresult, \pgfmathparse{\affcity[\authorid]} \pgfmathresult, \pgfmathparse{\affstate[\authorid]} \pgfmathresult, \pgfmathparse{\affcntry[\authorid]} \pgfmathresult
+%       %     ;
+%     %       %       \setcounter{author}{0}
+%         %           \addtocounter{author}{1}
+%         %         \expandafter\edef\csname authorid\endcsname{\theauthor}
+%         Michael C. Frank, \pgfmathparse{\affdep[\authorid]} \pgfmathresult, \pgfmathparse{\affinst[\authorid]} \pgfmathresult, \pgfmathparse{\affcity[\authorid]} \pgfmathresult, \pgfmathparse{\affstate[\authorid]} \pgfmathresult, \pgfmathparse{\affcntry[\authorid]} \pgfmathresult
+%       %     .
+%     
+    Correspondence concerning this article should be addressed to Molly
+    Lewis, Psychology Department, Stanford University. 450 Serra Mall,
+    Stanford, CA 94305. E-mail:
+    \href{mailto:mll@stanford.edu}{\nolinkurl{mll@stanford.edu}}.
+
+                                                                                    }
+
+  \abstract{replicability, etc.}
+  \keywords{replicability, reproducibility, meta-analysis, developmental psychology,
+language acquisition \\
+
+    \indent Word count: XXXX
+  }
+
+
+\begin{document}
+
+\maketitle
+
+
+
+\section{Introduction}\label{introduction}
+
+Psychologists hope to build generalizable theories about human
+behavior---theories that hold true beyond particulars of an individual
+study. The field has grown concerned as a result in the face of recent
+high-profile evidence that an effect observed in one study may not be
+the same in another (``replicability crisis''; Ioannidis, 2005; Nosek,
+2012, 2015). Some of this variability is to be expected, however---the
+question we should instead be asking is, do the data provide support for
+the theory, even if they are noisy? Furthermore, to build parsimonious
+theories of human behavior, we should seek to explain not just
+individual phenemenon, but entire literatures of research. What is
+needed, then, is a tool for aggregating noisy data across studies within
+a phenomenon, as well as a common language for comparing effects across
+phenomenona.
+
+Meta-analytic methods provide a powerful tool for doing just this. The
+basic unit of meta-analysis---the effect size---provides an estimate of
+the \emph{size} of an effect, as well as a measure of uncertainty around
+this point estimate. With such a continuous measure of success, we can
+apply the same reasoning we use to aggregate noisy measurements over
+participants in a single study: By assuming each \emph{study}, rather
+than participant, is sampled from a population, we can appeal to the
+classical statistical framework to combine estimates of the effect size
+for a given phenomenon.
+
+This quantitative approach provides a rich tool kit for synthesizing
+across literatures. By describing different phenomena using the same
+unit of measurement, we are able to compare effects in different
+domains. Rather than simply concluding that two effects are both
+``real,'' we can ask more fine-grained questions: Is effect \emph{X}
+bigger than effect \emph{Y}? Does a moderator influence effect \emph{X}
+in the same way as effect \emph{Y}? This type of continuous analysis
+supports building quantitative models, and specifying theories that are
+more precise and constraining.
+
+In addition to these theoretical motivations, there are practical
+reasons for conducting a quantitative synthesis. When planning an
+experiment, an estimate of the size of an effect on the basis of prior
+literature can inform the sample size needed to achieve a desired level
+of power. Meta-analytic estimates of effect sizes can also aid in design
+choices: If a certain paradigm tends to have overall larger effect sizes
+than another, the strategic researcher might select this paradigm in
+order to maximize the power of a study.
+
+In practice, however, the feasability of this meta-analytic approach
+relies on the field's commitment to practices that facilitate cumulative
+science. These practices apply to all stages of the research process. At
+the stage of experimental planning, researchers must pre-specify
+analytical descision to limit ``researcher'' degrees of freedom
+(Simmons, 2011; Simonsohn, 2014a, 2014b, 2014c). At the stage of
+completion, researchers should share a result regardless of its
+significance (Rosenthal, 1979; Fanelli 2012). And, at the stage of
+sharing, researchers must provide enough information about the method
+for another lab to conduct a close replication. Critically,r eports must
+also contain complete descriptions of both data and analytical decisions
+so that effect sizes can be calculcated for the purposes of
+meta-analysis,
+
+In the present paper, we use meta-analytic methods to provide a
+quantitative synthesis of an entire field of psychological research:
+language acquisition. We think this field is a particularly informative
+case study. It may be particularly vulnerable to false findings because
+running children is expensive (Ioanndis, 2005), and thus:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  sample sizes are small
+\item
+  replications difficult and rare
+\item
+  Recent attention about practices in developmental research Peterson
+  (2016)
+\end{itemize}
+
+We have two goals:
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Describe the state of the field in terms of its participation in
+  practices that are prerequisites to cumulative science, and
+  ultimately, a theoretical synthesis
+\item
+  Provide a preliminary theoretical synthesis of the field
+\end{itemize}
+
+Towards this end, we introduce
+\href{http://metalab.stanford.edu/}{Metalab}.
+
+\section{Method}\label{method}
+
+We calculated estimates of effect sizes for 11 different phenomenena in
+language acquisition. We selected these phenomena in order to describe
+development at many different levels of the language hierarchy, from the
+acquistion of prosody and phonemic contrasts, to gaze following in
+linguistic interaction. This wide range of phenomena allowed us to
+compare the course of development across different domains, as well as
+explore questions about the interactive nature of language acquisition.
+
+Estimates of effect size were based on journal reports of experimental
+data. In total, our sample includes estimates from 258 papers, 938
+different experiments and 11,628 participants.
+
+The process for selecting papers from the literature differed by domain,
+with some individual meta-analyses using more systematic approaches than
+others. {[}Simulations here?{]}
+
+TABLE
+
+\section{Replicability of the field}\label{replicability-of-the-field}
+
+Effect size can vary between studies for reasons unrelated to a
+theoretical construct. One reason for this variability is the precision
+of the effect size, which we can model based on the sample size of the
+study. A remaining source variability, however, are biases introduced
+directly by the experimenter, via publication bias (Fanelli, 2010;
+Rosenthal, 1979; Rothstein, Sutton, \& Borenstein, 2006), analytical
+flexibility (Simmons, Nelson, \& Simonsohn, 2011), reporting errors, or
+even fraud. These biases are much more difficult to model, and may
+therefore lead to large but unknown errors in estimates of the effect
+size. If these types of practices are present in the literature,
+estimates of effect size may be poor estimates of the true underlying
+effect size, making it difficult to make theoretical progress. Below we
+present analyses examining whether signatures of publication bias and
+analytical flexibility are present in the language acquistion
+literature. We find little evivdence of these biases.
+
+\subsection{p-curves}\label{p-curves}
+
+(Simonsohn, Nelson, \& Simmons, 2014a, 2014b; Simonsohn, Simmons, \&
+Nelson, 2015) Across studies we should expect some variability in effect
+size due to sampling error alone. But this variability in effect size
+should be \emph{systematic}: There should be less variability around the
+mean for more precise studies, as measured by sample size. The presence
+of variability in effect sizes that is not accounted for sample size may
+suggest publication bias in a literature.
+
+bias introduced by meta-analysis in selection (second-order selection
+bias)
+
+\subsection{Funnel}\label{funnel}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Egger's regression test
+\end{itemize}
+
+\subsection{Orwin}\label{orwin}
+
+\subsection{Power}\label{power}
+
+Ioannidis and Trikalinos (2007)
+
+TABLE WITH: Eggers regression, p-curve (stouffer), regular power,
+p-power, orwin
+
+\section{Theoretical Synthesis}\label{theoretical-synthesis}
+
+OUTLINE \#\# Statistical Approach
+
+\section{Discussion}\label{discussion}
+
+\paragraph{Author Contributions}\label{author-contributions}
+
+\paragraph{Acknowledgments}\label{acknowledgments}
+
+\paragraph{References}\label{references}
+
+\setlength{\parindent}{-0.5in} \setlength{\leftskip}{0.5in}
+\setlength{\parskip}{8pt}
+
+Fanelli, D. (2010). Positive Results Increase Down the Hierarchy of the
+Sciences. \emph{PLoS ONE}, \emph{5}(4), e10068--10.
+
+Peterson, D. (2016). The Baby Factory: Difficult Research Objects,
+Disciplinary Standards, and the Production of Statistical Significance.
+\emph{Socius: Sociological Research for a Dynamic World}, \emph{2}(0),
+1--10.
+
+Rosenthal, R. (1979). The file drawer problem and tolerance for null
+results. \emph{Psychological Bulletin}, \emph{86}(3), 638.
+
+Rothstein, H. R., Sutton, A. J., \& Borenstein, M. (2006).
+\emph{Publication bias in meta-analysis: Prevention, assessment and
+adjustments}. John Wiley \&amp; Sons.
+
+Simmons, Nelson, L. D., \& Simonsohn, U. (2011). False-Positive
+Psychology: Undisclosed Flexibility in Data Collection and Analysis
+Allows Presenting Anything as Significant. \emph{Psychological Science},
+\emph{22}(11), 1359--1366.
+
+Simonsohn, Nelson, L. D., \& Simmons, J. P. (2014a). p-Curve and Effect
+Size: Correcting for Publication Bias Using Only Significant Results.
+\emph{Perspectives on Psychological Science}, \emph{9}(6), 666--681.
+
+Simonsohn, Nelson, L. D., \& Simmons, J. P. (2014b). P-curve: A key to
+the file-drawer. \emph{Journal of Experimental Psychology: General},
+\emph{143}(2), 534.
+
+Simonsohn, Simmons, J. P., \& Nelson, L. D. (2015). Better p-curves.
+\emph{Simonsohn, Uri, Joseph P. Simmons, and Leif D. Nelson
+(Forthcoming),``Better P-Curves,'' Journal of Experimental Psychology:
+General}.
+
+
+
+\end{document}

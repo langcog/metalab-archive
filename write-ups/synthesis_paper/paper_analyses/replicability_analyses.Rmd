@@ -1,0 +1,148 @@
+---
+title: "Reproducibility Analyses for Synthesis Paper"
+author: "Molly Lewis, Christina Bergmann, and Mike Frank"
+date: This report was rendered on `r Sys.Date()` and will be automatically re-rendered
+  nightly, reflecting any changes in the data or code.
+output: pdf_document
+---
+
+```{r, setup, include = FALSE}
+rm(list=ls())
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, cache = TRUE)
+ggplot2::theme_set(langcog::theme_mikabr(base_family = "Ubuntu"))
+source("../dashboard/global.R", chdir = TRUE)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(langcog)
+library(metafor)
+```
+
+P-curves have been proposed as one (of many) ways to measure publication biases, because so-called p-hacking (conducting multiple statistical analyses, excluding data points, etc until a p-value below the significance threshold [typically .05] is reached) can lead to an inflation of high p-values that are nonetheless significant. The exected distribution of p-values in the absence of prevalent p-hacking of a null effect is biased towards smaller values. The present script is based on the p-curve app version 4.0.
+
+One of the main problems with p-curve is the use of text mining to generate input, and the presence of heterogeneous tests (https://peerj.com/articles/1715/). In the case of MetaLab, however, all test statistics were entered by hand and concern a homogeneous research literature (within each dataset). Further, we only enter the *main* test statistic which would also be used to calculate effect sizes in our meta-analysis. Therefore, we believe that p-curve is an appropriate analysis for the dataset. 
+
+# P-curves
+
+## Data preparation
+
+When reported or necessary to calculate effect sizes, we note the t-value or F-score for each record (a single study). We do not consider studies for which this information was unavailable in the following analyses. 
+
+To calculate p-values from $t$-values and $F$-scores, we also need the degrees of freedom. When one group of participants was tested, we use $N-1$, for a two group comparison design we use $N-2$. $F$-scores require two degrees of freedom, the first one however is always one in the main analysis of interest (we do not enter or consider e.g., interactions of the main effect of interest with covariates such as age, gender, etc.).
+
+We need to source code from the p-curve app. This p-curve report is based on the p-curve app 4.0 (accessed 25.02.2015) via code from the [app](http://p-curve.com/app4/App%204.0%20p-curve%202016%2001%2011.r). We have heavily adapted this code, however. 
+
+```{r}
+source("pcurve.R")
+```
+
+Set global variables
+```{r}
+ALPHA = .05
+P_INCREMENT = .01 
+```
+
+Get all data necessary to do p-curve calculations
+```{r}
+pc.data <- get_all_pc_data(all_data, ALPHA, P_INCREMENT)
+```
+
+## P-curve for each individual dataset
+```{r}
+pc.data %>%
+  group_by(dataset) %>%
+  do(get_p_curve_df(., ALPHA, P_INCREMENT)) %>%
+  ggplot(aes(x = p, y = value, lty = measure, color = measure)) + 
+  geom_line(size = .7) +
+  scale_colour_manual(values = c("red", "green", "blue")) +
+  scale_linetype_manual(values = c("dashed", "dashed", "solid"))  +
+  facet_wrap(~ dataset) 
+```
+
+## Test for right skew.
+We employ inferential statistics to test whether the p-curves are right skewed, i.e. whether they have eveidential value. Following Simonsohn, Simmons and Nelson (2015) we use Stouffer method. This method is less sensitive to outlier, relative to Fischer method (in the 2014a paper).
+
+* full + half
+* 33 
+
+```{r}
+stouffer.data = pc.data %>%
+  group_by(dataset) %>%
+  do(data.frame(stouffer = stouffer_test(., ALPHA))) 
+
+ggplot(stouffer.data, aes(x = dataset, y = stouffer.pp.measure, 
+                          fill = stouffer.sig)) +
+  geom_tile() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = c("blue","pink"))
+  
+```
+
+## Get power, based on p-curve
+```{r}
+power.data = pc.data %>%
+  group_by(dataset) %>%
+  do(data.frame(power = get_pc_power(., ALPHA))) 
+
+ggplot(power.data, aes(x = dataset, y = power, fill = dataset)) +
+  geom_hline(yintercept = .8, lty = 2) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  ylim(0,1) +
+  theme(legend.position = "none")
+```
+
+## Get effect size, based on p-curve.
+P-curve effect size severely overestimates effect size. This is because an assumption of this calculation is that the test statistic is greater than 0, and thus we inflate the effect size by including only positive effects. For this reason, we are not including P-curve based effect sizes in the paper. 
+```{r}
+pc_es = pc.data %>%
+  group_by(dataset) %>%
+  do(data.frame(get_pc_es(., ALPHA))) 
+
+obs_es =  all_data %>%
+  group_by(dataset) %>%
+  summarise(d = summary(rma(d_calc,d_var_calc,
+             slab = short_cite, 
+             data = .))$b[1],
+            ci_lb = summary(rma(d_calc,d_var_calc,
+             slab = short_cite, 
+             data = .))$ci.lb[1],
+            ci_ub = summary(rma(d_calc,d_var_calc,
+             slab = short_cite, 
+             data = .))$ci.ub[1]) %>%
+  mutate(method = "observed")
+
+all_es = rbind(pc_es, obs_es)
+
+ggplot(all_es, aes(y = d, x = dataset, group = method, 
+                   color = method)) +
+  geom_pointrange(aes(ymin = ci_lb, ymax = ci_ub ), 
+                  position = position_dodge(width = .1)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# TO DO:
+# check code!!
+# ncp parameter for f? Can't interpret effect sizes.
+# why are some datasets missing? -> we only have test statistics for 6/11- is there a way to recover this?
+```
+
+# Orwin's Fail-Safe-N
+
+From Metafor package: "The Orwin method calculates the number of studies averaging null results that would have to be added to the given set of observed outcomes to reduce the (unweighted) average effect size to a target (unweighted) average effect size. The method is described in Orwin (1983)."
+
+```{r}
+fsn.data = all_data %>%
+  group_by(dataset) %>%
+  summarise(fs_num = fsn(d_calc, d_var_calc, data = all_data, type="Orwin")$fsnum)
+
+ggplot(fsn.data, aes(y = fs_num, x = dataset, fill = dataset)) +
+  geom_bar(stat = "identity") +
+  ylab("Fail-Safe-N") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "none")
+```
+
+# Funnel Plot
+
+```{r}
+```

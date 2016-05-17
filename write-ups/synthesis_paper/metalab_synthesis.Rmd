@@ -2,9 +2,9 @@
 title: "A Quantitative Synthesis of Early Language Acquisition Using Meta-Analysis"
 shorttitle: "A Quantitative Synthesis"
 author: 
-  - name:  Molly Lewis*
+  - name:  Molly Lewis
     affiliation: 1
-  - name: Mika Braginsky*
+  - name: Mika Braginsky
     affiliation: 1
   - name: Sho Tsuji
     affiliation: 2
@@ -28,11 +28,9 @@ abstract: |
 note: |  
   Correspondence concerning this article should be addressed to Molly Lewis, Psychology Department, Stanford University. 450 Serra Mall, Stanford, CA 94305. E-mail: mll@stanford.edu.
   
-  \*Contributed equally to this work.
-  
 keywords: "replicability, reproducibility, meta-analysis, developmental psychology, language acquisition"
 
-wordcount: "XXX"
+wordcount: "XXXX"
 
 class: man
 lang: american
@@ -45,6 +43,7 @@ output: papaja::apa6_pdf
 ---
 
 ```{r message = FALSE, warning = FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, cache = TRUE)
 require("papaja")
 apa_prepare_doc() # Prepare document for rendering
 ```
@@ -75,54 +74,49 @@ Towards this end, we introduce [Metalab](http://metalab.stanford.edu/).
 
 
 # Method
-```{r load data, eval = F}
-source("../../dashboard/global.R", chdir = TRUE)
-#We calculated estimates of effect sizes for `r nrow(datasets)` different phenomenena in language acquisition. We selected these phenomena in order to describe development at many different levels of the language hierarchy, from the acquistion of prosody and phonemic contrasts, to gaze following in linguistic interaction. This wide range of phenomena allowed us to compare the course of development across different domains, as well as explore questions about the interactive nature of language acquisition. 
-
-#Estimates of effect size were based on journal reports of experimental data.  In total, our sample includes estimates from `r datasets$num_papers`, `r datasets$num_experiments` different experiments and, `r datasets$num_subject` participants. 
+```{r load data}
+#source("../../dashboard/global.R", chdir = T)
+source("/Documents/GRADUATE_SCHOOL/Projects/metalab/metalab/dashboard/global.R",chdir = T)
 
 #citations - [e.g., @bauer_2014; @bem_2011] 
 #citations - @bauer_2014 → Baumer et al. (2014).
 #italics - *R* 
 #html - [RMarkdown](http://rmarkdown.rstudio.com/)
 
-
 ```
 
-We calculated estimates of effect sizes for XX different phenomena in language acquisition. We selected these phenomena in order to describe development at many different levels of the language hierarchy, from the acquistion of prosody and phonemic contrasts, to gaze following in linguistic interaction. This wide range of phenomena allowed us to compare the course of development across different domains, as well as explore questions about the interactive nature of language acquisition. 
+We calculated estimates of effect sizes for `r nrow(datasets)` different phenomenena in language acquisition. We selected these phenomena in order to describe development at many different levels of the language hierarchy, from the acquistion of prosody and phonemic contrasts, to gaze following in linguistic interaction. This wide range of phenomena allowed us to compare the course of development across different domains, as well as explore questions about the interactive nature of language acquisition. 
 
-Estimates of effect size were based on journal reports of experimental data.  In total, our sample includes estimates from XX, XX different experiments and, XX participants. 
+Estimates of effect size were based on journal reports of experimental data.  In total, our sample includes estimates from `r sum(datasets$num_papers)` papers, `r sum(datasets$num_experiments)` different experiments and `r format(floor(sum(datasets$num_subject)), big.mark=",", scientific=FALSE)` participants. 
 
 The process for selecting papers from the literature differed by domain, with some individual meta-analyses using more systematic approaches than others. [Simulations here?]
 
 TABLE
 
-## Statistical approach
-
-
 # Replicability of the field
-Effect size can vary between studies for reasons unrelated to a theoretical construct. One reason for this variability is the precision of the effect size, which we can model based on the sample size of the study. A remaining source variability, however, are biases introduced directly by the experimenter, via publication bias [@rothstein2006publication; @rosenthal1979file; @Fanelli:2010kf], p-hacking through analytical flexibility [@Simmons:2011iw; @Simonsohn:2014ch; @simonsohn2015better; @simonsohn2014p], or even fraud. These biases are much more difficult to model, and may therefore lead to large but unknown errors in estimates of the effect size. If these types of practices are present in the literature, estimates of effect size may be poor estimates of the true underlying effect size, making it extremely difficult to make theoretical progress. Below we present analyses of publicaiton bias and p-hacking that reveal no evidence of systematic experimenter bias in the language acquistion literature.
+Effect size can vary between studies for reasons unrelated to a theoretical construct. One reason for this variability is the precision of the effect size, which we can model based on the sample size of the study. A remaining source variability, however, are biases introduced directly by the experimenter, via publication bias [@rothstein2006publication; @rosenthal1979file; @Fanelli:2010kf], analytical flexibility [@Simmons:2011iw], reporting errors, or even fraud. These biases are much more difficult to model, and may therefore lead to large but unknown errors in estimates of the effect size. If these types of practices are present in the literature, estimates of effect size may be poor estimates of the true underlying effect size, making it difficult to make theoretical progress. Below we present analyses examining whether signatures of publication bias and analytical flexibility are present in the language acquistion literature. We find little evivdence of these biases. 
 
--> if we find bias, could be selection bias in meta-analysis
+## p-curves
+[@Simonsohn:2014ch; @simonsohn2015better; @simonsohn2014p]
+Across studies we should expect some variability in effect size due to sampling error alone. But this variability in effect size should be *systematic*: There should be less variability around the mean for more precise studies, as measured by sample size. The presence of variability in effect sizes that is not accounted for sample size may suggest publication bias in a literature.
 
-## Publication bias
-Across studies we should expect some variability in effect size due to measurement and sampling noise alone. But this variability in effect size should be *systematic*: there should be less variability for more precise studies, as measured by sample size. The presence of variability in effect sizes that is not accounted for sample size may suggest publication bias in a literature.
+bias introduced by meta-analysis in selection (second-order selection bias)
 
+## Funnel
 * Egger's regression test
-* Begg and Mazumdar’s rank correlation test - low power
-* many sources of assymetry, eg. selection level
-* are there ways to estimate selection model based on systmatic MAs? [need ps?]
-* Ferguson-- reports of publication bias in literature
-* Francis (2014) --TES method for significance in a paper (Maybe do this with ME?); do this with effect size?
 
-## P-hacking
-(p-curves)
+## Orwin
 
 ## Power
 Ioannidis and Trikalinos (2007) 
 
+TABLE WITH: Eggers regression, p-curve (stouffer), regular power, p-power, orwin
+
 
 # Theoretical Synthesis
+OUTLINE
+## Statistical Approach
+
 
 
 # Discussion
