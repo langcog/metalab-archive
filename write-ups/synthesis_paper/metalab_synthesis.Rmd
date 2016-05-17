@@ -37,7 +37,7 @@ lang: american
 figsintext: yes
 lineno: no
 bibliography:
-  - metalab_update.bib
+  - metalab_synthesis.bib
 
 output: papaja::apa6_pdf
 ---
