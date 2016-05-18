@@ -137,7 +137,7 @@ shinyServer(function(input, output, session) {
 
   output$studies_box <- renderValueBox({
     valueBox(
-      nrow(data()), "Studies", icon = icon("list", lib = "glyphicon"),
+      nrow(data()), "Conditions", icon = icon("list", lib = "glyphicon"),
       color = "red"
     )
   })
