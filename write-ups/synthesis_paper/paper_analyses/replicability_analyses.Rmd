@@ -1,7 +1,7 @@
 ---
-title: "Reproducibility Analyses for Synthesis Paper"
+title: "Replicability Analyses for Synthesis Paper"
 author: "Molly Lewis, Christina Bergmann, and Mike Frank"
-output: html_document
+date: "`r Sys.Date()`"
 ---
 
 ```{r, setup, include = FALSE}
@@ -18,8 +18,15 @@ library(pwr)
 library(metafor)
 library(knitr)
 ```
-# Average effect size
-# get mean power by dataset
+
+This document includes all the analyses for the "replicability" section of the Synthesis Paper. Abbreviated versions of this code are included in the manuscript. Here we analyze five different features of replicability: overall effect size, p-curve, power, fail-safe-N, and funnel plot skew.
+
+TO DO:
+
+* funnel plots
+* add egger plots
+
+## Average effect size
 ```{r}
 overall_es <- function(ma_data){
   model = rma(ma_data$d_calc, ma_data$d_var_calc, method = "REML",
@@ -37,19 +44,31 @@ all_ds = all_data %>%
   group_by(dataset) %>%
   mutate(overall.d = round(overall.d, digits = 2),
          ci_lower  = round(ci_lower, digits = 2),
-         ci_upper = round(ci_upper, digits = 2)) 
+         ci_upper = round(ci_upper, digits = 2))
 
-kable(all_ds)
+#kable(all_ds)
+
+qplot(reorder(dataset,-overall.d), overall.d, ymin = ci_lower, ymax = ci_upper,
+          geom = "linerange",
+          data = all_ds) +
+      geom_point(aes(y = overall.d)) +
+      geom_pointrange(aes_string(x = "dataset", y = "overall.d",
+                                 ymin = "ci_lower", ymax = "ci_upper")) +
+      geom_hline(yintercept = 0, linetype = "dashed", color = "grey") +
+      coord_flip() +
+      scale_size_continuous(guide = FALSE) +
+      scale_colour_solarized(name = "", labels = labels) +
+      xlab("Dataset") +
+      ylab("Effect Size")
 ```
 
-# P-curves
-
+## P-curves
 P-curves have been proposed as one (of many) ways to measure publication biases, because so-called p-hacking (conducting multiple statistical analyses, excluding data points, etc. until a p-value below the significance threshold [typically .05] is reached) can lead to an inflation of high p-values that are nonetheless significant. The exected distribution of p-values in the absence of prevalent p-hacking of a null effect is biased towards smaller values. The present script is based on the p-curve app version 4.0.
 
 One of the main problems with p-curve is the use of text mining to generate input, and the presence of heterogeneous tests (https://peerj.com/articles/1715/). In the case of MetaLab, however, all test statistics were entered by hand and concern a homogeneous research literature (within each dataset). Further, we only enter the *main* test statistic which would also be used to calculate effect sizes in our meta-analysis. Therefore, we believe that p-curve is an appropriate analysis for the dataset. 
 
 
-## Data preparation
+### Data preparation
 
 When reported or necessary to calculate effect sizes, we note the t-value or F-score for each record (a single study). We do not consider studies for which this information was unavailable in the following analyses. 
 
@@ -59,20 +78,16 @@ We need to source code from the p-curve app. This p-curve report is based on the
 
 ```{r}
 source("pcurve.R")
-```
 
-Set global variables
-```{r}
+# Set global variables
 ALPHA = .05
 P_INCREMENT = .01 
-```
 
-Get all data necessary to do p-curve calculations
-```{r}
+# Get all data necessary to do p-curve calculations
 pc.data <- get_all_pc_data(all_data, ALPHA, P_INCREMENT)
 ```
 
-## P-curve for each individual dataset
+### P-curves
 ```{r}
 pc.data %>%
   group_by(dataset) %>%
@@ -84,12 +99,8 @@ pc.data %>%
   facet_wrap(~ dataset) 
 ```
 
-## Test for right skew.
-We employ inferential statistics to test whether the p-curves are right skewed, i.e. whether they have eveidential value. Following Simonsohn, Simmons and Nelson (2015) we use Stouffer method. This method is less sensitive to outlier, relative to Fischer method (in the 2014a paper).
-
-* full + half
-* 33 
-
+### Test for right skew.
+We employ inferential statistics to test whether the p-curves are right skewed, i.e. whether they have eveidential value. Following Simonsohn, Simmons and Nelson (2015) we use the  Stouffer method. This method is less sensitive to outliers, relative to Fischer method (in the 2014a paper). We test full, half, 33 power, and full powered versions.
 
 ```{r}
 stouffer.data = pc.data %>%
@@ -100,29 +111,16 @@ ggplot(stouffer.data, aes(x = dataset, y = stouffer.pp.measure,
                           fill = stouffer.sig)) +
   geom_tile() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_fill_manual(values = c("blue","pink"))
+  scale_fill_manual(values = c("blue", "pink"))
   
 ```
 
-## Get power, based on p-curve
-```{r}
-power.data = pc.data %>%
-  group_by(dataset) %>%
-  do(data.frame(power = get_pc_power(., ALPHA))) 
-
-ggplot(power.data, aes(x = dataset, y = power, fill = dataset)) +
-  geom_hline(yintercept = .8, lty = 2) +
-  geom_bar(stat = "identity") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  ylim(0,1) +
-  theme(legend.position = "none")
-```
-
-## Raw power
-Just for comparision, let's also get an estimate of the power using pwr.t.test.
+## Power
+### Raw power
+Just for comparision, let's  get an estimate of the power using pwr.t.test to compare to p-curve. (I'm not totally sure this is reasonable)
 ```{r}
 powers = all_data %>%
-  left_join(all_ds) %>%
+  left_join(all_ds %>% rename(short_name = dataset)) %>%
   select(dataset, short_name, overall.d, n_1, n_2,participant_design) %>%
   rowwise %>%
   mutate(power = unlist(ifelse(participant_design == "within_one",
@@ -131,11 +129,12 @@ powers = all_data %>%
                             pwr.t.test(d = overall.d, n = n_1, type = "two.sample")["power"],
                             pwr.t.test(d = overall.d, n = sum(n_1, n_2)/2, type = "paired")["power"]))))
 
-powers = powers %>%
+raw_power_means = powers %>%
   group_by(dataset) %>%
   multi_boot_standard(column = "power", na.rm = T) %>%
-  rename(mean_power = mean) %>%
-  left_join(powers) %>%
+  rename(mean_power = mean) 
+
+powers = left_join(powers, raw_power_means) %>%
   filter(!is.na(mean_power))
   
 ggplot(powers, aes(x = power, fill = short_name)) +
@@ -144,11 +143,36 @@ ggplot(powers, aes(x = power, fill = short_name)) +
   facet_wrap(~short_name, scales =  "free_y") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         legend.position = "none")
+
 ```
 
+### P-curve power
+```{r}
+power.data = pc.data %>%
+  group_by(dataset) %>%
+  do(data.frame(power = get_pc_power(., ALPHA))) 
+```
 
-## Get effect size, based on p-curve.
-P-curve effect size dramatically inflates effect size in our set of meta-analyses. This is because an assumption of this calculation is that the test statistic is greater than 0, and thus we inflate the effect size by including only positive effects. For this reason, we are not including P-curve based effect sizes in the paper. 
+### Compare power estimates
+```{r}
+left_join(raw_power_means, power.data) %>%
+  rename(p.curve.power = power,
+         raw.mean.power = mean_power) %>%
+  gather("method", "power",  c(2,5)) %>%
+  mutate(ci_lower = ifelse(method == "p.curve.power", NA, ci_lower),
+         ci_upper = ifelse(method == "p.curve.power", NA, ci_upper)) %>%
+  ggplot(aes(x = dataset, group = method, y = power, fill = method)) +
+  geom_hline(yintercept = .8, lty = 2) +
+  geom_bar(stat = "identity",  position = "dodge") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  ylim(0,1) 
+```
+Pretty different...
+
+
+### P-curve effect size
+Can use a similiar approach as power to calculate effect sizes. However, p-curve effect size dramatically inflates effect size in our set of meta-analyses. This is because an assumption of this calculation is that the test statistic is greater than 0, and thus we inflate the effect size by including only positive effects. For this reason, we are not including p-curve based effect sizes in the paper. 
+
 ```{r, eval = F}
 pc_es = pc.data %>%
   group_by(dataset) %>%
@@ -181,11 +205,11 @@ ggplot(all_es, aes(y = d, x = dataset, group = method,
 # why are some datasets missing? -> we only have test statistics for 6/11- is there a way to recover this?
 ```
 
-# Orwin's Fail-Safe-N
+## Fail-Safe-N
 From Metafor package documentation: "The Orwin method calculates the number of studies averaging null results that would have to be added to the given set of observed outcomes to reduce the (unweighted) average effect size to a target (unweighted) average effect size. The method is described in Orwin (1983)."
 
-Analysis of different measures of FSN. With no target, package assumes mean of unweighted average. Book and metafor the same. Weighted average of ds (from rma) only slight less. Conclusion: Just use the package, unless we think the weighted average is better.
-
+### Comparision of FSN measures
+Analysis of different measures of FSN. With no target, package assumes half of unweighted average. Book and metafor the same. Weighted average of ds (from rma) only slightly less.
 ```{r}
 fsn.package.data = all_data %>%
   group_by(dataset) %>%
@@ -226,7 +250,9 @@ ggplot(fsn.data, aes(y = fsn, x = fsn_type, color = short_name)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
+Conclusion: Just use the package, unless we think the weighted average is better.
 
+### Plot Fail-Safe-N
 ```{r}
 fsn.package.data = all_data %>%
   group_by(dataset) %>%
@@ -235,27 +261,76 @@ fsn.package.data = all_data %>%
   left_join(datasets %>% select(name, short_name), by= c("dataset" = "name")) %>%
   select(-dataset)
 
-ggplot(fsn.package.data, aes(y = fsn_package, x = dataset, fill = dataset)) +
+ggplot(fsn.package.data, aes(y = fsn_package, x = short_name, fill = short_name)) +
   geom_bar(stat = "identity") +
   ylab("Fail-Safe-N") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         legend.position = "none")
 ```
+Assuming a critical value of zero (techincally, .01), the FSN are huge for the most part. These values are much larger than a previous version because I wasn't passing a critical value (namely, 0), and without this argument the function assumes the critical values is half of the mean effect size.
 
-# Funnel Plot
-```{r}
+## Funnel Plot
+### Plots
+```{r, eval = F}
+EXPAND_FACTOR  = 3.29
+xlabel <- "\nEffect Size"
+
+funnel.es.data = all_data %>%
+  mutate(se = sqrt(d_var_calc), 
+         es = d_calc, 
+         center = mean(d_calc), 
+         lower_lim = max(se) + .05 * max(se),
+         left_lim99 = ifelse(center - lower_lim * EXPAND_FACTOR < min(es),
+                     center - lower_lim * EXPAND_FACTOR,
+                     min(es)),
+         right_lim99 = ifelse(center + lower_lim * EXPAND_FACTOR > max(es),
+                      center + lower_lim * EXPAND_FACTOR,
+                      max(es)))
+
+funnel95 <- data.frame(funnel95.x = c(center - lower_lim * 1.96, center,
+                             center + lower_lim * 1.96),
+                       funnel95yx = c(-lower_lim, 0, -lower_lim))
+
+funnel99 <- data.frame(x = c(center - lower_lim * EXPAND_FACTOR, center,
+                             center + lower_lim * EXPAND_FACTOR),
+                       y = c(-lower_lim, 0, -lower_lim))
+
+ggplot(funnel.es.data, aes(x = es, y = -se)) +
+  scale_colour_solarized(name = "") +
+  #scale_x_continuous(limits = c(left_lim99[1], right_lim99[1])) +
+  scale_y_continuous(expand = c(0, 0),
+                     breaks = round(seq(0, -max(funnel.es.data$se), length.out = 5), 2),
+                     labels = round(seq(0, max(funnel.es.data$se), length.out = 5), 2)) +
+  #geom_polygon(aes(x = x, y = y), data = funnel95, alpha = .5,
+           #    fill = "white") +
+  #geom_polygon(aes(x = x, y = y), data = funnel99, alpha = .5,
+               #fill = "white") +
+  geom_vline(xintercept = center, linetype = "dotted", color = "black") +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey") +
+  geom_point() +
+  xlab(xlabel) +
+  geom_text(x = center + lower_lim * 1.96 / 2,
+            y = -lower_lim + lower_lim / 30, family = font,
+            label = "p < .05", vjust = "bottom", hjust = "center") +
+  geom_text(x = (center + lower_lim * 1.96) + (lower_lim * 3.29 - lower_lim * 1.96) / 2,
+            y = -lower_lim + lower_lim / 30,
+            label = "p < .01", vjust = "bottom", hjust = "center") +
+  ylab("Standard error\n") +
+  facet_wrap(~dataset) +
+  theme(panel.background = element_rect(fill = "grey"),
+        panel.grid.major =  element_line(colour = "darkgrey", size = 0.2),
+        panel.grid.minor =  element_line(colour = "darkgrey", size = 0.5))
 
 ```
 
-## Test for funnel plot asymmetry
+### Test for funnel plot asymmetry
 
-From Anzures-Cabrera & Higgins (2010): "
+Egger and Sterne (2005): "
+Egger et al. (1997) introduced a linear regression approach in which the standard normal deviate zi (defined as zi = i/si is regressed against its precision preci (defined as preci =1/si) <>. The smaller the trial, the smaller will be its precision. In the absence of funnel plot asymmetry, the points in a plot of zi against preci – a plot that corresponds to Galbraith’s (1988) radial plot – will scatter about a line that runs through the origin at standard normal deviate zero (intercept 0 = 0), with the slope 1 indicating the size and direction of effect. This situation corresponds to a symmetrical funnel plot. If there is funnel plot asymmetry, the regression line will not run through the origin, so that the intercept 0 provides a measure of asymmetry – the larger its deviation from zero the more pronounced the asymmetry. A test of the null hypothesis that 0 = 0 (no funnel plot asymmetry) can be derived from the usual regression output produced by statistical packages: the two-sided p-value should be reported. This test is often referred to as the ‘Egger test’ and has been widely used as a test for funnel plot asymmetry."
 
-Mathematically, a Galbraith plot is a scatter plot of standardized effect estimates (estimates divided by their standard errors, or yi / si) against inverse standard error (1/ si). Imprecise estimates of effect lie near the origin and precise estimates further away, so that distance from the origin conveys the relative amounts of information in the different studies. An unweighted regression line constrained through the origin has a slope equal to  the fixed-effectmeta-analysis point estimate. Similarly, lines from the origin to each individual point have slope equal to the (unstandardized) point estimate in each study. A radial (arc of a circle) scale can be used to illustrate these slopes, allowing immediate derivation of point estimates from the studies and the meta-analysis. When the radial scale is added, Galbraith plots are sometimes called ‘radial plots’. A statistical test for non-zero intercept in an unconstrained line through the plotted points is equivalent to a particular test for funnel plot asymmetry [33]."
+Anzures-Cabrera & Higgins (2010): "Mathematically, a Galbraith plot is a scatter plot of standardized effect estimates (estimates divided by their standard errors, or yi / si) against inverse standard error (1/ si). Imprecise estimates of effect lie near the origin and precise estimates further away, so that distance from the origin conveys the relative amounts of information in the different studies. An unweighted regression line constrained through the origin has a slope equal to  the fixed-effectmeta-analysis point estimate. Similarly, lines from the origin to each individual point have slope equal to the (unstandardized) point estimate in each study. A radial (arc of a circle) scale can be used to illustrate these slopes, allowing immediate derivation of point estimates from the studies and the meta-analysis. When the radial scale is added, Galbraith plots are sometimes called ‘radial plots’. A statistical test for non-zero intercept in an unconstrained line through the plotted points is equivalent to a particular test for funnel plot asymmetry [33]."
 
-Eggers and Sterne (2005) - regression test
-
-Trying to understand the different tests.
+#### Trying to understand the different tests.
 ```{r, eval = F}
 me = filter(all_data, dataset == "Mutual exclusivity")
 # [1] No moderators
@@ -302,6 +377,7 @@ ggplot(resid_df, aes(x = 1/sqrt(d_resid), y = d_resid/sqrt(d_var_calc))) +
   geom_hline(yintercept = 0)
 ```
 
+#### Summary
 ```{r}
 eggers_tests <- function(ma_data){
     # models
@@ -340,6 +416,4 @@ ggplot(eggers, aes(x = dataset, y =  p.type ,
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_fill_manual(values = c("blue","pink"))
 ```
-It matters for inworddb and ids pref which measure we use. My vote is for random with age moderator.
-
-
+Overall, mostly not skewed. It matters for inworddb and idspref which measure we use. My vote is for random with age moderator.
