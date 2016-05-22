@@ -81,7 +81,9 @@ Towards this end, we introduce [Metalab](http://metalab.stanford.edu/).
 # Method
 ```{r load data}
 source("../../dashboard/global.R", chdir = T)
-library(dplyr)
+library(metafor)
+# Tried installling packrat, but got error: Error in hash(descFile) : 
+#No DESCRIPTION file at path #'/Documents/GRADUATE_SCHOOL/Projects/metalab/metalab/write-ups/synthesis_paper/packrat#/lib/x86_64-apple-darwin13.4.0/3.2.1/BH/DESCRIPTION'!
 
 #citations - [e.g., @bauer_2014; @bem_2011] 
 #citations - @bauer_2014 → Baumer et al. (2014).
@@ -202,8 +204,7 @@ table.data = left_join(select(all_ds, -dataset), power.data) %>%
               left_join(stouffer.data) %>%
               left_join(eggers.data) %>%
               left_join(fsn.package.data) %>%
-          select(datset, contains("string"))
-  
+          select(dataset, contains("string"))
 ```
 
 
@@ -215,7 +216,7 @@ table.data = left_join(select(all_ds, -dataset), power.data) %>%
 		\hline
 		IDS  preference                  & `r all_ds[all_ds$dataset=="idspref", "d_string"]`         & ~         & `r stouffer.data[stouffer.data$dataset=="idspref", "string"]`     & ~            & ~   \\ 
 		Phonotactic learning              & `r all_ds[all_ds$dataset=="phonotactics", "d_string"]`          & ~         & `r stouffer.data[stouffer.data$dataset=="phonotactics", "string"]`     & ~            & ~         \\ 
-		Vowel discrimintation (native)    & `r all_ds[all_ds$dataset=="inphondb-native", "d_string"]`           & ~         & `r stouffer.data[stouffer.data$dataset==inphondb-native", "string"]`     & ~            & ~             \\ 
+		Vowel discrimintation (native)    & `r all_ds[all_ds$dataset=="inphondb-native", "d_string"]`           & ~         & `r stouffer.data[stouffer.data$dataset=="inphondb-native", "string"]`     & ~            & ~             \\ 
 		Vowel discrimination (non-native) & `r all_ds[all_ds$dataset=="inphondb-nonnative", "d_string"]`           & ~         & `r stouffer.data[stouffer.data$dataset=="inphondb-nonnative", "string"]`     & ~            & ~           \\ 
 		Statistical sound learning        & `r all_ds[all_ds$dataset=="sounds", "d_string"]`           & ~         & `r stouffer.data[stouffer.data$dataset=="sounds", "string"]`     & ~            & ~             \\ 
 		Word segmentation                 & `r all_ds[all_ds$dataset=="inworddb", "d_string"]`           & ~         & `r stouffer.data[stouffer.data$dataset=="inworddb", "string"]`     & ~            & ~             \\ 
@@ -260,7 +261,6 @@ METAMETAPLOT
 \newpage
 
 ### References
-
 
 ---
 nocite: | 

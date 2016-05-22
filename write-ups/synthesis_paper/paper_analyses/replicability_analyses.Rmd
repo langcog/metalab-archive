@@ -92,10 +92,12 @@ pc.data <- get_all_pc_data(all_data, ALPHA, P_INCREMENT)
 pc.data %>%
   group_by(dataset) %>%
   do(get_p_curve_df(., ALPHA, P_INCREMENT)) %>%
-  ggplot(aes(x = p, y = value, lty = measure, color = measure)) + 
-  geom_line(size = .7) +
-  scale_colour_manual(values = c("red", "green", "blue")) +
-  scale_linetype_manual(values = c("dashed", "dashed", "solid"))  +
+  ggplot(aes(x = p, y = value, linetype = measure, color = measure)) + 
+  geom_line(size = 1) +
+  scale_colour_manual(name = "", values = c("red", "green", "blue"),labels=c("baseline", "expected", "observed")) +
+  scale_linetype_manual(values = c("dashed", "dashed", "solid"), guide = FALSE)  +
+  ylab("") +
+  #scale_colour_discrete(labels=c("baseline", "expected", "observed")) +
   facet_wrap(~ dataset) 
 ```
 
