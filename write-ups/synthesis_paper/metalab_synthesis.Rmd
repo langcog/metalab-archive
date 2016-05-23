@@ -81,7 +81,9 @@ Towards this end, we introduce [Metalab](http://metalab.stanford.edu/).
 # Method
 ```{r load data}
 source("../../dashboard/global.R", chdir = T)
+source("paper_analyses/pcurve.R")
 library(metafor)
+library(knitr)
 # Tried installling packrat, but got error: Error in hash(descFile) : 
 #No DESCRIPTION file at path #'/Documents/GRADUATE_SCHOOL/Projects/metalab/metalab/write-ups/synthesis_paper/packrat#/lib/x86_64-apple-darwin13.4.0/3.2.1/BH/DESCRIPTION'!
 
@@ -92,35 +94,42 @@ library(metafor)
 
 ```
 
-We calculated estimates of effect sizes for `r nrow(datasets)` different phenomenena in language acquisition. We selected these phenomena in order to describe development at many different levels of the language hierarchy, from the acquistion of prosody and phonemic contrasts, to gaze following in linguistic interaction. This wide range of phenomena allowed us to compare the course of development across different domains, as well as explore questions about the interactive nature of language acquisition. 
+We analyzed `r nrow(datasets)` different phenomenena in language acquisition. We selected these phenomena in order to describe development at many different levels of the language hierarchy, from the acquistion of prosody and phonemic contrasts, to gaze following in linguistic interaction. This wide range of phenomena allowed us to compare the course of development across different domains, as well as explore questions about the interactive nature of language acquisition (Table 1). 
 
-Estimates of effect size were based on journal reports of experimental data.  In total, our sample includes estimates from `r sum(datasets$num_papers)` papers, `r sum(datasets$num_experiments)` different conditions and `r format(floor(sum(datasets$num_subject)), big.mark=",", scientific=FALSE)` participants. 
-
-The process for selecting papers from the literature differed by domain, with some individual meta-analyses using more systematic approaches than others. [Simulations here?]
+To obtain estimates of effect size, we coded papers reporting experimental data. Within each paper, we calculated a separate effect size estimate for each experiment and age group ("conditions"). In total, our sample includes estimates from `r sum(datasets$num_papers)` papers, `r sum(datasets$num_experiments)` different conditions and `r format(floor(sum(datasets$num_subject)), big.mark=",", scientific=FALSE)` participants. The process for selecting papers from the literature differed by domain, with some individual meta-analyses using more systematic approaches than others. [Simulations here?]
 \renewcommand{\arraystretch}{1.5}
 \begin{table}[h!]
 		\footnotesize
 		\begin{tabular}{lp{4cm} p{5cm}r}
+			\toprule
 			\textbf{Level} & \textbf{Phenomenon}                                                               & \textbf{Description}                                                                                 & \textbf{N papers (conditions)}                                                                                                                                               \\
-			\hline
+						\midrule
+
 			Prosody        & IDS  preference  \newline  {\scriptsize (Dunst, Gorman, \& Hamby, 2012)}          & {\scriptsize  `r datasets[datasets$name == "Infant directed speech preference", "short_desc"]`}      & `r datasets[datasets$name == "Infant directed speech preference", "num_papers"]` (`r datasets[datasets$name == "Infant directed speech preference", "num_experiments"]`)     \\
-			Sounds         & Phonotactic learning  \newline {\scriptsize (Cristia, in prep)}                   & {\scriptsize `r datasets[datasets$name == "Phonotactic learning", "short_desc"]`  }                  & `r datasets[datasets$name == "Phonotactic learning", "num_papers"]` (`r datasets[datasets$name == "Phonotactic learning", "num_experiments"]`)                               \\
+			Sounds         & Phonotactic learning  \newline {\scriptsize (Cristia, in prep.)}                   & {\scriptsize `r datasets[datasets$name == "Phonotactic learning", "short_desc"]`  }                  & `r datasets[datasets$name == "Phonotactic learning", "num_papers"]` (`r datasets[datasets$name == "Phonotactic learning", "num_experiments"]`)                               \\
 			~              & Vowel discrimination (native) \newline {\scriptsize (Tsuji \& Cristia, 2014)}     & {\scriptsize `r datasets[datasets$name == "Vowel discrimination (native)", "short_desc"]`  }         & `r datasets[datasets$name == "Vowel discrimination (native)", "num_papers"]` (`r datasets[datasets$name == "Vowel discrimination (native)", "num_experiments"]`)             \\ 
 			~              & Vowel discrimination (non-native) \newline {\scriptsize (Tsuji \& Cristia, 2014)} & {\scriptsize `r datasets[datasets$name == "Vowel discrimination (non-native)", "short_desc"]`  }     & `r datasets[datasets$name == "Vowel discrimination (non-native)", "num_papers"]` (`r datasets[datasets$name == "Vowel discrimination (non-native)", "num_experiments"]`)     \\
 			Phonotactics   & Statistical sound learning  \newline {\scriptsize (Cristia, in prep)}             & {\scriptsize `r datasets[datasets$name == "Statistical sound category learning", "short_desc"]`   }  & `r datasets[datasets$name == "Statistical sound category learning", "num_papers"]` (`r datasets[datasets$name == "Statistical sound category learning", "num_experiments"]`) \\ 
 			Proto-words    & Word segmentation \newline {\scriptsize  (Bergmann \& Cristia, 2015) }            & {\scriptsize `r datasets[datasets$name == "Word segmentation", "short_desc"]`  }                     & `r datasets[datasets$name == "Word segmentation", "num_papers"]` (`r datasets[datasets$name == "Word segmentation", "num_experiments"]`)                                     \\
-			Words     &   Mutual exclusivity \newline {\scriptsize (Lewis \& Frank, in prep)} &{\scriptsize  `r datasets[datasets$name == "Mutual exclusivity", "short_desc"]`}
+			Words     &   Mutual exclusivity \newline {\scriptsize (Lewis \& Frank, in prep.)} &{\scriptsize  `r datasets[datasets$name == "Mutual exclusivity", "short_desc"]`}
 			& `r datasets[datasets$name == "Mutual exclusivity", "num_papers"]` (`r datasets[datasets$name == "Mutual exclusivity", "num_experiments"]`)             \\
 			~              & Concept-label advantage   \newline {\scriptsize (Lewis \& Long, unpublished)}     & {\scriptsize `r datasets[datasets$name == "Label advantage in concept learning", "short_desc"]`    } & `r datasets[datasets$name == "Label advantage in concept learning", "num_papers"]` (`r datasets[datasets$name == "Label advantage in concept learning", "num_experiments"]`) \\
 			~              & Online word recognition \newline {\scriptsize (Frank, Lewis, \& MacDonald, 2016)} & {\scriptsize `r datasets[datasets$name == "Online word recognition", "short_desc"]`   }              & `r datasets[datasets$name == "Online word recognition", "num_papers"]` (`r datasets[datasets$name == "Online word recognition", "num_experiments"]`)                         \\
 			Communication  & Gaze following  \newline {\scriptsize  (Frank, Lewis, \& MacDonald, 2016)}        & {\scriptsize `r datasets[datasets$name == "Gaze following", "short_desc"]`   }                       & `r datasets[datasets$name == "Gaze following", "num_papers"]` (`r datasets[datasets$name == "Gaze following", "num_experiments"]`)                                           \\
 			~              & Pointing and vocabulary  \newline {\scriptsize (Colonnesi et al., 2010)}          & {\scriptsize `r datasets[datasets$name == "Pointing and vocabulary", "short_desc"]`  }               & `r datasets[datasets$name == "Pointing and vocabulary", "num_papers"]` (`r datasets[datasets$name == "Pointing and vocabulary", "num_experiments"]`)                         \\ 
+			\bottomrule
 		\end{tabular}
+		\caption{Overview of meta-analyses in dataset.}
 	\end{table}
+	
 # Replicability of the field
-Effect size can vary between studies for reasons unrelated to a theoretical construct. One reason for this variability is the precision of the effect size, which we can model based on the sample size of the study. A remaining source variability, however, are biases introduced directly by the experimenter, via publication bias [@rothstein2006publication; @rosenthal1979file; @Fanelli:2010kf], analytical flexibility [@Simmons:2011iw], reporting errors, or even fraud. These biases are much more difficult to model, and may therefore lead to large but unknown errors in estimates of the effect size. If these types of practices are present in the literature, estimates of effect size may be poor estimates of the true underlying effect size, making it difficult to make theoretical progress. Below we present analyses examining whether signatures of publication bias and analytical flexibility are present in the language acquistion literature. We find little evivdence of these biases.
+A literature is more likely to describe a real effect if studies are randomly sampled from the population of all possible  studies that researchers could in principle conduct. This assumption does not mean, however,  that there should be *no* variability in effect size across studies: We should expect random variation around the true mean effect size, with smaller studies varying more. 
 
+Variability in effect sizes will be biased when this random study sampling assumption does not hold. Bias may be introduced by the experimenter through failure to publish null findings ["publication bias", @rothstein2006publication; @rosenthal1979file; @Fanelli:2010kf], analytical flexibility [e.g., "p-hacking", @Simmons:2011iw; @simonsohn2014p], reporting errors, or even fraud. These biases may lead to large but unknown errors in estimates of the effect size. If bias is present in the literature, estimates of effect size may be poor estimates of the true underlying effect size and thus provide little evidential value. To make theoretical progress, we must therefore distinguish variability in effect sizes due to sample size from varability due to bias.
 
+To assess the replicability of language acquisition phenomena, we conducted several key analyses: Fail-safe-N, funnel plots, and p-curve. These methods each have limitations, but taken together, they provide converging evidence about the presence of bias in a literature. We find little evidence of bias in our meta-analyses, suggesting that the language acqusition literature describes real psychological phenomenona and can therefore provide the basis for theoretical development. 
+
+## Fail-safe-N
 ```{r, overall_d}
 overall_es <- function(ma_data){
   model = metafor::rma(ma_data$d_calc, ma_data$d_var_calc, method = "REML",
@@ -135,44 +144,33 @@ all_ds = all_data %>%
   split(.$short_name) %>%
   map(function(ma_data) overall_es(ma_data)) %>%
   bind_rows() %>%
-  mutate_each_(funs(round(., digits = 2)), vars = c("overall.d", "ci_lower", "ci_upper")) %>%
+  mutate_each_(funs(round(., digits = 2)), 
+               vars = c("overall.d", "ci_lower", "ci_upper")) %>%
   mutate(d_string = paste0(overall.d, " [", ci_lower, ", ",ci_upper, "]")) %>%
   mutate(short_name = dataset)
 ```
 
-```{r, pcurve_power}
-source("paper_analyses/pcurve.R")
-
-ALPHA = .05
-P_INCREMENT = .01 
-
-pc.data <- get_all_pc_data(all_data, ALPHA, P_INCREMENT)
-
-power.data = pc.data %>%
+```{r, fail_safe_N}
+fsn.package.data = all_data %>%
   group_by(dataset) %>%
-  do(data.frame(power = get_pc_power(., ALPHA)))  %>%
-  full_join(datasets %>% select(name, short_name), by= c("dataset" = "name")) %>%
-  mutate_each_(funs(round(., digits = 2)), vars = c("power")) %>%
-  mutate(power_string = ifelse(is.na(as.character(power)), "", as.character(power)))
+  summarise(fsn_package= fsn(d_calc, d_var_calc, data = all_data, 
+                         target = .01, type="Orwin")$fsnum) %>%
+  left_join(datasets %>% select(name, short_name), by= c("dataset" = "name")) %>%
+  rename(fsn_string = fsn_package)
 ```
 
-```{r, p_curve_skew}
-stouffer.data = pc.data %>%
-  group_by(dataset) %>%
-  do(data.frame(stouffer = stouffer_test(., ALPHA))) %>%
-  filter(stouffer.pp.measure == "ppr.full") %>%
-  full_join(datasets %>% select(name, short_name), by= c("dataset" = "name")) %>%
-  select(short_name,stouffer.Z.pp, stouffer.p.Z.pp) %>%
-  mutate_each_(funs(round(., digits = 2)), vars = c("stouffer.p.Z.pp", "stouffer.Z.pp")) %>%
-  mutate(stouff_string = ifelse(is.na(as.character(stouffer.Z.pp)), "", paste0(stouffer.Z.pp, " (", stouffer.p.Z.pp,")"))) %>%
-  select(short_name, stouff_string)
-```
+One approach for quantifying the reliability of a literature is to ask, How many missing studies with null effects would have to exist in order for the overall effect size to be zero? This is called the "fail-safe" number of studies. To answer this question, we estimatated the overall effect size for each phenomenenon (Table 2, column 2), and then used this to estimate the fail-safe-N (Table 2, column 3). This analysis suggests that an unlikely number of studies would have to be ``missing" in each literature ($M$ = `r round(mean(fsn.package.data$fsn_string[is.finite(fsn.package.data$fsn_string)]))`) in order for the overall effect sizes to be 0. 
 
+One limitation of this analysis, however, is that it assumes that all reported effect sizes are obtained without p-hacking/analytical flexibility: If experimenters (is this true?)
+
+## Funnel Plots 
 ```{r, funnel_skew}
 eggers_tests <- function(ma_data){
     # model
-    model.mod = metafor::rma(ma_data$d_calc ~ma_data$mean_age_1, ma_data$d_var_calc, method = "REML",
-               control = list(maxiter = 1000, stepadj = 0.5))
+    model.mod = metafor::rma(ma_data$d_calc ~ma_data$mean_age_1, ma_data$d_var_calc,
+                             method = "REML",
+                control = list(maxiter = 1000, stepadj = 0.5))
+    
     # Eggers test
     egg.mod.random = regtest(model.mod) 
     
@@ -185,69 +183,212 @@ eggers.data = all_data %>%
   split(.$short_name) %>%
   map(function(ma_data) eggers_tests(ma_data)) %>%
   bind_rows() %>%
-  mutate_each_(funs(round(., digits = 2)), vars = c("egg.mod.random.z", "egg.mod.random.p")) %>%
+  mutate_each(funs(round(., digits = 2)), vars = c(egg.mod.random.z,
+                                                    egg.mod.random.p)) %>%
   mutate(egg_string = paste0(egg.mod.random.z, " (",egg.mod.random.p, ")"))  %>%
-  rename(short_name = dataset)
+  rename(short_name = dataset) %>%
+  select(short_name, egg_string)
 ```
 
-```{r, fail_safe_N}
-fsn.package.data = all_data %>%
+Funnel plots provide a visual method for evaluating whether variability in effect sizes is due  only to differences in sample size. Figure XX plots effect sizes versus a metric of sample size, standard error. If there is no bias in a literature, we should expect studies to be randomly sampled around the mean, with more variability for less precise studies. 
+
+Figure 1 presents funnel plots for each of our `r nrow(datasets)` meta-analyses. These plots show evidence of asymmetry (bias) for several of our phenomenon (Table 2, column 1). An important limitation of this method, however, is that it is difficult to determine the source of this bias. One possibility is that this bias is due not to experiment malfeasance, but to true heterogenity in phenomena (e.g. different ages). P-curves provide a way to address this issue, which we turn to next.
+
+```{r}
+funnel.es.data = all_data %>%
   group_by(dataset) %>%
-  summarise(fsn_package= fsn(d_calc, d_var_calc, data = all_data, 
-                         target = .01, type="Orwin")$fsnum) %>%
-  left_join(datasets %>% select(name, short_name), by= c("dataset" = "name")) %>%
-  rename(fsn_string = fsn_package)
+  mutate(se = sqrt(d_var_calc), 
+         es = d_calc, 
+         center = mean(d_calc), 
+         lower_lim = max(se) + .05 * max(se),
+         left_lim99 = ifelse(center - lower_lim * EXPAND_FACTOR < min(es),
+                     center - lower_lim * EXPAND_FACTOR,
+                     min(es)),
+         right_lim99 = ifelse(center + lower_lim * EXPAND_FACTOR > max(es),
+                      center + lower_lim * EXPAND_FACTOR,
+                      max(es)))
+
+# separate data frame for 95 CI funnel shape
+funnel95.data.wide <- funnel.es.data %>%
+                select(center, lower_lim, dataset) %>%
+                group_by(dataset) %>%
+                summarise(x1 = (center-lower_lim* 1.96)[1], 
+                          x2 = center[1],
+                          x3 = center[1] + lower_lim[1] * 1.96,
+                          y1 = -lower_lim[1],
+                          y2 =  0, 
+                          y3 = -lower_lim[1]) 
+
+funnel95.data.x = funnel95.data.wide  %>%
+                  select(dataset, contains("x")) %>%
+                  gather("coordx", "x", 2:4) %>%
+                  arrange(dataset, coordx) %>%
+                  select(-coordx)
+
+funnel95.data.y = funnel95.data.wide  %>%
+                  select(dataset, contains("y")) %>%
+                  gather("coordy", "y", 2:4) %>%
+                  arrange(dataset, coordy) %>%
+                  select(-coordy)
+
+funnel95.data = bind_cols(funnel95.data.x, funnel95.data.y)
+
+# separate data frame for 99 CI funnel shape
+funnel99.data.wide <- funnel.es.data %>%
+                select(center, lower_lim, dataset) %>%
+                group_by(dataset) %>%
+                summarise(x1 = (center-lower_lim* 3.29)[1], 
+                          x2 = center[1],
+                          x3 = center[1] + lower_lim[1] * 3.29,
+                          y1 = -lower_lim[1],
+                          y2 =  0, 
+                          y3 = -lower_lim[1]) 
+
+funnel99.data.x = funnel99.data.wide  %>%
+                  select(dataset, contains("x")) %>%
+                  gather("coordx", "x", 2:4) %>%
+                  arrange(dataset, coordx) %>%
+                  select(-coordx)
+
+funnel99.data.y = funnel99.data.wide  %>%
+                  select(dataset, contains("y")) %>%
+                  gather("coordy", "y", 2:4) %>%
+                  arrange(dataset, coordy) %>%
+                  select(-coordy)
+
+funnel99.data = bind_cols(funnel99.data.x, funnel99.data.y)
+
+ggplot(funnel.es.data, aes(x = es, y = -se)) +
+  facet_wrap(~dataset, scales = "free") +
+  xlab("Effect Size")  +
+  scale_colour_solarized(name = "") +
+  scale_x_continuous(aes(limits = c(left_lim99[1], right_lim99[1]))) +
+  scale_y_continuous(expand = c(0, 0),
+                     aes(breaks = round(seq(0, -max(se), length.out = 5), 2),
+                     labels = round(seq(0, max(se), length.out = 5), 2))) +
+  xlab("Effect Size") +
+  geom_polygon(aes(x = x, y = y), 
+               data = funnel95.data, alpha = .5,
+               fill = "white") +
+  geom_polygon(aes(x = x, y = y), 
+               data = funnel99.data, alpha = .5,
+               fill = "white") +
+  geom_vline(aes(xintercept=center[1]), 
+             linetype = "dotted", color = "black") +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey") +
+  geom_point() +
+  theme(panel.background = element_rect(fill = "grey"),
+        panel.grid.major =  element_line(colour = "darkgrey", size = 0.2),
+        panel.grid.minor =  element_line(colour = "darkgrey", size = 0.5))
 ```
 
-```{r, make_table}
-table.data = left_join(select(all_ds, -dataset), power.data) %>%
-              left_join(stouffer.data) %>%
-              left_join(eggers.data) %>%
-              left_join(fsn.package.data) %>%
-          select(dataset, contains("string"))
+```{r, eval = F}
+
+And, without veridical data, it is difficult to make theoretical progress on a phenomenon.
+Across studies we should expect some variability in effect size due to sampling error alone. But this variability in effect size should be *systematic*: There should be less variability around the mean for more precise studies, as measured by sample size. The presence of variability in effect sizes that is not accounted for sample size may suggest publication bias in a literature. A limitation of this approach:only accounts for XXXX.
+
+if researchers are using power analysis appropriately to plan their effect sizes, then true large effects will be studied with small samples and true small effects will be studied with large samples, leading to an asymmetrical funnel plot and the illusion of research bias.
+
+First, when true effect sizes differ across studies, as they inevitably do, the funnel plot and the excessive significance approaches risk falsely concluding publica- tion bias is present when in fact it is not 
+
+Funnel plots should be seen as a generic means of examining small-study effects (the tendency for the smaller studies in a meta-analysis to show larger treatment effects) 
+
+Strictly speaking, funnel plots probe whether studies with little precision (small studies) give different results from studies with greater precision (larger studies). Asymmetry in the funnel plot may therefore result not from a systematic under-reporting of negative trials but from an essential difference between smaller and larger studies that arises from inherent between-study heterogeneity.
+
+* could be quality,  measure of precision affects precision
+
+language bias (selective inclusion of studies published in English); availability bias (selective inclusion of studies that are easily accessible to the researcher); cost bias (selective inclusion of studies that are available free or at low cost); familiarity bias (selective inclusion of studies only from one’s own discipline, and outcome bias (selective reporting by the author of a primary study of some outcomes but not others, depending on the direction and statistical significance of the results). 
+```
+
+## P-curves
+```{r, pcurve_power}
+ALPHA = .05
+P_INCREMENT = .01 
+
+pc.data <- get_all_pc_data(all_data, ALPHA, P_INCREMENT)
+
+pc.data %>%
+  group_by(dataset) %>%
+  do(get_p_curve_df(., ALPHA, P_INCREMENT)) %>%
+  ggplot(aes(x = p, y = value, linetype = measure, color = measure)) + 
+  geom_line(size = 1) +
+  scale_colour_manual(name = "", values = c("red", "green", "blue"),labels=c("baseline", "expected", "observed")) +
+  scale_linetype_manual(values = c("dashed", "dashed", "solid"), guide = FALSE)  +
+  ylab("") +
+  #scale_colour_discrete(labels=c("baseline", "expected", "observed")) +
+  facet_wrap(~ dataset) 
+
+power.data = pc.data %>%
+  group_by(dataset) %>%
+  do(data.frame(power = get_pc_power(., ALPHA)))  %>%
+  full_join(datasets %>% select(name, short_name), by= c("dataset" = "name")) %>%
+  mutate_each_(funs(round(., digits = 2)), vars = c("power")) %>%
+  mutate(power_string = ifelse(is.na(as.character(power)),"", as.character(power))) %>%
+  select(-power)
 ```
 
 
+```{r, p_curve_skew}
+stouffer.data = pc.data %>%
+  group_by(dataset) %>%
+  do(data.frame(stouffer = stouffer_test(., ALPHA))) %>%
+  filter(stouffer.pp.measure == "ppr.full") %>%
+  full_join(datasets %>% select(name, short_name), by= c("dataset" = "name")) %>%
+  select(short_name,stouffer.Z.pp, stouffer.p.Z.pp) %>%
+  mutate_each_(funs(round(., digits = 2)), vars = c("stouffer.p.Z.pp",
+                                                    "stouffer.Z.pp")) %>%
+  mutate(stouff_string = ifelse(is.na(as.character(stouffer.Z.pp)), "",
+                                paste0(stouffer.Z.pp, " (", stouffer.p.Z.pp,")"))) %>%
+  select(short_name, stouff_string)
+```
 
-\begin{table}[h!]
-	\footnotesize
-	\begin{tabular}{lrrrrrr}
-		\textbf{Phenomenon}                                 & $\mathbf{\bar{d}}$ & \textbf{power} & \textbf{p-curve skew} & \textbf{funnel skew} & \textbf{fail-safe-N} \\                   
-		\hline
-		IDS  preference                  & `r all_ds[all_ds$dataset=="idspref", "d_string"]`         & ~         & `r stouffer.data[stouffer.data$dataset=="idspref", "string"]`     & ~            & ~   \\ 
-		Phonotactic learning              & `r all_ds[all_ds$dataset=="phonotactics", "d_string"]`          & ~         & `r stouffer.data[stouffer.data$dataset=="phonotactics", "string"]`     & ~            & ~         \\ 
-		Vowel discrimintation (native)    & `r all_ds[all_ds$dataset=="inphondb-native", "d_string"]`           & ~         & `r stouffer.data[stouffer.data$dataset=="inphondb-native", "string"]`     & ~            & ~             \\ 
-		Vowel discrimination (non-native) & `r all_ds[all_ds$dataset=="inphondb-nonnative", "d_string"]`           & ~         & `r stouffer.data[stouffer.data$dataset=="inphondb-nonnative", "string"]`     & ~            & ~           \\ 
-		Statistical sound learning        & `r all_ds[all_ds$dataset=="sounds", "d_string"]`           & ~         & `r stouffer.data[stouffer.data$dataset=="sounds", "string"]`     & ~            & ~             \\ 
-		Word segmentation                 & `r all_ds[all_ds$dataset=="inworddb", "d_string"]`           & ~         & `r stouffer.data[stouffer.data$dataset=="inworddb", "string"]`     & ~            & ~             \\ 
-		Mutual exclusivity               & `r all_ds[all_ds$dataset=="mutex", "d_string"]`           & ~         & `r stouffer.data[stouffer.data$dataset=="mutex", "string"]`    & ~            & ~             \\ 
-		Concept-label advantage           & `r all_ds[all_ds$dataset=="labadv", "d_string"]`           & ~         & `r stouffer.data[stouffer.data$dataset=="labdv", "string"]`     & ~            & ~              \\ 
-		Gaze following                    & `r all_ds[all_ds$dataset=="gaze_following", "d_string"]`          & ~         & `r stouffer.data[stouffer.data$dataset=="gaze_following", "string"]`     & ~            & ~             \\ 
-		Pointing and vocabulary           & `r all_ds[all_ds$dataset=="pointing", "d_string"]`           & ~         & `r stouffer.data[stouffer.data$dataset=="pointing", "string"]`     & ~            & ~               \\ 
-	\end{tabular}
-\end{table}
-## p-curves
-[@Simonsohn:2014ch; @simonsohn2015better; @simonsohn2014p]
-Across studies we should expect some variability in effect size due to sampling error alone. But this variability in effect size should be *systematic*: There should be less variability around the mean for more precise studies, as measured by sample size. The presence of variability in effect sizes that is not accounted for sample size may suggest publication bias in a literature.
-
+[@simonsohn2014p; @simonsohn2014power; @simonsohn2015better]
 bias introduced by meta-analysis in selection (second-order selection bias)
 
-## Funnel
-* Egger's regression test
+```{r, make_table}
+table.data = left_join(select(all_ds, c(short_name, d_string)), fsn.package.data) %>%
+             left_join(eggers.data) %>%
+             left_join(stouffer.data) %>%
+             left_join(power.data) %>%
+             select(dataset, contains("string")) %>%
+             ungroup() %>%
+             .[c(2,8,3,4,10,5,7,6,11,1,9),]  %>% # reorder rows 
+             mutate(dataset = as.factor(dataset),
+                 dataset = plyr::revalue(dataset, c("Infant directed speech preference" ="IDS preference", # shorten dataset names
+                                                   "Statistical sound category learning"= "Statistical sound learning",
+                                                   "Label advantage in concept learning" =  "Concept-label advantage")))
 
-## Orwin
+# kable(table.data, format = "latex", booktabs = TRUE) # paste below (so can edit latex)
+# header:	\textbf{Phenomenon}& \textbf{\textit{d}} & \textbf{fail-safe-N} & \textbf{funnel skew} & \textbf{p-curve skew} & \textbf{power}  \\
+```
 
-## Power
-Ioannidis and Trikalinos (2007) 
-
-TABLE WITH: Eggers regression, p-curve (stouffer), regular power, p-power, orwin
+\begin{table}[t]
+\footnotesize
+\begin{tabular}{lrrrrr}
+\toprule
+\textbf{Phenomenon}& \textbf{\textit{d}} & \textbf{fail-safe-N} & \textbf{funnel skew} & \textbf{p-curve skew} & \textbf{power}\\
+\midrule
+IDS preference & 0.71 [0.53, 0.89] & 3762 & 1.88 (0.06) &  & \\
+Phonotactic learning & 0.04 [-0.09, 0.16] & 45 & -1.08 (0.28) & -1.52 (0.06) & 0.14\\
+Vowel discrimination (native) & 0.6 [0.5, 0.71] & 9536 & 8.98 (0) & -5.42 (0) & 0.67\\
+Vowel discrimination (non-native) & 0.66 [0.42, 0.9] & 3391 & 4.13 (0) & -3.24 (0) & 0.78\\
+Statistical sound learning & -0.14 [-0.27, -0.02] & Inf & -1.87 (0.06) &  & \\
+Word segmentation & 0.19 [0.14, 0.24] & 5372 & 2.17 (0.03) & -9.67 (0) & 0.56\\
+Mutual exclusivity & 1 [0.68, 1.33] & 6417 & 6.08 (0) &  & \\
+Concept-label advantage & 0.4 [0.29, 0.51] & 3928 & 0.31 (0.76) & -6.15 (0) & 0.69\\
+Online word recognition & 1.89 [0.81, 2.96] & 2843 & 2.92 (0) &  & \\
+Gaze following & 0.84 [0.26, 1.42] & 2641 & -1.69 (0.09) &  & \\
+Pointing and vocabulary & 0.41 [0.32, 0.49] & 1202 & 0.59 (0.55) &  & \\
+\bottomrule
+\end{tabular}
+\caption{Summary of replicability analyses. \textit{d} = Effect size (Cohen's {\it d}) estimated from a random-effect model; fail-safe-N = number of missing studies that would have to exist in order for the overall effect size to be {\it d} = 0; funnel skew = test of asymmetry in funnel plot using the random-effect Egger's test (Stern \& Eggers, 2005); p-curve skew = test of the right skew of the p-curve using the Stouffer method (Simonsohn, Simmons, \& Nelson, 2015); power = power to reject the null hypothesis at the 5\% significance level based on the p-curve (Simonsohn, Nelson, \& Simmons, 2014);  Brackets give 95\% confidence intervals, and parentheses show p-values.}
+\end{table}
 
 
 # Theoretical Synthesis
 OUTLINE
 
 ## Statistical Approach
-
 METAMETAPLOT
 
 
@@ -260,7 +401,7 @@ METAMETAPLOT
 
 \newpage
 
-### References
+### References 
 
 ---
 nocite: | 
@@ -269,6 +410,7 @@ nocite: |
   @frank2016performance
   @tsuji2014perceptual
   @bergmann2015development
+  @sterne2005regression
 ...
 
 ```{r create_r-references}

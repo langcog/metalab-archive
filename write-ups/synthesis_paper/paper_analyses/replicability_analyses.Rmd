@@ -209,6 +209,7 @@ ggplot(all_es, aes(y = d, x = dataset, group = method,
 
 ## Fail-Safe-N
 From Metafor package documentation: "The Orwin method calculates the number of studies averaging null results that would have to be added to the given set of observed outcomes to reduce the (unweighted) average effect size to a target (unweighted) average effect size. The method is described in Orwin (1983)."
+ The first is that the unpublished or omitted studies, on average, show a null result.
 
 ### Comparision of FSN measures
 Analysis of different measures of FSN. With no target, package assumes half of unweighted average. Book and metafor the same. Weighted average of ds (from rma) only slightly less.
@@ -274,51 +275,78 @@ Assuming a critical value of zero (techincally, .01), the FSN are huge for the m
 ## Funnel Plot
 ### Plots
 ```{r, eval = F}
-EXPAND_FACTOR  = 3.29
-xlabel <- "\nEffect Size"
-
 funnel.es.data = all_data %>%
+  group_by(dataset) %>%
   mutate(se = sqrt(d_var_calc), 
          es = d_calc, 
          center = mean(d_calc), 
-         lower_lim = max(se) + .05 * max(se),
-         left_lim99 = ifelse(center - lower_lim * EXPAND_FACTOR < min(es),
-                     center - lower_lim * EXPAND_FACTOR,
-                     min(es)),
-         right_lim99 = ifelse(center + lower_lim * EXPAND_FACTOR > max(es),
-                      center + lower_lim * EXPAND_FACTOR,
-                      max(es)))
+         lower_lim = max(se) + .05 * max(se))
 
-funnel95 <- data.frame(funnel95.x = c(center - lower_lim * 1.96, center,
-                             center + lower_lim * 1.96),
-                       funnel95yx = c(-lower_lim, 0, -lower_lim))
+# separate data frame for 95 CI funnel shape
+funnel95.data.wide <- funnel.es.data %>%
+                select(center, lower_lim, dataset) %>%
+                group_by(dataset) %>%
+                summarise(x1 = (center-lower_lim* 1.96)[1], 
+                          x2 = center[1],
+                          x3 = center[1] + lower_lim[1] * 1.96,
+                          y1 = -lower_lim[1],
+                          y2 =  0, 
+                          y3 = -lower_lim[1]) 
 
-funnel99 <- data.frame(x = c(center - lower_lim * EXPAND_FACTOR, center,
-                             center + lower_lim * EXPAND_FACTOR),
-                       y = c(-lower_lim, 0, -lower_lim))
+funnel95.data.x = funnel95.data.wide  %>%
+                  select(dataset, contains("x")) %>%
+                  gather("coordx", "x", 2:4) %>%
+                  arrange(dataset, coordx) %>%
+                  select(-coordx)
+
+funnel95.data.y = funnel95.data.wide  %>%
+                  select(dataset, contains("y")) %>%
+                  gather("coordy", "y", 2:4) %>%
+                  arrange(dataset, coordy) %>%
+                  select(-coordy)
+
+funnel95.data = bind_cols(funnel95.data.x, funnel95.data.y)
+
+# separate data frame for 99 CI funnel shape
+funnel99.data.wide <- funnel.es.data %>%
+                select(center, lower_lim, dataset) %>%
+                group_by(dataset) %>%
+                summarise(x1 = (center-lower_lim* 3.29)[1], 
+                          x2 = center[1],
+                          x3 = center[1] + lower_lim[1] * 3.29,
+                          y1 = -lower_lim[1],
+                          y2 =  0, 
+                          y3 = -lower_lim[1]) 
+
+funnel99.data.x = funnel99.data.wide  %>%
+                  select(dataset, contains("x")) %>%
+                  gather("coordx", "x", 2:4) %>%
+                  arrange(dataset, coordx) %>%
+                  select(-coordx)
+
+funnel99.data.y = funnel99.data.wide  %>%
+                  select(dataset, contains("y")) %>%
+                  gather("coordy", "y", 2:4) %>%
+                  arrange(dataset, coordy) %>%
+                  select(-coordy)
+
+funnel99.data = bind_cols(funnel99.data.x, funnel99.data.y)
 
 ggplot(funnel.es.data, aes(x = es, y = -se)) +
+  facet_wrap(~dataset, scales = "free") +
+  xlab("Effect Size")  +
+  ylab("Standard Error\n")  +
   scale_colour_solarized(name = "") +
-  #scale_x_continuous(limits = c(left_lim99[1], right_lim99[1])) +
-  scale_y_continuous(expand = c(0, 0),
-                     breaks = round(seq(0, -max(funnel.es.data$se), length.out = 5), 2),
-                     labels = round(seq(0, max(funnel.es.data$se), length.out = 5), 2)) +
-  #geom_polygon(aes(x = x, y = y), data = funnel95, alpha = .5,
-           #    fill = "white") +
-  #geom_polygon(aes(x = x, y = y), data = funnel99, alpha = .5,
-               #fill = "white") +
-  geom_vline(xintercept = center, linetype = "dotted", color = "black") +
+  geom_polygon(aes(x = x, y = y), 
+               data = funnel95.data, alpha = .5,
+               fill = "white") +
+  geom_polygon(aes(x = x, y = y), 
+               data = funnel99.data, alpha = .5,
+               fill = "white") +
+  geom_vline(aes(xintercept=center[1]), 
+             linetype = "dotted", color = "black") +
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey") +
   geom_point() +
-  xlab(xlabel) +
-  geom_text(x = center + lower_lim * 1.96 / 2,
-            y = -lower_lim + lower_lim / 30, family = font,
-            label = "p < .05", vjust = "bottom", hjust = "center") +
-  geom_text(x = (center + lower_lim * 1.96) + (lower_lim * 3.29 - lower_lim * 1.96) / 2,
-            y = -lower_lim + lower_lim / 30,
-            label = "p < .01", vjust = "bottom", hjust = "center") +
-  ylab("Standard error\n") +
-  facet_wrap(~dataset) +
   theme(panel.background = element_rect(fill = "grey"),
         panel.grid.major =  element_line(colour = "darkgrey", size = 0.2),
         panel.grid.minor =  element_line(colour = "darkgrey", size = 0.5))
