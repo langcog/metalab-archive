@@ -11,7 +11,7 @@
 
 <meta name="author" content="Molly Lewis, Christina Bergmann, and Mike Frank" />
 
-<meta name="date" content="2016-05-19" />
+<meta name="date" content="2016-05-24" />
 
 <title>Replicability Analyses for Synthesis Paper</title>
 
@@ -225,7 +225,7 @@ div.tocify {
 
 <h1 class="title">Replicability Analyses for Synthesis Paper</h1>
 <h4 class="author"><em>Molly Lewis, Christina Bergmann, and Mike Frank</em></h4>
-<h4 class="date"><em>2016-05-19</em></h4>
+<h4 class="date"><em>2016-05-24</em></h4>
 
 </div>
 
@@ -295,10 +295,12 @@ pc.data &lt;-<span class="st"> </span><span class="kw">get_all_pc_data</span>(al
 <pre class="sourceCode r"><code class="sourceCode r">pc.data %&gt;%
 <span class="st">  </span><span class="kw">group_by</span>(dataset) %&gt;%
 <span class="st">  </span><span class="kw">do</span>(<span class="kw">get_p_curve_df</span>(., ALPHA, P_INCREMENT)) %&gt;%
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> p, <span class="dt">y =</span> value, <span class="dt">lty =</span> measure, <span class="dt">color =</span> measure)) +<span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">size =</span> .<span class="dv">7</span>) +
-<span class="st">  </span><span class="kw">scale_colour_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="st">&quot;red&quot;</span>, <span class="st">&quot;green&quot;</span>, <span class="st">&quot;blue&quot;</span>)) +
-<span class="st">  </span><span class="kw">scale_linetype_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="st">&quot;dashed&quot;</span>, <span class="st">&quot;dashed&quot;</span>, <span class="st">&quot;solid&quot;</span>))  +
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> p, <span class="dt">y =</span> value, <span class="dt">linetype =</span> measure, <span class="dt">color =</span> measure)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">size =</span> <span class="dv">1</span>) +
+<span class="st">  </span><span class="kw">scale_colour_manual</span>(<span class="dt">name =</span> <span class="st">&quot;&quot;</span>, <span class="dt">values =</span> <span class="kw">c</span>(<span class="st">&quot;red&quot;</span>, <span class="st">&quot;green&quot;</span>, <span class="st">&quot;blue&quot;</span>),<span class="dt">labels=</span><span class="kw">c</span>(<span class="st">&quot;baseline&quot;</span>, <span class="st">&quot;expected&quot;</span>, <span class="st">&quot;observed&quot;</span>)) +
+<span class="st">  </span><span class="kw">scale_linetype_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="st">&quot;dashed&quot;</span>, <span class="st">&quot;dashed&quot;</span>, <span class="st">&quot;solid&quot;</span>), <span class="dt">guide =</span> <span class="ot">FALSE</span>)  +
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;&quot;</span>) +
+<span class="st">  </span><span class="co">#scale_colour_discrete(labels=c(&quot;baseline&quot;, &quot;expected&quot;, &quot;observed&quot;)) +</span>
 <span class="st">  </span><span class="kw">facet_wrap</span>(~<span class="st"> </span>dataset) </code></pre>
 <p><img src="replicability_analyses_files/figure-html/unnamed-chunk-3-1.png" title="" alt="" width="672" /></p>
 </div>
@@ -405,7 +407,7 @@ all_es =<span class="st"> </span><span class="kw">rbind</span>(pc_es, obs_es)
 </div>
 <div id="fail-safe-n" class="section level2">
 <h2>Fail-Safe-N</h2>
-<p>From Metafor package documentation: “The Orwin method calculates the number of studies averaging null results that would have to be added to the given set of observed outcomes to reduce the (unweighted) average effect size to a target (unweighted) average effect size. The method is described in Orwin (1983).”</p>
+<p>From Metafor package documentation: “The Orwin method calculates the number of studies averaging null results that would have to be added to the given set of observed outcomes to reduce the (unweighted) average effect size to a target (unweighted) average effect size. The method is described in Orwin (1983).” The first is that the unpublished or omitted studies, on average, show a null result.</p>
 <div id="comparision-of-fsn-measures" class="section level3">
 <h3>Comparision of FSN measures</h3>
 <p>Analysis of different measures of FSN. With no target, package assumes half of unweighted average. Book and metafor the same. Weighted average of ds (from rma) only slightly less.</p>
@@ -470,54 +472,84 @@ fsn.data =<span class="st"> </span><span class="kw">left_join</span>(fsn.manual.
 <h2>Funnel Plot</h2>
 <div id="plots" class="section level3">
 <h3>Plots</h3>
-<pre class="sourceCode r"><code class="sourceCode r">EXPAND_FACTOR  =<span class="st"> </span><span class="fl">3.29</span>
-xlabel &lt;-<span class="st"> &quot;</span><span class="ch">\n</span><span class="st">Effect Size&quot;</span>
-
+<pre class="sourceCode r"><code class="sourceCode r">CRIT_95 =<span class="st"> </span><span class="fl">1.96</span> 
+CRIT_99 =<span class="st"> </span><span class="fl">2.58</span>
 funnel.es.data =<span class="st"> </span>all_data %&gt;%
+<span class="st">  </span><span class="kw">group_by</span>(dataset) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">se =</span> <span class="kw">sqrt</span>(d_var_calc), 
          <span class="dt">es =</span> d_calc, 
          <span class="dt">center =</span> <span class="kw">mean</span>(d_calc), 
-         <span class="dt">lower_lim =</span> <span class="kw">max</span>(se) +<span class="st"> </span>.<span class="dv">05</span> *<span class="st"> </span><span class="kw">max</span>(se),
-         <span class="dt">left_lim99 =</span> <span class="kw">ifelse</span>(center -<span class="st"> </span>lower_lim *<span class="st"> </span>EXPAND_FACTOR &lt;<span class="st"> </span><span class="kw">min</span>(es),
-                     center -<span class="st"> </span>lower_lim *<span class="st"> </span>EXPAND_FACTOR,
-                     <span class="kw">min</span>(es)),
-         <span class="dt">right_lim99 =</span> <span class="kw">ifelse</span>(center +<span class="st"> </span>lower_lim *<span class="st"> </span>EXPAND_FACTOR &gt;<span class="st"> </span><span class="kw">max</span>(es),
-                      center +<span class="st"> </span>lower_lim *<span class="st"> </span>EXPAND_FACTOR,
-                      <span class="kw">max</span>(es)))
+         <span class="dt">lower_lim =</span> <span class="kw">max</span>(se) +<span class="st"> </span>.<span class="dv">05</span> *<span class="st"> </span><span class="kw">max</span>(se))
 
-funnel95 &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">funnel95.x =</span> <span class="kw">c</span>(center -<span class="st"> </span>lower_lim *<span class="st"> </span><span class="fl">1.96</span>, center,
-                             center +<span class="st"> </span>lower_lim *<span class="st"> </span><span class="fl">1.96</span>),
-                       <span class="dt">funnel95yx =</span> <span class="kw">c</span>(-lower_lim, <span class="dv">0</span>, -lower_lim))
+<span class="co"># separate data frame for 95 CI funnel shape</span>
+funnel95.data.wide &lt;-<span class="st"> </span>funnel.es.data %&gt;%
+<span class="st">                </span><span class="kw">select</span>(center, lower_lim, dataset) %&gt;%
+<span class="st">                </span><span class="kw">group_by</span>(dataset) %&gt;%
+<span class="st">                </span><span class="kw">summarise</span>(<span class="dt">x1 =</span> (center-lower_lim *<span class="st"> </span>CRIT_95)[<span class="dv">1</span>], 
+                          <span class="dt">x2 =</span> center[<span class="dv">1</span>],
+                          <span class="dt">x3 =</span> center[<span class="dv">1</span>] +<span class="st"> </span>lower_lim[<span class="dv">1</span>] *<span class="st"> </span>CRIT_95,
+                          <span class="dt">y1 =</span> -lower_lim[<span class="dv">1</span>],
+                          <span class="dt">y2 =</span>  <span class="dv">0</span>, 
+                          <span class="dt">y3 =</span> -lower_lim[<span class="dv">1</span>]) 
 
-funnel99 &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="kw">c</span>(center -<span class="st"> </span>lower_lim *<span class="st"> </span>EXPAND_FACTOR, center,
-                             center +<span class="st"> </span>lower_lim *<span class="st"> </span>EXPAND_FACTOR),
-                       <span class="dt">y =</span> <span class="kw">c</span>(-lower_lim, <span class="dv">0</span>, -lower_lim))
+funnel95.data.x =<span class="st"> </span>funnel95.data.wide  %&gt;%
+<span class="st">                  </span><span class="kw">select</span>(dataset, <span class="kw">contains</span>(<span class="st">&quot;x&quot;</span>)) %&gt;%
+<span class="st">                  </span><span class="kw">gather</span>(<span class="st">&quot;coordx&quot;</span>, <span class="st">&quot;x&quot;</span>, <span class="dv">2</span>:<span class="dv">4</span>) %&gt;%
+<span class="st">                  </span><span class="kw">arrange</span>(dataset, coordx) %&gt;%
+<span class="st">                  </span><span class="kw">select</span>(-coordx)
+
+funnel95.data.y =<span class="st"> </span>funnel95.data.wide  %&gt;%
+<span class="st">                  </span><span class="kw">select</span>(dataset, <span class="kw">contains</span>(<span class="st">&quot;y&quot;</span>)) %&gt;%
+<span class="st">                  </span><span class="kw">gather</span>(<span class="st">&quot;coordy&quot;</span>, <span class="st">&quot;y&quot;</span>, <span class="dv">2</span>:<span class="dv">4</span>) %&gt;%
+<span class="st">                  </span><span class="kw">arrange</span>(dataset, coordy) %&gt;%
+<span class="st">                  </span><span class="kw">select</span>(-coordy)
+
+funnel95.data =<span class="st"> </span><span class="kw">bind_cols</span>(funnel95.data.x, funnel95.data.y)
+
+<span class="co"># separate data frame for 99 CI funnel shape</span>
+funnel99.data.wide &lt;-<span class="st"> </span>funnel.es.data %&gt;%
+<span class="st">                </span><span class="kw">select</span>(center, lower_lim, dataset) %&gt;%
+<span class="st">                </span><span class="kw">group_by</span>(dataset) %&gt;%
+<span class="st">                </span><span class="kw">summarise</span>(<span class="dt">x1 =</span> (center-lower_lim*<span class="st"> </span>CRIT_99)[<span class="dv">1</span>], 
+                          <span class="dt">x2 =</span> center[<span class="dv">1</span>],
+                          <span class="dt">x3 =</span> center[<span class="dv">1</span>] +<span class="st"> </span>lower_lim[<span class="dv">1</span>] *<span class="st"> </span>CRIT_99,
+                          <span class="dt">y1 =</span> -lower_lim[<span class="dv">1</span>],
+                          <span class="dt">y2 =</span>  <span class="dv">0</span>, 
+                          <span class="dt">y3 =</span> -lower_lim[<span class="dv">1</span>]) 
+
+funnel99.data.x =<span class="st"> </span>funnel99.data.wide  %&gt;%
+<span class="st">                  </span><span class="kw">select</span>(dataset, <span class="kw">contains</span>(<span class="st">&quot;x&quot;</span>)) %&gt;%
+<span class="st">                  </span><span class="kw">gather</span>(<span class="st">&quot;coordx&quot;</span>, <span class="st">&quot;x&quot;</span>, <span class="dv">2</span>:<span class="dv">4</span>) %&gt;%
+<span class="st">                  </span><span class="kw">arrange</span>(dataset, coordx) %&gt;%
+<span class="st">                  </span><span class="kw">select</span>(-coordx)
+
+funnel99.data.y =<span class="st"> </span>funnel99.data.wide  %&gt;%
+<span class="st">                  </span><span class="kw">select</span>(dataset, <span class="kw">contains</span>(<span class="st">&quot;y&quot;</span>)) %&gt;%
+<span class="st">                  </span><span class="kw">gather</span>(<span class="st">&quot;coordy&quot;</span>, <span class="st">&quot;y&quot;</span>, <span class="dv">2</span>:<span class="dv">4</span>) %&gt;%
+<span class="st">                  </span><span class="kw">arrange</span>(dataset, coordy) %&gt;%
+<span class="st">                  </span><span class="kw">select</span>(-coordy)
+
+funnel99.data =<span class="st"> </span><span class="kw">bind_cols</span>(funnel99.data.x, funnel99.data.y)
 
 <span class="kw">ggplot</span>(funnel.es.data, <span class="kw">aes</span>(<span class="dt">x =</span> es, <span class="dt">y =</span> -se)) +
+<span class="st">  </span><span class="kw">facet_wrap</span>(~dataset, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>) +
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Effect Size&quot;</span>)  +
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Standard Error</span><span class="ch">\n</span><span class="st">&quot;</span>)  +
 <span class="st">  </span><span class="kw">scale_colour_solarized</span>(<span class="dt">name =</span> <span class="st">&quot;&quot;</span>) +
-<span class="st">  </span><span class="co">#scale_x_continuous(limits = c(left_lim99[1], right_lim99[1])) +</span>
-<span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">expand =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>),
-                     <span class="dt">breaks =</span> <span class="kw">round</span>(<span class="kw">seq</span>(<span class="dv">0</span>, -<span class="kw">max</span>(funnel.es.data$se), <span class="dt">length.out =</span> <span class="dv">5</span>), <span class="dv">2</span>),
-                     <span class="dt">labels =</span> <span class="kw">round</span>(<span class="kw">seq</span>(<span class="dv">0</span>, <span class="kw">max</span>(funnel.es.data$se), <span class="dt">length.out =</span> <span class="dv">5</span>), <span class="dv">2</span>)) +
-<span class="st">  </span><span class="co">#geom_polygon(aes(x = x, y = y), data = funnel95, alpha = .5,</span>
-<span class="st">           </span><span class="co">#    fill = &quot;white&quot;) +</span>
-<span class="st">  </span><span class="co">#geom_polygon(aes(x = x, y = y), data = funnel99, alpha = .5,</span>
-<span class="st">               </span><span class="co">#fill = &quot;white&quot;) +</span>
-<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> center, <span class="dt">linetype =</span> <span class="st">&quot;dotted&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;black&quot;</span>) +
+<span class="st">  </span><span class="kw">geom_polygon</span>(<span class="kw">aes</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y), 
+               <span class="dt">data =</span> funnel95.data, <span class="dt">alpha =</span> .<span class="dv">5</span>,
+               <span class="dt">fill =</span> <span class="st">&quot;white&quot;</span>) +
+<span class="st">  </span><span class="kw">geom_polygon</span>(<span class="kw">aes</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y), 
+               <span class="dt">data =</span> funnel99.data, <span class="dt">alpha =</span> .<span class="dv">5</span>,
+               <span class="dt">fill =</span> <span class="st">&quot;white&quot;</span>) +
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="kw">aes</span>(<span class="dt">xintercept=</span>center[<span class="dv">1</span>]), 
+             <span class="dt">linetype =</span> <span class="st">&quot;dotted&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;black&quot;</span>) +
 <span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">0</span>, <span class="dt">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;grey&quot;</span>) +
 <span class="st">  </span><span class="kw">geom_point</span>() +
-<span class="st">  </span><span class="kw">xlab</span>(xlabel) +
-<span class="st">  </span><span class="kw">geom_text</span>(<span class="dt">x =</span> center +<span class="st"> </span>lower_lim *<span class="st"> </span><span class="fl">1.96</span> /<span class="st"> </span><span class="dv">2</span>,
-            <span class="dt">y =</span> -lower_lim +<span class="st"> </span>lower_lim /<span class="st"> </span><span class="dv">30</span>, <span class="dt">family =</span> font,
-            <span class="dt">label =</span> <span class="st">&quot;p &lt; .05&quot;</span>, <span class="dt">vjust =</span> <span class="st">&quot;bottom&quot;</span>, <span class="dt">hjust =</span> <span class="st">&quot;center&quot;</span>) +
-<span class="st">  </span><span class="kw">geom_text</span>(<span class="dt">x =</span> (center +<span class="st"> </span>lower_lim *<span class="st"> </span><span class="fl">1.96</span>) +<span class="st"> </span>(lower_lim *<span class="st"> </span><span class="fl">3.29</span> -<span class="st"> </span>lower_lim *<span class="st"> </span><span class="fl">1.96</span>) /<span class="st"> </span><span class="dv">2</span>,
-            <span class="dt">y =</span> -lower_lim +<span class="st"> </span>lower_lim /<span class="st"> </span><span class="dv">30</span>,
-            <span class="dt">label =</span> <span class="st">&quot;p &lt; .01&quot;</span>, <span class="dt">vjust =</span> <span class="st">&quot;bottom&quot;</span>, <span class="dt">hjust =</span> <span class="st">&quot;center&quot;</span>) +
-<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Standard error</span><span class="ch">\n</span><span class="st">&quot;</span>) +
-<span class="st">  </span><span class="kw">facet_wrap</span>(~dataset) +
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">panel.background =</span> <span class="kw">element_rect</span>(<span class="dt">fill =</span> <span class="st">&quot;grey&quot;</span>),
         <span class="dt">panel.grid.major =</span>  <span class="kw">element_line</span>(<span class="dt">colour =</span> <span class="st">&quot;darkgrey&quot;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>),
         <span class="dt">panel.grid.minor =</span>  <span class="kw">element_line</span>(<span class="dt">colour =</span> <span class="st">&quot;darkgrey&quot;</span>, <span class="dt">size =</span> <span class="fl">0.5</span>))</code></pre>
+<p><img src="replicability_analyses_files/figure-html/unnamed-chunk-11-1.png" title="" alt="" width="672" /></p>
 </div>
 <div id="test-for-funnel-plot-asymmetry" class="section level3">
 <h3>Test for funnel plot asymmetry</h3>

@@ -17,7 +17,7 @@
 		"curator": "Alex Cristia",
 		"src": "images/datasets/ids.png",
 		"longitudinal": "FALSE",
-		"moderators": []
+		"moderators": ["speaker", "speech_type"]
 	},
 	{
 		"name": "Label advantage in concept learning",
@@ -37,7 +37,7 @@
 		"curator": "Molly Lewis",
 		"src": "images/datasets/dinosaur.png",
 		"longitudinal": "FALSE",
-		"moderators": ["audio_condition"]
+		"moderators": ["audio_condition", "object_stimulus", "num_trials"]
 	},
 	{
 		"name": "Gaze following",
@@ -57,7 +57,7 @@
 		"curator": "Molly Lewis",
 		"src": "images/datasets/gaze.png",
 		"longitudinal": "FALSE",
-		"moderators": []
+		"moderators": ["num_trials", "cue_type", "N_AFC"]
 	},
 	{
 		"name": "Vowel discrimination (native)",
@@ -157,7 +157,7 @@
 		"curator": "Christina Bergmann",
 		"src": "images/datasets/segmentation.png",
 		"longitudinal": "FALSE",
-		"moderators": []
+		"moderators": ["native_lang"]
 	},
 	{
 		"name": "Online word recognition",
@@ -197,7 +197,7 @@
 		"curator": "Molly Lewis",
 		"src": "images/datasets/zot.png",
 		"longitudinal": "FALSE",
-		"moderators": []
+		"moderators": ["mean_comprehension_vocab", "mean_production_vocab", "N_AFC", "stimulus_mode", "num_trials"]
 	},
 	{
 		"name": "Individual variation in infant speech perception tasks",

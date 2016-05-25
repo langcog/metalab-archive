@@ -274,7 +274,9 @@ Assuming a critical value of zero (techincally, .01), the FSN are huge for the m
 
 ## Funnel Plot
 ### Plots
-```{r, eval = F}
+```{r}
+CRIT_95 = 1.96 
+CRIT_99 = 2.58
 funnel.es.data = all_data %>%
   group_by(dataset) %>%
   mutate(se = sqrt(d_var_calc), 
@@ -286,9 +288,9 @@ funnel.es.data = all_data %>%
 funnel95.data.wide <- funnel.es.data %>%
                 select(center, lower_lim, dataset) %>%
                 group_by(dataset) %>%
-                summarise(x1 = (center-lower_lim* 1.96)[1], 
+                summarise(x1 = (center-lower_lim * CRIT_95)[1], 
                           x2 = center[1],
-                          x3 = center[1] + lower_lim[1] * 1.96,
+                          x3 = center[1] + lower_lim[1] * CRIT_95,
                           y1 = -lower_lim[1],
                           y2 =  0, 
                           y3 = -lower_lim[1]) 
@@ -311,9 +313,9 @@ funnel95.data = bind_cols(funnel95.data.x, funnel95.data.y)
 funnel99.data.wide <- funnel.es.data %>%
                 select(center, lower_lim, dataset) %>%
                 group_by(dataset) %>%
-                summarise(x1 = (center-lower_lim* 3.29)[1], 
+                summarise(x1 = (center-lower_lim* CRIT_99)[1], 
                           x2 = center[1],
-                          x3 = center[1] + lower_lim[1] * 3.29,
+                          x3 = center[1] + lower_lim[1] * CRIT_99,
                           y1 = -lower_lim[1],
                           y2 =  0, 
                           y3 = -lower_lim[1]) 

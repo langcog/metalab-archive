@@ -30,6 +30,15 @@
 \usepackage{threeparttablex}            % Lets threeparttable work with longtable
 \usepackage{longtable}              % Allows tables to break across pages
 
+  \usepackage{graphicx}
+  \makeatletter
+  \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+  \def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+  \makeatother
+  % Scale images if necessary, so that they will not overflow the page
+  % margins by default, and it is still possible to overwrite the defaults
+  % using explicit options in \includegraphics[width, height, ...]{}
+  \setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 \ifxetex
   \usepackage[setpagesize=false, % page size defined by xetex
               unicode=false, % unicode breaks when used with xetex
@@ -312,25 +321,27 @@ randomly sampled from the population of all possible studies that
 researchers could in principle conduct. This assumption does not mean,
 however, that there should be \emph{no} variability in effect size
 across studies: We should expect random variation around the true mean
-effect size, with smaller studies varying more.
+effect size, with smaller studies showing more variability around this
+mean.
 
-Variability in effect sizes will be biased when this random study
-sampling assumption does not hold. Bias may be introduced by the
-experimenter through failure to publish null findings (Fanelli, 2010;
-Rosenthal, 1979; ``publication bias'', Rothstein, Sutton, \& Borenstein,
-2006), analytical flexibility (e.g., ``p-hacking'', Simmons, Nelson, \&
-Simonsohn, 2011; Simonsohn, Nelson, \& Simmons, 2014), reporting errors,
-or even fraud. These biases may lead to large but unknown errors in
-estimates of the effect size. If bias is present in the literature,
-estimates of effect size may be poor estimates of the true underlying
-effect size and thus provide little evidential value. To make
-theoretical progress, we must therefore distinguish variability in
+Variability in effect sizes will be biased when this assumption of
+random study sampling does not hold. Bias may be introduced by the
+experimenter in a number of ways, including failure to publish null
+findings (Fanelli, 2010; Rosenthal, 1979; ``publication bias'',
+Rothstein, Sutton, \& Borenstein, 2006), analytical flexibility (e.g.,
+``p-hacking'', Simmons, Nelson, \& Simonsohn, 2011; Simonsohn, Nelson,
+\& Simmons, 2014), reporting errors, or even fraud. These biases are
+problematic for theoretical development because they lead to large but
+often unknown errors in estimates of the effect size. If bias is present
+in the literature, estimates of effect size may be poor estimates of the
+true underlying effect size and thus provide little evidential value. To
+make theoretical progress, we must therefore distinguish variability in
 effect sizes due to sample size from varability due to bias.
 
 To assess the replicability of language acquisition phenomena, we
 conducted several key analyses: Fail-safe-N, funnel plots, and p-curve.
 These methods each have limitations, but taken together, they provide
-converging evidence about the presence of bias in a literature. We find
+converging evidence about the replicability of a literature. We find
 little evidence of bias in our meta-analyses, suggesting that the
 language acqusition literature describes real psychological phenomenona
 and can therefore provide the basis for theoretical development.
@@ -338,14 +349,14 @@ and can therefore provide the basis for theoretical development.
 \subsection{Fail-safe-N}\label{fail-safe-n}
 
 One approach for quantifying the reliability of a literature is to ask,
-How many missing, \enquote{file-drawer} studies with null effects would
-have to exist in order for the overall effect size to be zero? This is
-called the \enquote{fail-safe} number of studies. To answer this
-question, we estimatated the overall effect size for each phenomenenon
-(Table 2, column 2), and then used this to estimate the fail-safe-N
-(Table 2, column 3). This analysis suggests that an unlikely number of
-studies would have to be ``missing" in each literature (\(M\) = 3914) in
-order for the overall effect sizes to be 0.
+How many missing studies with null effects would have to exist in order
+for the overall effect size to be zero? This is called the
+\enquote{fail-safe} number of studies. To answer this question, we
+estimatated the overall effect size for each phenomenenon (Table 2,
+column 2), and then used this to estimate the fail-safe-N (Table 2,
+column 3). This analysis suggests that an unlikely number of studies
+would have to be ``missing" in each literature (\(M\) = 3914) in order
+for the overall effect sizes to be 0.
 
 One limitation of this analysis, however, is that it assumes that all
 reported effect sizes are obtained without p-hacking/analytical
@@ -368,7 +379,11 @@ possibility is that this bias is due not to experiment malfeasance, but
 to true heterogenity in phenomena (e.g.~different ages). P-curves
 provide a way to address this issue, which we turn to next.
 
+\includegraphics{metalab_synthesis_files/figure-latex/unnamed-chunk-2-1.pdf}
+
 \subsection{P-curves}\label{p-curves}
+
+\includegraphics{metalab_synthesis_files/figure-latex/pcurve_power-1.pdf}
 
 (U. Simonsohn, Nelson, \& Simmons, 2014; Simonsohn et al., 2014;
 Simonsohn, Simmons, \& Nelson, 2015) bias introduced by meta-analysis in

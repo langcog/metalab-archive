@@ -80,7 +80,7 @@ Towards this end, we introduce [Metalab](http://metalab.stanford.edu/).
 
 # Method
 ```{r load data}
-source("../../dashboard/global.R", chdir = T)
+source("../../dashboard/global.R", chdir = TRUE)
 source("paper_analyses/pcurve.R")
 library(metafor)
 library(knitr)
@@ -123,11 +123,11 @@ To obtain estimates of effect size, we coded papers reporting experimental data.
 	\end{table}
 	
 # Replicability of the field
-A literature is more likely to describe a real effect if studies are randomly sampled from the population of all possible  studies that researchers could in principle conduct. This assumption does not mean, however,  that there should be *no* variability in effect size across studies: We should expect random variation around the true mean effect size, with smaller studies varying more. 
+A literature is more likely to describe a real effect if studies are randomly sampled from the population of all possible  studies that researchers could in principle conduct. This assumption does not mean, however,  that there should be *no* variability in effect size across studies: We should expect random variation around the true mean effect size, with smaller studies showing more variability around this mean. 
 
-Variability in effect sizes will be biased when this random study sampling assumption does not hold. Bias may be introduced by the experimenter through failure to publish null findings ["publication bias", @rothstein2006publication; @rosenthal1979file; @Fanelli:2010kf], analytical flexibility [e.g., "p-hacking", @Simmons:2011iw; @simonsohn2014p], reporting errors, or even fraud. These biases may lead to large but unknown errors in estimates of the effect size. If bias is present in the literature, estimates of effect size may be poor estimates of the true underlying effect size and thus provide little evidential value. To make theoretical progress, we must therefore distinguish variability in effect sizes due to sample size from varability due to bias.
+Variability in effect sizes will be biased when this assumption of  random study sampling  does not hold. Bias may be introduced by the experimenter in a number of ways, including  failure to publish null findings ["publication bias", @rothstein2006publication; @rosenthal1979file; @Fanelli:2010kf], analytical flexibility [e.g., "p-hacking", @Simmons:2011iw; @simonsohn2014p], reporting errors, or even fraud. These biases are problematic for theoretical development because they  lead to large but often unknown errors in estimates of the effect size. If bias is present in the literature, estimates of effect size may be poor estimates of the true underlying effect size and thus provide little evidential value. To make theoretical progress, we must therefore distinguish variability in effect sizes due to sample size from varability due to bias.
 
-To assess the replicability of language acquisition phenomena, we conducted several key analyses: Fail-safe-N, funnel plots, and p-curve. These methods each have limitations, but taken together, they provide converging evidence about the presence of bias in a literature. We find little evidence of bias in our meta-analyses, suggesting that the language acqusition literature describes real psychological phenomenona and can therefore provide the basis for theoretical development. 
+To assess the replicability of language acquisition phenomena, we conducted several key analyses: Fail-safe-N, funnel plots, and p-curve. These analytical approaches each have limitations, but taken together, they provide converging evidence about the replicability of a literature. We find little evidence of bias in our meta-analyses, suggesting that the language acqusition literature describes real psychological phenomenona and can therefore provide the basis for theoretical development. 
 
 ## Fail-safe-N
 ```{r, overall_d}
@@ -195,26 +195,26 @@ Funnel plots provide a visual method for evaluating whether variability in effec
 Figure 1 presents funnel plots for each of our `r nrow(datasets)` meta-analyses. These plots show evidence of asymmetry (bias) for several of our phenomenon (Table 2, column 1). An important limitation of this method, however, is that it is difficult to determine the source of this bias. One possibility is that this bias is due not to experiment malfeasance, but to true heterogenity in phenomena (e.g. different ages). P-curves provide a way to address this issue, which we turn to next.
 
 ```{r}
+CRIT_95 = 1.96 
+CRIT_99 = 2.58
+
 funnel.es.data = all_data %>%
+  mutate(dataset = plyr::revalue(dataset, c("Infant directed speech preference" ="IDS preference", # shorten dataset names
+                                                   "Statistical sound category learning"= "Statistical sound learning",
+                                                   "Label advantage in concept learning" =  "Concept-label advantage"))) %>%
   group_by(dataset) %>%
   mutate(se = sqrt(d_var_calc), 
          es = d_calc, 
          center = mean(d_calc), 
-         lower_lim = max(se) + .05 * max(se),
-         left_lim99 = ifelse(center - lower_lim * EXPAND_FACTOR < min(es),
-                     center - lower_lim * EXPAND_FACTOR,
-                     min(es)),
-         right_lim99 = ifelse(center + lower_lim * EXPAND_FACTOR > max(es),
-                      center + lower_lim * EXPAND_FACTOR,
-                      max(es)))
+         lower_lim = max(se) + .05 * max(se))
 
-# separate data frame for 95 CI funnel shape
+# separate df for 95 CI funnel shape
 funnel95.data.wide <- funnel.es.data %>%
                 select(center, lower_lim, dataset) %>%
                 group_by(dataset) %>%
-                summarise(x1 = (center-lower_lim* 1.96)[1], 
+                summarise(x1 = (center-lower_lim * CRIT_95)[1], 
                           x2 = center[1],
-                          x3 = center[1] + lower_lim[1] * 1.96,
+                          x3 = center[1] + lower_lim[1] * CRIT_95,
                           y1 = -lower_lim[1],
                           y2 =  0, 
                           y3 = -lower_lim[1]) 
@@ -233,13 +233,13 @@ funnel95.data.y = funnel95.data.wide  %>%
 
 funnel95.data = bind_cols(funnel95.data.x, funnel95.data.y)
 
-# separate data frame for 99 CI funnel shape
+# separate df for 99 CI funnel shape
 funnel99.data.wide <- funnel.es.data %>%
                 select(center, lower_lim, dataset) %>%
                 group_by(dataset) %>%
-                summarise(x1 = (center-lower_lim* 3.29)[1], 
+                summarise(x1 = (center-lower_lim* CRIT_99)[1], 
                           x2 = center[1],
-                          x3 = center[1] + lower_lim[1] * 3.29,
+                          x3 = center[1] + lower_lim[1] * CRIT_99,
                           y1 = -lower_lim[1],
                           y2 =  0, 
                           y3 = -lower_lim[1]) 
@@ -261,12 +261,8 @@ funnel99.data = bind_cols(funnel99.data.x, funnel99.data.y)
 ggplot(funnel.es.data, aes(x = es, y = -se)) +
   facet_wrap(~dataset, scales = "free") +
   xlab("Effect Size")  +
+  ylab("Standard Error\n")  +
   scale_colour_solarized(name = "") +
-  scale_x_continuous(aes(limits = c(left_lim99[1], right_lim99[1]))) +
-  scale_y_continuous(expand = c(0, 0),
-                     aes(breaks = round(seq(0, -max(se), length.out = 5), 2),
-                     labels = round(seq(0, max(se), length.out = 5), 2))) +
-  xlab("Effect Size") +
   geom_polygon(aes(x = x, y = y), 
                data = funnel95.data, alpha = .5,
                fill = "white") +
@@ -283,7 +279,6 @@ ggplot(funnel.es.data, aes(x = es, y = -se)) +
 ```
 
 ```{r, eval = F}
-
 And, without veridical data, it is difficult to make theoretical progress on a phenomenon.
 Across studies we should expect some variability in effect size due to sampling error alone. But this variability in effect size should be *systematic*: There should be less variability around the mean for more precise studies, as measured by sample size. The presence of variability in effect sizes that is not accounted for sample size may suggest publication bias in a literature. A limitation of this approach:only accounts for XXXX.
 
