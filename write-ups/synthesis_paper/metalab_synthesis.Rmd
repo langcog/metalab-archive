@@ -125,9 +125,9 @@ To obtain estimates of effect size, we coded papers reporting experimental data.
 # Replicability of the field
 A literature is more likely to describe a real effect if studies are randomly sampled from the population of all possible  studies that researchers could in principle conduct. This assumption does not mean, however,  that there should be *no* variability in effect size across studies: We should expect random variation around the true mean effect size, with smaller studies showing more variability around this mean. 
 
-Variability in effect sizes will be biased when this assumption of  random study sampling  does not hold. Bias may be introduced by the experimenter in a number of ways, including  failure to publish null findings ["publication bias", @rothstein2006publication; @rosenthal1979file; @Fanelli:2010kf], analytical flexibility [e.g., "p-hacking", @Simmons:2011iw; @simonsohn2014p], reporting errors, or even fraud. These biases are problematic for theoretical development because they  lead to large but often unknown errors in estimates of the effect size. If bias is present in the literature, estimates of effect size may be poor estimates of the true underlying effect size and thus provide little evidential value. To make theoretical progress, we must therefore distinguish variability in effect sizes due to sample size from varability due to bias.
+Variability in effect sizes will be biased when this assumption of  random study sampling  does not hold. Bias may be introduced by the experimenter in a number of ways, including  failure to publish null findings ["publication bias", @rothstein2006publication; @rosenthal1979file; @Fanelli:2010kf], analytical flexibility [e.g., "p-hacking," @Simmons:2011iw; @simonsohn2014p], reporting errors, or even fraud. These biases are problematic for theoretical development because they  lead to large but often unknown errors in estimates of the effect size. If bias is present in the literature, estimates of effect size may be poor estimates of the true underlying effect size and thus provide little evidential value. To make theoretical progress, we must therefore distinguish variability in effect sizes due to sample size from varability due to bias.
 
-To assess the replicability of language acquisition phenomena, we conducted several key analyses: Fail-safe-N, funnel plots, and p-curve. These analytical approaches each have limitations, but taken together, they provide converging evidence about the replicability of a literature. We find little evidence of bias in our meta-analyses, suggesting that the language acqusition literature describes real psychological phenomenona and can therefore provide the basis for theoretical development. 
+To assess the replicability of language acquisition phenomena, we conducted several key analyses: Fail-safe-N, funnel plots, and p-curve. These analytical approaches each have limitations, but taken together, they provide converging evidence about the replicability of a literature. We find little evidence of bias in our meta-analyses, suggesting that the language acqusition literature likely describes real psychological phenomenona and should therefore provide the basis for theoretical development. 
 
 ## Fail-safe-N
 ```{r, overall_d}
@@ -159,54 +159,36 @@ fsn.package.data = all_data %>%
   rename(fsn_string = fsn_package)
 ```
 
-One approach for quantifying the reliability of a literature is to ask, How many missing studies with null effects would have to exist in order for the overall effect size to be zero? This is called the "fail-safe" number of studies. To answer this question, we estimatated the overall effect size for each phenomenenon (Table 2, column 2), and then used this to estimate the fail-safe-N (Table 2, column 3). This analysis suggests that an unlikely number of studies would have to be ``missing" in each literature ($M$ = `r round(mean(fsn.package.data$fsn_string[is.finite(fsn.package.data$fsn_string)]))`) in order for the overall effect sizes to be 0. 
+One approach for quantifying the reliability of a literature is to ask, How many missing studies with null effects would have to exist in the "file drawer" in order for the overall effect size to be zero? This is called the "fail-safe" number of studies. To answer this question, we estimatated the overall effect size for each phenomenenon (Table 2, column 2), and then used this to estimate the fail-safe-N (Table 2, column 3). This analysis suggests that an unlikely number of studies would have to be "missing" in each literature ($M$ = `r round(mean(fsn.package.data$fsn_string[is.finite(fsn.package.data$fsn_string)]))`) in order for the overall effect sizes to be 0. 
 
-One limitation of this analysis, however, is that it assumes that all reported effect sizes are obtained without p-hacking/analytical flexibility: If experimenters (is this true?)
+One limitation of this analysis, however, is that it assumes that all reported effect sizes are obtained in the absence of analytical flexibility: If experimenters are exercising analytical flexibility through practices like p-hacking, then number and magnitude of observed true effects in the literature may be inflated. In the next analysis, funnel plots, we try to address this possibility.
 
 ## Funnel Plots 
-```{r, funnel_skew}
-eggers_tests <- function(ma_data){
-    # model
-    model.mod = metafor::rma(ma_data$d_calc ~ma_data$mean_age_1, ma_data$d_var_calc,
-                             method = "REML",
-                control = list(maxiter = 1000, stepadj = 0.5))
-    
-    # Eggers test
-    egg.mod.random = regtest(model.mod) 
-    
-    data.frame(dataset = ma_data$short_name[1],
-               egg.mod.random.z = egg.mod.random$zval,
-               egg.mod.random.p = egg.mod.random$pval)
-}
+Funnel plots provide a visual method for evaluating whether variability in effect sizes is due  only to differences in sample size. A funnel plot shows effect sizes versus a metric of sample size, standard error. If there is no bias in a literature, we should expect studies to be randomly sampled around the mean, with more variability for less precise studies. 
 
-eggers.data = all_data %>%
-  split(.$short_name) %>%
-  map(function(ma_data) eggers_tests(ma_data)) %>%
-  bind_rows() %>%
-  mutate_each(funs(round(., digits = 2)), vars = c(egg.mod.random.z,
-                                                    egg.mod.random.p)) %>%
-  mutate(egg_string = paste0(egg.mod.random.z, " (",egg.mod.random.p, ")"))  %>%
-  rename(short_name = dataset) %>%
-  select(short_name, egg_string)
-```
+Figure 1 presents funnel plots for each of our `r nrow(datasets)` meta-analyses. These plots show evidence of asymmetry (bias) for several of our phenomenon (Table 2, column 1). However, an important limitation of this method is that it is difficult to determine the source of this bias. One possibility is that this bias is due not to experimenter, but to true heterogenity in phenomena (e.g. different ages). P-curves provide a way to address this issue, which we turn to next.
 
-Funnel plots provide a visual method for evaluating whether variability in effect sizes is due  only to differences in sample size. Figure XX plots effect sizes versus a metric of sample size, standard error. If there is no bias in a literature, we should expect studies to be randomly sampled around the mean, with more variability for less precise studies. 
+```{r,  fig.pos = "T", fig.width=8, fig.height=5.5, fig.cap = "Funnel plots for each meta-analysis. Each effect size estimate is represented by a point, and the mean effect size is shown as a red dashed line. The funnel corresponds to a 95% (narrow) and 99% (wide) CI around this mean. In the absense of true heterogenity in effect sizes (no moderators)  and bias, we should expect all points to fall inside the funnel."}
 
-Figure 1 presents funnel plots for each of our `r nrow(datasets)` meta-analyses. These plots show evidence of asymmetry (bias) for several of our phenomenon (Table 2, column 1). An important limitation of this method, however, is that it is difficult to determine the source of this bias. One possibility is that this bias is due not to experiment malfeasance, but to true heterogenity in phenomena (e.g. different ages). P-curves provide a way to address this issue, which we turn to next.
-
-```{r}
 CRIT_95 = 1.96 
 CRIT_99 = 2.58
 
 funnel.es.data = all_data %>%
-  mutate(dataset = plyr::revalue(dataset, c("Infant directed speech preference" ="IDS preference", # shorten dataset names
-                                                   "Statistical sound category learning"= "Statistical sound learning",
-                                                   "Label advantage in concept learning" =  "Concept-label advantage"))) %>%
+  mutate(dataset = as.factor(dataset),
+         dataset= gdata::reorder.factor(dataset, 
+                                    new.order = c(2,6,9,10,8,11,4,3,5,1,7)),
+         dataset = plyr::revalue(dataset, 
+                                 c("Infant directed speech preference"="IDS preference",
+                                   "Statistical sound category learning"="Statistical sound learning", 
+                                   "Label advantage in concept learning"="Concept-label advantage",
+                                       "Vowel discrimination (native)"="Vowel discrimination\n(native)",
+                                    "Vowel discrimination (non-native)"="Vowel discrimination\n(non-native)"))) %>%
   group_by(dataset) %>%
   mutate(se = sqrt(d_var_calc), 
          es = d_calc, 
          center = mean(d_calc), 
          lower_lim = max(se) + .05 * max(se))
+
 
 # separate df for 95 CI funnel shape
 funnel95.data.wide <- funnel.es.data %>%
@@ -269,34 +251,45 @@ ggplot(funnel.es.data, aes(x = es, y = -se)) +
   geom_polygon(aes(x = x, y = y), 
                data = funnel99.data, alpha = .5,
                fill = "white") +
-  geom_vline(aes(xintercept=center[1]), 
-             linetype = "dotted", color = "black") +
-  geom_vline(xintercept = 0, linetype = "dashed", color = "grey") +
+  geom_vline(aes(xintercept=x2), 
+             linetype = "dashed", color = "red", size = .8, data = funnel99.data.wide) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "darkgrey",  size = .8) +
   geom_point() +
-  theme(panel.background = element_rect(fill = "grey"),
-        panel.grid.major =  element_line(colour = "darkgrey", size = 0.2),
-        panel.grid.minor =  element_line(colour = "darkgrey", size = 0.5))
+  theme(panel.background = element_rect(fill = "lightgrey"),
+        panel.grid.major = element_line(colour = "grey", size = 0.2),
+        panel.grid.minor = element_line(colour = "grey", size = 0.5))
 ```
 
-```{r, eval = F}
-And, without veridical data, it is difficult to make theoretical progress on a phenomenon.
-Across studies we should expect some variability in effect size due to sampling error alone. But this variability in effect size should be *systematic*: There should be less variability around the mean for more precise studies, as measured by sample size. The presence of variability in effect sizes that is not accounted for sample size may suggest publication bias in a literature. A limitation of this approach:only accounts for XXXX.
 
-if researchers are using power analysis appropriately to plan their effect sizes, then true large effects will be studied with small samples and true small effects will be studied with large samples, leading to an asymmetrical funnel plot and the illusion of research bias.
+```{r, funnel_skew}
+eggers_tests <- function(ma_data){
+    # model
+    model.mod = metafor::rma(ma_data$d_calc ~ma_data$mean_age_1, ma_data$d_var_calc,
+                             method = "REML",
+                control = list(maxiter = 1000, stepadj = 0.5))
+    
+    # Eggers test
+    egg.mod.random = regtest(model.mod) 
+    
+    data.frame(dataset = ma_data$short_name[1],
+               egg.mod.random.z = egg.mod.random$zval,
+               egg.mod.random.p = egg.mod.random$pval)
+}
 
-First, when true effect sizes differ across studies, as they inevitably do, the funnel plot and the excessive significance approaches risk falsely concluding publica- tion bias is present when in fact it is not 
-
-Funnel plots should be seen as a generic means of examining small-study effects (the tendency for the smaller studies in a meta-analysis to show larger treatment effects) 
-
-Strictly speaking, funnel plots probe whether studies with little precision (small studies) give different results from studies with greater precision (larger studies). Asymmetry in the funnel plot may therefore result not from a systematic under-reporting of negative trials but from an essential difference between smaller and larger studies that arises from inherent between-study heterogeneity.
-
-* could be quality,  measure of precision affects precision
-
-language bias (selective inclusion of studies published in English); availability bias (selective inclusion of studies that are easily accessible to the researcher); cost bias (selective inclusion of studies that are available free or at low cost); familiarity bias (selective inclusion of studies only from one’s own discipline, and outcome bias (selective reporting by the author of a primary study of some outcomes but not others, depending on the direction and statistical significance of the results). 
+eggers.data = all_data %>%
+  split(.$short_name) %>%
+  map(function(ma_data) eggers_tests(ma_data)) %>%
+  bind_rows() %>%
+  mutate_each(funs(round(., digits = 2)), vars = c(egg.mod.random.z,
+                                                    egg.mod.random.p)) %>%
+  mutate(egg_string = paste0(egg.mod.random.z, " (",egg.mod.random.p, ")"))  %>%
+  rename(short_name = dataset) %>%
+  select(short_name, egg_string)
 ```
 
 ## P-curves
-```{r, pcurve_power}
+```{r p_curve_plots,  fig.pos = "tb", fig.width=7, fig.height=4.5, fig.cap = "P-curve for each meta-analysis (Simonsohn, Nelson, & Simmons, 2014). In the absense of p-hacking, we should expect the observed p-curve (blue) to be right-skewed (more small values). The red dashed line shows the expected distribution of p-values when the effect is non-existent (the null is true). The green dashed line shows the expected distribution if the effect is real, but studies only have 33% power."}
+
 ALPHA = .05
 P_INCREMENT = .01 
 
@@ -305,14 +298,27 @@ pc.data <- get_all_pc_data(all_data, ALPHA, P_INCREMENT)
 pc.data %>%
   group_by(dataset) %>%
   do(get_p_curve_df(., ALPHA, P_INCREMENT)) %>%
+  ungroup() %>%
+  mutate(dataset = as.factor(dataset),
+                 dataset = plyr::revalue(dataset, 
+                                         c("Label advantage in concept learning" =  "Concept-label advantage")),
+         dataset = gdata::reorder.factor(dataset, 
+                                    new.order = c(3:6,2,1))) %>%
   ggplot(aes(x = p, y = value, linetype = measure, color = measure)) + 
   geom_line(size = 1) +
-  scale_colour_manual(name = "", values = c("red", "green", "blue"),labels=c("baseline", "expected", "observed")) +
+  scale_colour_manual(name = "", values = c("red", "green", "blue"), 
+                      labels=c("Null of no effect", "Null of 30% power", "Observed")) +
   scale_linetype_manual(values = c("dashed", "dashed", "solid"), guide = FALSE)  +
-  ylab("") +
+  ylab("Proportion p-values") +
+  xlab("p-value") +
   #scale_colour_discrete(labels=c("baseline", "expected", "observed")) +
-  facet_wrap(~ dataset) 
+  facet_wrap(~ dataset) +
+  theme(legend.position = "top",
+        legend.key = element_blank(),
+        legend.background = element_rect(fill = "transparent"))
+```
 
+```{r p_curve_power}
 power.data = pc.data %>%
   group_by(dataset) %>%
   do(data.frame(power = get_pc_power(., ALPHA)))  %>%
@@ -321,7 +327,6 @@ power.data = pc.data %>%
   mutate(power_string = ifelse(is.na(as.character(power)),"", as.character(power))) %>%
   select(-power)
 ```
-
 
 ```{r, p_curve_skew}
 stouffer.data = pc.data %>%
@@ -337,8 +342,9 @@ stouffer.data = pc.data %>%
   select(short_name, stouff_string)
 ```
 
-[@simonsohn2014p; @simonsohn2014power; @simonsohn2015better]
-bias introduced by meta-analysis in selection (second-order selection bias)
+P-curves provide a more robust way to identify bias in a literature [@simonsohn2014p; @simonsohn2014power; @simonsohn2015better]. A p-curve is the distribution of p-values for the statistical test of the main hypothesis across a literature. Critically, if there is a real effect in the literature, the shape of the p-curve should reflect this. In particular, we should expect the p-curve to be right skewed with more small values (e.g., .01) than large values (e.g., .04). An important features of this analysis is that we should expect this skew independent of any true heterogenity in the data, such as age. Evidence that the curve is in fact right-skewed would suggest that the literature is not biased, and that it provides evidential value. 
+
+Figure 2 shows p-curves for 6 of our 11 meta-analyses\footnote{We were unable to do this analysis on all meta-analyses because some were missing key statistical tests (e.g. gaze following) or the test statistic was not availble (e.g. pointing and vocabulary).}. Across all p-curves, the curves appear right skewed. This is confirmed by formal analyses (Table 2, column 5). P-curves also provide a method for calculcating the overall power of a literature, based on the shape of the p-curve [@simonsohn2014power]. Intuitively, when power is high and effect is real, we should be more likely to observe an effect size "further" from the null. This means that we will observe more small effect sizes. Thus, the higher the power, the more right skewed the p-curve will be.  Table 2 (column 6) presents estimates of power for each meta-analysis based on p-curve. With the exception of phonotactic learning (*power* = .14), literatures appear to have acceptable power.
 
 ```{r, make_table}
 table.data = left_join(select(all_ds, c(short_name, d_string)), fsn.package.data) %>%
@@ -378,6 +384,23 @@ Pointing and vocabulary & 0.41 [0.32, 0.49] & 1202 & 0.59 (0.55) &  & \\
 \end{tabular}
 \caption{Summary of replicability analyses. \textit{d} = Effect size (Cohen's {\it d}) estimated from a random-effect model; fail-safe-N = number of missing studies that would have to exist in order for the overall effect size to be {\it d} = 0; funnel skew = test of asymmetry in funnel plot using the random-effect Egger's test (Stern \& Eggers, 2005); p-curve skew = test of the right skew of the p-curve using the Stouffer method (Simonsohn, Simmons, \& Nelson, 2015); power = power to reject the null hypothesis at the 5\% significance level based on the p-curve (Simonsohn, Nelson, \& Simmons, 2014);  Brackets give 95\% confidence intervals, and parentheses show p-values.}
 \end{table}
+
+```{r, eval = F}
+And, without veridical data, it is difficult to make theoretical progress on a phenomenon.
+Across studies we should expect some variability in effect size due to sampling error alone. But this variability in effect size should be *systematic*: There should be less variability around the mean for more precise studies, as measured by sample size. The presence of variability in effect sizes that is not accounted for sample size may suggest publication bias in a literature. A limitation of this approach:only accounts for XXXX.
+
+if researchers are using power analysis appropriately to plan their effect sizes, then true large effects will be studied with small samples and true small effects will be studied with large samples, leading to an asymmetrical funnel plot and the illusion of research bias.
+
+First, when true effect sizes differ across studies, as they inevitably do, the funnel plot and the excessive significance approaches risk falsely concluding publica- tion bias is present when in fact it is not 
+
+Funnel plots should be seen as a generic means of examining small-study effects (the tendency for the smaller studies in a meta-analysis to show larger treatment effects) 
+
+Strictly speaking, funnel plots probe whether studies with little precision (small studies) give different results from studies with greater precision (larger studies). Asymmetry in the funnel plot may therefore result not from a systematic under-reporting of negative trials but from an essential difference between smaller and larger studies that arises from inherent between-study heterogeneity.
+
+* could be quality,  measure of precision affects precision
+
+language bias (selective inclusion of studies published in English); availability bias (selective inclusion of studies that are easily accessible to the researcher); cost bias (selective inclusion of studies that are available free or at low cost); familiarity bias (selective inclusion of studies only from one’s own discipline, and outcome bias (selective reporting by the author of a primary study of some outcomes but not others, depending on the direction and statistical significance of the results). 
+```
 
 
 # Theoretical Synthesis
