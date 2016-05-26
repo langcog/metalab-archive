@@ -1,8 +1,11 @@
 ################################################################################
-## CONSTANTS FOR POWER ANALYSIS
+## CONSTANTS 
 
 pwrmu <- 10
 pwrsd <- 5
+alpha <- .05
+CRIT_95 = 1.96 
+CRIT_99 = 2.58
 
 ################################################################################
 ## HELPER FUNCTIONS
@@ -239,7 +242,7 @@ shinyServer(function(input, output, session) {
   forest <- function() {
     f <- fitted(model())
     p <- predict(model())
-    alpha <- .05
+
     forest_data <- data.frame(effects = as.numeric(model()$yi.f),
                               variances = model()$vi.f) %>%
       mutate(effects.cil = effects -
@@ -334,18 +337,18 @@ shinyServer(function(input, output, session) {
     d[[mod_group()]] <- mod_data()[[mod_group()]]
 
     lower_lim <- max(d$se) + .05 * max(d$se)
-    funnel95 <- data.frame(x = c(center - lower_lim * 1.96, center,
-                                 center + lower_lim * 1.96),
+    funnel95 <- data.frame(x = c(center - lower_lim * CRIT_95, center,
+                                 center + lower_lim * CRIT_95),
                            y = c(-lower_lim, 0, -lower_lim))
 
-    left_lim99 <- ifelse(center - lower_lim * 3.29 < min(d$es),
-                         center - lower_lim * 3.29,
+    left_lim99 <- ifelse(center - lower_lim * CRIT_99 < min(d$es),
+                         center - lower_lim * CRIT_99,
                          min(d$es))
-    right_lim99 <- ifelse(center + lower_lim * 3.29 > max(d$es),
-                          center + lower_lim * 3.29,
+    right_lim99 <- ifelse(center + lower_lim * CRIT_99 > max(d$es),
+                          center + lower_lim * CRIT_99,
                           max(d$es))
-    funnel99 <- data.frame(x = c(center - lower_lim * 3.29, center,
-                                 center + lower_lim * 3.29),
+    funnel99 <- data.frame(x = c(center - lower_lim * CRIT_99, center,
+                                 center + lower_lim * CRIT_99),
                            y = c(-lower_lim, 0, -lower_lim))
 
     labels <- if (mod_group() == "all_mod") NULL else
@@ -367,10 +370,10 @@ shinyServer(function(input, output, session) {
       geom_vline(xintercept = 0, linetype = "dashed", color = "grey") +
       geom_point(aes_string(colour = mod_group())) +
       xlab(xlabel) +
-      geom_text(x = center + lower_lim * 1.96 / 2,
+      geom_text(x = center + lower_lim * CRIT_95 / 2,
                 y = -lower_lim + lower_lim / 30, family = font,
                 label = "p < .05", vjust = "bottom", hjust = "center") +
-      geom_text(x = (center + lower_lim * 1.96) + (lower_lim * 3.29 - lower_lim * 1.96) / 2,
+      geom_text(x = (center + lower_lim * CRIT_95) + (lower_lim * CRIT_99 - lower_lim * CRIT_95) / 2,
                 y = -lower_lim + lower_lim / 30, family = font,
                 label = "p < .01", vjust = "bottom", hjust = "center") +
       ylab("Standard error\n") +
