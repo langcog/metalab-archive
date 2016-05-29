@@ -21,10 +21,6 @@ library(knitr)
 
 This document includes all the analyses for the "replicability" section of the Synthesis Paper. Abbreviated versions of this code are included in the manuscript. Here we analyze five different features of replicability: overall effect size, p-curve, power, fail-safe-N, and funnel plot skew.
 
-TO DO:
-
-* funnel plots
-* add egger plots
 
 ## Average effect size
 ```{r}
@@ -415,8 +411,30 @@ eggers_tests <- function(ma_data){
     # models
     model.basic = metafor::rma(ma_data$d_calc, ma_data$d_var_calc, method = "REML",
                control = list(maxiter = 1000, stepadj = 0.5))
-    model.mod = metafor::rma(ma_data$d_calc ~ma_data$mean_age_1, ma_data$d_var_calc, method = "REML",
+    
+    N_response_mode  = length(levels(droplevels(as.factor(ma_data$response_mode)))) 
+    N_response_method = length(levels(droplevels(as.factor(ma_data$method)))) 
+
+    if (N_response_mode > 1 & N_response_method > 1){
+      model.mod = metafor::rma(ma_data$d_calc ~ ma_data$mean_age_1 + 
+                                 ma_data$response_mode +  ma_data$method, 
+                             ma_data$d_var_calc, method = "REML",
                control = list(maxiter = 1000, stepadj = 0.5))
+    } else if (N_response_mode > 1) {
+        model.mod = metafor::rma(ma_data$d_calc ~ ma_data$mean_age_1 + ma_data$response_mode  , 
+                             ma_data$d_var_calc, method = "REML",
+               control = list(maxiter = 1000, stepadj = 0.5))
+      
+    } else if (N_response_method > 1) {
+              model.mod = metafor::rma(ma_data$d_calc ~ ma_data$mean_age_1  + ma_data$method, 
+                             ma_data$d_var_calc, method = "REML",
+               control = list(maxiter = 1000, stepadj = 0.5))
+    } else {
+             model.mod = metafor::rma(ma_data$d_calc ~ ma_data$mean_age_1 , 
+                             ma_data$d_var_calc, method = "REML",
+               control = list(maxiter = 1000, stepadj = 0.5))
+    }         
+      
     # Eggers tests
     egg.basic = regtest(model.basic, model="lm") 
     egg.basic.random = regtest(model.basic) 
@@ -448,4 +466,5 @@ ggplot(eggers, aes(x = dataset, y =  p.type ,
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_fill_manual(values = c("blue","pink"))
 ```
+
 Overall, mostly not skewed. It matters for inworddb and idspref which measure we use. My vote is for random with age moderator.

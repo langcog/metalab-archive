@@ -11,7 +11,7 @@
 
 <meta name="author" content="Molly Lewis, Christina Bergmann, and Mike Frank" />
 
-<meta name="date" content="2016-05-24" />
+<meta name="date" content="2016-05-27" />
 
 <title>Replicability Analyses for Synthesis Paper</title>
 
@@ -225,17 +225,12 @@ div.tocify {
 
 <h1 class="title">Replicability Analyses for Synthesis Paper</h1>
 <h4 class="author"><em>Molly Lewis, Christina Bergmann, and Mike Frank</em></h4>
-<h4 class="date"><em>2016-05-24</em></h4>
+<h4 class="date"><em>2016-05-27</em></h4>
 
 </div>
 
 
 <p>This document includes all the analyses for the “replicability” section of the Synthesis Paper. Abbreviated versions of this code are included in the manuscript. Here we analyze five different features of replicability: overall effect size, p-curve, power, fail-safe-N, and funnel plot skew.</p>
-<p>TO DO:</p>
-<ul>
-<li>funnel plots</li>
-<li>add egger plots</li>
-</ul>
 <div id="average-effect-size" class="section level2">
 <h2>Average effect size</h2>
 <pre class="sourceCode r"><code class="sourceCode r">overall_es &lt;-<span class="st"> </span>function(ma_data){
@@ -639,7 +634,8 @@ eggers =<span class="st"> </span>all_data %&gt;%
 <span class="st">  </span><span class="kw">geom_tile</span>() +
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">45</span>, <span class="dt">hjust =</span> <span class="dv">1</span>)) +
 <span class="st">  </span><span class="kw">scale_fill_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="st">&quot;blue&quot;</span>,<span class="st">&quot;pink&quot;</span>))</code></pre>
-<p><img src="replicability_analyses_files/figure-html/unnamed-chunk-13-1.png" title="" alt="" width="672" /> Overall, mostly not skewed. It matters for inworddb and idspref which measure we use. My vote is for random with age moderator.</p>
+<p><img src="replicability_analyses_files/figure-html/unnamed-chunk-13-1.png" title="" alt="" width="672" /></p>
+<p>Overall, mostly not skewed. It matters for inworddb and idspref which measure we use. My vote is for random with age moderator.</p>
 </div>
 </div>
 </div>

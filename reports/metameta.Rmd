@@ -5,22 +5,26 @@ date: "This report was rendered on `r Sys.Date()` and will be automatically re-r
 ---
 
 ```{r, setup, include = FALSE}
-knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, cache = T)
 ggplot2::theme_set(langcog::theme_mikabr(base_family = "Ubuntu"))
 source("../dashboard/global.R", chdir = TRUE)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(langcog)
+library(directlabels)
+library(knitr)
+library(lme4)
+library(orddom)
 ```
 
-# Introduction
+Let's put everything together.
 
-Let's put everything together. 
-
-
+## All effect sizes
 ```{r}
-ggplot(all_data,
+all_data.f = filter(all_data, dataset != "Gaze following" | d_calc > 0) %>%
+                filter(dataset != "Pointing and vocabulary")
+ggplot(all_data.f,
        aes(x = mean_age/365, y = d_calc, col = dataset)) + 
   geom_point(aes(size = n), alpha = .5) + 
   geom_smooth(method="lm", se = FALSE, size = 1.5, 
@@ -30,19 +34,17 @@ ggplot(all_data,
   theme(legend.position = "bottom",
         legend.key = element_blank(),
         legend.background = element_rect(fill = "transparent")) + 
+    geom_hline(yintercept = 0, linetype = "dashed") +
+
   scale_color_discrete(guide = guide_legend(nrow=2, 
                                              title = "")) + 
   ylim(c(-1, 3))
 ```
 
-Plot without ME, to fcous on the first two years. 
-
+Model fits only
 ```{r}
-ggplot(filter(all_data, 
-              mean_age < 365 * 1.5,
-              dataset != "Mutual exclusivity"),
-       aes(x = mean_age/365, y = d_calc, col = dataset)) + 
-  geom_point(aes(size = n), alpha = .5) + 
+p = ggplot(all_data.f,
+       aes(x = mean_age/365, y = d_calc, col = dataset, group = dataset)) + 
   geom_smooth(method="lm", se = FALSE, size = 1.5, 
               aes(weight = 1/d_var_calc), formula = y ~ log(x)) + 
   xlab("Age (years)") + 
@@ -50,9 +52,238 @@ ggplot(filter(all_data,
   theme(legend.position = "bottom",
         legend.key = element_blank(),
         legend.background = element_rect(fill = "transparent")) + 
+    geom_hline(yintercept = 0, linetype = "dashed") +
+
   scale_color_discrete(guide = guide_legend(nrow=2, 
                                              title = "")) + 
-  ylim(c(-1, 3))
+  ylim(c(-1, 3)) 
+direct.label(p, list("top.bumptwice", dl.trans(y = y + 0.2), cex=.8))
+#direct.label(p, method = list(box.color = NA, "maxvar.points",  cex=.8))
+```
+
+Focus on the first two years, without mutual exclusivity
+```{r}
+p2 = ggplot(filter(all_data.f, 
+              mean_age < 365 * 2, dataset != "Mutual exclusivity"),
+       aes(x = mean_age/365, y = d_calc, col = dataset)) + 
+  #geom_point(aes(size = n), alpha = .5) + 
+  geom_smooth(method="lm", se = FALSE, size = 1.5, 
+              aes(weight = 1/d_var_calc), formula = y ~ log(x)) + 
+      geom_hline(yintercept = 0, linetype = "dashed") +
+
+  xlab("Age (years)") + 
+  ylab("Effect size (d)") + 
+  theme(legend.position = "bottom",
+        legend.key = element_blank(),
+        legend.background = element_rect(fill = "transparent")) + 
+  scale_color_discrete(guide = guide_legend(nrow=2, 
+                                             title = "")) 
+ direct.label(p2, list("top.bumptwice", dl.trans(y = y + 0.2), cex=.8))
+```
+
+## By language domain
+```{r}
+ ld.df = data.frame(dataset = datasets$name,
+                    domain = c("prosody", "words", "communication", "sounds",
+                               "sounds", "sounds", "sounds", "sounds", "words",
+                               "words", "communication"))
+ ld.df$domain = factor(ld.df$domain, levels=c("prosody","sounds", "words", "communication"))
+ 
+lin_lmer <- lmer(d_calc ~ mean_age + 
+                (log(mean_age)| dataset), 
+                weights = 1/d_var_calc, 
+                REML = F, data = all_data)
+
+lin_lmer_preds <- predict(lin_lmer, re.form = ~ (log(mean_age)| dataset))
+
+
+all_data_preds <- all_data %>%
+  select(dataset, short_name, d_calc, d_var_calc, mean_age, study_ID) %>%
+  filter(complete.cases(.)) %>%
+  mutate(lin_lmer_preds = lin_lmer_preds) %>% 
+  filter(dataset != "Gaze following" | lin_lmer_preds > 0) %>%
+                filter(dataset != "Pointing and vocabulary")
+
+p3 = ggplot(left_join(all_data_preds, ld.df),
+       aes(x = mean_age/365, y = lin_lmer_preds, col = dataset)) +
+  #geom_line() +
+  facet_grid(~domain) +
+  #geom_point(aes(size = n), alpha = .5) + 
+  geom_smooth(method="lm", se = FALSE, size = 1, 
+              aes(weight = 1/d_var_calc), formula = y ~ log(x)) + 
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  xlab("Age (years)") + 
+  ylab("Effect size (d)") + 
+  theme(legend.position = "bottom",
+        legend.key = element_blank(),
+        legend.background = element_rect(fill = "transparent")) 
+
+ direct.label(p3, list("top.bumptwice", dl.trans(y = y + 0.1), cex=.8))
+```
+
+### Split by response mode
+```{r}
+lin_lmer <- lmer(d_calc ~ mean_age + 
+                (log(mean_age)| dataset), 
+                weights = 1/d_var_calc, 
+                REML = F, data = all_data)
+
+lin_lmer_preds <- predict(lin_lmer, re.form = ~ (log(mean_age)| dataset))
+
+all_data_preds <- all_data %>%
+  select(dataset, short_name, d_calc, d_var_calc, mean_age, study_ID, response_mode) %>%
+  filter(complete.cases(.)) %>%
+  mutate(lin_lmer_preds = lin_lmer_preds) %>% 
+  filter(dataset != "Gaze following" | lin_lmer_preds > 0) %>%
+                filter(dataset != "Pointing and vocabulary",
+                       response_mode == "eye-tracking" | response_mode == "behavior")
+  
+
+p4 = ggplot(left_join(all_data_preds, ld.df),
+       aes(x = mean_age/365, y = d_calc, col = dataset, lty = response_mode)) +
+  #geom_line() +
+  facet_grid(~domain) +
+  #geom_point(aes(size = n), alpha = .5) + 
+  geom_smooth(method="lm", se = FALSE, size = 1, 
+              aes(weight = 1/d_var_calc), formula = y ~ log(x)) + 
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  xlab("Age (years)") + 
+  ylab("Effect size (d)") + 
+  theme(legend.position = "bottom",
+        legend.key = element_blank(),
+        legend.background = element_rect(fill = "transparent")) 
+
+ direct.label(p4, list("top.bumptwice", dl.trans(y = y + 0.1), cex=.8))
+```
+
+## Cliff's delta (dominance statistic)
+```{r}
+lin_lmer <- lmer(d_calc ~ log(mean_age) + 
+                (log(mean_age)| dataset), 
+                weights = 1/d_var_calc, 
+                REML = F, data = all_data)
+
+cliffs.deltas <- predict(lin_lmer, re.form = ~ (log(mean_age) | dataset))  %>%
+                cbind(., select(all_data, mean_age, dataset)) %>% 
+                rename_("cohens.d" = ".") %>%
+                distinct() %>%
+                arrange(dataset, mean_age) %>%
+                mutate(cliff.delta = cohd2delta(cohens.d)) %>%
+                filter(cliff.delta > -1) %>% # why is there 1 value not bounded at 1?
+                filter(dataset != "Gaze following" | cohens.d > 0) %>%
+                filter(dataset != "Pointing and vocabulary")
+
+p = ggplot(left_join(cliffs.deltas, ld.df), aes(x = mean_age/365, y = cliff.delta,
+                                             group = dataset)) +
+  geom_line(aes(color= dataset, group = dataset), size = 1) +
+  facet_grid(~domain) +
+  ylim(-.2,1) +
+  geom_hline(yintercept = 0, lty = 2, col = "black") +
+  xlab("Age (years)") +
+  ylab("cliff's delta")  +
+  scale_color_discrete(guide = FALSE) 
+  #scale_x_continuous(breaks = seq(0,160,12)) +
+  #theme(axis.text.x = element_text( angle=45))
+
+direct.label(p, list("top.bumptwice", dl.trans(y = y + 0.2, cex=.8)))
+```
+
+
+```{r, eval = F}
+### MISC:
+### Does the functional form vary across domains?
+lin_lmer_preds <- predict(lin_lmer, re.form = ~ (log(mean_age)| dataset))
+log_lmer_preds <- predict(log_lmer, re.form = ~ (log(mean_age)| dataset))
+quad_lmer_preds <- predict(quad_lmer, re.form = ~ (log(mean_age)| dataset))
+
+all_data_preds <- all_data %>%
+  select(dataset, short_name, d_calc, d_var_calc, mean_age, study_ID) %>%
+  filter(complete.cases(.)) %>%
+  mutate(lin_lmer_preds = lin_lmer_preds,
+         log_lmer_preds = log_lmer_preds,
+         quad_lmer_preds = quad_lmer_preds) %>%
+  gather("model", "value" , 7:9) %>%
+  mutate(dataset.model = paste(dataset, model, sep = "_"))
+```
+
+```{r, eval = F}
+ggplot(left_join(all_data_preds, ld.df), aes(x = mean_age, y = d_calc,
+                                             group = dataset.model)) +
+  geom_line(aes(color= dataset.model, group = dataset.model,  y = value)) +
+  facet_wrap(model ~ domain, scales = "free") + 
+  geom_hline(yintercept = 0, lty = 2, col = "black") +
+  xlab("Mean age in days") +
+  ylab("d (original and calculated)")  +
+  scale_color_discrete(guide = FALSE) 
+```
+
+
+```{r, eval = F}
+## Subset to common methods
+lin_lmer <- lmer(d_calc ~ mean_age + 
+                (log(mean_age)| dataset), 
+                weights = 1/d_var_calc, 
+                REML = F, data = filter(all_data, response_mode == "behavior"))
+
+log_lmer <- lmer(d_calc ~ log(mean_age) + 
+                (log(mean_age)| dataset), 
+                weights = 1/d_var_calc, 
+                REML = F, data = filter(all_data, response_mode == "behavior"))
+
+quad_lmer <- lmer(d_calc ~ I(mean_age^2) + 
+                 (log(mean_age)| dataset) , 
+                 weights = 1/d_var_calc, 
+                 REML = F, data = filter(all_data, response_mode == "behavior"))
+
+kable(anova(lin_lmer, log_lmer))
+kable(anova(lin_lmer, quad_lmer))
+kable(anova(log_lmer, quad_lmer))
+```
+
+```{r, eval = F}
+lin_lmer <- lmer(d_calc ~ mean_age + 
+                (log(mean_age)| dataset), 
+                weights = 1/d_var_calc, 
+                REML = F, data = filter(all_data, response_mode == "eyetracking"))
+
+log_lmer <- lmer(d_calc ~ log(mean_age) + 
+                (log(mean_age)| dataset), 
+                weights = 1/d_var_calc, 
+                REML = F, data = filter(all_data, response_mode == "eyetracking"))
+
+quad_lmer <- lmer(d_calc ~ I(mean_age^2) + 
+                 (log(mean_age)| dataset) , 
+                 weights = 1/d_var_calc, 
+                 REML = F, data = filter(all_data, response_mode == "eyetracking"))
+
+kable(anova(lin_lmer, log_lmer))
+kable(anova(lin_lmer, quad_lmer))
+kable(anova(log_lmer, quad_lmer))
+```
+
+
+```{r, eval = F}
+# Developmental Curves 
+## What's the best fitting functional form of development, independent of phenomenona?
+lin_lmer <- lmer(d_calc ~ mean_age + 
+                (log(mean_age)| dataset), 
+                weights = 1/d_var_calc, 
+                REML = F, data = all_data)
+
+log_lmer <- lmer(d_calc ~ log(mean_age) + 
+                (log(mean_age)| dataset), 
+                weights = 1/d_var_calc, 
+                REML = F, data = all_data)
+
+quad_lmer <- lmer(d_calc ~ I(mean_age^2) + 
+                 (log(mean_age)| dataset) , 
+                 weights = 1/d_var_calc, 
+                 REML = F, data = all_data)
+
+kable(anova(lin_lmer, log_lmer))
+kable(anova(lin_lmer, quad_lmer))
+kable(anova(log_lmer, quad_lmer))
+#Doesn't really seem to matter. 
 
 ```
 
