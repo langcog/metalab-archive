@@ -345,7 +345,7 @@
   required:     no
 
 - field:        num_trials
-  description:  proportion of female participants
+  description:  number of trials
   type:         numeric
   format:
   example:
@@ -395,3 +395,51 @@
   example:
   required:     no
 
+- field:        speaker
+  description:  audio source
+  type:         string
+  format:
+  example:
+  required:     no
+
+- field:        speech_type
+  description:  is the speech filtered?
+  type:         string
+  format:
+  example:      naturalistic
+  required:     no
+
+- field:        object_stimulus
+  description:  actual objects or on paper?
+  type:         string
+  format:
+  example:
+  required:     no
+
+- field:        cue_type
+  description:  pointing? visual gaze?
+  type:         string
+  format:
+  example:
+  required:     no
+
+- field:        N_AFC
+  description:  how many alternatives?
+  type:         numeric
+  format:
+  example:
+  required:     no
+
+- field:        mean_comprehension_vocab
+  description:
+  type:         numeric
+  format:
+  example:
+  required:     no
+
+- field:        mean_production_vocab
+  description:
+  type:         numeric
+  format:
+  example:
+  required:     no

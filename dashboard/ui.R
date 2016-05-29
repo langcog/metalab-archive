@@ -149,9 +149,10 @@ tab_data <- tabItem(
 #############################################################################
 # VISUALIZATIONS
 
-ma_choices <- c("Random effects with maximum likelihood (recommended)" = "REML",
-                "Fixed effects" = "FE",
-                "Empirical Bayes" = "EB")
+ma_choices <- c("Multi-level random effects with study grouping" = "REML_mv",
+                "Random effects" = "REML", 
+                "Fixed effects" = "FE", 
+                "Empirical bayes" = "EB")
 
 scatter_choices <- c("Locally-linear regression (loess)" = "loess",
                      "Weighted linear model (lm)" = "lm")
@@ -174,7 +175,7 @@ tab_visualizations <- tabItem(
           selectInput("dataset_name", label = "Dataset",
                       choices = datasets$name),
           selectInput("ma_method", label = "Meta-analytic model",
-                      choices = ma_choices, selected = "REML"),
+                      choices = ma_choices, selected = "REML_mv"),
           fluidRow(
             column(
               width = 4,
@@ -277,8 +278,8 @@ tab_power <- tabItem(
       box(width = NULL, status = "danger", solidHeader = TRUE,
           title = "Experiment planning",
           p("Select a meta-analysis and a set of moderators to see statistical
-             power estimates using the estimated effect size for that
-             phenomenon. (Currently supports age only)."),
+             power estimates using the estimated effect size (random effects) for that
+             phenomenon."),
           selectInput("dataset_name_pwr", "Meta-analysis",
                       choices = datasets$name),
           uiOutput("pwr_moderator_input"),
