@@ -238,5 +238,25 @@
 		"src": "images/datasets/pointing.png",
 		"longitudinal": "TRUE",
 		"moderators": []
+	},
+	{
+		"name": "Sound symbolism",
+		"short_name": "symbolism",
+		"key": "1oQpM21C0MPdljdTeacsKr7zIe46cabzD5fizlgp5w_U",
+		"filename": "symbolism",
+		"citation": "Lammertink et al. (in prep)",
+		"link": "",
+		"full_citation": "Lammertink, I., Fort, M., Peperkamp, S., Fikert, P., Guevara-Rukoz, A., & Tsuji, S. (in prep). Symbuki.",
+		"doi": "",
+		"systematic": "yes",
+		"reliability": "",
+		"last_update": "2016-6-01",
+		"link_fields": "",
+		"short_desc": "Relationships between form and meaning (the bouba-kiki effect).",
+		"description": "Do infants recognize systematic relationships between form and meaning, e.g. that bouba tends to refer to a round object and kiki tends to refer to a spiky one?",
+		"curator": "Sho Tsuji",
+		"src": "images/datasets/bouba-kiki.png",
+		"longitudinal": "FALSE",
+		"moderators": []
 	}
 ]
