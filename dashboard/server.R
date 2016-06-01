@@ -290,6 +290,7 @@ shinyServer(function(input, output, session) {
              short_cite = names(f),
              estimate.cil = p$ci.lb,
              estimate.cih = p$ci.ub,
+             inverse_vars = 1/variances,
              identity = 1) %>%
       left_join(mutate(mod_data(), short_cite = make.unique(short_cite))) %>%
       arrange_(.dots = list(sprintf("desc(%s)", input$forest_sort),
@@ -304,7 +305,7 @@ shinyServer(function(input, output, session) {
     qplot(short_cite, effects, ymin = effects.cil, ymax = effects.cih,
           geom = "linerange",
           data = forest_data) +
-      geom_point(aes(y = effects, size = 1/variances)) +
+      geom_point(aes(y = effects, size = inverse_vars)) +
       geom_pointrange(aes_string(x = "short_cite", y = "estimate",
                                  ymin = "estimate.cil", ymax = "estimate.cih",
                                  colour = mod_group()), 

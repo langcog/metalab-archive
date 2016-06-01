@@ -242,7 +242,8 @@ tab_visualizations <- tabItem(
             column(
               width = 4,
               selectInput("forest_sort", label = "Sort order",
-                          choices = c("effect size" = "effects",
+                          choices = c("weight (1/variance)" = "variances",
+                                      "effect size" = "effects",
                                       "model estimate" = "estimate",
                                       "alphabetical" = "study_ID",
                                       "chronological" = "year"))),
