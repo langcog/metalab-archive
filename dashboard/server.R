@@ -448,6 +448,7 @@ shinyServer(function(input, output, session) {
   output$download_violin <- plot_download_handler("violin", violin)
   output$download_funnel <- plot_download_handler("funnel", funnel)
   output$download_forest <- plot_download_handler("forest", forest)
+  output$download_power <- plot_download_handler("power", forest)
   
   output$download_data <- downloadHandler(
     filename = function() sprintf("%s.csv", input$dataset_name),
@@ -570,10 +571,10 @@ shinyServer(function(input, output, session) {
   })
   
   ########### POWER COMPUTATIONS #############
-  output$power <- renderPlot({
-    # this is awful because RMA makes factors and dummy-codes them, so newpred
-    # needs to have this structure.
-    
+  
+  # this is awful because RMA makes factors and dummy-codes them, so newpred
+  # needs to have this structure.
+  d_pwr <- reactive({
     if (length(input$pwr_moderators > 0)) {
       newpred_mat <- matrix(nrow = 0, ncol = 0)
       
@@ -613,36 +614,57 @@ shinyServer(function(input, output, session) {
         newpred_mat <- c(newpred_mat, exposure_pred)
       }
       
-      d_pwr <- predict(pwrmodel(), newmods = newpred_mat)$pred
+      predict(pwrmodel(), newmods = newpred_mat)$pred
     } else {
       # special case when there are no predictors, predict doesn't work
-      d_pwr <- pwrmodel()$b[,1][["intrcpt"]]
+      pwrmodel()$b[,1][["intrcpt"]]
     }
-    
-    ## now do the actual power analysis plot
+  })
+  
+  pwr_80 <- reactive({
+    pwr::pwr.p.test(h = d_pwr(),
+                    sig.level = .05,
+                    power = .8)$n
+  })
+  
+  ## now do the actual power analysis plot
+  output$power <- renderPlot({
     max_n <- min(max(60,
-                     pwr::pwr.p.test(h = d_pwr,
+                     pwr::pwr.p.test(h = d_pwr(),
                                      sig.level = .05,
                                      power = .9)$n),
                  200)
     
     pwrs <- data.frame(ns = seq(5, max_n, 5),
-                       ps = pwr::pwr.p.test(h = d_pwr,
+                       ps = pwr::pwr.p.test(h = d_pwr(),
                                             n = seq(5, max_n, 5),
                                             sig.level = .05)$power)
     
     qplot(ns, ps, geom = c("point","line"),
           data = pwrs) +
       geom_hline(yintercept = .8, lty = 2) +
-      geom_vline(xintercept = pwr::pwr.p.test(h = d_pwr,
-                                              sig.level = .05,
-                                              power = .8)$n, lty = 3) +
+      geom_vline(xintercept = pwr_80(), lty = 3) +
       ylim(c(0,1)) +
       xlim(c(0,max_n)) +
       ylab("Power to reject the null at p < .05") +
       xlab("Number of participants (N)")
   })
   
+  ### POWER BOXES
+  output$power_d <- renderValueBox({
+    valueBox(
+      round(d_pwr(), digits = 2), "Effect Size", icon = icon("record", lib = "glyphicon"),
+      color = "red"
+    )
+  })
+  
+  output$power_n <- renderValueBox({
+    valueBox(
+      if(pwr_80() < 200) {round(pwr_80(), digits = 2) } else { "> 200"}, "N for 80% power",
+      icon = icon("list", lib = "glyphicon"),
+      color = "red"
+    )
+  })
   
   ########### GENERATE DATA #############
   pwr_sim_data <- reactive({
@@ -818,3 +840,4 @@ shinyServer(function(input, output, session) {
   output$drv_table <- make_datatable(fields_derived)
   
 })
+  
