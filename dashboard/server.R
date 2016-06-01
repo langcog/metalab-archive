@@ -307,7 +307,8 @@ shinyServer(function(input, output, session) {
       geom_point(aes(y = effects, size = n)) +
       geom_pointrange(aes_string(x = "short_cite", y = "estimate",
                                  ymin = "estimate.cil", ymax = "estimate.cih",
-                                 colour = mod_group())) +
+                                 colour = mod_group()), 
+                      pch = 17) +
       geom_hline(yintercept = 0, linetype = "dashed", color = "grey") +
       coord_flip() +
       scale_size_continuous(guide = FALSE) +
