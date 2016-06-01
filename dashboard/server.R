@@ -366,11 +366,13 @@ shinyServer(function(input, output, session) {
       d <- data_frame(se = sqrt(model()$vi), es = model()$yi)
       center <- mean(d$es)
       xlabel <- "\nEffect Size"
+      ylabel <- "Standard Error\n"
     } else {
       r <- rstandard(model())
       d <- data_frame(se = r$se, es = r$resid)
       center <- 0
-      xlabel <- "\nResidual"
+      xlabel <- "\nResidual Effect Size"
+      ylabel <- "Residual Standard Error\n"
     }
     d[[mod_group()]] <- mod_data()[[mod_group()]]
     
@@ -408,13 +410,13 @@ shinyServer(function(input, output, session) {
       geom_vline(xintercept = 0, linetype = "dashed", color = "grey") +
       geom_point(aes_string(colour = mod_group())) +
       xlab(xlabel) +
+      ylab(ylabel) +
       geom_text(x = center + lower_lim * CRIT_95 / 2,
                 y = -lower_lim + lower_lim / 30, family = font,
                 label = "p < .05", vjust = "bottom", hjust = "center") +
       geom_text(x = (center + lower_lim * CRIT_95) + (lower_lim * CRIT_99 - lower_lim * CRIT_95) / 2,
                 y = -lower_lim + lower_lim / 30, family = font,
                 label = "p < .01", vjust = "bottom", hjust = "center") +
-      ylab("Standard error\n") +
       theme(panel.background = element_rect(fill = "grey"),
             panel.grid.major =  element_line(colour = "darkgrey", size = 0.2),
             panel.grid.minor =  element_line(colour = "darkgrey", size = 0.5))
