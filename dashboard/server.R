@@ -304,7 +304,7 @@ shinyServer(function(input, output, session) {
     qplot(short_cite, effects, ymin = effects.cil, ymax = effects.cih,
           geom = "linerange",
           data = forest_data) +
-      geom_point(aes(y = effects, size = n)) +
+      geom_point(aes(y = effects, size = 1/variances)) +
       geom_pointrange(aes_string(x = "short_cite", y = "estimate",
                                  ymin = "estimate.cil", ymax = "estimate.cih",
                                  colour = mod_group()), 
