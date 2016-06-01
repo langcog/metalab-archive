@@ -149,8 +149,8 @@ tab_data <- tabItem(
 #############################################################################
 # VISUALIZATIONS
 
-ma_choices <- c("Multi-level random effects with study grouping" = "REML_mv",
-                "Random effects" = "REML", 
+ma_choices <- c("Random effects" = "REML",
+                "Multi-level random effects with study grouping" = "REML_mv",
                 "Fixed effects" = "FE", 
                 "Empirical bayes" = "EB")
 
@@ -175,7 +175,7 @@ tab_visualizations <- tabItem(
           selectInput("dataset_name", label = "Dataset",
                       choices = datasets$name),
           selectInput("ma_method", label = "Meta-analytic model",
-                      choices = ma_choices, selected = "REML_mv"),
+                      choices = ma_choices, selected = "REML"),
           fluidRow(
             column(
               width = 4,
