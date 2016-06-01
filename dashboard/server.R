@@ -111,8 +111,8 @@ shinyServer(function(input, output, session) {
                         method = "REML") 
       } else {
         metafor::rma(rma_formula, vi = mod_data()[[es_var()]],
-                        slab = short_cite, data = mod_data(),
-                        method = input$ma_method) 
+                     slab = short_cite, data = mod_data(),
+                     method = input$ma_method) 
       }
     }
   })
@@ -173,6 +173,29 @@ shinyServer(function(input, output, session) {
       icon = icon("resize-horizontal", lib = "glyphicon"),
       color = "red"
     )
+  })
+  
+  output$effect_size_t2_box <- renderValueBox({
+    valueBox(
+      sprintf("%.2f", no_mod_model()$tau2[1]), "Tau^2",
+      icon = icon("resize-full", lib = "glyphicon"),
+      color = "red"
+    )
+  })
+  
+  output$viz_boxes <- renderUI({
+    if (!input$ma_method == "REML_mv") {
+      list(
+        valueBoxOutput("studies_box", width = 3),
+        valueBoxOutput("effect_size_box", width = 3),
+        valueBoxOutput("effect_size_var_box", width = 3),
+        valueBoxOutput("effect_size_t2_box", width = 3))
+    } else {
+      list(
+        valueBoxOutput("studies_box", width = 4),
+        valueBoxOutput("effect_size_box", width = 4),
+        valueBoxOutput("effect_size_var_box", width = 4))
+    }
   })
   
   observeEvent(categorical_mods(), {
@@ -464,7 +487,7 @@ shinyServer(function(input, output, session) {
   ########### PWR MODEL ###########
   pwr_no_mod_model <- reactive({
     metafor::rma(d_calc, vi = d_var_calc, slab = as.character(study_ID),
-                    data = pwrdata(), method = "REML")
+                 data = pwrdata(), method = "REML")
   })
   
   pwrmodel <- reactive({

@@ -227,9 +227,7 @@ tab_visualizations <- tabItem(
     column(
       width = 6,
       fluidRow(
-        valueBoxOutput("studies_box"),
-        valueBoxOutput("effect_size_box"),
-        valueBoxOutput("effect_size_var_box")),
+        uiOutput("viz_boxes")),
       fluidRow(
         box(width = NULL, status = "danger",
             fluidRow(
