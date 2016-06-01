@@ -434,7 +434,7 @@ shinyServer(function(input, output, session) {
   plot_download_handler <- function(plot_name, plot_fun) {
     downloadHandler(
       filename = function() {
-        sprintf("%s [%s].png", input$dataset_name, plot_name)
+        sprintf("%s [%s].pdf", input$dataset_name, plot_name)
       },
       content = function(file) {
         cairo_pdf(file, width = 10, height = 7)
@@ -448,7 +448,7 @@ shinyServer(function(input, output, session) {
   output$download_violin <- plot_download_handler("violin", violin)
   output$download_funnel <- plot_download_handler("funnel", funnel)
   output$download_forest <- plot_download_handler("forest", forest)
-  output$download_power <- plot_download_handler("power", forest)
+  output$download_power <- plot_download_handler("power", power)
   
   output$download_data <- downloadHandler(
     filename = function() sprintf("%s.csv", input$dataset_name),
