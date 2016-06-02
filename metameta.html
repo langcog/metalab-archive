@@ -282,7 +282,7 @@ div.tocify {
 <span class="st">  </span><span class="kw">scale_color_discrete</span>(<span class="dt">guide =</span> <span class="kw">guide_legend</span>(<span class="dt">nrow=</span><span class="dv">2</span>, 
                                              <span class="dt">title =</span> <span class="st">&quot;&quot;</span>)) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">ylim</span>(<span class="kw">c</span>(-<span class="dv">1</span>, <span class="dv">3</span>))</code></pre></div>
-<p><img src="metameta_files/figure-html/unnamed-chunk-1-1.png" title="" alt="" width="672" /></p>
+<p><img src="/home/ubuntu/metalab/reports/out/metameta_files/figure-html/unnamed-chunk-1-1.png" title="" alt="" width="672" /></p>
 <p>Model fits only</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p =<span class="st"> </span><span class="kw">ggplot</span>(all_data.f,
        <span class="kw">aes</span>(<span class="dt">x =</span> mean_age/<span class="dv">365</span>, <span class="dt">y =</span> d_calc, <span class="dt">col =</span> dataset, <span class="dt">group =</span> dataset)) +<span class="st"> </span>
@@ -299,7 +299,7 @@ div.tocify {
                                              <span class="dt">title =</span> <span class="st">&quot;&quot;</span>)) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">ylim</span>(<span class="kw">c</span>(-<span class="dv">1</span>, <span class="dv">3</span>)) 
 <span class="kw">direct.label</span>(p, <span class="kw">list</span>(<span class="st">&quot;top.bumptwice&quot;</span>, <span class="kw">dl.trans</span>(<span class="dt">y =</span> y +<span class="st"> </span><span class="fl">0.2</span>), <span class="dt">cex=</span>.<span class="dv">8</span>))</code></pre></div>
-<p><img src="metameta_files/figure-html/unnamed-chunk-2-1.png" title="" alt="" width="672" /></p>
+<p><img src="/home/ubuntu/metalab/reports/out/metameta_files/figure-html/unnamed-chunk-2-1.png" title="" alt="" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#direct.label(p, method = list(box.color = NA, &quot;maxvar.points&quot;,  cex=.8))</span></code></pre></div>
 <p>Focus on the first two years, without mutual exclusivity</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p2 =<span class="st"> </span><span class="kw">ggplot</span>(<span class="kw">filter</span>(all_data.f, 
@@ -318,7 +318,7 @@ div.tocify {
 <span class="st">  </span><span class="kw">scale_color_discrete</span>(<span class="dt">guide =</span> <span class="kw">guide_legend</span>(<span class="dt">nrow=</span><span class="dv">2</span>, 
                                              <span class="dt">title =</span> <span class="st">&quot;&quot;</span>)) 
  <span class="kw">direct.label</span>(p2, <span class="kw">list</span>(<span class="st">&quot;top.bumptwice&quot;</span>, <span class="kw">dl.trans</span>(<span class="dt">y =</span> y +<span class="st"> </span><span class="fl">0.2</span>), <span class="dt">cex=</span>.<span class="dv">8</span>))</code></pre></div>
-<p><img src="metameta_files/figure-html/unnamed-chunk-3-1.png" title="" alt="" width="672" /></p>
+<p><img src="/home/ubuntu/metalab/reports/out/metameta_files/figure-html/unnamed-chunk-3-1.png" title="" alt="" width="672" /></p>
 </div>
 <div id="by-language-domain" class="section level2">
 <h2>By language domain</h2>
@@ -358,7 +358,7 @@ p3 =<span class="st"> </span><span class="kw">ggplot</span>(<span class="kw">lef
         <span class="dt">legend.background =</span> <span class="kw">element_rect</span>(<span class="dt">fill =</span> <span class="st">&quot;transparent&quot;</span>)) 
 
  <span class="kw">direct.label</span>(p3, <span class="kw">list</span>(<span class="st">&quot;top.bumptwice&quot;</span>, <span class="kw">dl.trans</span>(<span class="dt">y =</span> y +<span class="st"> </span><span class="fl">0.1</span>), <span class="dt">cex=</span>.<span class="dv">8</span>))</code></pre></div>
-<p><img src="metameta_files/figure-html/unnamed-chunk-4-1.png" title="" alt="" width="672" /></p>
+<p><img src="/home/ubuntu/metalab/reports/out/metameta_files/figure-html/unnamed-chunk-4-1.png" title="" alt="" width="672" /></p>
 <div id="split-by-response-mode" class="section level3">
 <h3>Split by response mode</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lin_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~<span class="st"> </span>mean_age +<span class="st"> </span>
@@ -392,7 +392,7 @@ p4 =<span class="st"> </span><span class="kw">ggplot</span>(<span class="kw">lef
         <span class="dt">legend.background =</span> <span class="kw">element_rect</span>(<span class="dt">fill =</span> <span class="st">&quot;transparent&quot;</span>)) 
 
  <span class="kw">direct.label</span>(p4, <span class="kw">list</span>(<span class="st">&quot;top.bumptwice&quot;</span>, <span class="kw">dl.trans</span>(<span class="dt">y =</span> y +<span class="st"> </span><span class="fl">0.1</span>), <span class="dt">cex=</span>.<span class="dv">8</span>))</code></pre></div>
-<p><img src="metameta_files/figure-html/unnamed-chunk-5-1.png" title="" alt="" width="672" /></p>
+<p><img src="/home/ubuntu/metalab/reports/out/metameta_files/figure-html/unnamed-chunk-5-1.png" title="" alt="" width="672" /></p>
 </div>
 </div>
 <div id="cliffs-delta-dominance-statistic" class="section level2">
@@ -425,7 +425,7 @@ p =<span class="st"> </span><span class="kw">ggplot</span>(<span class="kw">left
   <span class="co">#theme(axis.text.x = element_text( angle=45))</span>
 
 <span class="kw">direct.label</span>(p, <span class="kw">list</span>(<span class="st">&quot;top.bumptwice&quot;</span>, <span class="kw">dl.trans</span>(<span class="dt">y =</span> y +<span class="st"> </span><span class="fl">0.2</span>, <span class="dt">cex=</span>.<span class="dv">8</span>)))</code></pre></div>
-<p><img src="metameta_files/figure-html/unnamed-chunk-6-1.png" title="" alt="" width="672" /></p>
+<p><img src="/home/ubuntu/metalab/reports/out/metameta_files/figure-html/unnamed-chunk-6-1.png" title="" alt="" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">### MISC:
 ### Does the functional form vary across domains?
 lin_lmer_preds &lt;-<span class="st"> </span><span class="kw">predict</span>(lin_lmer, <span class="dt">re.form =</span> ~<span class="st"> </span>(<span class="kw">log</span>(mean_age)|<span class="st"> </span>dataset))
