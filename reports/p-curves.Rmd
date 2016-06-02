@@ -1,16 +1,15 @@
 ---
-  title: "P-Curves"
+title: "P-Curves"
 author: "Christina Bergmann"
 date: "`r Sys.Date()`"
 output:
   html_document:
-  highlight: tango
-theme: united
+    highlight: tango
+    theme: united
 code_folding: hide
 ---
   
-  ```{r, setup, include = FALSE}
-rm(list=ls())
+```{r, setup, include = FALSE}
 library(knitr)
 library(dplyr)
 library(tidyr)
@@ -49,7 +48,7 @@ Compute p-curves for each dataset.
 ```{r PlotEachDataSet}
 pc <- all_data %>%
   group_by(dataset) %>%
-  select(unique_ID, t, F, n_1, n_2, participant_design, d) %>%
+  select(study_ID, t, F, n_1, n_2, participant_design, d) %>%
   filter(!is.na(t)|!is.na(F)) %>%
   mutate(df2 = ifelse(participant_design == "between", (n_1 + n_2)-2, n_1-1),
          value = ifelse(is.na(t), F, t**2), # turn ts into Fs by squaring them
