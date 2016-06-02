@@ -257,15 +257,17 @@ div.tocify {
 
 <h1 class="title toc-ignore">Meta-meta analsyis</h1>
 <h4 class="author"><em>Molly Lewis, Mika Braginsky, &amp; Mike Frank</em></h4>
-<h4 class="date"><em>This report was rendered on 2016-05-12 and will be automatically re-rendered nightly, reflecting any changes in the data or code.</em></h4>
+<h4 class="date"><em>This report was rendered on 2016-06-02 and will be automatically re-rendered nightly, reflecting any changes in the data or code.</em></h4>
 
 </div>
 
 
-<div id="introduction" class="section level1">
-<h1>Introduction</h1>
 <p>Let’s put everything together.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(all_data,
+<div id="all-effect-sizes" class="section level2">
+<h2>All effect sizes</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">all_data.f =<span class="st"> </span><span class="kw">filter</span>(all_data, dataset !=<span class="st"> &quot;Gaze following&quot;</span> |<span class="st"> </span>d_calc &gt;<span class="st"> </span><span class="dv">0</span>) %&gt;%
+<span class="st">                </span><span class="kw">filter</span>(dataset !=<span class="st"> &quot;Pointing and vocabulary&quot;</span>)
+<span class="kw">ggplot</span>(all_data.f,
        <span class="kw">aes</span>(<span class="dt">x =</span> mean_age/<span class="dv">365</span>, <span class="dt">y =</span> d_calc, <span class="dt">col =</span> dataset)) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> n), <span class="dt">alpha =</span> .<span class="dv">5</span>) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method=</span><span class="st">&quot;lm&quot;</span>, <span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">size =</span> <span class="fl">1.5</span>, 
@@ -275,16 +277,15 @@ div.tocify {
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>,
         <span class="dt">legend.key =</span> <span class="kw">element_blank</span>(),
         <span class="dt">legend.background =</span> <span class="kw">element_rect</span>(<span class="dt">fill =</span> <span class="st">&quot;transparent&quot;</span>)) +<span class="st"> </span>
+<span class="st">    </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>, <span class="dt">linetype =</span> <span class="st">&quot;dashed&quot;</span>) +
+
 <span class="st">  </span><span class="kw">scale_color_discrete</span>(<span class="dt">guide =</span> <span class="kw">guide_legend</span>(<span class="dt">nrow=</span><span class="dv">2</span>, 
                                              <span class="dt">title =</span> <span class="st">&quot;&quot;</span>)) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">ylim</span>(<span class="kw">c</span>(-<span class="dv">1</span>, <span class="dv">3</span>))</code></pre></div>
 <p><img src="metameta_files/figure-html/unnamed-chunk-1-1.png" title="" alt="" width="672" /></p>
-<p>Plot without ME, to fcous on the first two years.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="kw">filter</span>(all_data, 
-              mean_age &lt;<span class="st"> </span><span class="dv">365</span> *<span class="st"> </span><span class="fl">1.5</span>,
-              dataset !=<span class="st"> &quot;Mutual exclusivity&quot;</span>),
-       <span class="kw">aes</span>(<span class="dt">x =</span> mean_age/<span class="dv">365</span>, <span class="dt">y =</span> d_calc, <span class="dt">col =</span> dataset)) +<span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> n), <span class="dt">alpha =</span> .<span class="dv">5</span>) +<span class="st"> </span>
+<p>Model fits only</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p =<span class="st"> </span><span class="kw">ggplot</span>(all_data.f,
+       <span class="kw">aes</span>(<span class="dt">x =</span> mean_age/<span class="dv">365</span>, <span class="dt">y =</span> d_calc, <span class="dt">col =</span> dataset, <span class="dt">group =</span> dataset)) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method=</span><span class="st">&quot;lm&quot;</span>, <span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">size =</span> <span class="fl">1.5</span>, 
               <span class="kw">aes</span>(<span class="dt">weight =</span> <span class="dv">1</span>/d_var_calc), <span class="dt">formula =</span> y ~<span class="st"> </span><span class="kw">log</span>(x)) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Age (years)&quot;</span>) +<span class="st"> </span>
@@ -292,10 +293,219 @@ div.tocify {
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>,
         <span class="dt">legend.key =</span> <span class="kw">element_blank</span>(),
         <span class="dt">legend.background =</span> <span class="kw">element_rect</span>(<span class="dt">fill =</span> <span class="st">&quot;transparent&quot;</span>)) +<span class="st"> </span>
+<span class="st">    </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>, <span class="dt">linetype =</span> <span class="st">&quot;dashed&quot;</span>) +
+
 <span class="st">  </span><span class="kw">scale_color_discrete</span>(<span class="dt">guide =</span> <span class="kw">guide_legend</span>(<span class="dt">nrow=</span><span class="dv">2</span>, 
                                              <span class="dt">title =</span> <span class="st">&quot;&quot;</span>)) +<span class="st"> </span>
-<span class="st">  </span><span class="kw">ylim</span>(<span class="kw">c</span>(-<span class="dv">1</span>, <span class="dv">3</span>))</code></pre></div>
+<span class="st">  </span><span class="kw">ylim</span>(<span class="kw">c</span>(-<span class="dv">1</span>, <span class="dv">3</span>)) 
+<span class="kw">direct.label</span>(p, <span class="kw">list</span>(<span class="st">&quot;top.bumptwice&quot;</span>, <span class="kw">dl.trans</span>(<span class="dt">y =</span> y +<span class="st"> </span><span class="fl">0.2</span>), <span class="dt">cex=</span>.<span class="dv">8</span>))</code></pre></div>
 <p><img src="metameta_files/figure-html/unnamed-chunk-2-1.png" title="" alt="" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#direct.label(p, method = list(box.color = NA, &quot;maxvar.points&quot;,  cex=.8))</span></code></pre></div>
+<p>Focus on the first two years, without mutual exclusivity</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p2 =<span class="st"> </span><span class="kw">ggplot</span>(<span class="kw">filter</span>(all_data.f, 
+              mean_age &lt;<span class="st"> </span><span class="dv">365</span> *<span class="st"> </span><span class="dv">2</span>, dataset !=<span class="st"> &quot;Mutual exclusivity&quot;</span>),
+       <span class="kw">aes</span>(<span class="dt">x =</span> mean_age/<span class="dv">365</span>, <span class="dt">y =</span> d_calc, <span class="dt">col =</span> dataset)) +<span class="st"> </span>
+<span class="st">  </span><span class="co">#geom_point(aes(size = n), alpha = .5) + </span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method=</span><span class="st">&quot;lm&quot;</span>, <span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">size =</span> <span class="fl">1.5</span>, 
+              <span class="kw">aes</span>(<span class="dt">weight =</span> <span class="dv">1</span>/d_var_calc), <span class="dt">formula =</span> y ~<span class="st"> </span><span class="kw">log</span>(x)) +<span class="st"> </span>
+<span class="st">      </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>, <span class="dt">linetype =</span> <span class="st">&quot;dashed&quot;</span>) +
+
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Age (years)&quot;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Effect size (d)&quot;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>,
+        <span class="dt">legend.key =</span> <span class="kw">element_blank</span>(),
+        <span class="dt">legend.background =</span> <span class="kw">element_rect</span>(<span class="dt">fill =</span> <span class="st">&quot;transparent&quot;</span>)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">scale_color_discrete</span>(<span class="dt">guide =</span> <span class="kw">guide_legend</span>(<span class="dt">nrow=</span><span class="dv">2</span>, 
+                                             <span class="dt">title =</span> <span class="st">&quot;&quot;</span>)) 
+ <span class="kw">direct.label</span>(p2, <span class="kw">list</span>(<span class="st">&quot;top.bumptwice&quot;</span>, <span class="kw">dl.trans</span>(<span class="dt">y =</span> y +<span class="st"> </span><span class="fl">0.2</span>), <span class="dt">cex=</span>.<span class="dv">8</span>))</code></pre></div>
+<p><img src="metameta_files/figure-html/unnamed-chunk-3-1.png" title="" alt="" width="672" /></p>
+</div>
+<div id="by-language-domain" class="section level2">
+<h2>By language domain</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"> ld.df =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">dataset =</span> datasets$name,
+                    <span class="dt">domain =</span> <span class="kw">c</span>(<span class="st">&quot;prosody&quot;</span>, <span class="st">&quot;words&quot;</span>, <span class="st">&quot;communication&quot;</span>, <span class="st">&quot;sounds&quot;</span>,
+                               <span class="st">&quot;sounds&quot;</span>, <span class="st">&quot;sounds&quot;</span>, <span class="st">&quot;sounds&quot;</span>, <span class="st">&quot;sounds&quot;</span>, <span class="st">&quot;words&quot;</span>,
+                               <span class="st">&quot;words&quot;</span>, <span class="st">&quot;communication&quot;</span>, <span class="st">&quot;sounds&quot;</span>))
+ ld.df$domain =<span class="st"> </span><span class="kw">factor</span>(ld.df$domain, <span class="dt">levels=</span><span class="kw">c</span>(<span class="st">&quot;prosody&quot;</span>,<span class="st">&quot;sounds&quot;</span>, <span class="st">&quot;words&quot;</span>, <span class="st">&quot;communication&quot;</span>))
+ 
+lin_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~<span class="st"> </span>mean_age +<span class="st"> </span>
+<span class="st">                </span>(<span class="kw">log</span>(mean_age)|<span class="st"> </span>dataset), 
+                <span class="dt">weights =</span> <span class="dv">1</span>/d_var_calc, 
+                <span class="dt">REML =</span> F, <span class="dt">data =</span> all_data)
+
+lin_lmer_preds &lt;-<span class="st"> </span><span class="kw">predict</span>(lin_lmer, <span class="dt">re.form =</span> ~<span class="st"> </span>(<span class="kw">log</span>(mean_age)|<span class="st"> </span>dataset))
+
+
+all_data_preds &lt;-<span class="st"> </span>all_data %&gt;%
+<span class="st">  </span><span class="kw">select</span>(dataset, short_name, d_calc, d_var_calc, mean_age, study_ID) %&gt;%
+<span class="st">  </span><span class="kw">filter</span>(<span class="kw">complete.cases</span>(.)) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lin_lmer_preds =</span> lin_lmer_preds) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(dataset !=<span class="st"> &quot;Gaze following&quot;</span> |<span class="st"> </span>lin_lmer_preds &gt;<span class="st"> </span><span class="dv">0</span>) %&gt;%
+<span class="st">                </span><span class="kw">filter</span>(dataset !=<span class="st"> &quot;Pointing and vocabulary&quot;</span>)
+
+p3 =<span class="st"> </span><span class="kw">ggplot</span>(<span class="kw">left_join</span>(all_data_preds, ld.df),
+       <span class="kw">aes</span>(<span class="dt">x =</span> mean_age/<span class="dv">365</span>, <span class="dt">y =</span> lin_lmer_preds, <span class="dt">col =</span> dataset)) +
+<span class="st">  </span><span class="co">#geom_line() +</span>
+<span class="st">  </span><span class="kw">facet_grid</span>(~domain) +
+<span class="st">  </span><span class="co">#geom_point(aes(size = n), alpha = .5) + </span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method=</span><span class="st">&quot;lm&quot;</span>, <span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">size =</span> <span class="dv">1</span>, 
+              <span class="kw">aes</span>(<span class="dt">weight =</span> <span class="dv">1</span>/d_var_calc), <span class="dt">formula =</span> y ~<span class="st"> </span><span class="kw">log</span>(x)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>, <span class="dt">linetype =</span> <span class="st">&quot;dashed&quot;</span>) +
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Age (years)&quot;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Effect size (d)&quot;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>,
+        <span class="dt">legend.key =</span> <span class="kw">element_blank</span>(),
+        <span class="dt">legend.background =</span> <span class="kw">element_rect</span>(<span class="dt">fill =</span> <span class="st">&quot;transparent&quot;</span>)) 
+
+ <span class="kw">direct.label</span>(p3, <span class="kw">list</span>(<span class="st">&quot;top.bumptwice&quot;</span>, <span class="kw">dl.trans</span>(<span class="dt">y =</span> y +<span class="st"> </span><span class="fl">0.1</span>), <span class="dt">cex=</span>.<span class="dv">8</span>))</code></pre></div>
+<p><img src="metameta_files/figure-html/unnamed-chunk-4-1.png" title="" alt="" width="672" /></p>
+<div id="split-by-response-mode" class="section level3">
+<h3>Split by response mode</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lin_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~<span class="st"> </span>mean_age +<span class="st"> </span>
+<span class="st">                </span>(<span class="kw">log</span>(mean_age)|<span class="st"> </span>dataset), 
+                <span class="dt">weights =</span> <span class="dv">1</span>/d_var_calc, 
+                <span class="dt">REML =</span> F, <span class="dt">data =</span> all_data)
+
+lin_lmer_preds &lt;-<span class="st"> </span><span class="kw">predict</span>(lin_lmer, <span class="dt">re.form =</span> ~<span class="st"> </span>(<span class="kw">log</span>(mean_age)|<span class="st"> </span>dataset))
+
+all_data_preds &lt;-<span class="st"> </span>all_data %&gt;%
+<span class="st">  </span><span class="kw">select</span>(dataset, short_name, d_calc, d_var_calc, mean_age, study_ID, response_mode) %&gt;%
+<span class="st">  </span><span class="kw">filter</span>(<span class="kw">complete.cases</span>(.)) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lin_lmer_preds =</span> lin_lmer_preds) %&gt;%<span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(dataset !=<span class="st"> &quot;Gaze following&quot;</span> |<span class="st"> </span>lin_lmer_preds &gt;<span class="st"> </span><span class="dv">0</span>) %&gt;%
+<span class="st">                </span><span class="kw">filter</span>(dataset !=<span class="st"> &quot;Pointing and vocabulary&quot;</span>,
+                       response_mode ==<span class="st"> &quot;eye-tracking&quot;</span> |<span class="st"> </span>response_mode ==<span class="st"> &quot;behavior&quot;</span>)
+  
+
+p4 =<span class="st"> </span><span class="kw">ggplot</span>(<span class="kw">left_join</span>(all_data_preds, ld.df),
+       <span class="kw">aes</span>(<span class="dt">x =</span> mean_age/<span class="dv">365</span>, <span class="dt">y =</span> d_calc, <span class="dt">col =</span> dataset, <span class="dt">lty =</span> response_mode)) +
+<span class="st">  </span><span class="co">#geom_line() +</span>
+<span class="st">  </span><span class="kw">facet_grid</span>(~domain) +
+<span class="st">  </span><span class="co">#geom_point(aes(size = n), alpha = .5) + </span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method=</span><span class="st">&quot;lm&quot;</span>, <span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">size =</span> <span class="dv">1</span>, 
+              <span class="kw">aes</span>(<span class="dt">weight =</span> <span class="dv">1</span>/d_var_calc), <span class="dt">formula =</span> y ~<span class="st"> </span><span class="kw">log</span>(x)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>, <span class="dt">linetype =</span> <span class="st">&quot;dashed&quot;</span>) +
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Age (years)&quot;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Effect size (d)&quot;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>,
+        <span class="dt">legend.key =</span> <span class="kw">element_blank</span>(),
+        <span class="dt">legend.background =</span> <span class="kw">element_rect</span>(<span class="dt">fill =</span> <span class="st">&quot;transparent&quot;</span>)) 
+
+ <span class="kw">direct.label</span>(p4, <span class="kw">list</span>(<span class="st">&quot;top.bumptwice&quot;</span>, <span class="kw">dl.trans</span>(<span class="dt">y =</span> y +<span class="st"> </span><span class="fl">0.1</span>), <span class="dt">cex=</span>.<span class="dv">8</span>))</code></pre></div>
+<p><img src="metameta_files/figure-html/unnamed-chunk-5-1.png" title="" alt="" width="672" /></p>
+</div>
+</div>
+<div id="cliffs-delta-dominance-statistic" class="section level2">
+<h2>Cliff’s delta (dominance statistic)</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lin_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~<span class="st"> </span><span class="kw">log</span>(mean_age) +<span class="st"> </span>
+<span class="st">                </span>(<span class="kw">log</span>(mean_age)|<span class="st"> </span>dataset), 
+                <span class="dt">weights =</span> <span class="dv">1</span>/d_var_calc, 
+                <span class="dt">REML =</span> F, <span class="dt">data =</span> all_data)
+
+cliffs.deltas &lt;-<span class="st"> </span><span class="kw">predict</span>(lin_lmer, <span class="dt">re.form =</span> ~<span class="st"> </span>(<span class="kw">log</span>(mean_age) |<span class="st"> </span>dataset))  %&gt;%
+<span class="st">                </span><span class="kw">cbind</span>(., <span class="kw">select</span>(all_data, mean_age, dataset)) %&gt;%<span class="st"> </span>
+<span class="st">                </span><span class="kw">rename_</span>(<span class="st">&quot;cohens.d&quot;</span> =<span class="st"> &quot;.&quot;</span>) %&gt;%
+<span class="st">                </span><span class="kw">distinct</span>() %&gt;%
+<span class="st">                </span><span class="kw">arrange</span>(dataset, mean_age) %&gt;%
+<span class="st">                </span><span class="kw">mutate</span>(<span class="dt">cliff.delta =</span> <span class="kw">cohd2delta</span>(cohens.d)) %&gt;%
+<span class="st">                </span><span class="kw">filter</span>(cliff.delta &gt;<span class="st"> </span>-<span class="dv">1</span>) %&gt;%<span class="st"> </span><span class="co"># why is there 1 value not bounded at 1?</span>
+<span class="st">                </span><span class="kw">filter</span>(dataset !=<span class="st"> &quot;Gaze following&quot;</span> |<span class="st"> </span>cohens.d &gt;<span class="st"> </span><span class="dv">0</span>) %&gt;%
+<span class="st">                </span><span class="kw">filter</span>(dataset !=<span class="st"> &quot;Pointing and vocabulary&quot;</span>)
+
+p =<span class="st"> </span><span class="kw">ggplot</span>(<span class="kw">left_join</span>(cliffs.deltas, ld.df), <span class="kw">aes</span>(<span class="dt">x =</span> mean_age/<span class="dv">365</span>, <span class="dt">y =</span> cliff.delta,
+                                             <span class="dt">group =</span> dataset)) +
+<span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">color=</span> dataset, <span class="dt">group =</span> dataset), <span class="dt">size =</span> <span class="dv">1</span>) +
+<span class="st">  </span><span class="kw">facet_grid</span>(~domain) +
+<span class="st">  </span><span class="kw">ylim</span>(-.<span class="dv">2</span>,<span class="dv">1</span>) +
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>, <span class="dt">lty =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">&quot;black&quot;</span>) +
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Age (years)&quot;</span>) +
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;cliff&#39;s delta&quot;</span>)  +
+<span class="st">  </span><span class="kw">scale_color_discrete</span>(<span class="dt">guide =</span> <span class="ot">FALSE</span>) 
+  <span class="co">#scale_x_continuous(breaks = seq(0,160,12)) +</span>
+  <span class="co">#theme(axis.text.x = element_text( angle=45))</span>
+
+<span class="kw">direct.label</span>(p, <span class="kw">list</span>(<span class="st">&quot;top.bumptwice&quot;</span>, <span class="kw">dl.trans</span>(<span class="dt">y =</span> y +<span class="st"> </span><span class="fl">0.2</span>, <span class="dt">cex=</span>.<span class="dv">8</span>)))</code></pre></div>
+<p><img src="metameta_files/figure-html/unnamed-chunk-6-1.png" title="" alt="" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">### MISC:
+### Does the functional form vary across domains?
+lin_lmer_preds &lt;-<span class="st"> </span><span class="kw">predict</span>(lin_lmer, <span class="dt">re.form =</span> ~<span class="st"> </span>(<span class="kw">log</span>(mean_age)|<span class="st"> </span>dataset))
+log_lmer_preds &lt;-<span class="st"> </span><span class="kw">predict</span>(log_lmer, <span class="dt">re.form =</span> ~<span class="st"> </span>(<span class="kw">log</span>(mean_age)|<span class="st"> </span>dataset))
+quad_lmer_preds &lt;-<span class="st"> </span><span class="kw">predict</span>(quad_lmer, <span class="dt">re.form =</span> ~<span class="st"> </span>(<span class="kw">log</span>(mean_age)|<span class="st"> </span>dataset))
+
+all_data_preds &lt;-<span class="st"> </span>all_data %&gt;%
+<span class="st">  </span><span class="kw">select</span>(dataset, short_name, d_calc, d_var_calc, mean_age, study_ID) %&gt;%
+<span class="st">  </span><span class="kw">filter</span>(<span class="kw">complete.cases</span>(.)) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lin_lmer_preds =</span> lin_lmer_preds,
+         <span class="dt">log_lmer_preds =</span> log_lmer_preds,
+         <span class="dt">quad_lmer_preds =</span> quad_lmer_preds) %&gt;%
+<span class="st">  </span><span class="kw">gather</span>(<span class="st">&quot;model&quot;</span>, <span class="st">&quot;value&quot;</span> , <span class="dv">7</span>:<span class="dv">9</span>) %&gt;%
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">dataset.model =</span> <span class="kw">paste</span>(dataset, model, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="kw">left_join</span>(all_data_preds, ld.df), <span class="kw">aes</span>(<span class="dt">x =</span> mean_age, <span class="dt">y =</span> d_calc,
+                                             <span class="dt">group =</span> dataset.model)) +
+<span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">color=</span> dataset.model, <span class="dt">group =</span> dataset.model,  <span class="dt">y =</span> value)) +
+<span class="st">  </span><span class="kw">facet_wrap</span>(model ~<span class="st"> </span>domain, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>, <span class="dt">lty =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">&quot;black&quot;</span>) +
+<span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Mean age in days&quot;</span>) +
+<span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;d (original and calculated)&quot;</span>)  +
+<span class="st">  </span><span class="kw">scale_color_discrete</span>(<span class="dt">guide =</span> <span class="ot">FALSE</span>) </code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Subset to common methods
+lin_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~<span class="st"> </span>mean_age +<span class="st"> </span>
+<span class="st">                </span>(<span class="kw">log</span>(mean_age)|<span class="st"> </span>dataset), 
+                <span class="dt">weights =</span> <span class="dv">1</span>/d_var_calc, 
+                <span class="dt">REML =</span> F, <span class="dt">data =</span> <span class="kw">filter</span>(all_data, response_mode ==<span class="st"> &quot;behavior&quot;</span>))
+
+log_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~<span class="st"> </span><span class="kw">log</span>(mean_age) +<span class="st"> </span>
+<span class="st">                </span>(<span class="kw">log</span>(mean_age)|<span class="st"> </span>dataset), 
+                <span class="dt">weights =</span> <span class="dv">1</span>/d_var_calc, 
+                <span class="dt">REML =</span> F, <span class="dt">data =</span> <span class="kw">filter</span>(all_data, response_mode ==<span class="st"> &quot;behavior&quot;</span>))
+
+quad_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~<span class="st"> </span><span class="kw">I</span>(mean_age^<span class="dv">2</span>) +<span class="st"> </span>
+<span class="st">                 </span>(<span class="kw">log</span>(mean_age)|<span class="st"> </span>dataset) , 
+                 <span class="dt">weights =</span> <span class="dv">1</span>/d_var_calc, 
+                 <span class="dt">REML =</span> F, <span class="dt">data =</span> <span class="kw">filter</span>(all_data, response_mode ==<span class="st"> &quot;behavior&quot;</span>))
+
+<span class="kw">kable</span>(<span class="kw">anova</span>(lin_lmer, log_lmer))
+<span class="kw">kable</span>(<span class="kw">anova</span>(lin_lmer, quad_lmer))
+<span class="kw">kable</span>(<span class="kw">anova</span>(log_lmer, quad_lmer))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lin_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~<span class="st"> </span>mean_age +<span class="st"> </span>
+<span class="st">                </span>(<span class="kw">log</span>(mean_age)|<span class="st"> </span>dataset), 
+                <span class="dt">weights =</span> <span class="dv">1</span>/d_var_calc, 
+                <span class="dt">REML =</span> F, <span class="dt">data =</span> <span class="kw">filter</span>(all_data, response_mode ==<span class="st"> &quot;eyetracking&quot;</span>))
+
+log_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~<span class="st"> </span><span class="kw">log</span>(mean_age) +<span class="st"> </span>
+<span class="st">                </span>(<span class="kw">log</span>(mean_age)|<span class="st"> </span>dataset), 
+                <span class="dt">weights =</span> <span class="dv">1</span>/d_var_calc, 
+                <span class="dt">REML =</span> F, <span class="dt">data =</span> <span class="kw">filter</span>(all_data, response_mode ==<span class="st"> &quot;eyetracking&quot;</span>))
+
+quad_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~<span class="st"> </span><span class="kw">I</span>(mean_age^<span class="dv">2</span>) +<span class="st"> </span>
+<span class="st">                 </span>(<span class="kw">log</span>(mean_age)|<span class="st"> </span>dataset) , 
+                 <span class="dt">weights =</span> <span class="dv">1</span>/d_var_calc, 
+                 <span class="dt">REML =</span> F, <span class="dt">data =</span> <span class="kw">filter</span>(all_data, response_mode ==<span class="st"> &quot;eyetracking&quot;</span>))
+
+<span class="kw">kable</span>(<span class="kw">anova</span>(lin_lmer, log_lmer))
+<span class="kw">kable</span>(<span class="kw">anova</span>(lin_lmer, quad_lmer))
+<span class="kw">kable</span>(<span class="kw">anova</span>(log_lmer, quad_lmer))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Developmental Curves </span>
+## What&#39;s the best fitting functional form of development, independent of phenomenona?
+lin_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~<span class="st"> </span>mean_age +<span class="st"> </span>
+<span class="st">                </span>(<span class="kw">log</span>(mean_age)|<span class="st"> </span>dataset), 
+                <span class="dt">weights =</span> <span class="dv">1</span>/d_var_calc, 
+                <span class="dt">REML =</span> F, <span class="dt">data =</span> all_data)
+
+log_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~<span class="st"> </span><span class="kw">log</span>(mean_age) +<span class="st"> </span>
+<span class="st">                </span>(<span class="kw">log</span>(mean_age)|<span class="st"> </span>dataset), 
+                <span class="dt">weights =</span> <span class="dv">1</span>/d_var_calc, 
+                <span class="dt">REML =</span> F, <span class="dt">data =</span> all_data)
+
+quad_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~<span class="st"> </span><span class="kw">I</span>(mean_age^<span class="dv">2</span>) +<span class="st"> </span>
+<span class="st">                 </span>(<span class="kw">log</span>(mean_age)|<span class="st"> </span>dataset) , 
+                 <span class="dt">weights =</span> <span class="dv">1</span>/d_var_calc, 
+                 <span class="dt">REML =</span> F, <span class="dt">data =</span> all_data)
+
+<span class="kw">kable</span>(<span class="kw">anova</span>(lin_lmer, log_lmer))
+<span class="kw">kable</span>(<span class="kw">anova</span>(lin_lmer, quad_lmer))
+<span class="kw">kable</span>(<span class="kw">anova</span>(log_lmer, quad_lmer))
+<span class="co">#Doesn&#39;t really seem to matter. </span></code></pre></div>
 </div>
 
 
