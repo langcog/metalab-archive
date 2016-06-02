@@ -11,6 +11,7 @@
 
 <meta name="author" content="Christina Bergmann" />
 
+<meta name="date" content="2016-06-01" />
 
 <title>P-Curves</title>
 
@@ -231,7 +232,7 @@ div.tocify {
 
 <h1 class="title">P-Curves</h1>
 <h4 class="author"><em>Christina Bergmann</em></h4>
-<h4 class="date"><em>This report was rendered on 2016-05-09 and will be automatically re-rendered nightly, reflecting any changes in the data or code.</em></h4>
+<h4 class="date"><em>2016-06-01</em></h4>
 
 </div>
 
@@ -259,8 +260,8 @@ div.tocify {
          <span class="dt">value =</span> <span class="kw">ifelse</span>(<span class="kw">is.na</span>(t), F, t**<span class="dv">2</span>), <span class="co"># turn ts into Fs by squaring them</span>
          <span class="dt">test =</span> <span class="kw">ifelse</span>(<span class="kw">is.na</span>(t), <span class="st">&quot;F&quot;</span>, <span class="st">&quot;t&quot;</span>), 
          <span class="dt">df1 =</span> <span class="dv">1</span>) %&gt;%<span class="st">  </span><span class="co"># In the source script, the authors always have 2 dfs, but </span>
-<span class="st">                    </span><span class="co"># df1 is always 1 (both for t and for F), </span>
-<span class="st">                    </span><span class="co"># we always look at the main result of ANOVAs</span>
+<span class="st">  </span><span class="co"># df1 is always 1 (both for t and for F), </span>
+<span class="st">  </span><span class="co"># we always look at the main result of ANOVAs</span>
 <span class="st">  </span><span class="kw">do</span>(<span class="kw">p_curve</span>(.))</code></pre>
 <p>Plot p-curves.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(pc, <span class="kw">aes</span>(<span class="dt">x =</span> p, <span class="dt">y =</span> value, <span class="dt">col =</span> measure, <span class="dt">lty =</span> measure)) +<span class="st"> </span>
