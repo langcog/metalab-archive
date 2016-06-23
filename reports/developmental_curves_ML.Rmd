@@ -1,12 +1,12 @@
 ---
 title: "Developmental curve comparison"
-author: "Page Piccinini and Michael Frank"
+author: "Page Piccinini, Michael Frank, and Molly Lewis"
 date: "This report was rendered on `r Sys.Date()` and will be automatically re-rendered nightly, reflecting any changes in the data or code."
 ---
 
 ```{r, include=FALSE}
 knitr::opts_chunk$set(warning = FALSE, message = FALSE)
-#ggplot2::theme_set(langcog::theme_mikabr(base_family = "Ubuntu"))
+ggplot2::theme_set(langcog::theme_mikabr(base_family = "Ubuntu"))
 source("../dashboard/global.R", chdir = TRUE)
 library(knitr)
 library(ggplot2)

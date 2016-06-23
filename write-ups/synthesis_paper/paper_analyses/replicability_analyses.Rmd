@@ -27,7 +27,7 @@ This document includes all the analyses for the "replicability" section of the S
 overall_es <- function(ma_data){
   model = rma(ma_data$d_calc, ma_data$d_var_calc, method = "REML",
                control = list(maxiter = 1000, stepadj = 0.5))
-    data.frame(dataset = ma_data$short_name[1],
+    data.frame(dataset = ma_data$dataset[1],
                overall.d = model$b,
                ci_lower = model$ci.lb,
                ci_upper = model$ci.ub)
@@ -418,7 +418,7 @@ eggers_tests <- function(ma_data){
     if (N_response_mode > 1 & N_response_method > 1){
       model.mod = metafor::rma(ma_data$d_calc ~ ma_data$mean_age_1 + 
                                  ma_data$response_mode +  ma_data$method, 
-                             ma_data$d_var_calc, method = "REML",
+                                ma_data$d_var_calc, method = "REML",
                control = list(maxiter = 1000, stepadj = 0.5))
     } else if (N_response_mode > 1) {
         model.mod = metafor::rma(ma_data$d_calc ~ ma_data$mean_age_1 + ma_data$response_mode  , 
