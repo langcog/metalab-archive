@@ -86,7 +86,7 @@ p2 = ggplot(filter(all_data.f,
  ld.df = data.frame(dataset = datasets$name,
                     domain = c("prosody", "words", "communication", "sounds",
                                "sounds", "sounds", "sounds", "sounds", "words",
-                               "words", "communication"))
+                               "words", "communication", "sounds"))
  ld.df$domain = factor(ld.df$domain, levels=c("prosody","sounds", "words", "communication"))
  
 lin_lmer <- lmer(d_calc ~ mean_age + 

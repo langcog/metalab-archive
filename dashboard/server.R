@@ -111,8 +111,8 @@ shinyServer(function(input, output, session) {
                         method = "REML") 
       } else {
         metafor::rma(rma_formula, vi = mod_data()[[es_var()]],
-                        slab = short_cite, data = mod_data(),
-                        method = input$ma_method) 
+                     slab = short_cite, data = mod_data(),
+                     method = input$ma_method) 
       }
     }
   })
@@ -173,6 +173,29 @@ shinyServer(function(input, output, session) {
       icon = icon("resize-horizontal", lib = "glyphicon"),
       color = "red"
     )
+  })
+  
+  output$effect_size_t2_box <- renderValueBox({
+    valueBox(
+      sprintf("%.2f", no_mod_model()$tau2[1]), "Tau^2",
+      icon = icon("resize-full", lib = "glyphicon"),
+      color = "red"
+    )
+  })
+  
+  output$viz_boxes <- renderUI({
+    if (!input$ma_method == "REML_mv") {
+      list(
+        valueBoxOutput("studies_box", width = 3),
+        valueBoxOutput("effect_size_box", width = 3),
+        valueBoxOutput("effect_size_var_box", width = 3),
+        valueBoxOutput("effect_size_t2_box", width = 3))
+    } else {
+      list(
+        valueBoxOutput("studies_box", width = 4),
+        valueBoxOutput("effect_size_box", width = 4),
+        valueBoxOutput("effect_size_var_box", width = 4))
+    }
   })
   
   observeEvent(categorical_mods(), {
@@ -267,6 +290,7 @@ shinyServer(function(input, output, session) {
              short_cite = names(f),
              estimate.cil = p$ci.lb,
              estimate.cih = p$ci.ub,
+             inverse_vars = 1/variances,
              identity = 1) %>%
       left_join(mutate(mod_data(), short_cite = make.unique(short_cite))) %>%
       arrange_(.dots = list(sprintf("desc(%s)", input$forest_sort),
@@ -281,10 +305,11 @@ shinyServer(function(input, output, session) {
     qplot(short_cite, effects, ymin = effects.cil, ymax = effects.cih,
           geom = "linerange",
           data = forest_data) +
-      geom_point(aes(y = effects, size = n)) +
+      geom_point(aes(y = effects, size = inverse_vars)) +
       geom_pointrange(aes_string(x = "short_cite", y = "estimate",
                                  ymin = "estimate.cil", ymax = "estimate.cih",
-                                 colour = mod_group())) +
+                                 colour = mod_group()), 
+                      pch = 17) +
       geom_hline(yintercept = 0, linetype = "dashed", color = "grey") +
       coord_flip() +
       scale_size_continuous(guide = FALSE) +
@@ -342,11 +367,13 @@ shinyServer(function(input, output, session) {
       d <- data_frame(se = sqrt(model()$vi), es = model()$yi)
       center <- mean(d$es)
       xlabel <- "\nEffect Size"
+      ylabel <- "Standard Error\n"
     } else {
       r <- rstandard(model())
       d <- data_frame(se = r$se, es = r$resid)
       center <- 0
-      xlabel <- "\nResidual"
+      xlabel <- "\nResidual Effect Size"
+      ylabel <- "Residual Standard Error\n"
     }
     d[[mod_group()]] <- mod_data()[[mod_group()]]
     
@@ -384,13 +411,13 @@ shinyServer(function(input, output, session) {
       geom_vline(xintercept = 0, linetype = "dashed", color = "grey") +
       geom_point(aes_string(colour = mod_group())) +
       xlab(xlabel) +
+      ylab(ylabel) +
       geom_text(x = center + lower_lim * CRIT_95 / 2,
                 y = -lower_lim + lower_lim / 30, family = font,
                 label = "p < .05", vjust = "bottom", hjust = "center") +
       geom_text(x = (center + lower_lim * CRIT_95) + (lower_lim * CRIT_99 - lower_lim * CRIT_95) / 2,
                 y = -lower_lim + lower_lim / 30, family = font,
                 label = "p < .01", vjust = "bottom", hjust = "center") +
-      ylab("Standard error\n") +
       theme(panel.background = element_rect(fill = "grey"),
             panel.grid.major =  element_line(colour = "darkgrey", size = 0.2),
             panel.grid.minor =  element_line(colour = "darkgrey", size = 0.5))
@@ -411,7 +438,7 @@ shinyServer(function(input, output, session) {
   plot_download_handler <- function(plot_name, plot_fun) {
     downloadHandler(
       filename = function() {
-        sprintf("%s [%s].png", input$dataset_name, plot_name)
+        sprintf("%s [%s].pdf", input$dataset_name, plot_name)
       },
       content = function(file) {
         cairo_pdf(file, width = 10, height = 7)
@@ -425,6 +452,7 @@ shinyServer(function(input, output, session) {
   output$download_violin <- plot_download_handler("violin", violin)
   output$download_funnel <- plot_download_handler("funnel", funnel)
   output$download_forest <- plot_download_handler("forest", forest)
+  output$download_power <- plot_download_handler("power", power)
   
   output$download_data <- downloadHandler(
     filename = function() sprintf("%s.csv", input$dataset_name),
@@ -464,7 +492,7 @@ shinyServer(function(input, output, session) {
   ########### PWR MODEL ###########
   pwr_no_mod_model <- reactive({
     metafor::rma(d_calc, vi = d_var_calc, slab = as.character(study_ID),
-                    data = pwrdata(), method = "REML")
+                 data = pwrdata(), method = "REML")
   })
   
   pwrmodel <- reactive({
@@ -547,10 +575,10 @@ shinyServer(function(input, output, session) {
   })
   
   ########### POWER COMPUTATIONS #############
-  output$power <- renderPlot({
-    # this is awful because RMA makes factors and dummy-codes them, so newpred
-    # needs to have this structure.
-    
+  
+  # this is awful because RMA makes factors and dummy-codes them, so newpred
+  # needs to have this structure.
+  d_pwr <- reactive({
     if (length(input$pwr_moderators > 0)) {
       newpred_mat <- matrix(nrow = 0, ncol = 0)
       
@@ -590,36 +618,57 @@ shinyServer(function(input, output, session) {
         newpred_mat <- c(newpred_mat, exposure_pred)
       }
       
-      d_pwr <- predict(pwrmodel(), newmods = newpred_mat)$pred
+      predict(pwrmodel(), newmods = newpred_mat)$pred
     } else {
       # special case when there are no predictors, predict doesn't work
-      d_pwr <- pwrmodel()$b[,1][["intrcpt"]]
+      pwrmodel()$b[,1][["intrcpt"]]
     }
-    
-    ## now do the actual power analysis plot
+  })
+  
+  pwr_80 <- reactive({
+    pwr::pwr.p.test(h = d_pwr(),
+                    sig.level = .05,
+                    power = .8)$n
+  })
+  
+  ## now do the actual power analysis plot
+  output$power <- renderPlot({
     max_n <- min(max(60,
-                     pwr::pwr.p.test(h = d_pwr,
+                     pwr::pwr.p.test(h = d_pwr(),
                                      sig.level = .05,
                                      power = .9)$n),
                  200)
     
     pwrs <- data.frame(ns = seq(5, max_n, 5),
-                       ps = pwr::pwr.p.test(h = d_pwr,
+                       ps = pwr::pwr.p.test(h = d_pwr(),
                                             n = seq(5, max_n, 5),
                                             sig.level = .05)$power)
     
     qplot(ns, ps, geom = c("point","line"),
           data = pwrs) +
       geom_hline(yintercept = .8, lty = 2) +
-      geom_vline(xintercept = pwr::pwr.p.test(h = d_pwr,
-                                              sig.level = .05,
-                                              power = .8)$n, lty = 3) +
+      geom_vline(xintercept = pwr_80(), lty = 3) +
       ylim(c(0,1)) +
       xlim(c(0,max_n)) +
       ylab("Power to reject the null at p < .05") +
       xlab("Number of participants (N)")
   })
   
+  ### POWER BOXES
+  output$power_d <- renderValueBox({
+    valueBox(
+      round(d_pwr(), digits = 2), "Effect Size", icon = icon("record", lib = "glyphicon"),
+      color = "red"
+    )
+  })
+  
+  output$power_n <- renderValueBox({
+    valueBox(
+      if(pwr_80() < 200) {round(pwr_80(), digits = 2) } else { "> 200"}, "N for 80% power",
+      icon = icon("list", lib = "glyphicon"),
+      color = "red"
+    )
+  })
   
   ########### GENERATE DATA #############
   pwr_sim_data <- reactive({
@@ -795,3 +844,4 @@ shinyServer(function(input, output, session) {
   output$drv_table <- make_datatable(fields_derived)
   
 })
+  

@@ -149,8 +149,8 @@ tab_data <- tabItem(
 #############################################################################
 # VISUALIZATIONS
 
-ma_choices <- c("Multi-level random effects with study grouping" = "REML_mv",
-                "Random effects" = "REML", 
+ma_choices <- c("Random effects" = "REML",
+                "Multi-level random effects with study grouping" = "REML_mv",
                 "Fixed effects" = "FE", 
                 "Empirical bayes" = "EB")
 
@@ -175,7 +175,7 @@ tab_visualizations <- tabItem(
           selectInput("dataset_name", label = "Dataset",
                       choices = datasets$name),
           selectInput("ma_method", label = "Meta-analytic model",
-                      choices = ma_choices, selected = "REML_mv"),
+                      choices = ma_choices, selected = "REML"),
           fluidRow(
             column(
               width = 4,
@@ -227,9 +227,7 @@ tab_visualizations <- tabItem(
     column(
       width = 6,
       fluidRow(
-        valueBoxOutput("studies_box"),
-        valueBoxOutput("effect_size_box"),
-        valueBoxOutput("effect_size_var_box")),
+        uiOutput("viz_boxes")),
       fluidRow(
         box(width = NULL, status = "danger",
             fluidRow(
@@ -244,7 +242,8 @@ tab_visualizations <- tabItem(
             column(
               width = 4,
               selectInput("forest_sort", label = "Sort order",
-                          choices = c("effect size" = "effects",
+                          choices = c("weight (1/variance)" = "variances",
+                                      "effect size" = "effects",
                                       "model estimate" = "estimate",
                                       "alphabetical" = "study_ID",
                                       "chronological" = "year"))),
@@ -283,12 +282,21 @@ tab_power <- tabItem(
           selectInput("dataset_name_pwr", "Meta-analysis",
                       choices = datasets$name),
           uiOutput("pwr_moderator_input"),
-          uiOutput("pwr_moderator_choices"),
-          strong("Power by number of participants"),
+          uiOutput("pwr_moderator_choices")),
+      fluidRow(
+        valueBoxOutput("power_d", width = 6),
+        valueBoxOutput("power_n", width = 6)),
+      box(width = NULL, status = "danger",
+          fluidRow(
+            column(width = 10,
+                   p(strong("Power plot"), "of N necessary to achieve p < .05")),
+            column(width = 2,
+                   downloadButton("download_power", "Save",
+                                  class = "btn-xs pull-right"))),
+          plotOutput("power"),
           p("Statistical power to detect a difference between
             conditions at p < .05. Dashed line shows 80% power, dotted line
-            shows necessary sample size to achieve that level of power."),
-          plotOutput("power"))),
+            shows necessary sample size to achieve that level of power."))),
     column(
       width = 6,
       box(width = NULL, status = "danger", solidHeader = TRUE,
