@@ -275,7 +275,7 @@ div.tocify {
 <div id="simple-random-effects-structure" class="section level1">
 <h1>Simple random effects structure</h1>
 <p>Below is our data set separated by meta-analysis with four curve types: 1) linear, 2) logarithmic, 3) quadratic, and 4) both linear and logarithmic predictors.</p>
-<p><img src="developmental_curves_files/figure-html/unnamed-chunk-2-1.png" title="" alt="" width="672" /></p>
+<p><img src="developmental_curves_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <p>We ran mixed effects regressions where meta-analysis (data set) was included as a random intercept for our four models. We then ran Chi-squared tests to compare the different models to one another. Model comparison found the quadratic model to be a better fit than the linear model and the logarithmic model, but no difference between the linear and logarithmic model. The two predictor model (linear and log) also outperformed both the single predictor linear model and the single predictor logarithmic model.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lin_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~<span class="st"> </span>mean_age +<span class="st"> </span>
 <span class="st">                </span>(<span class="dv">1</span> |<span class="st"> </span>dataset), 
@@ -610,7 +610,7 @@ lin_log_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lin_pred =</span> <span class="kw">predict</span>(lin_lmer)) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">log_pred =</span> <span class="kw">predict</span>(log_lmer)) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lin_log_pred =</span> <span class="kw">predict</span>(lin_log_lmer))</code></pre></div>
-<p><img src="developmental_curves_files/figure-html/unnamed-chunk-5-1.png" title="" alt="" width="672" /></p>
+<p><img src="developmental_curves_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>Overall this method looks pretty good. It seems like the linear predictor in the two predictor model is smoothing the logs at the edges, and the random effects are working to capture cross data set variability.</p>
 </div>
 <div id="complex-random-effects-structure-nested-paper-effects" class="section level1">
@@ -728,7 +728,7 @@ lin_log_lmer &lt;-<span class="st"> </span><span class="kw">lmer</span>(d_calc ~
 
 all_data_preds &lt;-<span class="st"> </span>all_data_preds %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lin_log_paper_pred =</span> lin_log_paper_preds)</code></pre></div>
-<p><img src="developmental_curves_files/figure-html/unnamed-chunk-8-1.png" title="" alt="" width="672" /></p>
+<p><img src="developmental_curves_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 </div>
 <div id="complex-random-effects-structure-random-slope" class="section level1">
 <h1>Complex random effects structure (random slope)</h1>
@@ -1075,7 +1075,7 @@ lin_log_paper_slope_preds &lt;-<span class="st"> </span><span class="kw">predict
 all_data_preds &lt;-<span class="st"> </span>all_data_preds %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lin_log_slope_pred =</span> lin_log_slope_preds) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lin_log_paper_slope_pred =</span> lin_log_paper_slope_preds)</code></pre></div>
-<p><img src="developmental_curves_files/figure-html/unnamed-chunk-11-1.png" title="" alt="" width="672" /></p>
+<p><img src="developmental_curves_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 </div>
 <div id="subset-to-only-those-papers-with-multiple-ages" class="section level1">
 <h1>Subset to only those papers with multiple ages</h1>
@@ -1106,21 +1106,21 @@ lin_log_paper_slope_multiage_lmer &lt;-<span class="st"> </span><span class="kw"
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">-0.7927181</td>
-<td align="right">1.5960294</td>
-<td align="right">-0.4966814</td>
+<td align="right">-0.7928146</td>
+<td align="right">1.5960750</td>
+<td align="right">-0.4967277</td>
 </tr>
 <tr class="even">
 <td align="left">mean_age</td>
 <td align="right">0.0015200</td>
 <td align="right">0.0005976</td>
-<td align="right">2.5434178</td>
+<td align="right">2.5433514</td>
 </tr>
 <tr class="odd">
 <td align="left">log(mean_age)</td>
-<td align="right">0.0876955</td>
-<td align="right">0.2948993</td>
-<td align="right">0.2973745</td>
+<td align="right">0.0877137</td>
+<td align="right">0.2949065</td>
+<td align="right">0.2974288</td>
 </tr>
 </tbody>
 </table>
@@ -1131,7 +1131,7 @@ multiage_data &lt;-<span class="st"> </span>multiage_data %&gt;%
 <span class="st">  </span>ungroup %&gt;%
 <span class="st">  </span><span class="kw">select</span>(dataset, short_name, study_ID, d_calc, mean_age, d_var_calc, lin_log_pred) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lin_log_paper_slope_multiage_pred =</span> lin_log_paper_slope_multiage_preds)</code></pre></div>
-<p><img src="developmental_curves_files/figure-html/unnamed-chunk-14-1.png" title="" alt="" width="672" /></p>
+<p><img src="developmental_curves_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 </div>
 <div id="three-age-groups" class="section level3">
 <h3>Three age groups</h3>
@@ -1184,7 +1184,7 @@ multiage_3_data &lt;-<span class="st"> </span>multiage_3_data %&gt;%
 <span class="st">  </span>ungroup %&gt;%
 <span class="st">  </span><span class="kw">select</span>(dataset, short_name, study_ID, d_calc, mean_age, d_var_calc, lin_log_pred) %&gt;%
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">lin_log_paper_slope_multiage_3_pred =</span> lin_log_paper_slope_multiage_3_preds)</code></pre></div>
-<p><img src="developmental_curves_files/figure-html/unnamed-chunk-17-1.png" title="" alt="" width="672" /></p>
+<p><img src="developmental_curves_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 </div>
 </div>
 <div id="conclusions" class="section level1">

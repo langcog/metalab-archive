@@ -1,0 +1,11 @@
+base
+knitr
+ggplot2
+broom
+dplyr
+tidyr
+Matrix
+lme4
+jsonlite
+readr
+metafor
