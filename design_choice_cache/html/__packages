@@ -1,0 +1,11 @@
+base
+shiny
+shinydashboard
+dplyr
+tidyr
+ggplot2
+purrr
+langcog
+Matrix
+metafor
+stringr

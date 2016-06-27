@@ -1,0 +1,14 @@
+base
+shiny
+shinydashboard
+dplyr
+tidyr
+ggplot2
+purrr
+langcog
+directlabels
+knitr
+Matrix
+lme4
+psych
+orddom
