@@ -8,7 +8,7 @@ R CMD BATCH scripts/render_reports.R;
 
 mv reports/out ..
 git checkout gh-pages
-cp -r ../out/* reports
+cp -r ../out/* .
 rm -r ../out
 git add .
 git commit -m "deployed to github pages"
