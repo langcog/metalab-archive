@@ -1,3 +1,4 @@
+
 suppressMessages(suppressWarnings({
   library(dplyr)
   library(purrr)
@@ -62,7 +63,7 @@ validate_dataset <- function(dataset_meta, dataset_contents) {
 fetch_dataset <- function(dataset_meta) {
 
   if (dataset_meta$key == "") {
-    cat(sprintf("Can't load aataset '%s', key missing.\n", dataset_meta$name))
+    cat(sprintf("Can't load dataset '%s', key missing.\n", dataset_meta$name))
     return()
   }
 

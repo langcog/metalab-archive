@@ -6,11 +6,11 @@ library(ggplot2)
 library(purrr)
 library(langcog)
 
-font <- "Ubuntu"
-theme_set(theme_mikabr(base_family = font) +
-            theme(legend.position = "top",
-                  legend.key = element_blank(),
-                  legend.background = element_rect(fill = "transparent")))
+#font <- "Ubuntu"
+#theme_set(theme_mikabr(base_family = font) +
+#            theme(legend.position = "top",
+#                  legend.key = element_blank(),
+#                  legend.background = element_rect(fill = "transparent")))
 
 fields <- yaml::yaml.load_file("../metadata/spec.yaml")
 fields_derived <- yaml::yaml.load_file("../metadata/spec_derived.yaml") %>%
