@@ -34,7 +34,7 @@ keywords: "replicability, reproducibility, meta-analysis, developmental psycholo
 wordcount: "XXXX"
 
 class: man
-lang: american
+lang: english
 figsintext: yes
 lineno: no
 bibliography:
@@ -50,38 +50,67 @@ output: papaja::apa6_pdf
 ```{r message = FALSE, warning = FALSE}
 knitr::opts_chunk$set(warning = FALSE, message = FALSE, cache = TRUE)
 require("papaja")
-apa_prepare_doc() # Prepare document for rendering
+apa_prepare_doc() # prepare document for rendering
 ```
 
 # Introduction
+To learn to speak a language, a child must acquire a wide range knowledge and skills: the sounds of the language, the word forms, and how the word forms map onto meanings, to name only a few. How does this process unfold? Our goal as psychologists is to build a theory that can explain and predict this process in a way that is both precise but also highly generalizable. The challenge we face, however is that we must build this theory on the basis of very limited data. And, as a consequence, we must rely on inductive reasoning strategies to go from the data we observe to the theories we posit. In this paper, we demonstrate how meta-analytic methods can support the inductive process of theory building in the case of language acquistion.
 
--> 
+Meta-analysis is a quantiatiave method for aggregating across experimental findings. The fundamental unit of meta-analysis is the *effect size*: a scale-free, quantitative measure of "success" in a phenomenon. Importantly, an effect size provides an estimate of the *size* of an effect, as well as a measure of uncertainty around this point estimate. With  such a quantitative measure of success, we can apply the same reasoning we use to aggregate  noisy measurements over  participants in a single study: By assuming each *study*, rather than participant, is sampled from a population, we can appeal to the classical statistical framework to combine estimates of the effect size for a given phenomenon.
 
+Meta-analytic methods support theory building in several ways. First, they provide a way of evaluating which effects in a literature are "real," and thus should constrain the theory. The field of psychology has grown concerned recently in the face of high-profile evidence that an effect observed in one study may not be the same in another ("replicability crisis"; Ioannidis, 2005; Nosek, 2012, 2015). At the stage of experimental planning, researchers must pre-specify analytical descision to limit ``researcher'' degrees of freedom (Simmons, 2011; Simonsohn, 2014a, 2014b, 2014c). At the stage of completion, researchers should share a result regardless of its significance (Rosenthal, 1979; Fanelli 2012). 
 
+Importantly, however, some variability across studies is to be expected due to sampling error alone. Effect sizes and meta-analytic methods provide a principled approach for distinguising variability due to sampling error from variability in the underyling effect. With a more veridical description of the empirical landscape, we are in a better position to build a theory.
 
+Second, meta-analysis support theory building by providing higher fidelity descriptions of phenomenona. Rather than simply concluding that an effect exists, effect sizes allow us  to describe as, for exapmple, How does the effect change over development? How does the effect compare in magnitude to other effects? How much does a moderator affect the effect? This type of continuous analysis supports building quantitative models, and specifying theories that are more precise and constraining.
 
-Psychologists hope to build  generalizable theories about human behavior---theories that hold true beyond particulars of an individual study. The field has grown concerned as a result in the face of recent high-profile evidence that an effect observed in one study may not be the same in another (``replicability crisis''; Ioannidis, 2005; Nosek, 2012, 2015). Some of this variability is to be expected, however---the question we should instead be asking is, do the data provide support for the theory, even if they are noisy? Furthermore, to build parsimonious theories of human behavior, we should seek to explain not just individual phenemenon, but entire literatures of research. What is needed, then, is a tool for aggregating noisy data across studies within a phenomenon, as well as a common language for comparing effects across phenomenona.
+(SYNTHESIS POINT) Furthermore, to build parsimonious theories of human behavior, we should seek to explain not just individual phenemenon, but entire literatures of research. What is needed, then, is a tool for aggregating noisy data across studies within a phenomenon, as well as a common language for comparing effects across phenomenona.
 
-Meta-analytic methods provide a powerful tool for doing just this. The basic unit of meta-analysis---the effect size---provides an estimate of the *size* of an effect, as well as a measure of uncertainty around this point estimate. With  such a continuous measure of success, we can apply the same reasoning we use to aggregate  noisy measurements over  participants in a single study: By assuming each *study*, rather than participant, is sampled from a population, we can appeal to the classical statistical framework to combine estimates of the effect size for a given phenomenon.
+Finally, in addition to these theoretical motivations, there are practical reasons for conducting a quantitative synthesis. When planning an experiment, an estimate of the size of an effect on the basis of prior literature can inform the sample size needed to achieve a desired level of power. Meta-analytic estimates of effect sizes can also aid in design choices: If a certain paradigm tends to have overall larger effect sizes than another, the strategic researcher might select this paradigm in order to maximize the power of a study.
 
-This quantitative approach provides a rich tool kit for synthesizing across literatures. By describing different phenomena using the same unit of measurement, we are able to compare effects in different domains. Rather than simply concluding that two effects are both ``real,'' we can ask more fine-grained questions: Is effect *X* bigger than effect *Y*? Does a moderator influence effect *X* in the same way as effect *Y*? This type of continuous analysis supports building quantitative models, and specifying theories that are more precise and constraining.
+While meta-analytic methods are likely helpful for many psychological literatures, we believe language acquisition is a particularly informative application for this tool. One reason is that language acquistion may be uniquely vulnerable to false findings because running children is expensive, and thus sample sizes are small and studies are underpowered (Ioanndis, 2005). In addition, the difficulty in running participants means that replications are relatively rare in the field. Finally, there has been recent attention to developmental research practices more broadly, and corn [@Peterson:2016]. 
 
-In addition to these theoretical motivations, there are practical reasons for conducting a quantitative synthesis. When planning an experiment, an estimate of the size of an effect on the basis of prior literature can inform the sample size needed to achieve a desired level of power. Meta-analytic estimates of effect sizes can also aid in design choices: If a certain paradigm tends to have overall larger effect sizes than another, the strategic researcher might select this paradigm in order to maximize the power of a study.
-
-In practice, however, the feasability of this meta-analytic approach relies on the field’s commitment to practices that facilitate cumulative science. These practices apply to all stages of the research process. At the stage of experimental planning, researchers must pre-specify analytical descision to limit ``researcher'' degrees of freedom (Simmons, 2011; Simonsohn, 2014a, 2014b, 2014c). At the stage of completion, researchers should share a result regardless of its significance (Rosenthal, 1979; Fanelli 2012). And, at the stage of sharing, researchers must provide enough information about the method for another lab to conduct a close replication. Critically,r eports must also contain complete descriptions of both data and analytical decisions so that effect sizes can be calculcated for the purposes of meta-analysis,
-
-In the present paper, we use meta-analytic methods to provide a quantitative synthesis of an entire field of psychological research: language acquisition.  We think this field is a particularly informative case study. It may be particularly vulnerable to false findings because running children is expensive (Ioanndis, 2005), and thus:
-
-+ sample sizes are small 
-+ replications difficult and rare
-+ Recent attention about practices in developmental research @Peterson:2016
-
+Towards this end, we have developed a dataset of effect sizes in the language acquistion literature, across 12 phenomenona, and XXX studies.   [Metalab](http://metalab.stanford.edu/). In what follows, we use this dataset to describe the e use this dataset below to first evaluate 
 We have two goals:
-
 + Describe the state of the field in terms of its participation in practices that are prerequisites to cumulative science, and ultimately, a theoretical synthesis
 + Provide a preliminary theoretical synthesis of the field
 
-Towards this end, we introduce [Metalab](http://metalab.stanford.edu/).
+
+
+
+Veridical
+
+Fidelity
+* across development
+* across different theoretical moderators (does X matter?)
+* across phenomenoa 
+
+METALAB
+
+
+
+
+This problem of induction is particularly challenging in the case of behaviors that rely on many different skills, such as langauge acquisition. To acquire a language
+
+
+
+
+
+In achieving this goal, however, we are fundamentally challeged  e challenge we face, however, is that we must build these theories on the basis of limited data, typically collected from only 20-30 participants. This means that we must infer com
+
+The developmental trajectory of language aquistion is 
+
+
+Psychologists hope to build  generalizable theories about human behavior---theories that hold true beyond particulars of an individual study. 
+
+This quantitative approach provides a rich tool kit for synthesizing across literatures. By describing different phenomena using the same unit of measurement, we are able to compare effects in different domains. 
+
+
+
+In practice, however, the feasability of this meta-analytic approach relies on the field’s commitment to practices that facilitate cumulative science. These practices apply to all stages of the research process. And, at the stage of sharing, researchers must provide enough information about the method for another lab to conduct a close replication. Critically, sreports must also contain complete descriptions of both data and analytical decisions so that effect sizes can be calculcated for the purposes of meta-analysis,
+
+
+
 
 
 # Method
@@ -402,9 +431,11 @@ Pointing and vocabulary & 0.41 [0.32, 0.49] & 1202 & 0.59 (0.55) &  & \\
 \caption{Summary of replicability analyses. \textit{d} = Effect size (Cohen's {\it d}) estimated from a random-effect model; fail-safe-N = number of missing studies that would have to exist in order for the overall effect size to be {\it d} = 0; funnel skew = test of asymmetry in funnel plot using the random-effect Egger's test (Stern \& Eggers, 2005); p-curve skew = test of the right skew of the p-curve using the Stouffer method (Simonsohn, Simmons, \& Nelson, 2015); power = power to reject the null hypothesis at the 5\% significance level based on the p-curve (Simonsohn, Nelson, \& Simmons, 2014);  Brackets give 95\% confidence intervals, and parentheses show p-values.}
 \end{table}
 
-Figure 2 shows p-curves for `r  length(unique(pc.data$dataset))` of our `r nrow(datasets)` meta-analyses\footnote{We were unable to do this analysis on all meta-analyses because some were missing key statistical tests (e.g. gaze following) or the test statistic was not available (e.g. pointing and vocabulary).}. Across all p-curves, the curves show evidence of right skew. This is confirmed by formal analyses (Table 2, column 5). P-curves also provide a method for calculcating the overall power of a literature, based on the shape of the p-curve [@simonsohn2014power]. Intuitively, when power is high and effect is real, we should be more likely to observe an effect size "further" from the null. This means that we will observe more small effect sizes. Thus, the higher the power, the more right skewed the p-curve will be.  Table 2 (column 6) presents estimates of power for each meta-analysis based on p-curve. With the exception of phonotactic learning (*power* = `r filter(table.data, dataset == "Phonotactic learning")$power_string`), literatures appear to have acceptable power.
+Figure 2 shows p-curves for `r  length(unique(pc.data$dataset))` of our `r nrow(datasets)` meta-analyses\footnote{We were unable to do this analysis on all meta-analyses because some were missing key statistical tests (e.g. gaze following) or the test statistic was not available (e.g. pointing and vocabulary).}. Across all p-curves, the curves show evidence of right skew. This is confirmed by formal analyses (Table 2, column 5). P-curves also provide a method for calculcating the overall power of a literature, based on the shape of the p-curve [@simonsohn2014power]. Intuitively, when power is high and effect is real, we should be more likely to observe an effect size "further" from the null. This means that we will observe more small effect sizes. Thus, the higher the power, the more right skewed the p-curve will be.  Table 2 (column 6) presents estimates of power for each meta-analysis based on p-curve. With the exception of phonotactic learning (*power* = .14), literatures appear to have acceptable power.
 
 ```{r, eval = F}
+
+# filter(table.data, dataset == "Phonotactic learning")$power_string
 And, without veridical data, it is difficult to make theoretical progress on a phenomenon.
 Across studies we should expect some variability in effect size due to sampling error alone. But this variability in effect size should be *systematic*: There should be less variability around the mean for more precise studies, as measured by sample size. The presence of variability in effect sizes that is not accounted for sample size may suggest publication bias in a literature. A limitation of this approach:only accounts for XXXX.
 
