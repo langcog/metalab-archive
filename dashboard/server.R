@@ -413,10 +413,10 @@ shinyServer(function(input, output, session) {
       xlab(xlabel) +
       ylab(ylabel) +
       geom_text(x = center + lower_lim * CRIT_95 / 2,
-                y = -lower_lim + lower_lim / 30, family = font,
+                y = -lower_lim + lower_lim / 30, #family = font,
                 label = "p < .05", vjust = "bottom", hjust = "center") +
       geom_text(x = (center + lower_lim * CRIT_95) + (lower_lim * CRIT_99 - lower_lim * CRIT_95) / 2,
-                y = -lower_lim + lower_lim / 30, family = font,
+                y = -lower_lim + lower_lim / 30, #family = font,
                 label = "p < .01", vjust = "bottom", hjust = "center") +
       theme(panel.background = element_rect(fill = "grey"),
             panel.grid.major =  element_line(colour = "darkgrey", size = 0.2),
