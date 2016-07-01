@@ -58,17 +58,17 @@ To learn to speak a language, a child must acquire a wide range knowledge and sk
 
 Meta-analysis is a quantitative method for aggregating across experimental findings. The fundamental unit of meta-analysis is the *effect size*: a scale-free, quantitative measure of "success" in a phenomenon. Importantly, an effect size provides an estimate of the *size* of an effect, as well as a measure of uncertainty around this point estimate. With  such a quantitative measure of success, we can apply the same reasoning we use to aggregate  noisy measurements over  participants in a single study: By assuming each *study*, rather than participant, is sampled from a population, we can appeal to the classical statistical framework to combine estimates of the effect size for a given phenomenon.
 
-Meta-analytic methods support theory building in several ways. First, they provide a way of evaluating which effects in a literature are "real," and thus should constrain the theory. This is particulary important in  light of recent high-profile evidence in the field that an effect observed in one study may not replicate in another ["replication crisis",  @ioannidis2005most; @open2015estimating; @open2012open]. Such cases of failed replications are difficult to interpret, however. One possibility is that the failure was observed because the effect is in fact not real. This can occur when there was bias introduced by the experimenter in the original study. But another possibility is that an effect *is* real, but the failure to replicate is due to sampling error. Just as we would not conclude that a phenomenon does not exist because one or two participants do not show an effect, we should not conclude that an effect does not exist on the basis of one or two failed replications. Meta-analytic methods provide a principled approach for distinguising between these two sources of failed studies. This supports a more veridical description of the empirical landscape, which in turn leads to better theory-building.
+Meta-analytic methods support theory building in several ways. First, they provide a way of evaluating which effects in a literature are "real," and thus should constrain the theory. This is particulary important in  light of recent high-profile evidence in the field that an effect observed in one study may not replicate in another ["replication crisis",  @ioannidis2005most; @open2015estimating; @open2012open]. Failed replications are difficult to interpret, however, because they may result from a wide variety of causes, including an in initial false positive, a subsequent false negative, or differences between initial and replication studies, and making causal attributions in a situation with two conflicting studies is often difficult (Gilbert et al., 2016; Anderson et al., 2016). Meta-analysis can allow researchers to address this set of issues in a principled way by aggregating evidence across studies and assuming that there is some variability in true effect size from study to study. In this way, meta-analytic methods can provide more veridical description of the empirical landscape, which in turn leads to better theory-building.
 
-Second, meta-analysis support theory building by providing higher fidelity descriptions of phenomenona. Rather than simply concluding that an effect exists, effect sizes allow us  to ask finer grain questions: How much variability is there in the effect? How does the effect change over development? To what extent does a moderator of theoretetic influence the effect? This type of continuous analysis supports building quantitative models, and specifying theories that are more precise and constraining.
+Second, meta-analysis supports theory building by providing higher fidelity descriptions of phenomenona. Rather than simply concluding that an effect exists, effect sizes allow us  to ask finer grain questions: How much variability is there in the effect? How does the effect change over development? To what extent does a moderator of theoretetic influence the effect? This type of continuous analysis supports building quantitative models, and specifying theories that are more precise and constraining.
 
-Furthermore, effect sizes provide a common language for comparing effects across phenomenona. This allows us to understand not only what the trajectory of a particular phenomenon is, like word learning, for example, but also how this phenomenon might depend on other skills (e.g. sound learning, gaze following, etc.). With this more complete picture of langauge development--- and the common language of effect sizes--- we can begin to build a more synthetic theory of language acquisition.
+Furthermore, effect sizes provide a common language of comparing *across* phenomena.  This common language allows us to meaningfully consider the relationship between different phenomena in the language acquisition domain ("meta-meta-analysis"). Through cross-phenomena comparions, we can understand not only the trajectory of a particular phenomenon, like word learning for example, but also how this phenomenon might depend on other skills, such as sound learning, gaze following, and many others. With this more complete picture of the interaction of different linguistic competencies, we can begin to build a more synthetic theory of language acquisition.
 
 Finally, in addition to these theoretical motivations, there are practical reasons for conducting a quantitative synthesis. When planning an experiment, an estimate of the size of an effect on the basis of prior literature can inform the sample size needed to achieve a desired level of power. Meta-analytic estimates of effect sizes can also aid in design choices: If a certain paradigm tends to have overall larger effect sizes than another, the strategic researcher might select this paradigm in order to maximize the power of a study.
 
 While meta-analytic methods are likely helpful for many psychological literatures, we believe language acquisition is a particularly informative application for this tool. One reason is that language acquistion may be uniquely vulnerable to false findings because running children is expensive, and thus sample sizes are small and studies are underpowered [@ioannidis2005most]. In addition, the difficulty in running participants means that replications are relatively rare in the field. Finally, there has been attention to developmental psychology research practices more broadly, suggesting evidence of experimenter bias [@Peterson:2016].  
 
-With these motivations, we developed a dataset of effect sizes in the language acquistion literature across 12 different phenomenona ([Metalab; http://metalab.stanford.edu/](http://metalab.stanford.edu/)). We take as our ultimate goal a single overarching theory of language acquisition that can explain and predict all the relevant pheonemona. We demonstrate how meta-analysis supports building this theory in two ways. We first use meta-analytic techniques to evaluate the evidential value of the empirical landscape in language acquistion research. We find broadly that this literature has strong evidential value, and thus that the effects report in the literature should constrain our theory of language acquisition. We then turn to synthesizing these findings across phenenomena and offer a preliminary theoretical synthesis of the field.
+We take as our ultimate goal a single overarching theory of language acquisition that can explain and predict all the relevant pheonemona. Toward this end, we developed a dataset of effect sizes in the language acquistion literature across 12 different phenomenona ([Metalab; http://metalab.stanford.edu/](http://metalab.stanford.edu)). We demonstrate how meta-analysis supports building this theory in two ways. We first use meta-analytic techniques to evaluate the evidential value of the empirical landscape in language acquistion research. We find broadly that this literature has strong evidential value, and thus that the effects report in the literature should constrain our theory of language acquisition. We then turn to synthesizing these findings across phenenomena and offer a preliminary theoretical synthesis of the field.
 
 # Method
 ```{r load data}
@@ -76,6 +76,8 @@ source("../../dashboard/global.R", chdir = TRUE)
 source("paper_analyses/pcurve.R")
 library(metafor)
 library(knitr)
+library(lme4)
+library(directlabels)
 # Tried installling packrat, but got error: Error in hash(descFile) : 
 #No DESCRIPTION file at path #'/Documents/GRADUATE_SCHOOL/Projects/metalab/metalab/write-ups/synthesis_paper/packrat#/lib/x86_64-apple-darwin13.4.0/3.2.1/BH/DESCRIPTION'!
 
@@ -85,7 +87,7 @@ library(knitr)
 #html - [RMarkdown](http://rmarkdown.rstudio.com/)
 ```
 
-We analyzed `r nrow(datasets)` different phenomenena in language acquisition. We selected these phenomena in order to describe development at many different levels of the language hierarchy, from the acquistion of prosody and phonemic contrasts, to gaze following in linguistic interaction. This wide range of phenomena allowed us to compare the course of development across different domains, as well as explore questions about the interactive nature of language acquisition (Table 1). 
+We analyzed `r nrow(datasets)` different phenomenena in language acquisition. These  phenomena were selected opportunistically, based on their availability in the literature and feasibility of conduciting meta-analysis for a particular phenomenon.  The phenomenena cover development at many different levels of the language hierarchy, from the acquistion of prosody and phonemic contrasts, to gaze following in linguistic interaction. This wide range of phenomena allowed us to compare the course of development across different domains, as well as explore questions about the interactive nature of language acquisition (Table 1). 
 
 To obtain estimates of effect size, we coded papers reporting experimental data. Within each paper, we calculated a separate effect size estimate for each experiment and age group ("condition"). In total, our sample includes estimates from `r sum(datasets$num_papers)` papers, `r sum(datasets$num_experiments)` different conditions and `r format(floor(sum(datasets$num_subject)), big.mark=",", scientific=FALSE)` participants. The process for selecting papers from the literature differed by domain, with some individual meta-analyses using more systematic approaches than others (see SI).
 \renewcommand{\arraystretch}{1.5}
@@ -119,10 +121,6 @@ To obtain estimates of effect size, we coded papers reporting experimental data.
 
                   
 # Replicability of the field
-A literature is more likely to describe a real effect if studies are randomly sampled from the population of all possible  studies that researchers could in principle conduct. This assumption does not mean, however,  that there should be *no* variability in effect size across studies: We should expect random variation around the true mean effect size, with smaller studies showing more variability around this mean. 
-
-Variability in effect sizes will be biased when this assumption of  random study sampling  does not hold. Bias may be introduced by the experimenter in a number of ways, including  failure to publish null findings ["publication bias", @rothstein2006publication; @rosenthal1979file; @Fanelli:2010kf], analytical flexibility [e.g., "p-hacking," @Simmons:2011iw; @simonsohn2014p], reporting errors, or even fraud. These biases are problematic for theoretical development because they  lead to large but often unknown errors in estimates of the effect size. If bias is present in the literature, estimates of effect size may be poor estimates of the true underlying effect size and thus be of limited evidential value. To make theoretical progress, we must therefore distinguish variability in effect sizes due to sample size from varability due to bias.
-
 To assess the replicability of language acquisition phenomena, we conducted several diagnostic analyses: Meta-analytic estimates of effect size, fail-safe-N [@orwin1983fail], funnel plots, and p-curve [@simonsohn2014p; @simonsohn2014power; @simonsohn2015better]. These analytical approaches each have limitations, but taken together, they provide converging evidence about the replicability of a literature. Overall, we find little evidence of bias in our meta-analyses, suggesting that the language acqusition literature likely describes real psychological phenomenona and should therefore provide the basis for theoretical development. 
 
 ## Meta-Analytic Effect Size
@@ -145,9 +143,9 @@ all_ds = all_data %>%
   mutate(d_string = paste0(overall.d, " [", ci_lower, ", ",ci_upper, "]")) %>%
   mutate(short_name = dataset)
 ```
-Meta-analysis provides a quantitative method for aggregating across studies. To estimate the overall effect size of a literature, effect sizes are pooled across papers to obtain a single meta-analytic estimate. Importantly, meta-analysis allows us to model variability in effect sizes due to differences in sample sizes by weighting studies with more participants more heavily in the overall estimate. This meta-analytic effect-size can be thought of as the ``best estimate" of the effect size for a phenomenon given all the available data in the literature.
+To estimate the overall effect size of a literature, effect sizes are pooled across papers to obtain a single meta-analytic estimate. This meta-analytic effect-size can be thought of as the ``best estimate" of the effect size for a phenomenon given all the available data in the literature.
 
-Table 2, column 2 presents meta-analytic effect size estimates for each of our phenomenona. We find evidence for a non-zero effect size in 11 out of 12 of our phenomena, suggesting these literature provide evidential value. In the case of phonotatic learning, however, we find that the meta-analytic effect size estimate does not differ from zero, suggest that this literature does not describe a real effect. [Remove it from analyses below?].
+Table 2, column 2 presents meta-analytic effect size estimates for each of our phenomenona. We find evidence for a non-zero effect size in 11 out of 12 of our phenomena, suggesting these literature provide evidential value. In the case of phonotatic learning, however, we find that the meta-analytic effect size estimate does not differ from zero, suggest that this literature does not describe a robust effect. [Remove it from analyses below?].
 
 While the meaure of effect size is itself quantitative, meta-analytic estimates of effect size provide only categorical information about the evidential value of a literature: the effect is real, or not. But, a more powerful method of assessing evidential value would tell us the *degree* to which a literature has evidential value, and thus the degree to which it should constrain our theory building. In the following three analyses---fail-safe-N, funnel plots, and p-curves---we describe through analyses that quantify the evidential value of these literatures.
 
@@ -163,14 +161,14 @@ fsn.package.data = all_data %>%
 
 One approach for quantifying the reliability of a literature is to ask, How many missing studies with null effects would have to exist in the "file drawer" in order for the overall effect size to be zero? This is called the "fail-safe" number of studies [@orwin1983fail]. To answer this question, we estimated the overall effect size for each phenomenenon (Table 2, column 2), and then used this to estimate the fail-safe-N (Table 2, column 3). 
 
-This analysis suggests a very large number of studies would have to be "missing" in each literature ($M$ = `r round(mean(fsn.package.data$fsn_string[is.finite(fsn.package.data$fsn_string)]))`) in order for the overall effect sizes to be 0. Thus, while it is possible that some reporting bias is present in the literature, the large fail-safe-N suggests that the literature nonetheless likely describes a real effect. 
+Because of the large number of positive studies in many of the MAs we assessed, this analysis suggests a very large number of studies would have to be "missing" in each literature ($M$ = `r round(mean(fsn.package.data$fsn_string[is.finite(fsn.package.data$fsn_string)]))`) in order for the overall effect sizes to be 0. Thus, while it is possible that some reporting bias is present in the literature, the large fail-safe-N suggests that the literature nonetheless likely describes a real effect. 
 
 One limitation of this analysis, however, is that it assumes that all reported effect sizes are obtained in the absence of analytical flexibility: If experimenters are exercising analytical flexibility through practices like p-hacking, then the number and magnitude of observed true effects in the literature may be inflated. In the next analysis, we examine this possibility through funnel plots.
 
 ## Funnel Plots 
 Funnel plots provide a visual method for evaluating whether variability in effect sizes is due  only to differences in sample size. A funnel plot shows effect sizes versus a metric of sample size, standard error. If there is no bias in a literature, we should expect studies to be randomly sampled around the mean, with more variability for less precise studies. 
 
-Figure 1 presents funnel plots for each of our `r nrow(datasets)` meta-analyses. These plots show evidence of asymmetry (bias) for several of our phenomenon (Table 2, column 4). However, an important limitation of this method is that it is difficult to determine the source of this bias. One possibility is that this bias is due not to experimenter, but to true heterogenity in phenomena (e.g. different ages). P-curve analyses provide one method for addressing this issue, which we turn to next.
+Figure 1 presents funnel plots for each of our `r nrow(datasets)` meta-analyses. These plots show evidence of asymmetry (bias) for several of our phenomenon (Table 2, column 4). However, an important limitation of this method is that it is difficult to determine the source of this bias. One possibility is that this bias reflects true heterogenity in phenomena (e.g. different ages). P-curve analyses provide one method for addressing this issue, which we turn to next.
 
 ```{r,  fig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Funnel plots for each meta-analysis. Each effect size estimate is represented by a point, and the mean effect size is shown as a red dashed line. The funnel corresponds to a 95% (narrow) and 99% (wide) CI around this mean. In the absense of true heterogenity in effect sizes (no moderators) and bias, we should expect all points to fall inside the funnel."}
 
@@ -249,19 +247,19 @@ ggplot(funnel.es.data, aes(x = es, y = -se)) +
   xlab("Effect Size")  +
   ylab("Standard Error\n")  +
   scale_colour_solarized(name = "") +
+  #geom_polygon(aes(x = x, y = y), 
+  #             data = funnel95.data,
+  #             fill = "white") +
   geom_polygon(aes(x = x, y = y), 
-               data = funnel95.data, alpha = .5,
-               fill = "white") +
-  geom_polygon(aes(x = x, y = y), 
-               data = funnel99.data, alpha = .5,
+               data = funnel99.data,,
                fill = "white") +
   geom_vline(aes(xintercept=x2), 
              linetype = "dashed", color = "red", size = .8, data = funnel99.data.wide) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "darkgrey",  size = .8) +
   geom_point(size = .5) +
-  theme(panel.background = element_rect(fill = "lightgrey"),
+  theme(panel.background = element_rect(fill = "gray96"),
         panel.grid.major = element_line(colour = "grey", size = 0.2),
-        panel.grid.minor = element_line(colour = "grey", size = 0.5))
+        panel.grid.minor = element_line(colour = "grey", size = 0.5)) 
 ```
 
 ```{r, funnel_skew}
@@ -345,7 +343,7 @@ stouffer.data = pc.data %>%
   select(short_name, stouff_string)
 ```
 
-A p-curve is the distribution of p-values for the statistical test of the main hypothesis across a literature [@simonsohn2014p; @simonsohn2014power; @simonsohn2015better]. Critically, if there is a real effect in the literature, the shape of the p-curve should reflect this. In particular, we should expect the p-curve to be right skewed with more small values (e.g., .01) than large values (e.g., .04). An important property of this analysis is that we should expect this skew independent of any true heterogenity in the data, such as age. Evidence that the curve is in fact right-skewed would suggest that the literature is not biased, and that it provides evidential value for theory building. 
+A p-curve is the distribution of p-values for the statistical test of the main hypothesis across a literature [@simonsohn2014p; @simonsohn2014power; @simonsohn2015better]. Critically, if there is a robust effect in the literature, the shape of the p-curve should reflect this. In particular, we should expect the p-curve to be right skewed with more small values (e.g., .01) than large values (e.g., .04). An important property of this analysis is that we should expect this skew independent of any true heterogenity in the data, such as age. Evidence that the curve is in fact right-skewed would suggest that the literature is not biased, and that it provides evidential value for theory building. 
 
 ```{r, make_table}
 table.data = left_join(select(all_ds, c(short_name, d_string)), fsn.package.data) %>%
@@ -387,11 +385,18 @@ Pointing and vocabulary & 0.41 [0.32, 0.49] & 1202 & 0.59 (0.55) &  & \\
 \caption{Summary of replicability analyses. \textit{d} = Effect size (Cohen's {\it d}) estimated from a random-effect model; fail-safe-N = number of missing studies that would have to exist in order for the overall effect size to be {\it d} = 0; funnel skew = test of asymmetry in funnel plot using the random-effect Egger's test (Stern \& Eggers, 2005); p-curve skew = test of the right skew of the p-curve using the Stouffer method (Simonsohn, Simmons, \& Nelson, 2015); power = power to reject the null hypothesis at the 5\% significance level based on the p-curve (Simonsohn, Nelson, \& Simmons, 2014);  Brackets give 95\% confidence intervals, and parentheses show p-values.}
 \end{table}
 
-Figure 2 shows p-curves for `r  length(unique(pc.data$dataset))` of our `r nrow(datasets)` meta-analyses.\footnote{We were unable to do this analysis on all meta-analyses because some were missing key statistical tests (e.g. gaze following) or the test statistic was not available (e.g. pointing and vocabulary).} With the exception of phonotactic learning, all p-curves show evidence of right skew. This is confirmed by formal analyses (Table 2, column 5).
+Figure 2 shows p-curves for `r  length(unique(pc.data$dataset))` of our `r nrow(datasets)` meta-analyses.\footnote{We did not conduct p-curves on all meta-analyses because previously published meta-analyses did not include test statistics and the key test statistics in some others were inappropriate for p-curve. } With the exception of phonotactic learning, all p-curves show evidence of right skew. This is confirmed by formal analyses (Table 2, column 5).
 
 P-curves also provide a method for calculcating the overall power of a literature, based on the shape of the p-curve [@simonsohn2014power]. Intuitively, when power is high and effect is real, we should be more likely to observe an effect size "further" from the null. This means that we will observe more small effect sizes. Thus, the higher the power, the more right skewed the p-curve will be.  Table 2 (column 6) presents estimates of power for each meta-analysis based on p-curve. With the exception of phonotactic learning (*power* = .14), literatures appear to have acceptable power.
 
 ```{r, eval = F}
+
+A literature is more likely to describe a real effect if studies are randomly sampled from the population of all possible  studies that researchers could in principle conduct. This assumption does not mean, however,  that there should be *no* variability in effect size across studies: We should expect random variation around the true mean effect size, with smaller studies showing more variability around this mean. 
+
+Variability in effect sizes will be biased when this assumption of  random study sampling  does not hold. Bias may be introduced by the experimenter in a number of ways, including  failure to publish null findings ["publication bias", @rothstein2006publication; @rosenthal1979file; @Fanelli:2010kf], analytical flexibility [e.g., "p-hacking," @Simmons:2011iw; @simonsohn2014p], reporting errors, or even fraud. These biases are problematic for theoretical development because they  lead to large but often unknown errors in estimates of the effect size. If bias is present in the literature, estimates of effect size may be poor estimates of the true underlying effect size and thus be of limited evidential value. To make theoretical progress, we must therefore distinguish variability in effect sizes due to sample size from varability due to bias.
+
+
+One possibility is that the failure was observed because the effect is in fact not real. This can occur when there was bias introduced by the experimenter in the original study. But another possibility is that an effect *is* real, but the failure to replicate is due to sampling error. Just as we would not conclude that a phenomenon does not exist because one or two participants do not show an effect, we should not conclude that an effect does not exist on the basis of one or two failed replications. Meta-analytic methods provide a principled approach for distinguising between these two sources of failed studies
 
  This bias can come from a number of sources, such as  data-contigent analytical decisions  (Simmons, 2011; Simonsohn, 2014a, 2014b, 2014c), data-contigent data reporting  (Rosenthal, 1979; Fanelli 2012), or even fraud. 
 
@@ -412,12 +417,76 @@ Strictly speaking, funnel plots probe whether studies with little precision (sma
 language bias (selective inclusion of studies published in English); availability bias (selective inclusion of studies that are easily accessible to the researcher); cost bias (selective inclusion of studies that are available free or at low cost); familiarity bias (selective inclusion of studies only from one’s own discipline, and outcome bias (selective reporting by the author of a primary study of some outcomes but not others, depending on the direction and statistical significance of the results). 
 ```
 
-
 # Theoretical Synthesis
-METAMETAPLOT
+```{r, fig.pos = "T!", fig.width=8, fig.height=4, fig.cap = "Meta-meta plot"}
+ld.df = data.frame(dataset = datasets$name,
+                   domain = c("prosody", "words", "communication", "sounds",
+                              "sounds", "sounds", "sounds", "sounds", "words",
+                              "words", "communication", "words"))
+ld.df$domain = factor(ld.df$domain, levels=c("prosody","sounds", "words", "communication"))
 
+lin_lmer <- lmer(d_calc ~ mean_age + 
+                   (log(mean_age)| dataset), 
+                 weights = 1/d_var_calc, 
+                 REML = F, data = all_data)
+
+lin_lmer_preds <- predict(lin_lmer, re.form = ~ (log(mean_age)| dataset))
+
+
+all_data_preds <- all_data %>%
+  select(dataset, short_name, d_calc, d_var_calc, mean_age, study_ID, response_mode) %>%
+  filter(complete.cases(.)) %>%
+  mutate(lin_lmer_preds = lin_lmer_preds) %>% 
+  filter(dataset != "Gaze following" | lin_lmer_preds > 0) %>%
+  filter(dataset != "Pointing and vocabulary")
+
+p3 = ggplot(left_join(all_data_preds, ld.df),
+            aes(x = mean_age/365, y = lin_lmer_preds, col = dataset)) +
+  #geom_line() +
+  facet_grid(~domain) +
+  #geom_point(aes(size = n), alpha = .5) + 
+  geom_smooth(method="lm", se = FALSE, size = 1.8, 
+              aes(weight = 1/d_var_calc), formula = y ~ log(x)) + 
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  xlab("Age (years)") + 
+  ylab("Effect size (d)") + 
+  theme(legend.position = "bottom",
+        legend.key = element_blank(),
+        legend.background = element_rect(fill = "transparent"),
+        axis.line= element_line(size = 3),
+        axis.text = element_text(colour = "black", size = 20),
+        strip.text.x = element_text(size = 16),
+        axis.title = element_text(colour = "black", size = 20))
+
+direct.label(p3, list("top.bumptwice", dl.trans(y = y + 0.1), cex=.7))
+```
+
+\singlespacing
+
+* Ultimately, what we would like to have, is a theory of how children acquire language at all levels of the linguistic hierarchy.
+
+* There are a number of different theories you could have.
+
+* One possibilty is the “stages” hypothesis, where children learn language representations in a sequential fashion starting at the lowest levels of the hierarchy.
+
+* Another possibility though is a more continous, synegistic theory, where learning at all levels is happening simultaneously.
+* And there are a number of recent pieces of evidence that are consisntent with this. For example,
+    + Infants learn phonetic contrasts when supported by word context (Feldman, et al., 2013).
+    + Infants learn word mappings when supported by prosody (Shukla, White, & Aslin, 2011).
+
+* But, the hypothesis space is really quite large, once you start thinking about it in terms of ES [plots of hypothesis space; e.g., https://speakerdeck.com/mllewis/metalab-1?slide=32]
+    + For example, you might you learn low levels stuff like prosody first, then sounds, then words, then communicaiton 
+    + Another possibility is that you don’t have to quite master a skill before learning gets off the ground
+    + Learning also doesn’t have to monotonic in these tasks – children in a task might get “worse,” for example because the skill is no longer relevant (like non-native vowels)
+
+* Fig. 3 shows what this looks like based our dataset
+
+* Evidence for interactivity!
+
+\doublespacing
 
 # Discussion
+
 Limitations
 
 
