@@ -57,7 +57,7 @@ studies <- all_data %>%
 subjects <- all_data %>%
   rowwise() %>%
   mutate(n_total = sum(c(n_1, n_2), na.rm = TRUE)) %>%
-  distinct(dataset, study_ID, same_infant) %>%
+  distinct(dataset, study_ID, same_infant, .keep_all = TRUE) %>%
   group_by(dataset) %>%
   summarise(num_subjects = sum(n_total))
 
