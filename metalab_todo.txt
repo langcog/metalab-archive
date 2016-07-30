@@ -9,5 +9,7 @@
 longitudinal (pointing, invarinf):
   - no age moderator
   - different age scatterplot
+  - add invarinf --> might require different data structure
+  - change pointing to have same structure as invarinf
 
 non-ES things: same plot, just label something other than "Effect Size"
