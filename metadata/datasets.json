@@ -262,7 +262,7 @@
 		{
 		"name": "Statistical word segementation",
 		"short_name": "statisticalSegmentation",
-		"key": "1LrvUJzL2AlfpRn_Or03MnDqcK-tr72OjptK-Tjqr9xA",
+		"key": "1GZo0uz7O3IXViBiyPOQlbzRp8qq1HiV8yVAyAJhg-qU",
 		"filename": "statistical",
 		"citation": "",
 		"link": "",
@@ -272,11 +272,11 @@
 		"reliability": "",
 		"last_update": "2016-6-01",
 		"link_fields": "",
-		"short_desc": "Statistical word segementation based on Saffran and Aslin (1996)",
+		"short_desc": "Statistical word segementation based on Saffran, Aslin & Newport (1996).",
 		"description": "Can infants segement words using transitional probabilities?",
 		"curator": "Molly Lewis",
 		"src": "images/datasets/statistical.png",
 		"longitudinal": "FALSE",
-		"moderators": []
+		"moderators": ["number_syllables", "familiarization_time",	"num_test_trials",	"duration_test_trial",	"method"]
 	}
 ]
