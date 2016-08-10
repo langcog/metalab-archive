@@ -258,5 +258,25 @@
 		"src": "images/datasets/bouba-kiki.png",
 		"longitudinal": "FALSE",
 		"moderators": []
+	},
+		{
+		"name": "Statistical word segementation",
+		"short_name": "statisticalSegemntation",
+		"key": "1rEGhJ43Myp4M_j0GyVlj700DT2P2owKRWTYYqBPou7",
+		"filename": "statistical",
+		"citation": "",
+		"link": "",
+		"full_citation": "",
+		"doi": "",
+		"systematic": "no",
+		"reliability": "",
+		"last_update": "2016-6-01",
+		"link_fields": "",
+		"short_desc": "Statistical word segementation based on Saffran and Aslin (1996)",
+		"description": "Can infants segement words using transitional probabilities?",
+		"curator": "Molly Lewis",
+		"src": "images/datasets/statistical.png",
+		"longitudinal": "FALSE",
+		"moderators": []
 	}
 ]
