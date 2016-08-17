@@ -29,7 +29,8 @@ abstract: |
 note: |  
   Correspondence concerning this article should be addressed to Molly Lewis, Psychology Department, Stanford University. 450 Serra Mall, Stanford, CA 94305. E-mail: mll@stanford.edu.
   
-keywords: "replicability, reproducibility, meta-analysis, developmental psychology, language acquisition"
+keywords: "developmental psychology,
+language acquisition, quantitative theories, meta-analysis"
 
 wordcount: "XXXX"
 
@@ -56,25 +57,42 @@ apa_prepare_doc() # prepare document for rendering
 ```
 
 # Introduction
-To learn to speak a language, a child must acquire a wide range of knowledge and skills: the sounds of the language, the word forms, and the mappings of words to meanings, to name only a few. How does this process unfold? Our goal as psychologists is to build a theory that can explain and predict this process. But, acquiring a language requires not just learning these skills in isolation; it requires the integration of a range of skills across the language hierarchy. Consider, for example, a child learning the word "dog:" If the child is unable to segment the word from natural speech, learning the meaning of this word is impossible. In building a theory of this system, a pragmatic research strategy has been to study these skills primarily in isolation, describing the developmental trajectory of individual phenomena in separate research programs. However, if it is indeed the case that linguistic skills are interdependent, ultimately we may not be able to understand one skill without a more precise understanding of the broader system. 
+To learn to speak a language, a child must acquire a wide range of knowledge and skills: the sounds of the language, the word forms, and the mappings of words to meanings, to name only a few. How does this process unfold? Our goal as psychologists is to build a theory that can explain and predict this process. The most constraining aspect of this theory is an account of how the acquistion of individual skills depends on other skills---a sort of "meta-theory" of language development. For example, the theory must describe to what extent a child must solidify knoweldge of language sounds before begining the process of learning the meanings of words. To develop this theory, a pragmatic research strategy has been to study these skills primarily in isolation, describing the developmental trajectories of individual phenomena in separate research programs. This research shows that, while the onset of these skills can often be found in the first year of life, most follow a protracted pattern of development, with important changes occuring in the second year and beyond. Importantly, however, if it is indeed the case that linguistic skills are interdependent, this both casts some doubt on results based on the isolationist method and suggests that we will not be able to understand one skill without a more precise understanding of the broader system. 
 
-The theory building effort is further complicated by the fact that we must do so on the basis of limited, noisy experimental findings. These limited findings mean that the raw material of our theories are often contradictory, with one study finding an effect, but another failing to do so. These contradictions leave the theorist with uncertainty about which experimental findings should constrain the theory. What is needed then is a method for determining the degree to which a particular findings provides evidence for a theory.
+```{r}
 
-We suggest a solution to both of these challenges---building integrative theories and evaluating evidential strength---is to reframe experimental findings in terms of quantitative, rather than qualitative, descriptions. Quantitative descriptions allow for the use of quantitative methods for aggregating experimental findings in order to evaluate evidential strength. In addition, describing experimental findings as quantitative estimates provides a common language for comparing across phenomenon, and a way to make more precise predictions. In this paper, we consider the domain of language acquisition and demonstrate how a set of quantitative tools---meta-analysis---can support these two theory-building goals. 
+#But, acquiring a language requires not just learning these skills in isolation; it requires the integration of a range of skills across the language hierarchy. Consider, for example, a child learning the word "dog:" If the child is unable to segment the word from natural speech, learning the meaning of this word is impossible. As a result, it would behoove the research community to take into account the development of the whole system at once.
+
+
+#Critically, an important aspect feature of this theory must account for how the acquistion of individual skills depends on other others skills.
+
+
+#One of the most important aspects of this theory is describing the relationship between individuals skills: How does the acquisition of one skill depend on other skills?
+
+
+#language acq is cool
+#many people have provided reviews of how this works
+#a mainstream view was based on serial model
+#but then findings of early onset + long dev
+#overviews got complicated and it got difficult to disambiguate between competing verbal theories - to what extent do results fit better one than the other?
+#specially since noisy - see below, so people could pick & choose
+```
+The theory building effort is further complicated by the fact that we typically have some degree of uncertainty about the trajectory of individual skills. Developmental trajectories are often communicated in the form a verbal description summarizing a body of limited, noisy experimental findings. However, in actual fact, there is often one study finding an effect, but another failing to do so. These contradictions leave the theorist with uncertainty about	which experimental findings should constrain the theory, and are sometimes solved verbally, discounting one or the other finding depending on the viewer's expertise (and potentially their theoretical penchant). What is needed then is a method for resolving these contradictions in a more systematic and principled fashion.
+
+We suggest a solution to both of these challenges---building integrative whole-system views and evaluating evidential strength in a field of scientific research---is to reframe experimental findings in terms of quantitative, rather than qualitative, descriptions. Quantitative descriptions allow for the use of quantitative methods for aggregating experimental findings in order to evaluate evidential strength. In addition, describing experimental findings as quantitative estimates provides a common language for comparing across phenomenon, and a way to make more precise predictions. In this paper, we consider the domain of language acquisition and demonstrate how a set of quantitative tools---meta-analysis---can support these two theory-building goals. 
 
 Meta-analysis is a quantitative method for aggregating across experimental findings. The fundamental unit of meta-analysis is the *effect size*: a scale-free, quantitative measure of "success" in a phenomenon. Importantly, an effect size provides an estimate of the *size* of an effect, as well as a measure of uncertainty around this point estimate. With  such a quantitative measure of success, we can apply the same reasoning we use to aggregate  noisy measurements over  participants in a single study: By assuming each *study*, rather than participant, is sampled from a population, we can appeal to the classical statistical framework to combine estimates of the effect size for a given phenomenon.
 
-Meta-analytic methods support theory building in several ways. First, they provide a way to evaluate which effects in a literature are most likely to be observed consistently, and thus should constrain the theory. This issue is particularly important in light of recent  high-profile evidence that an effect observed in one study may not replicate in another ["replication crisis,"  @ioannidis2005most; @open2015estimating; @open2012open]. Failed replications are difficult to interpret, however, because they may result from a wide variety of causes, including an initial false positive, a subsequent false negative, or differences between initial and replication studies, and making causal attributions in a situation with two conflicting studies is often difficult [@Gilbert1037; @anderson2016response].  By aggregating evidence across studies and assuming that there is some variability in true effect size from study to study. In this way, meta-analytic methods can provide more veridical description of the empirical landscape, which in turn leads to better theory-building.
+Meta-analytic methods support theory building in several ways. First, they provide a way to evaluate which effects in a literature are most likely to be observed consistently, and thus should constrain the theory. This issue is particularly important in light of recent high-profile evidence that an effect observed in one study may not replicate in another ["replication crisis,"  @ioannidis2005most; @open2015estimating; @open2012open]. Failed replications are difficult to interpret, however, because they may result from a wide variety of causes, including an initial false positive, a subsequent false negative, or differences between initial and replication studies, such that making causal attributions in a situation with two conflicting studies is often difficult [@Gilbert1037; @anderson2016response].  By aggregating evidence across studies and assuming that there is some variability in true effect size from study to study, meta-analytic methods can provide more veridical description of the empirical landscape, which in turn leads to better theory-building.
 
-Second, meta-analysis supports theory building by providing higher fidelity descriptions of phenomena. Given an effect size estimate, meta-analytic methods provide a method for quantifying the amount variability around this point estimate. Furthermore, the quantitative framework allows researchers to detect potential moderators in effect size. This ability is particularly important for developmental phenomena because building a theory requires a precise description of changes in effect size across development. Individual papers typically describe an effect size for 1-2 age groups, but the ultimate goal is to detect a moderator---age---in this effect. Given that moderator always require more power to detect [@button2013power], it may be quite difficult to detect developmental trends in effect sizes from individual papers. By aggregating across papers through meta-analytic methods, however, we may be able to detect these changes, leading to a more precise description of the empirical phenomena.
+Second, meta-analysis supports theory building by providing higher fidelity descriptions of phenomena. Given an effect size estimate, meta-analytic methods provide a method for quantifying the amount variability around this point estimate. In addition to providing a quantitative measure of success, effect size estimates also provide a common language for comparing \emph{across} phenomena. Indeed, the quantitative framework allows researchers to detect potential moderators in effect size. This ability is particularly important for developmental phenomena because testing a theory requires precise measurement of changes in effect size across development. Individual papers typically describe an effect size for 1-2 age groups, but the ultimate goal is to detect a moderator---age---in this effect. Given that moderators always require more power to detect [@button2013power], it may be quite difficult to detect developmental trends in effect sizes from individual papers. By aggregating across papers through meta-analytic methods, however, we may be able to detect these changes, leading to a more precise description of the empirical phenomena.
 
-In addition to providing a quantitative measure of success, effect size estimates also provide a common language for comparing *across* phenomena.  In the current work, this common language allows us to meaningfully consider the relationship between different phenomena in the language acquisition domain ("meta-meta-analysis"). Through cross-phenomena comparisons, we can understand not only the trajectory of a particular phenomenon, like word learning for example, but also how this phenomenon might relate to other skills, such as sound learning, gaze following, and many others. 
+In the current work, the common language of effect size allows us to meaningfully consider the relationship between different phenomena in the language acquisition domain ("meta-meta-analysis"). Through cross-phenomena comparisons, we can understand not only the trajectory of a particular phenomenon, like word learning for example, but also how this phenomenon might relate to other skills, such as sound learning, gaze following, and many others. 
 
-Finally, in addition to these theoretical motivations, there are practical reasons for conducting a quantitative synthesis. When planning an experiment, an estimate of the size of an effect on the basis of prior literature can inform the sample size needed to achieve a desired level of power. Meta-analytic estimates of effect sizes can also aid in design choices: If a certain paradigm or measure tends to yield overall larger effect sizes than another, the strategic researcher might select this paradigm in order to maximize the power achieved with a given sample size.
+Although these tools are broadly applicable to psychological literatures,
+language acquisition may be a particularly informative case study. One reason is that language acquisition may be uniquely vulnerable to false findings because running children is expensive, and thus sample sizes are small and studies are underpowered [@ioannidis2005most]. In addition, the high cost and practical difficulties associated with collecting large developmental datasets means that replications are relatively rare in the field. Finally, there has been attention to research practices in developmental psychology broadly, suggesting evidence of experimenter bias [@Peterson:2016].  
 
-Language acquisition may be a particularly informative application for meta-analytic tools, although these tools are broadly applicable to psychological literatures. One reason is that language acquisition may be uniquely vulnerable to false findings because running children is expensive, and thus sample sizes are small and studies are underpowered [@ioannidis2005most]. In addition, the high cost and practical difficulties associated with collecting large developmental datasets means that replications are relatively rare in the field. Finally, there has been attention to research practices in developmental psychology broadly, suggesting evidence of experimenter bias [@Peterson:2016].  
-
-We take as our ultimate goal a broad theory of language acquisition that can explain and predict the range of linguistic skills a child acquires. Toward this end, we developed a dataset of effect sizes in the language acquisition literature across 12 core phenomena ([Metalab; http://metalab.stanford.edu/](http://metalab.stanford.edu)). We demonstrate how meta-analysis supports building this theory in two ways. We first use meta-analytic techniques to evaluate the evidential value of the empirical landscape in language acquisition research. We find broadly that this literature has strong evidential value, and thus that the effects reported in the literature should constrain our theorizing of language acquisition. We then turn toward the task of synthesizing these findings across phenomena and offer a preliminary theoretical synthesis of the field.
+We take as our ultimate goal a broad theory of language acquisition that can explain and predict the range of linguistic skills a child acquires. Toward this end, we developed a dataset of effect sizes in the language acquisition literature across 12 core phenomena ([Metalab; http://metalab.stanford.edu/](http://metalab.stanford.edu)). We demonstrate how meta-analysis supports building this theory in three ways. We first use meta-analytic techniques to evaluate the evidential value of the empirical landscape in language acquisition research. We find broadly that this literature has strong evidential value, and thus that the effects reported in the literature should constrain our theorizing of language acquisition. We then turn toward the task of synthesizing these findings across phenomena and finally offer an example of quantitative evaluation of theories.
 
 # Method
 ```{r load data}
@@ -93,9 +111,9 @@ library(directlabels)
 #html - [RMarkdown](http://rmarkdown.rstudio.com/)
 ```
 
-We analyzed `r nrow(datasets)` different phenomena in language acquisition. These particular phenomena were selected opportunistically, either because of high prevalence in the literature or because a published meta-analysis already existed. The phenomena cover development at many different levels of the language hierarchy, from the acquisition of prosody and phonemic contrasts, to gaze following in communicative interaction. This wide range of phenomena allowed us to compare the course of development across different domains, as well as to explore questions about the interactive nature of language acquisition (Table 1). 
+We analyzed `r nrow(datasets)` different phenomena in language acquisition. To a certain extent, these  phenomena were selected opportunistically, either because of high prevalence in the literature or because a published meta-analysis already existed. The phenomena cover development at many different levels of the language hierarchy, from the acquisition of prosody and phonemic contrasts, to gaze following in communicative interaction. This wide range of phenomena allowed us to compare the course of development across different domains, as well as to explore questions about the interactive nature of language acquisition (Table 1). 
 
-To obtain estimates of effect size, we coded papers reporting experimental data (see SI for details). Within each paper, we calculated a separate effect size estimate for each experiment and age group (we refer to this as a "condition"). In total, our sample includes estimates from `r sum(datasets$num_papers)` papers, `r sum(datasets$num_experiments)` different conditions and `r format(floor(sum(datasets$num_subject)), big.mark=",", scientific=FALSE)` participants. [RELIABILITY CODING?] The process for selecting papers from the literature differed by domain, with some individual meta-analyses using more systematic approaches than others (see SI).
+To obtain estimates of effect size, we coded papers reporting experimental data (see SI for details). Within each paper, we calculated a separate effect size estimate for each experiment and age group (we refer to this as a "condition"). In total, our sample includes estimates from `r sum(datasets$num_papers)` papers, `r sum(datasets$num_experiments)` different conditions and `r format(floor(sum(datasets$num_subject)), big.mark=",", scientific=FALSE)` participants. The process for selecting papers from the literature differed by domain, with some individual meta-analyses using more systematic approaches than others (see SI).
 \renewcommand{\arraystretch}{1.5}
 \begin{table}[h!]
 		\footnotesize
@@ -170,12 +188,12 @@ One approach for quantifying the reliability literature is to ask, How many miss
 
 Because of the large number of positive studies in many of the meta-analyses we assessed, this analysis suggests a very large number of studies would have to be "missing" in each literature ($M$ = `r round(mean(fsn.package.data$fsn_string[is.finite(fsn.package.data$fsn_string)]))`) in order for the overall effect sizes to be 0. Thus, while it is possible that some reporting bias is present in the literature, the large fail-safe-N suggests that the literature nonetheless likely describes a real effect. 
 
-This analysis provides a quantitative estimate of the size of an effect in an intuitive unit, but it does not assess analytical or publication bias (CITE). Importantly, if experimenters are exercising analytical flexibility through practices like p-hacking, then the number and magnitude of observed true effects in the literature may be greatly inflated. In the next analysis, we assess the presence of bias through funnel plots.
+This analysis provides a quantitative estimate of the size of an effect in an intuitive unit, but it does not assess analytical or publication bias (CITE). Importantly, if experimenters are exercising analytical flexibility through practices like selective reporting and p-hacking, then the number and magnitude of observed true effects in the literature may be greatly inflated. In the next analysis, we assess the presence of bias through funnel plots.
 
 ## Funnel Plots 
 Funnel plots provide a visual method for evaluating whether variability in effect sizes is due  only to differences in sample size. A funnel plot shows effect sizes versus a metric of sample size, standard error. If there is no bias in a literature, we should expect studies to be randomly sampled around the mean, with more variability for less precise studies. 
 
-Figure 1 presents funnel plots for each of our `r nrow(datasets)` meta-analyses. These plots show evidence of asymmetry (bias) for several of our phenomenon (Table 2, column 4). However, an important limitation of this method is that it is difficult to determine the source of this bias. One possibility is that this bias reflects true heterogeneity in phenomena (e.g. different ages)\footnote{The role of moderators such as age can be interactively explored on the website, [Metalab; http://metalab.stanford.edu/](http://metalab.stanford.edu).}. P-curve analyses provide one method for addressing this issue, which we turn to next.
+Figure 1 presents funnel plots for each of our `r nrow(datasets)` meta-analyses. These plots show evidence of asymmetry (bias) for several of our phenomenon (Table 2, column 4). However, an important limitation of this method is that it is difficult to determine the source of this bias. One possibility is that this bias reflects true heterogeneity in phenomena (e.g. different ages)\footnote{The role of moderators such as age can be interactively explored on the website, Metalab  (www.metalab.stanford.edu).}. P-curve analyses provide one method for addressing this issue, which we turn to next.
 
 ```{r,  fig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Funnel plots for each meta-analysis. Each effect size estimate is represented by a point, and the mean effect size is shown as a red dashed line. The funnel corresponds to a 95%  CI around this mean. In the absence of true heterogeneity in effect sizes (no moderators) and bias, we should expect all points to fall inside the funnel."}
 
@@ -377,7 +395,7 @@ Statistical sound learning & -0.14 [-0.27, -0.02] & Inf & -1.87 (0.06) & \\
 Word segmentation & 0.2 [0.15, 0.25] & 5645 & 1.54 (0.12) & -9.67 (<.01)\\
 Mutual exclusivity & 1.01 [0.68, 1.33] & 6443 & 6.25 (<.01) & -5 (<.01)\\
 Sound symbolism & 0.15 [0.04, 0.26] & 538 & -1.32 (0.19) & -2.16 (0.02)\\
-Concept-label advantage & 0.4 [0.29, 0.51] & 3928 & 0.31 (0.76) & -6.15 (0)\\
+Concept-label advantage & 0.4 [0.29, 0.51] & 3928 & 0.31 (0.76) & -6.15 (<.01)\\
 Online word recognition & 1.89 [0.81, 2.96] & 2843 & 2.92 (<.01) & \\
 Gaze following & 0.84 [0.26, 1.42] & 2641 & -1.69 (0.09) & \\
 Pointing and vocabulary & 0.41 [0.32, 0.49] & 1202 & 0.59 (0.55) & \\
@@ -388,7 +406,7 @@ Pointing and vocabulary & 0.41 [0.32, 0.49] & 1202 & 0.59 (0.55) & \\
 
 Figure 2 shows p-curves for `r  length(unique(pc.data$dataset))` of our `r nrow(datasets)` meta-analyses.\footnote{We did not conduct p-curves on all meta-analyses because previously published meta-analyses did not include the original test statistics in the summary report. In other cases, the key test statistics were inappropriate for p-curve.} With the exception of phonotactic learning, all p-curves show evidence of right skew. This is confirmed by formal analyses (Table 2, column 5).
 
-In sum, then, meta-analytic methods, along with our dataset of effect sizes, provide an opportunity to assess the replicability of the field of language acquisition. Across a range of analyses, we find that this literature shows some evidence for bias, but overall, is quite robust.
+In sum, then, meta-analytic methods, along with our dataset of effect sizes, provide an opportunity to assess the replicability of the field of language acquisition. Across a range of analyses, we find that this literature shows some evidence for bias, but overall,it is quite robust.
 
 ```{r, eval = F}
 
@@ -418,7 +436,7 @@ Strictly speaking, funnel plots probe whether studies with little precision (sma
 language bias (selective inclusion of studies published in English); availability bias (selective inclusion of studies that are easily accessible to the researcher); cost bias (selective inclusion of studies that are available free or at low cost); familiarity bias (selective inclusion of studies only from one’s own discipline, and outcome bias (selective reporting by the author of a primary study of some outcomes but not others, depending on the direction and statistical significance of the results). 
 ```
 
-# Theoretical development
+# Quantitative Evaluation of Theories
 
 Next, we turn to how these data can be used to constrain and develop theories of language acquisition. 
 
@@ -472,7 +490,7 @@ direct.label(p3, list("top.bumptwice", dl.trans(y = y + 0.1), cex=.7))
 
 
 
-```{r,  fig.width=8, fig.height=4, fig.cap="The left two panels show the developmental trajectories predicted under different meta-theories of language acqusition. The bottom-up theory predicts that a child will not begin learning the next skill in the linguistic hierarchy until the previous skill has been mastered. The synergistic theory predicts that multiple skills may be simultaneously acquired. The third panel shows other possible developmental trajectories for an particular phenomenon (decreasing, linear, and non-monotonic). The fourth panel shows the observed meta-analytic data. Effect size is plotted as a function of age from 0-3 years, across 11 different phenomena. These developmental curves suggest there is interactivity across language skills, rather than bottom-up, sequential learning of the linguistic hierarchy.", fig.height=4, fig.width=8, fig.pos = "T"}
+```{r,  fig.width=8, fig.height=4, fig.cap="The left two panels show the developmental trajectories predicted under different meta-theories of language acqusition. The sequentl theory predicts that a child will not begin learning the next skill in the linguistic hierarchy until the previous skill has been mastered. The synergistic theory predicts that multiple skills may be simultaneously acquired. The third panel shows other possible developmental trajectories for an particular phenomenon (decreasing, linear, and non-monotonic). The fourth panel shows the observed meta-analytic data. Effect size is plotted as a function of age from 0-3 years, across 11 different phenomena. These developmental curves suggest there is interactivity across language skills, rather than bottom-up, sequential learning of the linguistic hierarchy.", fig.height=4, fig.width=8, fig.pos = "T"}
 # real data
 all_data.f = filter(all_data, dataset != "Gaze following" | d_calc > 0) %>%
   filter(dataset != "Pointing and vocabulary") %>%
@@ -482,7 +500,7 @@ all_data.f = filter(all_data, dataset != "Gaze following" | d_calc > 0) %>%
   mutate(model = "observed")
 
 # simulated data
-# bottom-up
+# sequential
 x = seq(0, 3, .01)
 slope = 1.1
 y1 = ifelse((log(x-1) * slope) < 0, NA, log(x-1) * slope)
@@ -494,7 +512,7 @@ y4 = log((x+1)) * .2
 y5 = log((x+1)) * .5
 y6 = log((x+1)) * 1.1
 
-# other 
+# ad hoc 
 y7 = .2*x
 y8 = dnorm(x, mean = 1.7, sd = .5) 
 y9 = log(x+.0001, base = .02) +.3
@@ -504,7 +522,7 @@ simulated.development = data.frame(age.years = c(x,x,x,x,x,x,x,x,x),
                                    d_calc = c(y1, y2, y3, y4, y5, y6, y7, y8, y9),
                                    dataset = c(rep(1:3, each=length(x)), rep(1:3, each=length(x)),
                                                rep(1:3, each=length(x))),
-                                   model = rep(c("bottom-up", "synergistic", "ad hoc"), each=length(x)*3),
+                                   model = rep(c("sequential", "synergistic", "ad hoc"), each=length(x)*3),
                                    n = NA,
                                    d_var_calc = NA)
 
@@ -512,7 +530,7 @@ simulated.development.all = mutate(simulated.development, dataset = as.factor(da
   rbind(all_data.f)
 
 simulated.development.all$model <- ordered(simulated.development.all$model, 
-                                            levels = c("bottom-up", "synergistic", "ad hoc", "observed"))
+                                            levels = c("sequential", "synergistic", "ad hoc", "observed"))
 
 real.levels = levels(simulated.development.all$dataset)
 fake.levels = c("1", "2", "3")
@@ -540,9 +558,9 @@ ggplot(simulated.development.all,
         legend.background = element_rect(fill = "transparent"),
         legend.title = element_blank(),
         axis.line= element_line(size = 3),
-        axis.text = element_text(colour = "black", size = 20),
-        strip.text.x = element_text(size = 16),
-        axis.title = element_text(colour = "black", size = 20))
+        axis.text = element_text(colour = "black", size = 18),
+        strip.text.x = element_text(size = 14),
+        axis.title = element_text(colour = "black", size = 18))
 
 #x = seq(0, 3, .01)
 #y=  dnorm(x, mean = 2.1, sd = .3) 
@@ -555,52 +573,33 @@ ggplot(simulated.development.all,
 
 ```
 
-In addition, meta-analytic methods provide an approach for synthesizing across different linguistic skills via the language of effect sizes. The ultimate goal is to use meta-analytic data to build a single, quantitative model of the language acquisition system, much like those developed for individual language acquisition phenomena, like word learning. Developing a single quantitative model is a lofty goal, however, and will likely require much more precise description of the phenomena than is available in our dataset. Nevertheless, we can use our data to distinguish between broad meta-theories about the relationship between different skills.
+In addition, meta-analytic methods provide an approach for synthesizing across different linguistic skills via the language of effect sizes. The ultimate goal is to use meta-analytic data to build a single, quantitative model of the language acquisition system, much like those developed for individual language acquisition phenomena, like word learning. Developing a single quantitative model is a lofty goal, however, and will likely require much more precise description of the phenomena than is available in our dataset. Nevertheless, we can use our data to distinguish between broad meta-theories about the relative timing of the acquistion of different skills.
 
 There are two existing meta-theories in the literature about the dependencies between different skills in language acquisition. The first---the "bottom-up" theory---proposes that linguistic skills are acquired sequentially beginning with skills at the lowest level of the linguistic hierarchy. Under this theory, once a skill is mastered, it can be used to support the acquisition of skills higher in the linguistic hierarchy. In this way, a child sequentially acquires the skills of language, "bootstrapping" from existing knowledge at lower levels to new knowledge at higher levels. There is a wide range of evidence consistent with this view. For example, there is evidence that prosody supports the acquisition of sound categories [CITE], word boundaries [CITE], and even word learning [e.g., @shukla2011prosody]. 
 
 A second possibility is that there is interactivity in the language system such that multiple skills are learned simultaneously across the system. Under this proposal, a child does not wait to begin learning the meanings of words until the sounds of a language are mastered, for example; rather, the child is jointly solving the problem of word learning in concert other language skills. This possibility is consistent with predictions of a class of hierarchical Bayesian models that suggest that more abstract knowledge may be acquired quickly, before lower level information, and may in turn support the acquisition of lower information ["blessing of abstraction," @goodman2011learning]. There is evidence for this proposal from work that suggests word learning supports the acquisition of lower-level information like phonemes [@feldman2013word]. More broadly, there is evidence that higher level skills like word learning may be acquired relatively early in development, likely before lower level skills have been mastered [e.g., @bergelson2016].
 
-Within the meta-analytic framework, we can represent these two theories schematically by plotting the effect sizes for different skills across development. Figure 4 (left) shows the predicted pattern by the bottom-up theory (left) and the interactive theory (left center). We can also specifiy an infinite number of other possible trajectories by varying the functional form and parameters of the model. Figure 4 (right center; "ad hoc") shows several other possible trajectories. For example, we might expect that a skill might have a non-monotonic trajectory, increasing with age, and then decreasing. By specifying the shape of these developmental trajectorries and the age at which acquisition begins, we can consider many possible theories and meta-theories of development. 
+These two theories make different predictions about relative trajectories of skills across development. Within the meta-analytic framework,  we can represent  these different trajectories schematically by plotting the effect sizes for different skills across development. In particular, the bottom-up theory predicts serial acquistion of skills (Figure 4; left) while the interactive theory predcts simultaneous acquistion (left center). We can also specifiy an infinite number of other possible trajectories by varying the functional form and parameters of the model. Figure 4 (right center; "ad hoc") shows several other possible trajectories. For example, we might expect that a skill might have a non-monotonic trajectory, increasing with age, and then decreasing. By specifying the shape of these developmental trajectories and the age at which acquisition begins, we can consider many patterns of developmental trajectories. These different patterns, in turn, constrain our meta-theories of development. 
 
-Our data allow us to begin to differentiate between this space of theories. Figure 4 (right) presents a synthetic representation of the developmental trajectories of all the skills in our dataset. We find strong evidence for interactivity---children begin learning even high-level skills, like the meanings of words, early in development, and even low-level skills like sound categories show a protracted period of development. Moving forward, we can use this approach to distinguish between a larger space of meta-theories and, ultimately, build a single quantitative theory of language acquisition.
+Our data allow us to begin to differentiate between this space of theories. Figure 4 (right) presents a synthetic representation of the developmental trajectories of all the skills in our dataset. We find strong evidence for the simultaneous acquistion of skills---children begin learning even high-level skills, like the meanings of words, early in development, and even low-level skills like sound categories show a protracted period of development. This pattern is consistent with an interactive theory of language aquisition. Moving forward, we can use this approach to distinguish between a larger space of meta-theories and, ultimately, refine our way towards a single quantitative theory of language acquisition.
 
 # Discussion
 Building a theory of a complex psychological phenomenon requires making good inductive inferences from the available data. We suggest that meta-analysis can support this process by allowing the researcher to verdically describe the to-be-explained behavior, and to do so with high-fidelity. Here, we apply the  meta-analytic toolkit to the domain of language acquisition---a domain where there are concerns of replicability, and where high-fidelity data is needed to explain its complexity. We find that the existing literature in this domain describe robust phenomena and thus should form the basis of theory development. We then offer a preliminary synthesis of the field by aggregating across language acquisition phenomena. We find evidence that linguistic skills are acquired interactively rather than in a strictly bottom-up fashion.
 
-There are a number of important limitations to the meta-analytic approach as a theoretical tool. First, this method relies on researchers conducting replications of the same study across a range of ages and, critically, reporting these data so that they can be used in meta-analyses. To the extent that researchers do not conduct these studies, or report the necessary statistics in their write-ups (e.g., means and standard deviations), the meta-analytic method cannot be applied. Second, the meta-analytic method, as in the case of qualitiative forms of synthesis (e.g. literature review), is limited by the potential presence of bias, which can come from a ranges of sources including non-representative participant populations, failure to publish null findings, and analytical degrees-of-freedom. To the extent these biases are present in the literature, methods of synthesizing these findings will also be biased.
+In this paper, we focused on seldom-discussed theoretical motivations for building meta-analysis. Naturally, there are many other practical reasons for conducting a quantitative synthesis. For example, when planning an experiment, an estimate of the size of an effect on the basis of prior literature can inform the sample size needed to achieve a desired
+level of power. Meta-analytic estimates of effect sizes can also aid in design choices: If a certain paradigm or measure tends to yield overall larger effect sizes than another, the strategic researcher might select this paradigm in order to maximize the power achieved with a given
+sample size. These and other advantages, illustrated with the same database used here, are explained in "Educational tool paper."
 
-In addition, there are a number of more substantive concerns with this method. One possibility is that the magnitude of effect may be more related to the method than the psychological phenomenon. While this may be true to some extent, we find that method does not have a large impact on effect size for a phenomena, relative to other moderators like age (see SI). Another issue is that meta-analysis usually measures signal to noise, not units of interest (e.g. ability in an absolute sense), so there could be important confounds with respect to this.
+Despite its potential, there are a number of important limitations to the meta-analytic method as tool for theory building in psychological research. One challenging issue is that in many cases method and phenomenon are confounded in our dataset. This is problematic because a method with less noise than another will produce a bigger effect size for the same phenomenon. As a result, it is difficult to determine the extent to which a difference in effect size between two phenomena is due to an underlying difference in the phenomena, or merely to the difference in methods. While this may be true to some extent, we find that method does not have a large impact on effect size for a phenomena, relative to other moderators like age (see SI; WORK ON THIS). Nevertheless, the covariance between method and phenomenon in our dataset limits our ability to directly compare effect sizes across phenomena.
 
-SHO [Issue of heterogenity]: I am still not quite sure which would be my ideal solution - but if we leave the MAs in as is, at least those limitations should go in the discussion? Could be an interesting point about how our MAs might be in an uncanny valley region where we have enough data to aggregate, but still have potentially very noisy measure if we do not take care what exactly we aggregate (take native vowels - if we had 100 more measures maybe also that noisy set would show a positive development?!)
+Second, meta-analysis, like all analysis, requires the researcher to make analytical decisions, and these decisions may be subject to the biases of the researcher. We believe that a virtue of the current approach is that we have applied the same analytical method across all phenomena we examined, thus limiting our “degrees of freedom” in the analysis. However, in some cases this uniform approach to data analysis means that we are unable to take into consideration aspects of a particular phenomenon that might be relevant. For example, in a stand-alone meta-analysis on vowel discrimination, Tsuji and Cristia (2014) elected only to include papers that tested at least two different age groups. This was done in order to control for confounds in the dataset, like method [I don’t actually understand what the motivation for this was]. Others however might have reasonably dealt with this issue in another way, by normalizing effect sizes across methods, for example. Notably, this analytical decision has consequences for interpretation: Tsuji and Cristia (2014) found an increase in effect size with age, while the current analysis suggests a decrease. We believe that the systematic, uniform analytical approach used here is the most likely to minimize bias by the researcher and reveal robust psychological phenomena. However, there may be cases where this one-size-fits-all approach is inappropriate, particularly in meta-analyses with high heterogeneity.
 
-SHO: It feels like the paper is building up the "Theoretical Development" section; first we validate that the effects in the meta-analyses are real, and then we build an overarching model. When I got to that section though I didn't fully understand what I was looking at. I had questions like, why log over linear curves? Just because it's a better fit of the data? What does that say about development? You comment that levels seem to be overlapping. Is that true for all levels or do lower levels overlap more than higher levels overlap? I think this section could benefit from more explanation of what we're seeing in the figures as it specifically relates to development. At the same time, I think a more detailed explanation of what is needed / to come to get a clearer picture of what is happening in development would be great. For example, do we need more meta-analyses within a specific level, more age groups, etc.? 
+There are also limits to this method for inferring a meta theory of language acquisition. Meta-theories of language acquisition suggest a particular causal relationship between different  skills and how they change over development. For example, the interactive theory suggests that skills at lower levels *support* the acquisition at higher levels, even before skills at lower levels are mastered. In the meta-analytic framework, this predicts that there should be simultaneous development of skills across the language hierarchy---as we observe in the current work. Importantly, however, this analysis is inherently correlational, and therefore we are not licensed to infer a causal relationship between acquisition at lower levels and acquisition at higher levels: while the observed pattern is consistent with the interactive theory, it is also possible that there is no causal relationship between skills across the language hierarchy, merely parallel trajectories of acquisition. For this reason, experimental work goes hand-in-hand with meta-analysis to address these types of causal questions.
 
+Finally, there are a number of important limitations to the meta-analytic more broadly. One issue is that the method relies on researchers conducting replications of the same study across a range of ages and, critically, reporting these data so that they can be used in meta-analyses. To the extent that researchers do not conduct these studies, or report the necessary statistics in their write-ups (e.g., means and standard deviations), the meta-analytic method cannot be applied. In addition, the meta-analytic method, as in the case of qualitative forms of synthesis (e.g., literature review), is limited by the potential presence of bias, which can come from a ranges of sources including non-representative participant populations, failure to publish null findings, and analytical degrees-of-freedom. To the extent these biases are present in the literature, methods of synthesizing these findings will also be biased.
 
-Future directions:
+In sum, understanding the psychological mechanisms underlying complex phenomena is a difficult inferential task: The researcher must develop a predictive and explanatory theory on the basis of limited and noisy experimental data. Here we have focused on language acquisition as a case study of how meta-analytic methods can be productively leveraged as a tool for theory building. Meta-analytic methods allow the researcher to  determine whether phenomena are robust, synthesize across contradictory findings, and ultimately, build an integrative theory across phenomena. Moving forward, we see this as a powerful tool in the researcher’s toolkit for developing quantitative theories to account for complex psychological phenomena.
 
-* Educational tool - presage/link to other paper
-
-* Contributions, CAMAS
-
-* Other domains -- language acquisition as a case study
-
-
-TO DO:
-
-* discussion 
-
-* figure out what's going on with statistical sound learning. 
-
-* figure out what's going on with vowel discrimination (native)
-
-* model fits on the meta-meta
-
-* abstract
-
-* reliability analyses
-
-* clean up figures
 
 #### Author Contributions
 
