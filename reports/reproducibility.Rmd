@@ -16,13 +16,18 @@ library(ggplot2)
 library(stringr)
 library(purrr)
 library(langcog)
+library(broom)
+library(knitr)
+library(stringr)
+all_data = filter(all_data, dataset != "Statistical word segementation")
 ```
 
 To draw inferences from null hypothesis testing, a range of assumptions must be made. Here we look at our database to examine the extent to which these assumptions are valid within the language acquisition literature. We find broadly that these assumptions are merited. 
 
 # Data availability/reporting standards
-An important component of reproducbility is complete description  of data in published report. This is critical both for evaluating an individual study, but also for the purposes of a cumulative science (e.g. meta-analysis). Here we explore the extent to which papers report desired statistics such as test-statistics mean and standard deviation, effect sizes and test statistics.
+An important component of reproducibility is complete description  of data in published report. This is critical both for evaluating an individual study, but also for the purposes of a cumulative science (e.g. meta-analysis). Here we explore the extent to which papers report desired statistics such as test-statistics mean and standard deviation, effect sizes and test statistics.
 ```{r, fig.width = 11}
+
 counts = all_data %>%
             summarise(test_statistic = sum(!is.na(t) | !is.na(F) | !is.na(r)),
                       means = sum(!is.na(x_1)),
@@ -71,7 +76,7 @@ ggplot(counts) +
 This analysis is in practice difficult because our many of our source MA's include effect sizes that were included by the coders. Similarly, the proportion of coded gender in many cases reflects only that the coder chose not to code that, not that this information was not present. Nevertheless, this analysis gives us a good sense of the the proportion of papers that report means and standard deviations (about two-thirds).
 
 By MA
-```{r, fig.width = 10, fig.height = 8}
+```{r, fig.width = 10, fig.height = 11}
 counts = all_data %>%
             group_by(dataset) %>%
             summarise(test_statistic = sum(!is.na(t) | !is.na(F)),
@@ -119,13 +124,14 @@ ggplot(counts, aes(fill = coded)) +
         axis.text.x = element_text(angle = 30, hjust = 1))
 ```
 
-# Sample sizes and exclusions
+# Sample size planning 
 
-Here we examine how sample sizes and exclusion rates are related to other variables of inteerest.
+If sample size and effect sizes are appropriately coupled, we should expect sample size to decrease as effect size increases. 
 
-## How do sample sizes vary as a function of age?
-Given that effect size broadly increases with age, we would expect sample sizes to decrease. Broadly, the data are consistent with this. Phonemic discriminatiion (native) is an exception, but this may be due to differences in method (?).
-```{r, fig.width = 10}
+## Age.
+Given that effect size broadly increases with age, we would expect sample sizes to decrease. 
+
+```{r}
 all = all_data %>%
   mutate(n_total = ifelse(!is.na(n_2), n_1 + n_2, n_1)) %>%
   select(dataset, d_calc, 
@@ -137,15 +143,17 @@ ggplot(all, aes(x = mean_age_1, y = n_total, color = dataset)) +
   geom_smooth(method = "lm") +
   facet_wrap(~dataset, scales = "free") +
   theme_bw() +
-  theme(legend.position="none")
+  theme(legend.position="none") +
+  xlab("age") +
+  ylab("n")
 ```
 
-## Do sample sizes vary with effect sizes?
+## Effect sizes
 Here we explore a more direct test that sample sizes are coupled with effect sizes. We test this by looking at the relationship between sample sizes and effect size, after residualizing out the effect of (1) phenomenon, (2) age, and (3) method.
 
 Compute residuals.
 ```{r}
-full.model = rma(d_calc ~ method + dataset + mean_age_1, 
+full.model = rma(d_calc ~ response_mode + method + dataset + mean_age_1, 
         vi = d_var_calc, data = all_data, method = "REML")
 
 residuals = rstandard(full.model)
@@ -157,32 +165,36 @@ all_data = all_data %>%
                    residual.d.s = `residuals$z`) # standardized
 ```
 
-```{r, fig.width = 10}
-ns_ds = all_data %>%
-  mutate(n_total = ifelse(!is.na(n_2), n_1 + n_2, n_1)) %>%
-  select(dataset, d_calc, residual.d.s,
-         mean_age_1, n_total) 
+```{r}
+all_data = all_data %>%
+  mutate(n_total = ifelse(!is.na(n_2), n_1 + n_2, n_1))  
 
-ggplot(ns_ds , aes(y = n_total, x = residual.d.s, color = dataset)) +
+ggplot(all_data , aes(y = n_total, x = residual.d.s, color = dataset)) +
   geom_point() +
   geom_smooth(method = "lm") +
   theme_bw() +
   xlab("Residual effect size") + 
+  ylab("n") +
   facet_wrap(~dataset, scales = "free") +
   theme(legend.position="none")
 ```
 
-If sample size and effect sizes were appropriately coupled, we should expect sample to decrease as effect size increases. Across 3 meta-analyses, we find the opposite pattern: sample size increases with effect size. This suggest that researchers either are not prospectively planning their sample sizes based on effect size estimates. 
+```{r}
+all_data %>%
+  group_by(dataset) %>%
+  do(tidy(cor.test(.$residual.d.s,.$n_total))) %>%
+  select(dataset, estimate, p.value) %>%
+  mutate(sig = ifelse(p.value < .05, "*", "")) %>%
+  kable()
+```
 
-## Does the number of excluded infants affect effect sizes?
-Here we look at whether the number of excluded infants varies as a function of effect size. If infants are excluded based on an indepenent criteria, and before looking at the data, there should be no relationship. Again, we use residualized effect sizes.
+Essentially no evidence that researchers are prospectively planning sample size.
 
-However, there are some techincal issues we need to address before properly doing this analysis:
+# Publication Bias
 
-* not here that different data sets use differently names columsn to indicate exclusions ("n_excluded", "n_excluded_1", "n_excluded_fussers")
-* an additional complicaiton: are the exlcusions part of the n?
-* we don't have num_trials for any, but this would be great to look at
-* what's up with the n_excluded > n?
+If studies are randomly sampled from the population of possible studies, effect sizes should not be biased. Here we examine this assumption, using residualized effect sizes.
+
+## Effect sizes
 
 Compute residuals.
 ```{r}
@@ -198,103 +210,115 @@ all_data = all_data %>%
                    residual.d.s.age = `residuals.age.method$z`) # standardized
 
 ```
- 
-```{r, fig.width = 10}
-exclusions = all_data %>%
-  filter(!is.na(n_excluded_1) || !is.na(n_excluded_2)) %>%
-  mutate(n_excluded =  ifelse(!is.na(n_excluded_2), n_excluded_1 + n_excluded_2, n_excluded_1),
-         n_total = ifelse(!is.na(n_2), n_1 + n_2, n_1)) %>%
-  select(dataset, d_calc, 
-         mean_age_1, n_total,
-         n_excluded, num_trials, method, residual.d.s, residual.d.s.age) %>%
-  mutate(prop_excluded = n_excluded/n_total) %>%
-  filter(prop_excluded < 1)
- 
-  ggplot(exclusions, aes(x = prop_excluded, y =residual.d.s ,
-                       color = dataset)) +
+
+```{r}
+all_data = all_data %>%
+  mutate(year = as.numeric(unlist(lapply(strsplit(unlist(study_ID),
+                                                  "[^0-9]+"),  function(x) unlist(x)[2])))) %>%
+  mutate(year = ifelse(grepl("submitted",study_ID), 2016, year)) %>%
+  mutate(year = ifelse(dataset == "Phonotactic learning" | dataset == "Statistical sound category learning", as.numeric(unlist(lapply(strsplit(unlist(short_cite),
+                                                  "[^0-9]+"),  function(x) unlist(x)[2]))), year))
+
+ggplot(all_data , aes(x = year, y = residual.d.s, color = dataset)) +
   geom_point() +
-  geom_smooth(method = "lm") +
-  ggtitle("prop. excluded as a function of d") +
-  xlab("proportion excluded") +
-  ylab("d") +
-  theme_bw() + 
-  facet_wrap(~dataset, scales = "free") +
-  theme(legend.position="none")
-  
-```
-
-## Does proportion excluded vary as a function of age? 
-Again, if there is no bias we should see no relationship. In contrast, we see some evidence that proportion excluded increases with age. This is difficult to interpret though, for the reasons described above.
-
-```{r Exclusions_nExcluded, fig.width = 10}
-ggplot(exclusions, aes(x = residual.d.s.age, y = prop_excluded,
-                       color = dataset)) +
-  geom_point() +
-  geom_smooth(method = "lm") +
-  ggtitle("prop. excluded as a function of age") +
-  xlab("mean age (months)") +
-  ylab("proportion excluded") +
-  theme_bw()  + 
-  facet_wrap(~dataset, scales = "free") +
-  theme(legend.position="none")
-  
-```
-
-# Publication Bias
-
-If studies are randomly sampled from the population of possible studies, effect sizes should not be bias. Here we examine this assumption, using residualized effect sizes.
-
-## Do effect sizes vary as a function of year?
-```{r, fig.width = 10}
-years.df = all_data %>%
-  mutate(year = as.numeric(unlist(lapply(strsplit(unlist(all_data$study_ID),
-                                                  "[^0-9]+"),  function(x) unlist(x)[2])))) 
-
-ggplot(years.df , aes(x = year, y = residual.d.s, color = dataset)) +
-  geom_point() +
-  geom_smooth(method = "lm") +
+  geom_smooth(method = "lm", colour = "black") +
   facet_wrap(~ dataset, scales = "free_y") +
+  #facet_wrap(~ dataset, scales = "free") +
   theme_bw() +
   xlab("published year") +
   theme(legend.position="none")
 ```
-We see a bias of year here: Studies conducted early on in a literature tend to have larger effect sizes than later studies.
 
-## Does age vary as a function of year?
+```{r}
+all_data %>%
+  group_by(dataset) %>%
+  do(tidy(cor.test(.$residual.d.s,.$year))) %>%
+  select(dataset, estimate, p.value) %>%
+  mutate(sig = ifelse(p.value < .05, "*", "")) %>%
+  kable()
+```
 
-```{r, fig.width = 10}
-ggplot(years.df , aes(x = year, y = residual.d.s.age, color = dataset)) +
+We see some bias of year here: In four cases (gaze following, IDS, statistical sound category, and word segementation), we see effect size decrease with year. For ME, we see a positive effect (but that's probably due to Frank et al 2015).
+
+Here's the same analysis, but fitting meta-analytic moedels instead (which allows us to weight by study precision).
+
+```{r}
+overall_es <- function(ma_data){
+  # get datasets where we only have one levels for method
+  bad_datasets = all_data %>%
+    group_by(dataset, method) %>%
+    slice(1) %>%
+    select(dataset, method) %>%
+    group_by(dataset) %>%
+    summarize(n = n()) %>%
+    filter(n == 1) %>%
+    select(dataset)
+
+if(is.element(ma_data$dataset[1], bad_datasets$dataset)){  
+        model = metafor::rma(ma_data$d_calc~ ma_data$mean_age_1 +                  ma_data$year, ma_data$d_var_calc, method = "REML",
+               control = list(maxiter = 1000, stepadj = 0.5))
+} else {
+        model = metafor::rma(ma_data$d_calc~ ma_data$mean_age_1 +                  ma_data$year + ma_data$method , ma_data$d_var_calc, method = "REML",
+             control = list(maxiter = 1000, stepadj = 0.5))
+}
+  data.frame(dataset = ma_data$dataset[1],
+               year.effect = model$b[3],
+               year.pvalue = model$pval[3])
+}
+
+all_data %>%
+  split(.$dataset) %>%
+  map(function(ma_data) overall_es(ma_data)) %>%
+  bind_rows() %>%
+  mutate(sig = ifelse(year.pvalue < .05, "*", "")) %>%
+  kable()
+```
+
+Same as before but now here also effect of year for native vowels.
+
+## Age
+```{r}
+ggplot(all_data, aes(x = year, y = residual.d.s.age, color = dataset)) +
   geom_point() +
   geom_smooth(method = "lm") +
   facet_wrap(~ dataset, scales = "free_y") +
   theme_bw() +
   xlab("published year")  +
     theme(legend.position="none")
-
 ```
 In some literatures, we see a trend toward looking for the phenomenon in younger children over time.
 
-## Does effect size vary as a function of number of authors?
-Not really enough data to do this analysis. (maybe cut?)
-```{r, fig.width = 10}
-all_data$short_cite2 = str_replace_all(all_data$short_cite, " ", "")
-all_data$short_cite2 = str_replace_all(all_data$short_cite2, "&", ",")
-all_data$num_authors = unlist(lapply(lapply(all_data$short_cite2, 
-                                     function(x) unlist(strsplit(x, ',+'))), 
-                              function(x) length(which(x != ""))))
-all_data$num_authors =  as.numeric(ifelse(grepl("et al", all_data$short_cite), "NA",
-                                          all_data$num_authors)) # deal with miss coded short_cites (et al.)
-all_data$short_cite2 <- NULL
+# Journal Bias
+```{r}
+pat<- "developmental science|cognition|child development|cognitive psychology|journal of experimental child psychology|developmental psychology|plos one|language learning and development|infancy|first language|journal of memory and language|proceedings|language and speech|language and cognitive processes|psychological science|unpublished|journal of phonetics"
+
+all_data$journal = str_extract(tolower(all_data$long_cite), pat)
+
+ all_data %>%
+  filter(!is.na(journal)) %>%
+  ggplot( aes(x = journal, y = residual.d.s)) +
+    geom_violin() +
+  geom_dotplot(binaxis='y', stackdir='center', dotsize = .2, aes(fill = dataset)) +
+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 6))+
+  theme(legend.position="none") +
+  geom_hline(aes(yintercept = 0))
 
 all_data %>%
-  ggplot(aes(x = num_authors, y = residual.d.s, colour = dataset)) +
-  geom_point() + 
-  geom_smooth(method = "lm") +
-  facet_wrap(~dataset, scales = "free_y") +
-  theme_bw()+
-  theme(legend.position="none")
+  filter(!is.na(journal)) %>%
+  group_by(journal) %>%
+  multi_boot_standard(column = "residual.d.s")  %>%
+  ggplot( aes(x = reorder(journal, mean), y = mean, fill = journal)) +
+  geom_bar(position="dodge", stat="identity") +  
+  geom_errorbar(aes(ymin = ci_lower, ymax= ci_upper), 
+                width=0.2, position="dodge") +
+  ylab("residual effect size") +
+  xlab("journal") +
+  theme(legend.position="none") +
+  theme(axis.text.x = element_text(angle = 70, hjust = 1, size = 9))
 ```
 
+No evidence of major bias by journal.
 
 # Individual meta-analysis power
 ## What is the power to determine if the overall effect is greater than zero?
@@ -359,22 +383,4 @@ ggplot(power_data, aes(x = n, y = mean, fill = dataset)) +
         panel.grid.minor = element_blank())
 ```
 
-## What is the power to determine if there's a moderator (e.g. age)? 
-Not totally sure how to do this. Valentine et al. (2001) say it's difficult without the raw data?
 
-# Trim-and-fill 
-Corrects for selective reporting on the basis of effect size (fewer small effects; Duval & Tweedie, 2000a, 2000b). The routines and plotting tools stem from the R library "metafor" (Viechtbauer).
-
-[TODO: Adapt to Metalab style]
-```{r Trim and Fill}
-### fit random-effects model and plot
-
-datasets = unique(all_data$short_name)
-
-for (i in 1:length(datasets)) {
-  my_data = all_data[all_data$short_name ==  datasets[i],]
-  res <- rma(d_calc, d_var_calc, data = my_data)
-  taf <- trimfill(res)
-  funnel(taf, main = datasets[i])
-}
-```
