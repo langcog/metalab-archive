@@ -49,6 +49,9 @@ all_data <- cached_data %>%
   mutate(all_mod = "",
          mean_age_months = mean_age / avg_month)
 
+all_data <- all_data %>%
+  filter(!is.na(d_calc))
+
 studies <- all_data %>%
   group_by(dataset) %>%
   summarise(num_experiments = n(),
@@ -67,6 +70,4 @@ datasets <- datasets %>%
   left_join(subjects) %>%
   rename(name = dataset)
 
-all_data <- all_data %>%
-  filter(!is.na(d_calc))
 

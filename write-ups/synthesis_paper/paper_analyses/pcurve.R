@@ -18,6 +18,16 @@ get_ncp <- function(df1, df2, power, ALPHA) {
 
 # get_all_pc_data: computes f, df, p, pp, and ncp33 values
 get_all_pc_data <- function(df, ALPHA, P_INCREMENT){
+  
+  # Statistical sound learning is missing test sttatistics, here we backed them out using means and SD
+  # the correct test for within design is a paired t-test, but we only have group-level means available. 
+  # so we, assume a two-sample t-test where the samples are the same size.
+  # t_two sample: x_1 - x_2/ sqrt(((SD_1^2)/n_1) + ((SD_2^2)/n_2))
+  df = mutate(df, t = ifelse(participant_design == "within_two" & dataset == "Statistical sound category learning",
+                        x_1 - x_2 / sqrt(((SD_1^2)/n_1) + ((SD_2^2)/n_1)),
+                        ifelse(participant_design == "within_one" & dataset == "Statistical sound category learning", 
+                               x_1 - x_2 / sqrt(((SD_1^2)/n_1) + ((SD_1^2)/n_1)), t)))
+
   df %>%
     filter(!is.na(t)|!is.na(F)) %>%
     mutate(f.value = ifelse(is.na(t), F, t**2), # turn ts into Fs by squaring them
@@ -36,6 +46,7 @@ get_all_pc_data <- function(df, ALPHA, P_INCREMENT){
     mutate_each(funs(pbound), c(ppr.full, ppr.half, pp33.full, pp33.half)) %>%
     select(dataset, study_ID, d_var_calc, d_calc, p, p_round, f.value, df1, df2, ppr.full, ppr.half, pp33.full, pp33.half, ncp33)
 }
+
 
 # prop33: computes % of p-values that are smaller than critical p, for the tests submitted to p-curve, if power is 33%
 # creates a vector of the same length as the number of tests submitted to p-curve, significant and not,
