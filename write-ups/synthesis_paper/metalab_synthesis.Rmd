@@ -568,7 +568,7 @@ Finally, there are a number of important limitations to the meta-analytic more b
 In sum, understanding the psychological mechanisms underlying complex phenomena is a difficult inferential task: The researcher must develop a predictive and explanatory theory on the basis of limited and noisy experimental data. Here we have focused on language acquisition as a case study of how meta-analytic methods can be productively leveraged as a tool for theory building. Meta-analytic methods allow the researcher to  determine whether phenomena are robust, synthesize across contradictory findings, and ultimately, build an integrative theory across phenomena. Moving forward, we see this as a powerful tool in the researcher’s toolkit for developing quantitative theories to account for complex psychological phenomena.
 
 #### Author Contributions
-ML, ST, CB, PP, AC, 
+
 
 #### Acknowledgments
 
