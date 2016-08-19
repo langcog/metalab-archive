@@ -412,7 +412,7 @@ raw_data = all_data %>%
           left_join(ld.df)
 
 p_raw_fits = ggplot(raw_data,
-            aes(x = mean_age/365, y = d_calc, col = dataset)) +
+            aes(x = mean_age/365, y = d_calc, col = dataset, weight = 1/n)) +
   facet_grid(~ domain) +
   geom_point(aes(size = n, y = d_calc), alpha = .1) + 
   geom_smooth(method="lm", se = FALSE, size = 1, formula = y ~ log(x)) + 
@@ -500,7 +500,7 @@ simulated.development = data.frame(age.years = c(x,x,x,x,x,x,x,x,x),
                                    dataset = c(rep(1:3, each=length(x)), rep(1:3, each=length(x)),
                                                rep(1:3, each=length(x))),
                                    model = rep(c("Bottom-up", "Interactive", "Ad hoc"), each=length(x)*3),
-                                   n = NA,
+                                   n = 1,
                                    d_var_calc = NA)
 
 ## merge together fake and real
@@ -513,7 +513,7 @@ fake.levels = c("1", "2", "3")
 
 ## plot
 ggplot(simulated.development.all,
-       aes(x = age.years, y = d_calc, col = dataset)) + 
+       aes(x = age.years, y = d_calc, col = dataset, weight=1/n)) + 
   geom_line(data = filter(simulated.development.all, model != "Observed"), size = 1) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   #geom_point(aes(size = n), alpha = .25) + 
