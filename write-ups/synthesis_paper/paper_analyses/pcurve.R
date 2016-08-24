@@ -19,7 +19,7 @@ get_ncp <- function(df1, df2, power, ALPHA) {
 # get_all_pc_data: computes f, df, p, pp, and ncp33 values
 get_all_pc_data <- function(df, ALPHA, P_INCREMENT){
   
-  # Statistical sound learning is missing test sttatistics, here we backed them out using means and SD
+  # Statistical sound learning is missing test statistics, here we backed them out using means and SD
   # the correct test for within design is a paired t-test, but we only have group-level means available. 
   # so we, assume a two-sample t-test where the samples are the same size.
   # t_two sample: x_1 - x_2/ sqrt(((SD_1^2)/n_1) + ((SD_2^2)/n_2))
