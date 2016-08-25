@@ -348,7 +348,7 @@ individual meta-analyses using more systematic approaches than others
             & Word segmentation \newline {\scriptsize  (Bergmann \& Cristia, 2015) }            & {\scriptsize Recognition of familiarized words from running, natural speech using behavioral methods.  }                     & 66 (291)                                     \\
             Words     &   Mutual exclusivity \newline {\scriptsize (Lewis \& Frank, in prep.)} &{\scriptsize  Bias to assume that a novel word refers to a novel object.}
             & 20 (60)             \\
-            ~ &   Sound Symbolism \newline {\scriptsize (Lammertink et al., in prep.)} &{\scriptsize  Bias to assume a non-arbitrary relationship between form and meaning ("bouba-kiki effect").}
+            ~ &   Sound Symbolism \newline {\scriptsize (Lammertink et al., 2016)} &{\scriptsize  Bias to assume a non-arbitrary relationship between form and meaning ("bouba-kiki effect").}
             & 10 (42)             \\
             ~              & Concept-label advantage   \newline {\scriptsize (Lewis \& Long, unpublished)}     & {\scriptsize Infants' categorization judgments in the presence and absence of labels.    } & 16 (100) \\
             ~              & Online word recognition \newline {\scriptsize (Frank, Lewis, \& MacDonald, 2016)} & {\scriptsize Online word recognition of familiar words using two-alternative forced choice preferential looking.   }              & 6 (15)                         \\
@@ -455,17 +455,8 @@ all points to fall inside the funnel.}
 
 \subsection{P-curves}\label{p-curves}
 
-\begin{figure}[htbp]
-\centering
+{[}1{]} \enquote{hey}
 \includegraphics{metalab_synthesis_files/figure-latex/p_curve_plots-1.pdf}
-\caption{P-curve for each meta-analysis (Simonsohn, Nelson, \& Simmons,
-2014), except those for which p-values were unavailable. In the absense
-of p-hacking, we should expect the observed p-curve (blue) to be
-right-skewed (more small values). The red dashed line shows the expected
-distribution of p-values when the effect is non-existent (the null is
-true). The green dashed line shows the expected distribution if the
-effect is real, but studies only have 33\% power.}
-\end{figure}
 
 A p-curve is the distribution of p-values for the statistical test of
 the main hypothesis across a literature (Simonsohn et al., 2014b, 2014a,
@@ -484,24 +475,27 @@ evidential value for theory building.
 \toprule
 \textbf{Phenomenon} & \textbf{\textit{d}} & \textbf{fail-safe-N} & \textbf{funnel skew} & \textbf{p-curve skew}\\
 \midrule
-IDS preference & 0.71 [0.53, 0.89] & 3762 & 1.88 (0.06) & \\
-Phonotactic learning & 0.04 [-0.09, 0.16] & 45 & -1.08 (0.28) & -1.52 (0.06)\\
-Vowel discrimination (native) & 0.59 [0.49, 0.7] & 9620 & 8.87 (<.01) & -5.42 (<.01)\\
-Vowel discrimination (non-native) & 0.66 [0.42, 0.9] & 3391 & 4.13 (<.01) & -3.24 (<.01)\\
-Statistical sound learning & -0.13 [-0.25, -0.01] & *n.a.* & -1.47 (0.14) & -5.48 (<.01)\\
-Word segmentation & 0.2 [0.15, 0.25] & 5645 & 1.54 (0.12) & -9.67 (<.01)\\
-Mutual exclusivity & 1.01 [0.68, 1.33] & 6443 & 6.25 (<.01) & -5 (<.01)\\
-Sound symbolism & 0.15 [0.04, 0.26] & 538 & -1.32 (0.19) & -2.16 (0.02)\\
-Concept-label advantage & 0.4 [0.29, 0.51] & 3928 & 0.31 (0.76) & -6.15 (<.01)\\
-Online word recognition & 1.89 [0.81, 2.96] & 2843 & 2.92 (<.01) & \\
-Gaze following & 0.84 [0.26, 1.42] & 2641 & -1.69 (0.09) & \\
-Pointing and vocabulary & 0.41 [0.32, 0.49] & 1202 & 0.59 (<.01) & \\
+
+IDS preference & 0.71 [0.53, 0.89] & 3762 & 1.88 (0.06) & 1.88 (0.06)\\
+Phonotactic learning & 0.04 [-0.09, 0.16] & 45 & -1.08 (0.28) & -1.08 (0.28)\\
+Vowel discrimination (native) & 0.59 [0.49, 0.7] & 9620 & 8.87 (< .01) & 8.87 (< .01)\\
+Vowel discrimination (non-native) & 0.66 [0.42, 0.9] & 3391 & 4.13 (< .01) & 4.13 (< .01)\\
+Statistical sound learning & -0.13 [-0.25, -0.01] & na & -1.47 (0.14) & -1.47 (0.14)\\
+Word segmentation & 0.2 [0.16, 0.25] & 5930 & 2.61 (0.01) & 2.61 (0.01)\\
+Mutual exclusivity & 1.01 [0.68, 1.33] & 6443 & 6.25 (< .01) & 6.25 (< .01)\\
+Sound symbolism & 0.15 [0.04, 0.26] & 538 & -1.32 (0.19) & -1.32 (0.19)\\
+Concept-label advantage & 0.4 [0.29, 0.51] & 3928 & 0.31 (0.76) & 0.31 (0.76)\\
+Online word recognition & 1.34 [0.86, 1.82] & 2043 & 2.16 (0.03) & 2.16 (0.03)\\
+Gaze following & 0.84 [0.26, 1.42] & 2641 & -1.69 (0.09) & -1.69 (0.09)\\
+Pointing and vocabulary & 0.67 [0.47, 0.88] & 3031 & 3.31 (< .01) & 3.31 (< .01)\\
+
+
 \bottomrule
 \end{tabular}
 \caption{Summary of replicability analyses. \textit{d} = Effect size (Cohen's {\it d}) estimated from a random-effect model; fail-safe-N = number of missing studies that would have to exist in order for the overall effect size to be {\it d} = 0; funnel skew = test of asymmetry in funnel plot using the random-effect Egger's test (Stern \& Eggers, 2005); p-curve skew = test of the right skew of the p-curve using the Stouffer method (Simonsohn, Simmons, \& Nelson, 2015); Brackets give 95\% confidence intervals, and parentheses show p-values.}
 \end{table}
 
-Figure 2 shows p-curves for 8 of our 12
+Figure 2 shows p-curves for 9 of our 12
 meta-analyses.\footnote{We did not conduct p-curves on all meta-analyses because previously published meta-analyses did not include the original test statistics in the summary report (IDS preference and pointing and vocabulary). In other cases, the key test statistics were inappropriate for p-curve (online word recognition and gaze following).}
 With the exception of phonotactic learning, all p-curves show evidence
 of right skew (Table 2, column 5).
@@ -840,9 +834,11 @@ theory of causality. \emph{Psychological Review}, \emph{118}(1), 110.
 Ioannidis, J. P. (2005). Why most published research findings are false.
 \emph{PLoS Med}, \emph{2}(8), e124.
 
-\hypertarget{ref-lammertinkinprep}{}
-Lammertink, I., \& Tsuji, S. (in prep). Meta-analysis of the devlepment
-of the bouba-kiki effect.
+\hypertarget{ref-lammertink2016}{}
+Lammertink, I., Fort, M., Peperkamp, S., Fikkert, P., Guevara-Rukoz, A.,
+\& Tsuji, S. (2016). SymBuki: A meta-analysis on the sound-symbolic
+bouba-kiki effect in infants and toddlers. Poster presented at the XXI
+Biennial International Congress of Infant Studies, New Orleans, USA.
 
 \hypertarget{ref-lfprep}{}
 Lewis, M. L., \& Frank, M. C. (in prep). Multiple routes to

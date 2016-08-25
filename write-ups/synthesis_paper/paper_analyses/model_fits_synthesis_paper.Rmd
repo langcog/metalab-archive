@@ -263,6 +263,16 @@ ggplot(filter(all_data, dataset == "Vowel discrimination (native)"),
 
 #### restricted y-range (old)
 ```{r}
+
+## Make data frame of language levels
+ld.df = data.frame(dataset = datasets$name,
+                   domain = c("Prosody", "Words", "Communication", "Sounds",
+                              "Sounds", "Sounds", "Sounds", "Sounds", "Words",
+                              "Words", "Communication", "Words"))
+
+ld.df$domain = factor(ld.df$domain, levels = c("Prosody","Sounds", "Words", "Communication"))
+
+## Get model fits
 single_method_datasets = c("Gaze following",
                            "Label advantage in concept learning", 
                            "Mutual exclusivity", 
@@ -271,46 +281,42 @@ single_method_datasets = c("Gaze following",
 
 all_data.resid = data.frame()
 for (i in 1:length(datasets$name)) {
-    
-  d = filter(all_data, dataset == datasets$name[i])
+    all_data = all_data %>%
+          filter(dataset != "Gaze following" | d_calc > 0) # remove negative ES for gaze following
+          
+    d = filter(all_data, dataset == datasets$name[i])
+    print(datasets$name[i])
     if (datasets$name[i] %in% single_method_datasets) {
-      full.model = rma(d_calc , vi = d_var_calc, data = d, method = "REML")
+      full.model = rma(d_calc, vi = d_var_calc, data = d, method = "REML")
     } else {
       full.model = rma(d_calc ~ method, vi = d_var_calc, data = d, method = "REML")
     }
   
   d = as.data.frame(rstandard(full.model)$resid) %>%
        cbind(d) %>%
-       inner_join(all_data)
+       rename(residual.d = `rstandard(full.model)$resid`) %>%
+       mutate(residual.d = residual.d + full.model$b[1]) %>% # add in intercept term
+       inner_join(all_data) 
   
   all_data.resid = rbind(all_data.resid,d)
 }
 
-ld.df = data.frame(dataset = datasets$name,
-                   domain = c("Prosody", "Words", "Communication", "Sounds",
-                              "Sounds", "Sounds", "Sounds", "Sounds", "Words",
-                              "Words", "Communication", "Words"))
-
-ld.df$domain = factor(ld.df$domain, levels = c("Prosody","Sounds", "Words", "Communication"))
-
 # Fit models using raw d_calc
 raw_data = all_data.resid %>%
-          filter(dataset != "Gaze following" | d_calc > 0) %>% # remove negative ES for gaze following
-          filter(dataset != "Pointing and vocabulary") %>%
-          left_join(ld.df)
+          left_join(ld.df) %>%
+          filter(dataset != "Pointing and vocabulary")
 
 ## plot
-mod.plot = raw_data %>%
-  rename(residual.d = `rstandard(full.model)$resid`) %>%
-  ggplot(aes(x = mean_age/365, y = residual.d, col = dataset, weight = 1/n)) +
+mod.plot = 
+  ggplot(raw_data,aes(x = mean_age/365, y = residual.d, col = dataset, weight = 1/n)) +
   facet_grid(~ domain) +
-  geom_point(aes(size = n), alpha = .1) + 
-  geom_smooth(method="lm", se = FALSE, size = 1, formula = y ~ log(x)) + 
-  ylim(c(-.3, 2))+
+  geom_point(aes(size = n), alpha = .1, data = filter(raw_data, residual.d > -.3 & residual.d < 2 )) +
+  geom_smooth(method="lm", se = FALSE, size = 1, formula = y ~ log(x), data = raw_data) + 
+  #ylim(c(-.3, 4))+
   xlim(0,3.1) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   xlab("Age (years)") + 
-  ylab("Method-residualized \neffect size (d)") + 
+  ylab("Method-residual effect size (d)") + 
   theme_bw() + 
   theme(legend.position = "none",
         legend.key = element_blank(),
@@ -322,16 +328,15 @@ mod.plot = raw_data %>%
 
 direct.label(mod.plot, list("top.bumptwice", dl.trans(y = y + 0.1), cex=.7))
 
-raw_data %>%
-rename(residual.d = `rstandard(full.model)$resid`) %>%
-ggplot(aes(x = mean_age/365, y = residual.d, col = dataset, weight = 1/n)) +
+
+ggplot(raw_data, aes(x = mean_age/365, y = residual.d, col = dataset, weight = 1/n)) +
   #geom_point(aes(size = n), alpha = .1) + 
   geom_smooth(method="lm", se = FALSE, size = 1, formula = y ~ log(x)) + 
-  ylim(c(-.3, 2))+
+  #ylim(c(-.3, 2))+
   xlim(0,3.1) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   xlab("Age (years)") + 
-  ylab("Method-residualized \neffect size (d)") + 
+  ylab("Method-residualneffect size (d)") + 
   theme_bw() + 
   theme(legend.position = "none",
         legend.key = element_blank(),
@@ -345,9 +350,8 @@ ggplot(aes(x = mean_age/365, y = residual.d, col = dataset, weight = 1/n)) +
 #### unrestricted y-range
 ```{r}
 ## plot
-mod.plot = raw_data %>%
-  rename(residual.d = `rstandard(full.model)$resid`) %>%
-  ggplot(aes(x = mean_age/365, y = residual.d, col = dataset, weight = 1/n)) +
+mod.plot = ggplot(raw_data, aes(x = mean_age/365, 
+                                y = residual.d, col = dataset, weight = 1/n)) +
   facet_grid(~ domain) +
   geom_point(aes(size = n), alpha = .1) + 
   geom_smooth(method="lm", se = FALSE, size = 1, formula = y ~ log(x)) + 
@@ -367,9 +371,7 @@ mod.plot = raw_data %>%
 
 direct.label(mod.plot, list("top.bumptwice", dl.trans(y = y + 0.1), cex=.7))
 
-raw_data %>%
-rename(residual.d = `rstandard(full.model)$resid`) %>%
-ggplot(aes(x = mean_age/365, y = residual.d, col = dataset, weight = 1/n)) +
+ggplot(raw_data, aes(x = mean_age/365, y = residual.d, col = dataset, weight = 1/n)) +
   #geom_point(aes(size = n), alpha = .1) + 
   geom_smooth(method="lm", se = FALSE, size = 1, formula = y ~ log(x)) + 
   #ylim(c(-.3, 2))+

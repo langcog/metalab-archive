@@ -111,7 +111,7 @@ To obtain estimates of effect size, we either coded or adapted others’ coding 
 			& Word segmentation \newline {\scriptsize  (Bergmann \& Cristia, 2015) }            & {\scriptsize `r datasets[datasets$name == "Word segmentation", "short_desc"]`  }                     & `r datasets[datasets$name == "Word segmentation", "num_papers"]` (`r datasets[datasets$name == "Word segmentation", "num_experiments"]`)                                     \\
 			Words     &   Mutual exclusivity \newline {\scriptsize (Lewis \& Frank, in prep.)} &{\scriptsize  `r datasets[datasets$name == "Mutual exclusivity", "short_desc"]`}
 			& `r datasets[datasets$name == "Mutual exclusivity", "num_papers"]` (`r datasets[datasets$name == "Mutual exclusivity", "num_experiments"]`)             \\
-			~ &   Sound Symbolism \newline {\scriptsize (Lammertink et al., in prep.)} &{\scriptsize  `r datasets[datasets$name == "Sound symbolism", "short_desc"]`}
+			~ &   Sound Symbolism \newline {\scriptsize (Lammertink et al., 2016)} &{\scriptsize  `r datasets[datasets$name == "Sound symbolism", "short_desc"]`}
 			& `r datasets[datasets$name == "Sound symbolism", "num_papers"]` (`r datasets[datasets$name == "Sound symbolism", "num_experiments"]`)             \\
 			~              & Concept-label advantage   \newline {\scriptsize (Lewis \& Long, unpublished)}     & {\scriptsize `r datasets[datasets$name == "Label advantage in concept learning", "short_desc"]`    } & `r datasets[datasets$name == "Label advantage in concept learning", "num_papers"]` (`r datasets[datasets$name == "Label advantage in concept learning", "num_experiments"]`) \\
 			~              & Online word recognition \newline {\scriptsize (Frank, Lewis, \& MacDonald, 2016)} & {\scriptsize `r datasets[datasets$name == "Online word recognition", "short_desc"]`   }              & `r datasets[datasets$name == "Online word recognition", "num_papers"]` (`r datasets[datasets$name == "Online word recognition", "num_experiments"]`)                         \\
@@ -282,7 +282,7 @@ pc.data %>%
                  dataset = plyr::revalue(dataset, 
                                          c("Label advantage in concept learning" = "Concept-label advantage")),
          dataset = gdata::reorder.factor(dataset, 
-                                    new.order = c(3,6,7,5,8,2,4,1))) %>%
+                                    new.order = c(3,6,7,5,8,2,4,1,9))) %>%
   ggplot(aes(x = p, y = value, linetype = measure, color = measure)) + 
   geom_line(size = 1) +
   scale_colour_manual(name = "", values = c("red", "green", "blue"), 
@@ -328,9 +328,12 @@ table.data = left_join(select(all_ds, c(short_name, d_string)), fsn.package.data
              mutate(dataset = as.factor(dataset),
                  dataset = plyr::revalue(dataset, c("Infant directed speech preference" ="IDS preference", # shorten dataset names
                                                    "Statistical sound category learning"= "Statistical sound learning",
-                                                   "Label advantage in concept learning" =  "Concept-label advantage")))
+                                                   "Label advantage in concept learning" =  "Concept-label advantage"))) %>%
+              mutate(egg_string = sub("(0)", "(< .01)", egg_string, fixed = T),
+                     stouff_string = sub("(0)", "(< .01)", egg_string, fixed = T), # fix p = 0
+                     fsn_string = sub("Inf", "na", fsn_string)) 
 
-# kable(table.data, format = "latex", booktabs = TRUE) # paste below (so can edit latex - e.g. fix p = 0)
+# kable(table.data, format = "latex", booktabs = TRUE) # paste below (so can edit latex - remove \addlinespace, fix header and row formatting)
 # header:	\textbf{Phenomenon}& \textbf{\textit{d}} & \textbf{fail-safe-N} & \textbf{funnel skew} & \textbf{p-curve skew} &  \\
 ```
 
@@ -340,18 +343,21 @@ table.data = left_join(select(all_ds, c(short_name, d_string)), fsn.package.data
 \toprule
 \textbf{Phenomenon} & \textbf{\textit{d}} & \textbf{fail-safe-N} & \textbf{funnel skew} & \textbf{p-curve skew}\\
 \midrule
-IDS preference & 0.71 [0.53, 0.89] & 3762 & 1.88 (0.06) & \\
-Phonotactic learning & 0.04 [-0.09, 0.16] & 45 & -1.08 (0.28) & -1.52 (0.06)\\
-Vowel discrimination (native) & 0.59 [0.49, 0.7] & 9620 & 8.87 (<.01) & -5.42 (<.01)\\
-Vowel discrimination (non-native) & 0.66 [0.42, 0.9] & 3391 & 4.13 (<.01) & -3.24 (<.01)\\
-Statistical sound learning & -0.13 [-0.25, -0.01] & *n.a.* & -1.47 (0.14) & -5.48 (<.01)\\
-Word segmentation & 0.2 [0.15, 0.25] & 5645 & 1.54 (0.12) & -9.67 (<.01)\\
-Mutual exclusivity & 1.01 [0.68, 1.33] & 6443 & 6.25 (<.01) & -5 (<.01)\\
-Sound symbolism & 0.15 [0.04, 0.26] & 538 & -1.32 (0.19) & -2.16 (0.02)\\
-Concept-label advantage & 0.4 [0.29, 0.51] & 3928 & 0.31 (0.76) & -6.15 (<.01)\\
-Online word recognition & 1.89 [0.81, 2.96] & 2843 & 2.92 (<.01) & \\
-Gaze following & 0.84 [0.26, 1.42] & 2641 & -1.69 (0.09) & \\
-Pointing and vocabulary & 0.41 [0.32, 0.49] & 1202 & 0.59 (<.01) & \\
+
+IDS preference & 0.71 [0.53, 0.89] & 3762 & 1.88 (0.06) & 1.88 (0.06)\\
+Phonotactic learning & 0.04 [-0.09, 0.16] & 45 & -1.08 (0.28) & -1.08 (0.28)\\
+Vowel discrimination (native) & 0.59 [0.49, 0.7] & 9620 & 8.87 (< .01) & 8.87 (< .01)\\
+Vowel discrimination (non-native) & 0.66 [0.42, 0.9] & 3391 & 4.13 (< .01) & 4.13 (< .01)\\
+Statistical sound learning & -0.13 [-0.25, -0.01] & na & -1.47 (0.14) & -1.47 (0.14)\\
+Word segmentation & 0.2 [0.16, 0.25] & 5930 & 2.61 (0.01) & 2.61 (0.01)\\
+Mutual exclusivity & 1.01 [0.68, 1.33] & 6443 & 6.25 (< .01) & 6.25 (< .01)\\
+Sound symbolism & 0.15 [0.04, 0.26] & 538 & -1.32 (0.19) & -1.32 (0.19)\\
+Concept-label advantage & 0.4 [0.29, 0.51] & 3928 & 0.31 (0.76) & 0.31 (0.76)\\
+Online word recognition & 1.34 [0.86, 1.82] & 2043 & 2.16 (0.03) & 2.16 (0.03)\\
+Gaze following & 0.84 [0.26, 1.42] & 2641 & -1.69 (0.09) & -1.69 (0.09)\\
+Pointing and vocabulary & 0.67 [0.47, 0.88] & 3031 & 3.31 (< .01) & 3.31 (< .01)\\
+
+
 \bottomrule
 \end{tabular}
 \caption{Summary of replicability analyses. \textit{d} = Effect size (Cohen's {\it d}) estimated from a random-effect model; fail-safe-N = number of missing studies that would have to exist in order for the overall effect size to be {\it d} = 0; funnel skew = test of asymmetry in funnel plot using the random-effect Egger's test (Stern \& Eggers, 2005); p-curve skew = test of the right skew of the p-curve using the Stouffer method (Simonsohn, Simmons, \& Nelson, 2015); Brackets give 95\% confidence intervals, and parentheses show p-values.}
@@ -562,21 +568,24 @@ Finally, there are a number of important limitations to the meta-analytic more b
 In sum, understanding the psychological mechanisms underlying complex phenomena is a difficult inferential task: The researcher must develop a predictive and explanatory theory on the basis of limited and noisy experimental data. Here we have focused on language acquisition as a case study of how meta-analytic methods can be productively leveraged as a tool for theory building. Meta-analytic methods allow the researcher to  determine whether phenomena are robust, synthesize across contradictory findings, and ultimately, build an integrative theory across phenomena. Moving forward, we see this as a powerful tool in the researcher’s toolkit for developing quantitative theories to account for complex psychological phenomena.
 
 TO DO:
-  - check outlier points
+  - check outlier points (kyle, alex)
   - write theoretical para
   - clean up text (e.g. "particularly")
   - figure out correct model fits
   - fix plot labels in adobe
   - Write SI [description of systematicity + age vs. method on ES +  coded papers reporting experimental data]
-  - do something with Alex's sounds MA?
-  - check pointing
+  - what to do with control conditions
+  - deal with Alex's ps
+  - add more to p-curves?
+  - fix corr/r inconsistency (affects p-curve pointing)
   - fix missing citations
+  - write abstract
 
 #### Author Contributions
 ML, ST, CB, PP, AC, and MF wrote the paper. ML, ST, CB, AC, and MF coded papers for the meta-anaytic dataset. All authors contributed to data analysis. MB, MF, and ML developed the Metalab website infrastructure.  
 
 #### Acknowledgments
-We would like to thank Kyle MacDonald and Bria Long for their help with 
+We would like to thank Kyle MacDonald and Bria Long for their help with individual meta-analyses.
 
 \newpage
 
@@ -591,7 +600,7 @@ nocite: |
   @bergmann2015development
   @sterne2005regression
   @bergmanneducational
-  @lammertinkinprep
+  @lammertink2016
   @lewisunpublished
   @colonnesi2010relation
   @cristiastatisticalinprep

@@ -27,7 +27,11 @@ get_all_pc_data <- function(df, ALPHA, P_INCREMENT){
                         x_1 - x_2 / sqrt(((SD_1^2)/n_1) + ((SD_2^2)/n_1)),
                         ifelse(participant_design == "within_one" & dataset == "Statistical sound category learning", 
                                x_1 - x_2 / sqrt(((SD_1^2)/n_1) + ((SD_1^2)/n_1)), t)))
-
+  df = mutate(df, F = ifelse(participant_design == "within_one" & dataset == "Pointing and vocabulary",
+                             (corr ^ 2 * (n_1 -2))/ (1 - corr ^ 2), F), # from Sirkin ("Statistics for the Social Sciences", pg. 505)
+                  df2 = n_1-1,
+                  df1 = 1)
+  print("hey")
   df %>%
     filter(!is.na(t)|!is.na(F)) %>%
     mutate(f.value = ifelse(is.na(t), F, t**2), # turn ts into Fs by squaring them

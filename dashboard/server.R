@@ -400,9 +400,6 @@ shinyServer(function(input, output, session) {
     ggplot(d, aes(x = es, y = -se)) +
       scale_colour_solarized(name = "", labels = labels, guide = guide) +
       scale_x_continuous(limits = c(left_lim99, right_lim99)) +
-      #scale_y_continuous(expand = c(0, 0),
-      #                   breaks = round(seq(0, -max(d$se), length.out = 5), 2),
-       #                  labels = round(seq(0, max(d$se), length.out = 5), 2)) +
       scale_y_continuous(labels = function(x){abs(x)}) +
       geom_polygon(aes(x = x, y = y), data = funnel95, alpha = .5,
                    fill = "white") +
