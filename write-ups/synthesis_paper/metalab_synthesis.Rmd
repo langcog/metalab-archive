@@ -51,13 +51,13 @@ output: papaja::apa6_pdf
 ---
 
 ```{r message = FALSE, warning = FALSE}
-knitr::opts_chunk$set(warning = FALSE, message = FALSE, cache = TRUE, fig.pos = "T")
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, cache = FALSE, fig.pos = "T")
 require("papaja")
 apa_prepare_doc() # prepare document for rendering
 ```
 
 # Introduction
-To learn to speak a language, a child must acquire a wide range of knowledge and skills: the sounds of the language, the word forms, and the mappings of words to meanings, to name only a few. How does this process unfold? Our goal as psychologists is to build a broad theory that can explain and predict this process. An important aspect of this theory is an account of how the acquisition of  individual skills depends on other skills. For example, the theory must describe to what extent a child must master the sounds of the language  before beginning the process of learning the meanings of words. To develop this theory, a pragmatic research strategy has been to study  skills primarily in isolation, describing the developmental trajectories of individual phenomena in separate research programs. This research shows that, while the onset of these skills can often be found in the first year of life, most follow a protracted pattern of development, with important changes occurring in the second year and beyond. Importantly, however, if linguistic skills are in fact interdependent, then there is reason to question   results based on the isolationist method, and suggests that we will not be able to understand individuals skills without a more precise understanding of the broader system. 
+To learn to speak a language, a child must acquire a wide range of knowledge and skills: the sounds of the language, the word forms, and the mappings of words to meanings, to name only a few. How does this process unfold? Our goal as psychologists is to build a broad theory that can explain and predict this process. An important aspect of this theory is an account of how the acquisition of  individual skills depends on other skills. For example, the theory must describe to what extent a child must master language sounds before beginning the process of learning the meanings of words. To develop this theory, a pragmatic research strategy has been to study  skills primarily in isolation, describing the developmental trajectories of individual phenomena in separate research programs. This research shows that, while the onset of these skills can often be found in the first year of life, most follow a protracted pattern of development, with important changes occurring in the second year and beyond. Importantly, however, if linguistic skills are in fact interdependent, then there is reason to question   results based on the isolationist method, and suggests that we will not be able to understand individuals skills without a more precise understanding of the broader system. 
 
 The theory building effort is further complicated by the fact that we typically have some uncertainty about the trajectory of individual skills. Developmental trajectories are often communicated as verbal descriptions that summarize a body of noisy experimental findings. However, in actual fact, there is often one study finding an effect, but another failing to do so. These contradictions leave the theorist with uncertainty about	which experimental findings should constrain the theory, which is often resolved by verbally discounting one or the other finding depending on the viewer's expertise (and potentially theoretical penchant). What is needed then is a method for resolving these contradictions in a more systematic and principled fashion.
 
@@ -233,6 +233,7 @@ ggplot(funnel.es.data, aes(x = es, y = -se)) +
   geom_vline(aes(xintercept=x2), 
              linetype = "dashed", color = "red", size = .8, data = funnel95.data.wide) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey44",  size = .8) +
+  scale_y_continuous(labels = function(x){abs(x)}) +
   geom_point(size = .5) +
   theme(#panel.background = element_rect(fill = "gray"),
         panel.grid.major = element_line(colour = "grey", size = 0.2),
@@ -266,7 +267,7 @@ eggers.data = all_data %>%
 ```
 
 ## P-curves
-```{r p_curve_plots,  fig.pos = "T!",  fig.width=7, fig.height=6, fig.cap = "P-curve for each meta-analysis (Simonsohn, Nelson, & Simmons, 2014), except those for which p-values were unavailable. In the absense of p-hacking, we should expect the observed p-curve (blue) to be right-skewed (more small values). The red dashed line shows the expected distribution of p-values when the effect is non-existent (the null is true). The green dashed line shows the expected distribution if the effect is real, but studies only have 33% power."}
+```{r p_curve_plots,  fig.pos = "T!",  fig.width=7, fig.height=5, fig.cap = "P-curve for each meta-analysis (Simonsohn, Nelson, & Simmons, 2014), except those for which p-values were unavailable. In the absense of p-hacking, we should expect the observed p-curve (blue) to be right-skewed (more small values). The red dashed line shows the expected distribution of p-values when the effect is non-existent (the null is true). The green dashed line shows the expected distribution if the effect is real, but studies only have 33% power."}
 
 ALPHA = .05
 P_INCREMENT = .01 
@@ -290,7 +291,7 @@ pc.data %>%
   ylab("Proportion p-values") +
   xlab("p-value") +
   #scale_colour_discrete(labels=c("baseline", "expected", "observed")) +
-  facet_wrap(~ dataset) +
+  facet_wrap(~ dataset, nrow = 2) +
   theme_bw() + 
   theme(legend.position = "top",
         legend.key = element_blank(),
@@ -567,14 +568,15 @@ TO DO:
   - figure out correct model fits
   - fix plot labels in adobe
   - Write SI [description of systematicity + age vs. method on ES +  coded papers reporting experimental data]
-  - write author contributions
   - do something with Alex's sounds MA?
+  - check pointing
   - fix missing citations
 
 #### Author Contributions
-
+ML, ST, CB, PP, AC, and MF wrote the paper. ML, ST, CB, AC, and MF coded papers for the meta-anaytic dataset. All authors contributed to data analysis. MB, MF, and ML developed the Metalab website infrastructure.  
 
 #### Acknowledgments
+We would like to thank Kyle MacDonald and Bria Long for their help with 
 
 \newpage
 

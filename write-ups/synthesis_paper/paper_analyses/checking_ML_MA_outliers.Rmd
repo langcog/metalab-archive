@@ -31,7 +31,7 @@ age_funnel_plot <- function(raw.d) {
   model = rma(d_calc ~ mean_age, vi = d_var_calc, data = raw.d,
               method = "REML")
   r <- rstandard(model)
-  d <- data_frame(se = r$se, es = r$resid, lab = paste0(raw.d$study_ID, "_", raw.d$expt_num))
+  d <- data_frame(se = r$se, es = r$resid, lab = paste0(raw.d$study_ID, "_", raw.d$expt_num), cond = raw.d$expt_condition, age = raw.d$mean_age_1)
   center <- 0
   lower_lim <- max(d$se) + .05 * max(d$se)
   funnel95 <- data.frame(x = c(center - lower_lim * CRIT_95, center,
@@ -61,6 +61,7 @@ age_funnel_plot(filter(all_data,
                        dataset == "Label advantage in concept learning"))
 
 to_check = c("fulkerson2003_1", "robinson2007_1", "booth2002_1","booth2002_2", "ferry2013_1", "booth2003_2", "balaban1997_1", "ferry2010_1")
+#f and r seem fine.
 ```
 
 # Online word recognition
@@ -75,20 +76,19 @@ to_check = c("fernald2013_1", "fernald2013_1") # these actually look fine
 age_funnel_plot(filter(all_data, dataset == "Gaze following"))
 
 to_check = c("butler2009_1", "mundy1998_1", "degroote2006_1") 
+#butler2009_1 and mundy1998_1 seem fine, checking on degroote
 ```
 
 
 # Mutual exclusivity
 ```{r}
 age_funnel_plot(filter(all_data, dataset == "Mutual exclusivity"))
-
 # looks fine (frank are outliers)
 ```
 
 # Sound symbolism
 ```{r}
 age_funnel_plot(filter(all_data, dataset == "Sound symbolism"))
-
 # looks fine
 ```
 
@@ -97,26 +97,29 @@ age_funnel_plot(filter(all_data, dataset == "Sound symbolism"))
 age_funnel_plot(filter(all_data, 
                dataset == "Infant directed speech preference"))
 
-to_check = c("Trainor1996_2", "Werker1989_1") 
+to_check = c("Trainor1996_2", "Werker1989_1")
+# both fine (didn't go to source papers, though)
 ```
 
 # Phonotactic learning
 ```{r}
 age_funnel_plot(filter(all_data, dataset == "Phonotactic learning"))
-to_check = c("1008_1")  
+to_check = c("1008_1", "1001_1")   
+# seems fine
 ```
 
 # Statistical sound category learning
 ```{r}
 age_funnel_plot(filter(all_data, dataset == "Statistical sound category learning"))
 to_check = c("1036_3", "1043_1")  
+#1043_1 - data from author and SE seem quite small, but can't directly verify (submitted issue)
 ```
 
 # Word segementation
 ```{r}
-#age_funnel_plot(filter(all_data, dataset == "Word segmentation"))
+age_funnel_plot(filter(all_data, dataset == "Word segmentation"))
 # too big!
-to_check = c("flocciaetal_2016_10")  
-
+to_check = c("Flocciaetal2016_10")  
+#fixed!
 ```
 

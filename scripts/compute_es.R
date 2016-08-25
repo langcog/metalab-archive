@@ -85,7 +85,20 @@ compute_es <- function(participant_design, x_1 = NA, x_2 = NA, x_dif = NA,
     if (complete(n_1, d_calc)) {
       #d_var_calc <- (1 / n_1) + (d_calc ^ 2 / (2 * n_1))
       d_var_calc <- (2/n_1) + (d_calc ^ 2 / (4 * n_1))
-
+      
+    } else if (complete(corr, n_1)){ 
+      # this deals with pointing and vocabulary 
+      # Get variance of transformed r (z; fisher's tranformation)
+      SE_z = 1 / sqrt(n_1 - 3) # from Howell (2010; "Statistical methods for Psychology", pg 275)
+      var_z = SE_z ^ 2
+      
+      # Transform z variance to r variance
+      var_r = tanh(var_z)  # from wikipedia (https://en.wikipedia.org/wiki/Fisher_transformation) for convert z -> r, consistent with Howell
+      
+      # Transform r to d
+      d_calc = 2 * corr / (sqrt(1 - corr ^ 2)) # from (Hunter and Schmidt, pg. 279)
+      d_var_calc = (4 * var_r)/(1 - corr ^ 2) ^ 3 # from https://www.meta-analysis.com/downloads/Meta-analysis%20Converting%20among%20effect%20sizes.pdf (pg. 4)
+      
     } else if (complete(r)) {
       d_calc <- 2 * r / sqrt(1 - r ^ 2)
       d_var_calc <- 4 * r_var / ((1 - r ^ 2) ^ 3)
