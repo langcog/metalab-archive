@@ -114,9 +114,11 @@ datasets <- datasets %>%
   rename(name = dataset)
 
 # rename pointing and vocabulary 
-datasets$name = plyr::mapvalues(datasets$name, from = c("Pointing and vocabulary (concurrent)"), to = c("Pointing and vocabulary"))
+datasets$name = plyr::mapvalues(datasets$name, from = c("Pointing and vocabulary (concurrent)"), 
+                                to = c("Pointing and vocabulary"))
 
-all_data$dataset = plyr::mapvalues(all_data$dataset , from = c("Pointing and vocabulary (concurrent)"), to = c("Pointing and vocabulary"))
+all_data$dataset = plyr::mapvalues(all_data$dataset , from = c("Pointing and vocabulary (concurrent)"),
+                                   to = c("Pointing and vocabulary"))
 ```
 
 We analyzed `r nrow(datasets)` different phenomena in language acquisition. To a certain extent, these  phenomena were selected opportunistically, either because of high prevalence in the literature or because a published meta-analysis already existed. The phenomena cover development at many different levels of the language hierarchy, from the acquisition of prosody and phonemic contrasts, to gaze following in communicative interaction. This wide range of phenomena allowed us to compare the course of development across different domains, as well as to explore questions about the interactive nature of language acquisition (Table 1). 
@@ -263,7 +265,9 @@ ggplot(funnel.es.data, aes(x = es, y = -se)) +
   geom_point(size = .5) +
   theme(#panel.background = element_rect(fill = "gray"),
         panel.grid.major = element_line(colour = "grey", size = 0.2),
-        panel.grid.minor = element_line(colour = "grey", size = 0.5)) 
+        panel.grid.minor = element_line(colour = "grey", size = 0.5),
+        strip.text.x = element_text(size = 9),
+        strip.background = element_rect(fill="grey")) 
 ```
 
 ```{r, funnel_skew}
@@ -293,39 +297,67 @@ eggers.data = all_data %>%
 ```
 
 ## P-curves
-```{r p_curve_plots,  fig.pos = "T!",  fig.width=7, fig.height=5, fig.cap = "P-curve for each meta-analysis (Simonsohn, Nelson, & Simmons, 2014), except those for which p-values were unavailable. In the absense of p-hacking, we should expect the observed p-curve (blue) to be right-skewed (more small values). The red dashed line shows the expected distribution of p-values when the effect is non-existent (the null is true). The green dashed line shows the expected distribution if the effect is real, but studies only have 33% power."}
+```{r p_curve_plots,  fig.pos = "T!",  fig.width=7.5, fig.height=6, fig.cap = "P-curve for each meta-analysis (Simonsohn, Nelson, & Simmons, 2014), except those for which p-values were unavailable. In the absense of p-hacking, we should expect the observed p-curve (blue) to be right-skewed (more small values). The red dashed line shows the expected distribution of p-values when the effect is non-existent (the null is true). The green dashed line shows the expected distribution if the effect is real, but studies only have 33% power."}
 
 ALPHA = .05
 P_INCREMENT = .01 
 
-pc.data <- get_all_pc_data(all_data, ALPHA, P_INCREMENT)
+pc.data <- get_all_pc_data(all_data, ALPHA, P_INCREMENT, transform = TRUE)
+
+p.source = pc.data %>%
+  select(f.transform, f.value,dataset, study_ID) %>%
+  group_by(dataset) %>%
+  summarise(n.total = n(),
+            n.transform = length(which(!is.na(f.transform)))) %>%
+  mutate(dataset = plyr::revalue(dataset, 
+                                 c("Infant directed speech preference"="IDS preference",
+                                   "Statistical sound category learning"="Statistical sound learning", 
+                                   "Label advantage in concept learning"="Concept-label advantage",
+                                   "Vowel discrimination (native)"="Vowel discrimination\n(native)",
+                                   "Vowel discrimination (non-native)"="Vowel discrimination\n(non-native)")),
+          dataset = as.factor(dataset),
+          dataset = gdata::reorder.factor(dataset, 
+                                    new.order = c(2,6,10,11,9,12,4,8,3,5,1,7))) %>%
+  mutate(stat_only = ifelse(n.total > n.transform, 1, 0)) %>%
+  arrange(-stat_only) %>%
+  mutate(prop.ts = 1-n.transform/n.total,
+         prop.ts.string = as.character(round(prop.ts, digits = 2))) %>%
+  as.data.frame() 
 
 pc.data %>%
   group_by(dataset) %>%
   do(get_p_curve_df(., ALPHA, P_INCREMENT)) %>%
   ungroup() %>%
   mutate(dataset = as.factor(dataset),
-                 dataset = plyr::revalue(dataset, 
-                                         c("Label advantage in concept learning" = "Concept-label advantage")),
+         dataset = plyr::revalue(dataset, 
+                                 c("Infant directed speech preference"="IDS preference",
+                                   "Statistical sound category learning"="Statistical sound learning", 
+                                   "Label advantage in concept learning"="Concept-label advantage",
+                                   "Vowel discrimination (native)"="Vowel discrimination\n(native)",
+                                   "Vowel discrimination (non-native)"="Vowel discrimination\n(non-native)")),
          dataset = gdata::reorder.factor(dataset, 
-                                    new.order = c(3,6,7,5,8,2,4,1,9))) %>%
-  ggplot(aes(x = p, y = value, linetype = measure, color = measure)) + 
-  geom_line(size = 1) +
+                                    new.order = c(2,6,10,11,9,12,4,8,3,5,1,7)))  %>%
+  ggplot(aes(x = p, y = value)) + 
+  geom_line(size = 1, aes(linetype = measure, color = measure)) +
   scale_colour_manual(name = "", values = c("red", "green", "blue"), 
                       labels=c("Null of no effect", "Null of 33% power", "Observed")) +
   scale_linetype_manual(values = c("dashed", "dashed", "solid"), guide = FALSE)  +
-  ylab("Proportion p-values") +
+  ylab("Proportion p-values\n") +
   xlab("p-value") +
-  #scale_colour_discrete(labels=c("baseline", "expected", "observed")) +
-  facet_wrap(~ dataset, nrow = 2) +
+  facet_wrap(~ dataset, nrow = 3) +
+  geom_text(aes(label = prop.ts.string, x = .045, y = .8), data = p.source, colour = "black") +
   theme_bw() + 
   theme(legend.position = "top",
         legend.key = element_blank(),
         legend.background = element_rect(fill = "transparent"),
-        axis.line= element_line(size = 3),
-        axis.text = element_text(colour = "black", size = 10),
+       # axis.line= element_line(size = 3),
+        #axis.text = element_text(colour = "black", size = 10),
         strip.text.x = element_text(size = 9),
-        axis.title = element_text(colour = "black", size = 12))
+        axis.title = element_text(colour = "black", size = 12),
+        panel.margin = unit(.65, "lines"),
+       strip.background = element_rect(fill="grey"))
+        #panel.grid.major = element_line(colour = "grey", size = 0.2),
+        #panel.grid.minor = element_line(colour = "grey", size = 0.5))
 ```
 
 ```{r, p_curve_skew}
@@ -370,18 +402,18 @@ table.data = left_join(select(all_ds, c(short_name, d_string)), fsn.package.data
 \textbf{Phenomenon} & \textbf{\textit{d}} & \textbf{fail-safe-N} & \textbf{funnel skew} & \textbf{p-curve skew}\\
 \midrule
 
-IDS preference & 0.71 [0.53, 0.89] & 3762 & 1.88 (0.06) & 1.88 (0.06)\\
+IDS preference & 0.72 [0.54, 0.91] & 3762 & 1.26 (0.21) & 1.26 (0.21)\\
 Phonotactic learning & 0.04 [-0.09, 0.16] & 45 & -1.08 (0.28) & -1.08 (0.28)\\
 Vowel discrimination (native) & 0.59 [0.49, 0.7] & 9620 & 8.87 (< .01) & 8.87 (< .01)\\
 Vowel discrimination (non-native) & 0.66 [0.42, 0.9] & 3391 & 4.13 (< .01) & 4.13 (< .01)\\
-Statistical sound learning & -0.13 [-0.25, -0.01] & na & -1.47 (0.14) & -1.47 (0.14)\\
+Statistical sound learning & -0.13 [-0.25, -0.01] & na & -1.58 (0.11) & -1.58 (0.11)\\
 Word segmentation & 0.2 [0.16, 0.25] & 5930 & 2.61 (0.01) & 2.61 (0.01)\\
 Mutual exclusivity & 1.01 [0.68, 1.33] & 6443 & 6.25 (< .01) & 6.25 (< .01)\\
 Sound symbolism & 0.15 [0.04, 0.26] & 538 & -1.32 (0.19) & -1.32 (0.19)\\
 Concept-label advantage & 0.4 [0.29, 0.51] & 3928 & 0.31 (0.76) & 0.31 (0.76)\\
 Online word recognition & 1.34 [0.86, 1.82] & 2043 & 2.16 (0.03) & 2.16 (0.03)\\
-Gaze following & 0.84 [0.26, 1.42] & 2641 & -1.69 (0.09) & -1.69 (0.09)\\
-Pointing and vocabulary & 0.67 [0.47, 0.88] & 3031 & 3.31 (< .01) & 3.31 (< .01)\\
+Gaze following & 0.81 [0.24, 1.38] & 2527 & -1.66 (0.1) & -1.66 (0.1)\\
+Pointing and vocabulary & 0.98 [0.62, 1.34] & 1617 & 1.15 (0.25) & 1.15 (0.25)\\
 
 
 \bottomrule
@@ -585,18 +617,19 @@ Finally, there are a number of important limitations to the meta-analytic more b
 In sum, understanding the psychological mechanisms underlying complex phenomena is a difficult inferential task: The researcher must develop a predictive and explanatory theory on the basis of limited and noisy experimental data. Here we have focused on language acquisition as a case study of how meta-analytic methods can be productively leveraged as a tool for theory building. Meta-analytic methods allow the researcher to  determine whether phenomena are robust, synthesize across contradictory findings, and ultimately, build an integrative theory across phenomena. Moving forward, we see this as a powerful tool in the researcher’s toolkit for developing quantitative theories to account for complex psychological phenomena.
 
 TO DO:
+  Data: 
   - check outlier points (kyle, alex)
+  - Axes labels on plots 3 and 4? For figure 4, if you don't restrict the range, it looks crazy (but then this feels dishonest, and differs from fig 3)
+  - what to do with control conditions?
+  - fix plot labels in adobe
+  
+  Writing:
+  - fix missing citations
+  - Write SI [description of systematicity + age vs. method on ES +  coded papers reporting experimental data]
+  - write abstract
   - write theoretical para
   - clean up text (e.g. "particularly")
-  - fix plot labels in adobe
-  - Write SI [description of systematicity + age vs. method on ES +  coded papers reporting experimental data]
-  - what to do with control conditions
-  - deal with Alex's ps
-  - add more to p-curves?
-  - fix corr/r inconsistency (affects p-curve pointing)
-  - fix missing citations
-  - write abstract
-  - Axes labels on plots 3 and 4? For figure 4, if you don't restric tthe range, it looks crazy (but then this feels dishonest, and differs from fig 3)
+  - update ES table
 
 #### Author Contributions
 ML, ST, CB, PP, AC, and MF wrote the paper. ML, ST, CB, AC, and MF coded papers for the meta-anaytic dataset. All authors contributed to data analysis. MB, MF, and ML developed the Metalab website infrastructure.  
@@ -620,8 +653,6 @@ nocite: |
   @lewisunpublished
   @colonnesi2010relation
   @cristiastatisticalinprep
-  @cristiaphonotacticsinprep
-
 ...
 
 ```{r create_r-references}

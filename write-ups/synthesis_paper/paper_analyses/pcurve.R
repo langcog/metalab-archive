@@ -9,7 +9,7 @@ pbound <- function(p) pmin(pmax(p, 2.2e-16), 1-2.2e-16)
 stouffer <- function(pp) sum(qnorm(pp), na.rm = TRUE) / sqrt(sum(!is.na(pp)))
 
 # get_ncp: finds non-centrality parameter for f distribution that gives some level of power
-get_ncp <- function(df1, df2, power, ALPHA) {      
+get_ncp <- function(df1, df2, power, ALPHA) {    
   ncp_error = function(ncp_est, power, x, df1, df2) {pf(x, df1 = df1, df2 = df2, ncp = ncp_est) - (1 - power)} # function uniroot funcitons over
   xc = qf(p = 1-ALPHA, df1 = df1, df2 = df2) 
   root <- uniroot(ncp_error, c(0, 35), x = xc, df1 = df1, df2 = df2, power = power)$root
@@ -17,16 +17,15 @@ get_ncp <- function(df1, df2, power, ALPHA) {
 }
 
 # get_all_pc_data: computes f, df, p, pp, and ncp33 values
-get_all_pc_data <- function(df, ALPHA, P_INCREMENT){
+get_all_pc_data <- function(df, ALPHA, P_INCREMENT, transform){
   
-  df = mutate(df, F = ifelse(participant_design == "within_one" & dataset == "Pointing and vocabulary",
-                             (corr ^ 2 * (n_1 -2))/ (1 - corr ^ 2), F), # from Sirkin ("Statistics for the Social Sciences", pg. 505)
-                  df2 = n_1-1,
-                  df1 = 1) # move this below.
-  df %>%
-    filter(!is.na(t)|!is.na(F)) %>%
-    mutate(f.value = ifelse(is.na(t), F, t**2), # turn ts into Fs by squaring them
-           df2 = ifelse(participant_design == "between", (n_1 + n_2)-2, n_1-1),
+  df %>% # convert rs and ts to fs, then get p-values
+    mutate(f.value = ifelse(!is.na(r), (r ^ 2 * (n_1 -2))/ (1 - r ^ 2), F)) %>% # from Sirkin ("Statistics for the Social Sciences", pg. 505)
+    mutate(f.value = ifelse(is.na(f.value) & !is.na(t), t**2, f.value)) %>%
+    mutate(f.transform = ifelse(is.na(f.value), (r_calc ^ 2 * (n_1 -2))/ (1 - r_calc ^ 2), NA)) %>% # convert missing Fs from r_calc
+    mutate(f.value = ifelse(is.na(f.value) & transform, f.transform, f.value)) %>%
+    filter(!is.na(f.value)) %>%
+    mutate(df2 = ifelse(participant_design == "between", (n_1 + n_2)-2, n_1-1),
            df1 = 1,
            p = pbound(1 - pf(f.value, df1 = df1, df2 = df2)), # recompute ps from df and bind to level of precision desired
            p_round = (ceiling(p /P_INCREMENT) * P_INCREMENT)) %>%
@@ -39,7 +38,7 @@ get_all_pc_data <- function(df, ALPHA, P_INCREMENT){
            prop25 = 3 * prop33(ALPHA/2, ncp33, df1, df2, ALPHA), # share of p-values expected to be p<.025 if 33% power
            pp33.half = ifelse(p < ALPHA/2, (1 / prop25) * (pf(f.value, df1, df2, ncp = ncp33) - (1 - prop25)), NA)) %>%
     mutate_each(funs(pbound), c(ppr.full, ppr.half, pp33.full, pp33.half)) %>%
-    select(dataset, study_ID, d_var_calc, d_calc, p, p_round, f.value, df1, df2, ppr.full, ppr.half, pp33.full, pp33.half, ncp33)
+    select(dataset, study_ID, d_var_calc, d_calc, p, p_round, f.value, f.transform, df1, df2, ppr.full, ppr.half, pp33.full, pp33.half, ncp33)
 }
 
 
