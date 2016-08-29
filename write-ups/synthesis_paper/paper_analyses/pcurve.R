@@ -19,19 +19,10 @@ get_ncp <- function(df1, df2, power, ALPHA) {
 # get_all_pc_data: computes f, df, p, pp, and ncp33 values
 get_all_pc_data <- function(df, ALPHA, P_INCREMENT){
   
-  # Statistical sound learning is missing test statistics, here we backed them out using means and SD
-  # the correct test for within design is a paired t-test, but we only have group-level means available. 
-  # so we, assume a two-sample t-test where the samples are the same size.
-  # t_two sample: x_1 - x_2/ sqrt(((SD_1^2)/n_1) + ((SD_2^2)/n_2))
-  df = mutate(df, t = ifelse(participant_design == "within_two" & dataset == "Statistical sound category learning",
-                        x_1 - x_2 / sqrt(((SD_1^2)/n_1) + ((SD_2^2)/n_1)),
-                        ifelse(participant_design == "within_one" & dataset == "Statistical sound category learning", 
-                               x_1 - x_2 / sqrt(((SD_1^2)/n_1) + ((SD_1^2)/n_1)), t)))
   df = mutate(df, F = ifelse(participant_design == "within_one" & dataset == "Pointing and vocabulary",
                              (corr ^ 2 * (n_1 -2))/ (1 - corr ^ 2), F), # from Sirkin ("Statistics for the Social Sciences", pg. 505)
                   df2 = n_1-1,
-                  df1 = 1)
-  print("hey")
+                  df1 = 1) # move this below.
   df %>%
     filter(!is.na(t)|!is.na(F)) %>%
     mutate(f.value = ifelse(is.na(t), F, t**2), # turn ts into Fs by squaring them

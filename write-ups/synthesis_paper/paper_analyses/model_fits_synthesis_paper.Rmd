@@ -281,11 +281,8 @@ single_method_datasets = c("Gaze following",
 
 all_data.resid = data.frame()
 for (i in 1:length(datasets$name)) {
-    all_data = all_data %>%
-          filter(dataset != "Gaze following" | d_calc > 0) # remove negative ES for gaze following
-          
-    d = filter(all_data, dataset == datasets$name[i])
-    print(datasets$name[i])
+    d = filter(all_data, dataset == datasets$name[i],
+               dataset != "Gaze following" | d_calc > 0) # remove negative ES for gaze following
     if (datasets$name[i] %in% single_method_datasets) {
       full.model = rma(d_calc, vi = d_var_calc, data = d, method = "REML")
     } else {

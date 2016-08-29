@@ -252,6 +252,13 @@
   example:
   required:     yes
 
+- field:        r
+  description:  Pearson's correlation coeffecient used to calculate effect size.
+  type:         numeric
+  format:
+  example:
+  required:     yes
+
 - field:        d
   description:  Cohen's d effect size measure
   type:         numeric
@@ -374,13 +381,6 @@
   example:
   required:     no
 
-- field:        r
-  description:
-  type:         numeric
-  format:
-  example:
-  required:     no
-
 - field:        contrast_sampa
   description:
   type:         string
@@ -443,3 +443,28 @@
   format:
   example:
   required:     no
+
+- field:        pointing_modality
+  description:  production or comprehension
+  type:         string
+  format:
+  example:
+  required:     no
+
+- field:        motive
+  description:  declarative, imperative or general
+  type:         string
+  format:
+  example:
+  required:     no
+
+- field:        correlation_type
+  description:  longitudinal or concurrent
+  type:         string
+  format:
+  example:
+  required:     no
+
+
+
+
