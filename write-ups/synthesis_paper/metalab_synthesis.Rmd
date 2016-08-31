@@ -51,7 +51,7 @@ output: papaja::apa6_pdf
 ---
 
 ```{r message = FALSE, warning = FALSE}
-knitr::opts_chunk$set(warning = FALSE, message = FALSE, cache = FALSE, fig.pos = "T")
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, cache = TRUE, fig.pos = "T")
 require("papaja")
 apa_prepare_doc() # prepare document for rendering
 ```
@@ -84,10 +84,9 @@ library(knitr)
 library(lme4)
 library(directlabels)
 library(ggrepel)
-# Tried installling packrat, but got error: Error in hash(descFile) : 
-#No DESCRIPTION file at path #'/Documents/GRADUATE_SCHOOL/Projects/metalab/metalab/write-ups/synthesis_paper/packrat#/lib/x86_64-apple-darwin13.4.0/3.2.1/BH/DESCRIPTION'!
+library(boot)
 
-# Remove incomplet/longitidinal MAs
+# Remove incomplete/longitidinal MAs
 all_data <- filter(all_data, dataset != "Statistical word segementation") %>%
             filter(dataset != "Pointing and vocabulary (longitudinal)")
 
@@ -263,8 +262,7 @@ ggplot(funnel.es.data, aes(x = es, y = -se)) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey44",  size = .8) +
   scale_y_continuous(labels = function(x){abs(x)}) +
   geom_point(size = .5) +
-  theme(#panel.background = element_rect(fill = "gray"),
-        panel.grid.major = element_line(colour = "grey", size = 0.2),
+  theme(panel.grid.major = element_line(colour = "grey", size = 0.2),
         panel.grid.minor = element_line(colour = "grey", size = 0.5),
         strip.text.x = element_text(size = 9),
         strip.background = element_rect(fill="grey")) 
@@ -297,18 +295,18 @@ eggers.data = all_data %>%
 ```
 
 ## P-curves
-```{r p_curve_plots,  fig.pos = "T!",  fig.width=7.5, fig.height=6, fig.cap = "P-curve for each meta-analysis (Simonsohn, Nelson, & Simmons, 2014), except those for which p-values were unavailable. In the absense of p-hacking, we should expect the observed p-curve (blue) to be right-skewed (more small values). The red dashed line shows the expected distribution of p-values when the effect is non-existent (the null is true). The green dashed line shows the expected distribution if the effect is real, but studies only have 33% power."}
-
+```{r get_pcurves}
 ALPHA = .05
 P_INCREMENT = .01 
 
 pc.data <- get_all_pc_data(all_data, ALPHA, P_INCREMENT, transform = TRUE)
 
 p.source = pc.data %>%
-  select(f.transform, f.value,dataset, study_ID) %>%
+  select(f.transform, f.value, dataset, study_ID, p_round) %>%
   group_by(dataset) %>%
   summarise(n.total = n(),
-            n.transform = length(which(!is.na(f.transform)))) %>%
+            n.transform = length(which(!is.na(f.transform))),
+            sig.p = length(which(p_round< .05))) %>%
   mutate(dataset = plyr::revalue(dataset, 
                                  c("Infant directed speech preference"="IDS preference",
                                    "Statistical sound category learning"="Statistical sound learning", 
@@ -322,8 +320,52 @@ p.source = pc.data %>%
   arrange(-stat_only) %>%
   mutate(prop.ts = 1-n.transform/n.total,
          prop.ts.string = as.character(round(prop.ts, digits = 2))) %>%
-  as.data.frame() 
+  as.data.frame()
+```
 
+```{r pcurve_CIS}
+prop.p <- function(d, i, p){
+  sum(d[i] == p) / sum(d[i] < ALPHA)
+}
+
+get.CI <- function(my.p, v, ci) {
+  boot.out = boot(data = v, prop.p, R = 1000, p = my.p)
+  if (ci == "upper") {
+    quantile(boot.out$t, 0.975, na.rm = T)
+  } else {
+    quantile(boot.out$t, 0.025, na.rm = T)
+  }
+}
+
+get.all.CIS <- function(df) {
+  ps <-  seq(P_INCREMENT, ALPHA, P_INCREMENT)
+  lower = ps %>%
+    map(get.CI, df$p_round, "low") %>%
+    unlist()
+  upper= ps %>%
+    map(get.CI, df$p_round, "upper") %>%
+    unlist()
+  data.frame(dataset = df$dataset[1],
+             p = ps,
+             ci.lower = lower,
+             ci.upper = upper)
+}
+
+ci.data = pc.data %>%
+  split(.$dataset) %>%
+  map(function(data) get.all.CIS(data)) %>%
+  bind_rows() %>%
+  mutate(dataset = as.factor(dataset),
+         dataset = plyr::revalue(dataset, 
+                                 c("Infant directed speech preference"="IDS preference",
+                                   "Statistical sound category learning"="Statistical sound learning", 
+                                   "Label advantage in concept learning"="Concept-label advantage",
+                                   "Vowel discrimination (native)"="Vowel discrimination\n(native)",
+                                   "Vowel discrimination (non-native)"="Vowel discrimination\n(non-native)")))
+
+```
+
+```{r p_curve_plots,  fig.pos = "T!",  fig.width=7.5, fig.height=6, fig.cap = "P-curve for each meta-analysis (Simonsohn, Nelson, & Simmons, 2014), except those for which p-values were unavailable. In the absense of p-hacking, we should expect the observed p-curve (blue) to be right-skewed (more small values). The red dashed line shows the expected distribution of p-values when the effect is non-existent (the null is true). The green dashed line shows the expected distribution if the effect is real, but studies only have 33% power."}
 pc.data %>%
   group_by(dataset) %>%
   do(get_p_curve_df(., ALPHA, P_INCREMENT)) %>%
@@ -337,15 +379,19 @@ pc.data %>%
                                    "Vowel discrimination (non-native)"="Vowel discrimination\n(non-native)")),
          dataset = gdata::reorder.factor(dataset, 
                                     new.order = c(2,6,10,11,9,12,4,8,3,5,1,7)))  %>%
-  ggplot(aes(x = p, y = value)) + 
-  geom_line(size = 1, aes(linetype = measure, color = measure)) +
+  ggplot() + 
+  facet_wrap(~ dataset, nrow = 3) +
+  geom_ribbon(aes(ymin = ci.lower, ymax = ci.upper, x = p), fill = "grey70", data = ci.data) +
+  geom_line(size = 1, aes(x = p, y = value, linetype = measure, color = measure)) +
   scale_colour_manual(name = "", values = c("red", "green", "blue"), 
                       labels=c("Null of no effect", "Null of 33% power", "Observed")) +
   scale_linetype_manual(values = c("dashed", "dashed", "solid"), guide = FALSE)  +
   ylab("Proportion p-values\n") +
   xlab("p-value") +
-  facet_wrap(~ dataset, nrow = 3) +
-  geom_text(aes(label = prop.ts.string, x = .045, y = .8), data = p.source, colour = "black") +
+  geom_text(aes(label = paste("num. total = ", n.total), x = .035, y = .87), data = p.source, 
+            colour = "black", size = 2) +
+  geom_text(aes(label = paste("prop. test stat. = ", prop.ts.string), x = .035, y = .8), data = p.source, colour = "black", size = 2) +
+  geom_text(aes(label = paste("num. sig. ps = ", sig.p), x = .035, y = .73), data = p.source, colour = "black", size = 2) +
   theme_bw() + 
   theme(legend.position = "top",
         legend.key = element_blank(),
@@ -388,10 +434,11 @@ table.data = left_join(select(all_ds, c(short_name, d_string)), fsn.package.data
                                                    "Statistical sound category learning"= "Statistical sound learning",
                                                    "Label advantage in concept learning" =  "Concept-label advantage"))) %>%
               mutate(egg_string = sub("(0)", "(< .01)", egg_string, fixed = T),
-                     stouff_string = sub("(0)", "(< .01)", egg_string, fixed = T), # fix p = 0
+                     stouff_string = sub("(0)", "(< .01)", stouff_string, fixed = T), # fix p = 0
                      fsn_string = sub("Inf", "na", fsn_string)) 
 
-# kable(table.data, format = "latex", booktabs = TRUE) # paste below (so can edit latex - remove \addlinespace, fix header and row formatting)
+# paste below (so can edit latex - remove \addlinespace, fix header and row formatting):
+# kable(table.data, format = "latex", booktabs = TRUE) 
 # header:	\textbf{Phenomenon}& \textbf{\textit{d}} & \textbf{fail-safe-N} & \textbf{funnel skew} & \textbf{p-curve skew} &  \\
 ```
 
@@ -402,26 +449,25 @@ table.data = left_join(select(all_ds, c(short_name, d_string)), fsn.package.data
 \textbf{Phenomenon} & \textbf{\textit{d}} & \textbf{fail-safe-N} & \textbf{funnel skew} & \textbf{p-curve skew}\\
 \midrule
 
-IDS preference & 0.72 [0.54, 0.91] & 3762 & 1.26 (0.21) & 1.26 (0.21)\\
-Phonotactic learning & 0.04 [-0.09, 0.16] & 45 & -1.08 (0.28) & -1.08 (0.28)\\
-Vowel discrimination (native) & 0.59 [0.49, 0.7] & 9620 & 8.87 (< .01) & 8.87 (< .01)\\
-Vowel discrimination (non-native) & 0.66 [0.42, 0.9] & 3391 & 4.13 (< .01) & 4.13 (< .01)\\
-Statistical sound learning & -0.13 [-0.25, -0.01] & na & -1.58 (0.11) & -1.58 (0.11)\\
-Word segmentation & 0.2 [0.16, 0.25] & 5930 & 2.61 (0.01) & 2.61 (0.01)\\
-Mutual exclusivity & 1.01 [0.68, 1.33] & 6443 & 6.25 (< .01) & 6.25 (< .01)\\
-Sound symbolism & 0.15 [0.04, 0.26] & 538 & -1.32 (0.19) & -1.32 (0.19)\\
-Concept-label advantage & 0.4 [0.29, 0.51] & 3928 & 0.31 (0.76) & 0.31 (0.76)\\
-Online word recognition & 1.34 [0.86, 1.82] & 2043 & 2.16 (0.03) & 2.16 (0.03)\\
-Gaze following & 0.81 [0.24, 1.38] & 2527 & -1.66 (0.1) & -1.66 (0.1)\\
-Pointing and vocabulary & 0.98 [0.62, 1.34] & 1617 & 1.15 (0.25) & 1.15 (0.25)\\
-
+IDS preference & 0.72 [0.54, 0.91] & 3762 & 1.26 (0.21) & -10.7 (< .01)\\
+Phonotactic learning & 0.04 [-0.09, 0.16] & 45 & -1.08 (0.28) & -1.52 (0.06)\\
+Vowel discrimination (native) & 0.59 [0.49, 0.7] & 9620 & 8.87 (< .01) & -9.69 (< .01)\\
+Vowel discrimination (non-native) & 0.66 [0.42, 0.9] & 3391 & 4.13 (< .01) & -8.89 (< .01)\\
+Statistical sound learning & -0.13 [-0.25, -0.01] & na & -1.58 (0.11) & -1.16 (0.12)\\
+Word segmentation & 0.2 [0.16, 0.25] & 5930 & 2.61 (0.01) & -9.26 (< .01)\\
+Mutual exclusivity & 1.01 [0.68, 1.33] & 6443 & 6.25 (< .01) & -12.87 (< .01)\\
+Sound symbolism & 0.15 [0.04, 0.26] & 538 & -1.32 (0.19) & -2.33 (0.01)\\
+Concept-label advantage & 0.4 [0.29, 0.51] & 3928 & 0.31 (0.76) & -7.3 (< .01)\\
+Online word recognition & 1.34 [0.86, 1.82] & 2043 & 2.16 (0.03) & -14.8 (< .01)\\
+Gaze following & 0.81 [0.24, 1.38] & 2527 & -1.66 (0.1) & -17.46 (< .01)\\
+Pointing and vocabulary & 0.98 [0.62, 1.34] & 1617 & 1.15 (0.25) & -6.33 (< .01)\\
 
 \bottomrule
 \end{tabular}
 \caption{Summary of replicability analyses. \textit{d} = Effect size (Cohen's {\it d}) estimated from a random-effect model; fail-safe-N = number of missing studies that would have to exist in order for the overall effect size to be {\it d} = 0; funnel skew = test of asymmetry in funnel plot using the random-effect Egger's test (Stern \& Eggers, 2005); p-curve skew = test of the right skew of the p-curve using the Stouffer method (Simonsohn, Simmons, \& Nelson, 2015); Brackets give 95\% confidence intervals, and parentheses show p-values.}
 \end{table}
 
-Figure 2 shows p-curves for `r  length(unique(pc.data$dataset))` of our `r nrow(datasets)` meta-analyses.\footnote{We did not conduct p-curves on all meta-analyses because previously published meta-analyses did not include the original test statistics in the summary report (IDS preference and pointing and vocabulary). In other cases, the key test statistics were inappropriate for p-curve (online word recognition and gaze following).} With the exception of phonotactic learning, all p-curves show evidence of right skew (Table 2, column 5).
+Figure 2 shows p-curves for each of our `r nrow(datasets)` meta-analyses. All p-curves show evidence of right skew, with the exception of phonotactic learning and statistical sound learning (Table 2, column 5).
 
 In sum, then, meta-analytic methods, along with our dataset of effect sizes, provide an opportunity to assess the replicability of the field of language acquisition. Across a range of analyses, we find that this literature shows some evidence for bias, but overall, it is quite robust.
 
@@ -602,7 +648,7 @@ Our data allow us to begin to differentiate between this space of theories. Figu
 Building a theory of a complex psychological phenomenon requires making good inductive inferences from the available data. We suggest that meta-analysis can support this process by allowing the researcher to veridically describe the to-be-explained behavior, and to do so with high-fidelity. Here, we apply the  meta-analytic toolkit to the domain of language acquisition---a domain where there are concerns of replicability, and where high-fidelity data is needed to explain its complexity. We find that the existing literature in this domain describe mostly robust phenomena and thus should form the basis of theory development. We then offer a preliminary synthesis of the field by aggregating across phenomena. We find evidence that linguistic skills are acquired interactively rather than in a strictly stage-like fashion.
 
 In this paper, we focused on seldom-discussed theoretical motivations for building meta-analysis, but naturally, there are many other practical reasons for conducting a quantitative synthesis. For example, when planning an experiment, an estimate of the size of an effect on the basis of prior literature can inform the sample size needed to achieve a desired
-level of power. Meta-analytic estimates of effect sizes can also aid in design choices: If a certain paradigm or measure tends to yield overall larger effect sizes than another, the strategic researcher might select this paradigm in order to maximize the power achieved with a given sample size. These and other advantages, illustrated with the same database used here, are explained in Bergmann et al.\ (in prep). 
+level of power. Meta-analytic estimates of effect sizes can also aid in design choices: If a certain paradigm or measure tends to yield overall larger effect sizes than another, the strategic researcher might select this paradigm in order to maximize the power achieved with a given sample size. These and other advantages, illustrated with the same database used here, are explained in Bergmann et al.\ (in prep.). 
 
 Despite its potential, there are a number of important limitations to the meta-analytic method as tool for theory building in psychological research. One challenging issue is that in many cases method and phenomenon are confounded. This is problematic because a method with less noise than another will produce a bigger effect size for the same phenomenon. As a result, it is difficult to determine the extent to which a difference in effect size between two phenomena is due to an underlying difference in the phenomena, or merely to a difference in methods. While method may account for some variability in our dataset, we find that method does not have a large impact on effect size for phenomena, relative to other moderators like age (see SI; WORK ON THIS). Nevertheless, the covariance between method and phenomenon in our dataset limits our ability to directly compare effect sizes across phenomena.
 
@@ -610,7 +656,7 @@ Second, meta-analysis, like all analysis methods, requires the researcher to mak
 
 There are also limits to this method for inferring a meta-theory of language acquisition. Meta-theories of language acquisition suggest a particular causal relationship between different  skills and how they change over development. For example, the interactive theory suggests that skills at lower levels *support* the acquisition at higher levels, even before skills at lower levels are mastered. In the meta-analytic framework, this predicts that there should be simultaneous development of skills across the language hierarchy---as we observe in the current work. Importantly, however, this analysis is inherently correlational, and therefore we cannot directly infer a causal relationship between acquisition at lower levels and acquisition at higher levels. That is, while the observed pattern is consistent with the interactive theory, it is also possible that there is *no* causal relationship between skills across the language hierarchy, merely parallel trajectories of acquisition. For this reason, experimental work must go hand-in-hand with meta-analysis to address these types of causal questions.
 
-Finally, there are a number of important limitations to the meta-analytic more broadly. One issue is that the method relies on researchers conducting replications of the same study across a range of ages and, critically, reporting these data so that they can be used in meta-analyses. To the extent that researchers do not conduct these studies, or report the necessary statistics in their write-ups (e.g., means and standard deviations), the meta-analytic method cannot be applied. In addition, the meta-analytic method, as in the case of qualitative forms of synthesis (e.g., literature review), is limited by the potential presence of bias, which can come from a ranges of sources including non-representative participant populations, failure to publish null findings, and analytical degrees-of-freedom. To the extent these biases are present in the literature, methods of synthesizing these findings will also be biased.
+Finally, there are a number of important limitations to the meta-analytic method more broadly. One issue is that the method relies on researchers conducting replications of the same study across a range of ages and, critically, reporting these data so that they can be used in meta-analyses. To the extent that researchers do not conduct these studies, or report the necessary statistics in their write-ups (e.g., means and standard deviations), the meta-analytic method cannot be applied. In addition, the meta-analytic method, as in the case of qualitative forms of synthesis (e.g., literature review), is limited by the potential presence of bias, which can come from a ranges of sources including non-representative participant populations, failure to publish null findings, and analytical degrees-of-freedom. To the extent these biases are present in the literature, methods of synthesizing these findings will also be biased.
 
 [There are also large differences in the relative magnitude of ES of different skills. Theoretical point about overt skills have larger ES]
 
@@ -633,8 +679,6 @@ TO DO:
 
 #### Author Contributions
 ML, ST, CB, PP, AC, and MF wrote the paper. ML, ST, CB, AC, and MF coded papers for the meta-anaytic dataset. All authors contributed to data analysis. MB, MF, and ML developed the Metalab website infrastructure.  
-
-#### Acknowledgments
 
 \newpage
 

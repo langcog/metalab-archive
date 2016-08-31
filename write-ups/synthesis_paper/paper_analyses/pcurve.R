@@ -22,7 +22,8 @@ get_all_pc_data <- function(df, ALPHA, P_INCREMENT, transform){
   df %>% # convert rs and ts to fs, then get p-values
     mutate(f.value = ifelse(!is.na(r), (r ^ 2 * (n_1 -2))/ (1 - r ^ 2), F)) %>% # from Sirkin ("Statistics for the Social Sciences", pg. 505)
     mutate(f.value = ifelse(is.na(f.value) & !is.na(t), t**2, f.value)) %>%
-    mutate(f.transform = ifelse(is.na(f.value), (r_calc ^ 2 * (n_1 -2))/ (1 - r_calc ^ 2), NA)) %>% # convert missing Fs from r_calc
+    mutate(N_total = ifelse(is.na(n_2), n_1*2, n_1 + n_2),
+           f.transform = ifelse(is.na(f.value), ((d_calc/2)^2) * N_total, NA)) %>% # convert missing Fs from d_calc
     mutate(f.value = ifelse(is.na(f.value) & transform, f.transform, f.value)) %>%
     filter(!is.na(f.value)) %>%
     mutate(df2 = ifelse(participant_design == "between", (n_1 + n_2)-2, n_1-1),
@@ -38,8 +39,9 @@ get_all_pc_data <- function(df, ALPHA, P_INCREMENT, transform){
            prop25 = 3 * prop33(ALPHA/2, ncp33, df1, df2, ALPHA), # share of p-values expected to be p<.025 if 33% power
            pp33.half = ifelse(p < ALPHA/2, (1 / prop25) * (pf(f.value, df1, df2, ncp = ncp33) - (1 - prop25)), NA)) %>%
     mutate_each(funs(pbound), c(ppr.full, ppr.half, pp33.full, pp33.half)) %>%
-    select(dataset, study_ID, d_var_calc, d_calc, p, p_round, f.value, f.transform, df1, df2, ppr.full, ppr.half, pp33.full, pp33.half, ncp33)
+    select(dataset,study_ID, d_var_calc, d_calc, p, p_round, participant_design, r_calc, df1, df2, f.value,f.transform, ncp33, ppr.full, ppr.half, pp33.full, pp33.half)
 }
+
 
 
 # prop33: computes % of p-values that are smaller than critical p, for the tests submitted to p-curve, if power is 33%
