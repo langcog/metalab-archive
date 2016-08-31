@@ -1,0 +1,86 @@
+---
+title: "Infant Directed Speech Preference - ManyBabies"
+author: "Mike Frank"
+date: "This report was rendered on `r Sys.Date()` and will be automatically re-rendered nightly, reflecting any changes in the data or code."
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+ggplot2::theme_set(langcog::theme_mikabr(base_family = "Arial"))
+source("../dashboard/global.R", chdir = TRUE)
+```
+
+Get IDS pref data.
+
+```{r}
+idspref <- filter(all_data, dataset=="Infant directed speech preference")
+```
+
+General plot. 
+
+```{r}
+ggplot(idspref, 
+       aes(x = mean_age_months, y = d_calc)) +
+  geom_jitter(aes(size = n), alpha = 0.5) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey") +
+  scale_size_continuous(guide = FALSE) +
+  scale_x_continuous("Mean Age (Months)", breaks = c(0,3,6,9,12)) +
+  ylab("Effect Size (d)") + 
+  geom_smooth(aes(weight = 1/d_var_calc), col = "black",
+              method = "loess", span = 2, se = FALSE)
+```
+
+
+Funnel plot. 
+
+```{r}
+CRIT_95 <- 1.96 
+CRIT_99 <- 2.58
+
+model <- metafor::rma(d_calc ~ 1, vi = d_var_calc,
+                     slab = short_cite, data = idspref,
+                     method = "REML") 
+d <- data_frame(se = sqrt(model$vi), es = model$yi)
+center <- mean(d$es)
+xlabel <- "Effect Size (d)"
+ylabel <- "Standard Error"
+
+
+lower_lim <- max(d$se) + .05 * max(d$se)
+funnel95 <- data.frame(x = c(center - lower_lim * CRIT_95, center,
+                             center + lower_lim * CRIT_95),
+                       y = c(-lower_lim, 0, -lower_lim))
+
+left_lim99 <- ifelse(center - lower_lim * CRIT_99 < min(d$es),
+                     center - lower_lim * CRIT_99,
+                     min(d$es))
+right_lim99 <- ifelse(center + lower_lim * CRIT_99 > max(d$es),
+                      center + lower_lim * CRIT_99,
+                      max(d$es))
+funnel99 <- data.frame(x = c(center - lower_lim * CRIT_99, center,
+                             center + lower_lim * CRIT_99),
+                       y = c(-lower_lim, 0, -lower_lim))
+  
+    
+ggplot(d, aes(x = es, y = -se)) +
+  scale_x_continuous(limits = c(left_lim99, right_lim99)) +
+  scale_y_continuous(labels = function(x){abs(x)}) +
+  geom_polygon(aes(x = x, y = y), data = funnel95, alpha = .5,
+               fill = "white") +
+  geom_polygon(aes(x = x, y = y), data = funnel99, alpha = .5,
+               fill = "white") +
+  geom_vline(xintercept = center, linetype = "dotted", color = "black") +
+  # geom_vline(xintercept = 0, linetype = "dashed", color = "darkgrey") +
+  geom_point() +
+  xlab(xlabel) +
+  ylab(ylabel) +
+  geom_text(x = center + lower_lim * CRIT_95,
+            y = -lower_lim + lower_lim / 60, 
+            label = "p < .05", vjust = "bottom", hjust = "center") +
+  geom_text(x = center + lower_lim * CRIT_99,
+            y = -lower_lim + lower_lim / 60, 
+            label = "p < .01", vjust = "bottom", hjust = "center") +
+  theme(panel.background = element_rect(fill = "grey"),
+        panel.grid.major =  element_line(colour = "darkgrey", size = 0.2),
+        panel.grid.minor =  element_line(colour = "darkgrey", size = 0.5))
+```
