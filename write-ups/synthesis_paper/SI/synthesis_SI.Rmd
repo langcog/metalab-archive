@@ -29,7 +29,7 @@ opts_chunk$set(echo = T, message = F, warning = F,
                error = F, cache = F, tidy = F)
 ```
 
-```{r load data}
+```{r load data, include = F}
 source("../../../dashboard/global.R", chdir = TRUE)
 
 # Remove incomplete/longitidinal MAs
@@ -67,7 +67,7 @@ all_data$dataset = plyr::mapvalues(all_data$dataset , from = c("Pointing and voc
 ```
 
 ### Statistical approach
-Effect sizes were computed by a script, [compute_es.R](https://github.com/langcog/metalab/blob/master/scripts/compute_es.R). We calculated effect sizes from reported means and standard deviations where available, otherwise we rely on reporte test-statistics (*t* and *F*). Several pre-existing MAs deal with special cases, and these are listed in the script. Except where noted, formulas are from [Hedges & Olkin's textbook](http://www.amazon.com/Statistical-Methods-Meta-Analysis-Larry-Hedges/dp/0123363802). All analyses are conducted with the [metafor](http://www.metafor-project.org/doku.php) package, using random-effects models.
+Effect sizes were computed by a script, [compute_es.R](https://github.com/langcog/metalab/blob/master/scripts/compute_es.R). We calculated effect sizes from reported means and standard deviations where available, otherwise we relied on reported test-statistics (*t* and *F*). Several pre-existing MAs deal with special cases, and these are listed in the script. Except where noted, formulas are from [Hedges & Olkin's textbook](http://www.amazon.com/Statistical-Methods-Meta-Analysis-Larry-Hedges/dp/0123363802). All analyses are conducted with the [metafor](http://www.metafor-project.org/doku.php) package, using random-effects models.
 
 
 ### Search strategies
@@ -75,9 +75,18 @@ Meta-analyses were conducted by the authors for all but two phenomena (IDS prefe
 
 ```{r}
 datasets %>%
-  select(name, search_strategy)  %>%
-  mutate(name = as.factor(name)) %>%
-  .[c(1,6, 4, 5, 7,8,10,12,2,9,3,11),]  %>% 
+  select(name, search_strategy, internal_citation)  %>%
+  mutate(name = as.factor(name),
+         name = plyr::revalue(name, 
+                                 c("Infant directed speech preference"="IDS preference",
+                                   "Statistical sound category learning"="Statistical sound learning", 
+                                   "Label advantage in concept learning"="Concept-label advantage",
+                                   "Vowel discrimination (native)"="Native vowel discrimination",
+                                   "Vowel discrimination (non-native)"="Non-native vowel discrimination"))) %>%
+
+  mutate(name= paste(name, internal_citation)) %>%
+  select(-internal_citation) %>%
+  .[c(1, 6, 4, 5, 7, 8, 10, 12, 2, 9, 3, 11),]  %>% 
   kable(col.names = c("Phenomenon",  "Search Strategy"), row.names = F)
 ```
 
@@ -220,13 +229,12 @@ pc.data.all <- get_all_pc_data(all_data, ALPHA, P_INCREMENT, transform = TRUE)
 left_join(stouffer.data_all, stouffer.data, by = "dataset") %>%
   .[c(2,6,10,11,9,12,4,8,3,5,1,7),]  %>%
   kable(col.names = c("Phenomenon", "p-curve skew (all conditions)",
-                      "p-curve skew (p-values only from test-statistics)"))
-
+                      "p-curve skew (p-values only from test-statistics)"), align = c("l", "r", "r"))
 ```
 
 
 ### Method heterogeneity
-The plot below present model coefficients for method for datasets with more than one method.Coefficients are estimated from random-effects meta-analytic models.
+The plot below present model coefficients for method for datasets with more than one method. Coefficients are estimated from random-effects meta-analytic models.
 ```{r, fig.height = 6}
 
 single_method_datasets = c("Gaze following",
@@ -262,4 +270,30 @@ ggplot(method.betas, aes(x = dataset, y = betas, ymin = ci.lb, ymax = ci.ub, col
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 ```
+
+***
+***
+<h3> References </h3>
+Bergmann, C., & Cristia, A. (in press). Development of infants’ segmentation of words from native speech: A meta-analytic approach. _Developmental Science_.    
+
+Colonnesi, C., Stamsa, G. J., Kostera, I., & Noomb, M. J. (2010). The relation between pointing and language development: A meta-analysis. _Developmental Review_, 30, 352–366.
+                                                
+Cristia, A. (in prep.). Infants' phonology learning in the lab.    
+
+Dunst, C. J., Gorman, E., & Hamby, D. W. (2012). Preference for infant-directed speech in preverbal young children. _Center for Early Literacy Learning_, _5_(1).                
+
+Frank, M. C., Lewis, M., & MacDonald, K. (2016). A performance model for early wordlearning. In _Proceedings of the 38th Annual Conference of the Cognitive Science Society_.
+
+Hedges, L. V., & Olkin, I. (2014). _Statistical methods for meta-analysis_. Academic Press.
+
+Lammertink, I., Fort, M., Peperkamp, S., Fikkert, P., Guevara-Rukoz, A., & Tsuji, S. (2016). SymBuki: A meta-analysis on the sound-symbolic bouba-kiki effect in infants and toddlers. Poster presented at the XXI Biennial International Congress of Infant Studies, New Orleans, USA.
+
+Lewis, M. & Frank, M. (in prep.). Mutual exclusivity: A meta-analysis.  
+
+Lewis, M. & Long, B. (unpublished). A meta-analysis of the concept-label advantage.  
+
+Tsuji, S. & Cristia, A. (2014). Perceptual attunement in vowels: A meta-analysis. _Developmental Psychobiology_, _56_(2), 179-191.                                            
+                                                                                
+Viechtbauer, W. (2010). Conducting meta-analyses in R with the metafor package. _Journal of Statistical Software_, _36_(3), 1-48. URL: http://www.jstatsoft.org/v36/i03/
+
 

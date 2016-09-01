@@ -29,8 +29,7 @@ abstract: |
 note: |  
   Correspondence concerning this article should be addressed to Molly Lewis, Psychology Department, Stanford University. 450 Serra Mall, Stanford, CA 94305. E-mail: mll@stanford.edu.
   
-keywords: "developmental psychology,
-language acquisition, quantitative theories, meta-analysis"
+keywords: "developmental psychology, language acquisition, quantitative theories, meta-analysis"
 
 wordcount: "XXXX"
 
@@ -374,9 +373,22 @@ get.all.CIS <- function(df) {
              ci.upper = upper)
 }
 
+
+get.all.CIS.multi <- function(df) {
+  ps <-  seq(P_INCREMENT, ALPHA, P_INCREMENT)
+  props = ps %>%
+    map(function(p,d){sum(d == p)}, df$p_round) %>%
+    unlist()
+  cis = multinomialCI(props, alpha = .05)
+  data.frame(dataset = df$dataset[1],
+             p = ps,
+             ci.lower = cis[,1],
+             ci.upper = cis[,2])
+}
+
 ci.data = pc.data %>%
   split(.$dataset) %>%
-  map(function(data) get.all.CIS(data)) %>%
+  map(function(data) get.all.CIS.multi(data)) %>%
   bind_rows() %>%
   mutate(dataset = as.factor(dataset),
          dataset = plyr::revalue(dataset, 
@@ -387,7 +399,7 @@ ci.data = pc.data %>%
                                    "Vowel discrimination (non-native)"="Vowel discrimination\n(non-native)")))
 ```
 
-```{r p_curve_plots,  fig.pos = "T!",  fig.width=7.5, fig.height=6, fig.cap = "P-curve for each meta-analysis (Simonsohn, Nelson, & Simmons, 2014). In the absense of p-hacking, we should expect the observed p-curve (blue) to be right-skewed (more small values). The red dashed line shows the expected distribution of p-values when the effect is non-existent (the null is true). The green dashed line shows the expected distribution if the effect is real, but studies only have 33% power. Grey ribbons show bootstrapped 95%confidence intervals. Text on each facet (\"prop.\ test stat.\") shows the proportion of p-values that were derived from test statistics reported in the paper; all others were derived by conducting analyses on the descriptive statistics or transforming reported effect sizes. Each facet also shows the number of p-values for each dataset that are less than .05 and thus represented in each p-curve (\"num.\ sig.\ ps\"). "}
+```{r p_curve_plots,  fig.pos = "T!",  fig.width=7.5, fig.height=6, fig.cap = "P-curve for each meta-analysis (Simonsohn, Nelson, & Simmons, 2014). In the absense of p-hacking, we should expect the observed p-curve (blue) to be right-skewed (more small values). The red dashed line shows the expected distribution of p-values when the effect is non-existent (the null is true). The green dashed line shows the expected distribution if the effect is real, but studies only have 33% power. Grey ribbons show bootstrapped 95% confidence intervals. Text on each facet (\"prop.\ test stat.\") shows the proportion of p-values that were derived from test statistics reported in the paper; all others were derived by conducting analyses on the descriptive statistics or transforming reported effect sizes. Each facet also shows the number of p-values for each dataset that are less than .05 and thus represented in each p-curve (\"num.\ sig.\ ps\"). "}
 
 pc.data %>%
   group_by(dataset) %>%
@@ -517,7 +529,7 @@ for (i in 1:length(datasets$name)) {
 # merge in levels
 residualized.es = all_data.resid %>%
           left_join(ld.df) %>%
-          filter(dataset != "Pointing and vocabulary") %>%
+          #filter(dataset != "Pointing and vocabulary") %>%
           mutate(age.years = mean_age/365) 
 
 level.plot = 
@@ -645,29 +657,30 @@ level of power. Meta-analytic estimates of effect sizes can also aid in design c
 
 Despite its potential, there are a number of important limitations to the meta-analytic method as tool for theory building in psychological research. One challenging issue is that in many cases method and phenomenon are confounded. This is problematic because a method with less noise than another will produce a bigger effect size for the same phenomenon. As a result, it is difficult to determine the extent to which a difference in effect size between two phenomena is due to an underlying difference in the phenomena, or merely to a difference in methods. While method may account for some variability in our dataset, we find that method does not have a large impact on effect size for phenomena, relative to other moderators like age (see SI). Nevertheless, the covariance between method and phenomenon in our dataset limits our ability to directly compare effect sizes across phenomena.
 
-Second, meta-analysis, like all analysis methods, requires the researcher to make analytical decisions, and these decisions may be subject to the biases of the researcher. We believe that a virtue of the current approach is that we have applied the same analytical method across all phenomena we examined, thus limiting our “degrees of freedom” in the analysis. However, in some cases this uniform approach to data analysis means that we are unable to take into consideration aspects of a particular phenomenon that might be relevant. For example, in a stand-alone meta-analysis on vowel discrimination, Tsuji and Cristia (2014) elected only to include papers that tested at least two different age groups in order to minimize the bias introduced by experimenters tailoring their experimental designs to specifc age groups. Others however might have reasonably dealt with this issue in another way, by normalizing effect sizes across methods, for example. Notably, this analytical decision has consequences for interpretation: Tsuji and Cristia (2014) found a moderate increase in effect size with age, while the current analysis suggests a moderate decrease. We believe that the systematic, uniform analytical approach used here is the most likely to minimize bias by the researcher and reveal robust psychological phenomena. However, there may be cases where this one-size-fits-all approach is inappropriate, particularly in meta-analyses with high heterogeneity.
+Second, meta-analysis, like all analysis methods, requires the researcher to make analytical decisions, and these decisions may be subject to the biases of the researcher. We believe that a virtue of the current approach is that we have applied the same analytical method across all phenomena we examined, thus limiting our “degrees of freedom” in the analysis. However, in some cases this uniform approach to data analysis means that we are unable to take into consideration aspects of a particular phenomenon that might be relevant. For example, in a stand-alone meta-analysis on vowel discrimination, Tsuji and Cristia (2014) elected only to include papers that tested at least two different age groups in order to minimize the bias introduced by experimenters tailoring their experimental designs to specifc age groups. Others however might have reasonably dealt with this issue in another way, by normalizing effect sizes across methods, for example. Notably, this analytical decision has consequences for interpretation: Tsuji and Cristia (2014) found a moderate decrease in effect size with age for non-native vowel discrimintation, while the current analysis suggests a moderate increase. We believe that the systematic, uniform analytical approach used here is the most likely to minimize bias by the researcher and reveal robust psychological phenomena. However, there may be cases where this one-size-fits-all approach is inappropriate, particularly in meta-analyses with high heterogeneity.
 
 There are also limits to this method for inferring a meta-theory of language acquisition. Meta-theories of language acquisition suggest a particular causal relationship between different  skills and how they change over development. For example, the interactive theory suggests that skills at lower levels *support* the acquisition at higher levels, even before skills at lower levels are mastered. In the meta-analytic framework, this predicts that there should be simultaneous development of skills across the language hierarchy---as we observe in the current work. Importantly, however, this analysis is inherently correlational, and therefore we cannot directly infer a causal relationship between acquisition at lower levels and acquisition at higher levels. That is, while the observed pattern is consistent with the interactive theory, it is also possible that there is *no* causal relationship between skills across the language hierarchy, merely parallel trajectories of acquisition. For this reason, experimental work must go hand-in-hand with meta-analysis to address these types of causal questions.
 
 Finally, there are a number of important limitations to the meta-analytic method more broadly. One issue is that the method relies on researchers conducting replications of the same study across a range of ages and, critically, reporting these data so that they can be used in meta-analyses. To the extent that researchers do not conduct these studies, or report the necessary statistics in their write-ups (e.g., means and standard deviations), the meta-analytic method cannot be applied. In addition, the meta-analytic method, as in the case of qualitative forms of synthesis (e.g., literature review), is limited by the potential presence of bias, which can come from a ranges of sources including non-representative participant populations, failure to publish null findings, and analytical degrees-of-freedom. To the extent these biases are present in the literature, methods of synthesizing these findings will also be biased.
 
-[There are also large differences in the relative magnitude of ES of different skills. Theoretical point about overt skills have larger ES]
-
 In sum, understanding the psychological mechanisms underlying complex phenomena is a difficult inferential task: The researcher must develop a predictive and explanatory theory on the basis of limited and noisy experimental data. Here we have focused on language acquisition as a case study of how meta-analytic methods can be productively leveraged as a tool for theory building. Meta-analytic methods allow the researcher to  determine whether phenomena are robust, synthesize across contradictory findings, and ultimately, build an integrative theory across phenomena. Moving forward, we see this as a powerful tool in the researcher’s toolkit for developing quantitative theories to account for complex psychological phenomena.
 
-TO DO:
-  Data: 
-  - check outlier points (kyle, alex)
-  - Axes labels on plots 3 and 4? For figure 4, if you don't restrict the range, it looks crazy (but then this feels dishonest, and differs from fig 3)
-  - what to do with control conditions?
-  - fix plot labels in adobe
-  
-  Writing:
-  - Get missing systematicity descriptions (Alex)
-  - do method SI
-  - write abstract
-  - write theoretical para
-  - clean up text (e.g. "particularly")
+```{r, eval = F}
+#[There are also large differences in the relative magnitude of ES of different skills. Theoretical point about overt skills have larger ES]
+
+# TO DO:
+#   Data: 
+#   - check outlier points (kyle, alex)
+#   - Axes labels on plots 3 and 4? For figure 4, if you don't restrict the range, it looks crazy (but then this feels dishonest, and differs from fig 3)
+#   - what to do with control conditions?
+#   - fix plot labels in adobe
+#   
+#   Writing:
+#   - Get missing systematicity descriptions (Alex)
+#   - write abstract
+#   - write theoretical para
+#   - clean up text (e.g. "particularly")
+```
 
 #### Author Contributions
 ML, ST, CB, PP, AC, and MF wrote the paper. ML, ST, CB, AC, and MF coded papers for the meta-anaytic dataset. All authors contributed to data analysis. MB, MF, and ML developed the Metalab website infrastructure.  
