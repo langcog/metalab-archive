@@ -80,17 +80,14 @@ We take as our ultimate goal a broad theory of language acquisition that can exp
 ```{r load data}
 source("../../dashboard/global.R", chdir = TRUE)
 source("paper_analyses/pcurve.R")
-library(metafor)
 library(knitr)
-#library(lme4)
+library(metafor)
 library(directlabels)
-#library(ggrepel)
-#library(boot)
-library(MultinomialCI)
 
-# Remove incomplete/longitidinal MAs
-all_data <- filter(all_data, dataset != "Statistical word segementation") %>%
-            filter(dataset != "Pointing and vocabulary (longitudinal)")
+# remove inappropriate conditions
+all_data <- filter(all_data, dataset != "Statistical word segementation") %>% # incomplete MA
+            filter(dataset != "Pointing and vocabulary (longitudinal)") %>%  # longitidinal MA
+            filter(is.na(condition_type) | condition_type == "critical") # remove control conditions from labadv
 
 # need to recompute datasets summary data, based on filtered all_data
 studies <- all_data %>%
@@ -159,9 +156,8 @@ To assess the replicability of language acquisition phenomena, we conducted seve
 
 ## Meta-Analytic Effect Size
 ```{r, overall_d}
-
 overall_es <- function(ma_data){
-  model = metafor::rma(ma_data$d_calc, ma_data$d_var_calc, method = "REML",
+  model = rma(ma_data$d_calc, ma_data$d_var_calc, method = "REML",
                control = list(maxiter = 1000, stepadj = 0.5))
     data.frame(dataset = ma_data$short_name[1],
                overall.d = model$b,
@@ -199,7 +195,7 @@ Mutual exclusivity & 1.01 [0.68, 1.33] & 6443 & 6.25 (< .01) & -12.87 (< .01)\\
 Sound symbolism & 0.15 [0.04, 0.26] & 538 & -1.32 (0.19) & -2.33 (0.01)\\
 Concept-label advantage & 0.4 [0.29, 0.51] & 3928 & 0.31 (0.76) & -7.3 (< .01)\\
 Online word recognition & 1.34 [0.86, 1.82] & 2043 & 2.16 (0.03) & -14.8 (< .01)\\
-Gaze following & 0.81 [0.24, 1.38] & 2527 & -1.66 (0.1) & -17.46 (< .01)\\
+Gaze following & 1.26 [0.91, 1.61] & 4239 & 2.48 (0.01) & -18.66 (< .01)\\
 Pointing and vocabulary & 0.98 [0.62, 1.34] & 1617 & 1.15 (0.25) & -6.33 (< .01)\\
 
 \bottomrule
@@ -297,7 +293,7 @@ ggplot(funnel.es.data, aes(x = es, y = -se)) +
 ```{r, funnel_skew}
 eggers_tests <- function(ma_data){
     # model
-    model.mod = metafor::rma(ma_data$d_calc ~ma_data$mean_age_1, ma_data$d_var_calc,
+    model.mod = rma(ma_data$d_calc ~ma_data$mean_age_1, ma_data$d_var_calc,
                              method = "REML",
                 control = list(maxiter = 1000, stepadj = 0.5))
     
@@ -355,7 +351,7 @@ get.all.CIS.multi <- function(df) {
   props = ps %>%
     map(function(p,d){sum(d == p)}, df$p_round) %>%
     unlist()
-  cis = multinomialCI(props, alpha = .05)
+  cis = MultinomialCI::multinomialCI(props, alpha = .05)
   data.frame(dataset = df$dataset[1],
              p = ps,
              ci.lower = cis[,1],
@@ -448,7 +444,6 @@ table.data = left_join(select(all_ds, c(short_name, d_string)), fsn.package.data
 
 # paste above (so can edit latex - remove \addlinespace, fix header and row formatting):
 # kable(table.data, format = "latex", booktabs = TRUE) 
-# header:	\textbf{Phenomenon}& \textbf{\textit{d}} & \textbf{fail-safe-N} & \textbf{funnel skew} & \textbf{p-curve skew} &  \\ 
 ```
 
 
@@ -460,7 +455,7 @@ In sum, then, meta-analytic methods, along with our dataset of effect sizes, pro
 
 # Quantitative Evaluation of Theories
 
-Next, we turn to how these data can be used to constrain and develop theories of language acquisition. 
+Next, we turn to how these data can be used to constrain and develop theories of language acquisition.
 
 Meta-analytic methods provide a precise, quantitative description of the developmental trajectory of individual phenomena. Figure 3 presents the developmental trajectories of the phenomena in our dataset at each level in the linguistic hierarchy.\footnote{The pointing and vocabulary dataset is excluded from this analysis because it does not contain effect sizes at multiple ages.} By describing how effect sizes change as a function of age,  we can begin to understand what factors might moderate that trajectory, such as aspects of a child's experience or maturation.  For example, the meta-analysis on mutual-exclusivity [the bias for children to select a novel object, given a novel word; @markman1988] suggests a steep developmental trajectory of this skill. We then can use these data to build quantitative models to understand how aspects of experience (e.g., vocabulary development) or maturational constraints may be related to this trajectory [e.g., @frank2009using; @mcmurray2012word]. 
 
@@ -559,7 +554,7 @@ simulated.development = data.frame(age.years = c(x,x,x,x,x,x,x,x,x),
                                    residual.d = c(y1, y2, y3, y4, y5, y6, y7, y8, y9),
                                    dataset = c(rep(1:3, each=length(x)), rep(1:3, each=length(x)),
                                                rep(1:3, each=length(x))),
-                                   model = rep(c("Sequential", "Simultaneous", "Ad hoc"), each=length(x)*3),
+                                   model = rep(c("Sequential", "Simultaneous", "Other"), each=length(x)*3),
                                    n = 1)
 
 ## merge together fake and real
@@ -644,11 +639,8 @@ In sum, understanding the psychological mechanisms underlying complex phenomena 
 
 # TO DO:
 #   Data: 
-#   - check outlier points (kyle, alex)
 #   - Axes labels on plots 3 and 4? For figure 4, if you don't restrict the range, it looks crazy (but then this feels dishonest, and differs from fig 3)
-#   - what to do with control conditions?
-        # filter for for label advantage
-        # pair for alex's
+    # pair for alex's
 #   - fix plot labels in adobe
 #   - add pointing to meta-meta? looks kind of wonky.
 #   
@@ -658,6 +650,8 @@ In sum, understanding the psychological mechanisms underlying complex phenomena 
 #   - write theoretical para
 #   - clean up text (e.g. "particularly")
 #   - write cover letter
+
+# next: alex's stuff -> deal with figures.
 ```
 
 #### Author Contributions

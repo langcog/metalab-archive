@@ -93,7 +93,7 @@ Meta-Analysis}
           Mika Braginsky\textsuperscript{1},
           Sho Tsuji\textsuperscript{2},
           Christina Bergmann\textsuperscript{2},
-          Page Piccinini\textsuperscript{2},
+          Page Piccinini\textsuperscript{3},
           Alejandrina Cristia\textsuperscript{2},
           Michael C. Frank\textsuperscript{1}  }
 
@@ -103,12 +103,13 @@ Meta-Analysis}
   \affiliation{
     \vspace{0.5cm}
           \textsuperscript{1} Department of Psychology, Stanford University\\
-          \textsuperscript{2} Laboratoire de Sciences Cognitives et Psycholinguistique, ENS  }
+          \textsuperscript{2} Laboratoire de Sciences Cognitives et Psycholinguistique, ENS\\
+          \textsuperscript{3} NeuroPsychologie Interventionnelle (NPI), ENS  }
 
 
-%   \def\affinst{{"init", "Department of Psychology, Stanford University", "Laboratoire de Sciences Cognitives et Psycholinguistique, ENS"}}%
-%   \def\affstate{{"init", "", ""}}%
-%   \def\affcntry{{"init", "", ""}}%
+%   \def\affinst{{"init", "Department of Psychology, Stanford University", "Laboratoire de Sciences Cognitives et Psycholinguistique, ENS", "NeuroPsychologie Interventionnelle (NPI), ENS"}}%
+%   \def\affstate{{"init", "", "", ""}}%
+%   \def\affcntry{{"init", "", "", ""}}%
 
   \note{
     \vspace{1cm}
@@ -140,7 +141,7 @@ Meta-Analysis}
 %         Christina Bergmann, \pgfmathparse{\affdep[\authorid]} \pgfmathresult, \pgfmathparse{\affinst[\authorid]} \pgfmathresult, \pgfmathparse{\affcity[\authorid]} \pgfmathresult, \pgfmathparse{\affstate[\authorid]} \pgfmathresult, \pgfmathparse{\affcntry[\authorid]} \pgfmathresult
 %       %     ;
 %     %       %       \setcounter{author}{0}
-%         %           \addtocounter{author}{2}
+%         %           \addtocounter{author}{3}
 %         %         \expandafter\edef\csname authorid\endcsname{\theauthor}
 %         Page Piccinini, \pgfmathparse{\affdep[\authorid]} \pgfmathresult, \pgfmathparse{\affinst[\authorid]} \pgfmathresult, \pgfmathparse{\affcity[\authorid]} \pgfmathresult, \pgfmathparse{\affstate[\authorid]} \pgfmathresult, \pgfmathparse{\affcntry[\authorid]} \pgfmathresult
 %       %     ;
@@ -222,16 +223,16 @@ acquisition and demonstrate how the quantitative tools of meta-analysis
 can support theory building in psychological research.
 
 Meta-analysis is a quantitative method for aggregating across
-experimental findings (\textbf{???}; Glass, 1976). The fundamental unit
-of meta-analysis is the \emph{effect size}: a scale-free, quantitative
-measure of \enquote{success} in a phenomenon. Importantly, an effect
-size provides an estimate of the size of an effect, as well as a measure
-of uncertainty around this point estimate. With this quantitative
-measure, we can apply the same reasoning we use to aggregate noisy
-measurements over participants in a single study: By assuming each
-study, rather than participant, is sampled from a population, we can
-appeal to a statistical framework to combine estimates of the effect
-size for a given phenomenon.
+experimental findings (Glass, 1976; Hedges \& Olkin, 2014). The
+fundamental unit of meta-analysis is the \emph{effect size}: a
+scale-free, quantitative measure of \enquote{success} in a phenomenon.
+Importantly, an effect size provides an estimate of the size of an
+effect, as well as a measure of uncertainty around this point estimate.
+With this quantitative measure, we can apply the same reasoning we use
+to aggregate noisy measurements over participants in a single study: By
+assuming each study, rather than participant, is sampled from a
+population, we can appeal to a statistical framework to combine
+estimates of the effect size for a given phenomenon.
 
 Meta-analytic methods support theory building in several ways. First,
 they provide a way to evaluate which effects in a literature are most
@@ -289,7 +290,7 @@ relatively rare in the field.
 
 We take as our ultimate goal a broad theory of language acquisition that
 can explain and predict the range of linguistic skills a child acquires.
-Toward this end, we developed a dataset of effect sizes in the language
+Toward this end, we collected a dataset of effect sizes in the language
 acquisition literature across 12 phenomena
 (\href{http://metalab.stanford.edu}{Metalab;
 http://metalab.stanford.edu/}). We demonstrate how meta-analysis
@@ -299,15 +300,15 @@ in language acquisition research. We find broadly that this literature
 has strong evidential value, and thus that the effects reported in the
 literature should constrain our theorizing of language acquisition. We
 then turn toward the task of synthesizing these findings across
-phenomena and offer an example of quantitative evaluation of theories.
+phenomena and offer a preliminary, quantitative synthesis of the field.
 
 \section{Method}\label{method}
 
 We analyzed 12 different phenomena in language acquisition (Table 1).
-These phenomena cover development at many different levels of the
-language hierarchy, from the acquisition of prosody and phonemic
-contrasts, to gaze following in communicative interaction. This wide
-range of phenomena allowed us to compare the course of development
+These phenomena cover development at many different levels of linguistic
+representation and processing, from the acquisition of prosody and
+phonemic contrasts, to gaze following in communicative interaction. This
+wide range of phenomena allowed us to compare the course of development
 across different domains, as well as to explore questions about the
 interactive nature of language acquisition. We selected these particular
 phenomena because of high prevalence in the literature or because a
@@ -317,13 +318,14 @@ To obtain estimates of effect size, we either coded or adapted others'
 coding of papers reporting experimental data (see SI for details).
 Within each paper, we calculated a separate effect size estimate for
 each experiment and age group (we refer to this as a
-\enquote{condition}). In total, our sample includes estimates from 231
-papers, 881 different conditions and 10,741 participants. The process
-for selecting papers from the literature differed by domain, with some
+\enquote{condition}). In total, our sample includes estimates from 229
+papers, 830 different conditions and 9,849 participants. The process for
+selecting papers from the literature differed by domain, with some
 individual meta-analyses using more systematic approaches than others
 (see SI for specific search strategies). Nevertheless, meta-analytic
 methods for aggregating even the smallest sample of studies is likely to
-be less biased than qualitative methods(\textbf{???}).
+be less biased than qualitative methods (Valentine, Pigott, \&
+Rothstein, 2010).
 
 \renewcommand{\arraystretch}{1.5}
 
@@ -344,7 +346,7 @@ be less biased than qualitative methods(\textbf{???}).
             & 20 (60)             \\
             ~ &   Sound Symbolism \newline {\scriptsize (Lammertink et al., 2016)} &{\scriptsize  Bias to assume a non-arbitrary relationship between form and meaning ("bouba-kiki effect") in forced-choice paradigms.}
             & 10 (42)             \\
-            ~              & Concept-label advantage   \newline {\scriptsize (Lewis \& Long, unpublished)}     & {\scriptsize Infants' categorization judgments in the presence and absence of labels.    } & 16 (100) \\
+            ~              & Concept-label advantage   \newline {\scriptsize (Lewis \& Long, unpublished)}     & {\scriptsize Infants' categorization judgments in the presence and absence of labels.    } & 14 (49) \\
             ~              & Online word recognition \newline {\scriptsize (Frank, Lewis, \& MacDonald, 2016)} & {\scriptsize Online word recognition of familiar words using two-alternative forced choice preferential looking.   }              & 6 (15)                         \\
             Communication  & Gaze following  \newline {\scriptsize  (Frank, Lewis, \& MacDonald, 2016)}        & {\scriptsize Gaze following using standard multi-alternative forced-choice paradigms.   }                       & 12 (33)                                           \\
             ~              & Pointing and vocabulary  \newline {\scriptsize (Colonnesi et al., 2010)}          & {\scriptsize Concurrent correlations between pointing and vocabulary.}  & 12 (12)                         \\ 
@@ -380,7 +382,7 @@ size estimates for each of our phenomena. We find evidence for a
 non-zero effect size in 11 out of 12 of the phenomena in our dataset,
 suggesting these literatures provide evidential value. In the case of
 phonotactic learning, however, we find that the meta-analytic effect
-size estimate does not differ from zero, suggesting that this literature
+size estimate does not differ from zero, indicating that this literature
 does not describe a robust effect (Cristia, in prep.).
 
 We next turn to methods of assessing evidential value that describe the
@@ -406,7 +408,7 @@ Mutual exclusivity & 1.01 [0.68, 1.33] & 6443 & 6.25 (< .01) & -12.87 (< .01)\\
 Sound symbolism & 0.15 [0.04, 0.26] & 538 & -1.32 (0.19) & -2.33 (0.01)\\
 Concept-label advantage & 0.4 [0.29, 0.51] & 3928 & 0.31 (0.76) & -7.3 (< .01)\\
 Online word recognition & 1.34 [0.86, 1.82] & 2043 & 2.16 (0.03) & -14.8 (< .01)\\
-Gaze following & 0.81 [0.24, 1.38] & 2527 & -1.66 (0.1) & -17.46 (< .01)\\
+Gaze following & 1.26 [0.91, 1.61] & 4239 & 2.48 (0.01) & -18.66 (< .01)\\
 Pointing and vocabulary & 0.98 [0.62, 1.34] & 1617 & 1.15 (0.25) & -6.33 (< .01)\\
 
 \bottomrule
@@ -421,14 +423,15 @@ How many missing studies with null effects would have to exist in the
 \enquote{file drawer} in order for the overall effect size to be zero?
 This is called the \enquote{fail-safe} number of studies (Orwin, 1983).
 This number provides an estimate of the size and variance of an effect
-using the intuitive unit of studies. To estimate this number, we
-estimated the overall effect size for each phenomenon (Table 2, column
-2), and then used this to estimate the fail-safe-N (Table 2, column 3).
+using the intuitive unit of number of studies. To estimate this number,
+we estimated the overall effect size for each phenomenon (Table 2,
+column 2), and then used this to estimate the fail-safe-N (Table 2,
+column 3).
 
 Because of the large number of positive studies in many of the
 meta-analyses we assessed, this analysis suggests a very large number of
 studies would have to be \enquote{missing} in each literature (\(M\) =
-3832) in order for the overall effect sizes to be 0. Thus, while it is
+3633) in order for the overall effect sizes to be 0. Thus, while it is
 possible that some reporting bias is present in the literature, the
 large fail-safe-N suggests that the literature nonetheless likely
 describes a real effect.
@@ -436,10 +439,10 @@ describes a real effect.
 This analysis provides a quantitative estimate of the size of an effect
 in an intuitive unit, but it does not assess analytical or publication
 bias (Scargle, 1999). Importantly, if experimenters are exercising
-analytical flexibility through practices like selective reporting and
-p-hacking, then the number and magnitude of observed true effects in the
-literature may be greatly inflated. In the next analysis, we assess the
-presence of bias through funnel plots.
+analytical flexibility through practices like selective reporting of
+analyses or p-hacking, then the number and magnitude of observed true
+effects in the literature may be greatly inflated. In the next analysis,
+we assess the presence of bias through funnel plots.
 
 \subsection{Funnel Plots}\label{funnel-plots}
 
@@ -455,7 +458,7 @@ plots show evidence of asymmetry (bias) for several of our phenomenon
 (Table 2, column 4). However, an important limitation of this method is
 that it is difficult to determine the source of this bias. One
 possibility is that this bias reflects true heterogeneity in phenomena
-(e.g.~different
+(e.g., different
 ages).\footnote{The role of moderators such as age can be interactively explored on the MetaLab website (www.metalab.stanford.edu).}
 P-curve analyses provide one method for addressing this issue, which we
 turn to next.
@@ -541,9 +544,9 @@ meta-analysis on mutual-exclusivity (the bias for children to select a
 novel object, given a novel word; Markman \& Wachtel, 1988) suggests a
 steep developmental trajectory of this skill. We then can use these data
 to build quantitative models to understand how aspects of experience
-(e.g.~vocabulary development) or maturational constraints may be related
-to this trajectory (e.g., Frank, Goodman, \& Tenenbaum, 2009; McMurray,
-Horst, \& Samuelson, 2012).
+(e.g., vocabulary development) or maturational constraints may be
+related to this trajectory (e.g., Frank, Goodman, \& Tenenbaum, 2009;
+McMurray, Horst, \& Samuelson, 2012).
 
 \begin{figure}[htbp]
 \centering
@@ -596,7 +599,7 @@ knowledge at higher levels. There is a wide range of evidence consistent
 with this view. For example, there is evidence that prosody supports the
 acquisition of sound categories (e.g., Werker et al., 2007), word
 boundaries (e.g., Jusczyk, Houston, \& Newsome, 1999), grammatical
-categories (e.g. Shi, Werker, \& Morgan, 1999), and even word learning
+categories (e.g., Shi, Werker, \& Morgan, 1999), and even word learning
 (e.g., Shukla et al., 2011).
 
 A second possibility is that there is interactivity in the language
@@ -614,7 +617,8 @@ suggests word learning supports the acquisition of lower-level
 information like phonemes (Feldman et al., 2013). More broadly, there is
 evidence that higher level skills like word learning may be acquired
 relatively early in development, likely before lower level skills have
-been mastered (e.g., Bergelson \& Swingley, 2012).
+been mastered (Bergelson \& Swingley, 2012; e.g., Tincoff \& Jusczyk,
+1999).
 
 These two theories make different predictions about relative
 trajectories of skills across development. Within the meta-analytic
@@ -647,29 +651,30 @@ language acquisition.
 \section{Discussion}\label{discussion}
 
 Building a theory of a complex psychological phenomenon requires making
-good inductive inferences from the available data. We suggest that
-meta-analysis can support this process by allowing the researcher to
-veridically describe the to-be-explained behavior, and to do so with
-high-fidelity. Here, we apply the meta-analytic toolkit to the domain of
-language acquisition---a domain where there are concerns of
-replicability, and where high-fidelity data is needed to explain its
-complexity. We find that the existing literature in this domain describe
-mostly robust phenomena and thus should form the basis of theory
-development. We then offer a preliminary synthesis of the field by
-aggregating across phenomena. We find evidence that linguistic skills
-are acquired interactively rather than in a strictly stage-like fashion.
+good inductive inferences from the available data. Meta-analysis can
+support this process by providing a toolkit for quantitative description
+of individual behaviors and their relationship to important moderators
+(e.g., age, in our case). Here, we apply the meta-analytic toolkit to
+the domain of language acquisition---a domain where there are concerns
+of replicability, and where high-fidelity data is needed to explain its
+complexity. We find that the existing literature in this domain
+describes mostly robust phenomena and thus should form the basis of
+theory development. We then aggregate across phenemona to offer the
+first quantitative synthesis of the field. We find evidence that
+linguistic skills are acquired interactively rather than in a strictly
+stage-like fashion.
 
-In this paper, we focused on seldom-discussed theoretical motivations
-for building meta-analysis, but naturally, there are many other
-practical reasons for conducting a quantitative synthesis. For example,
-when planning an experiment, an estimate of the size of an effect on the
-basis of prior literature can inform the sample size needed to achieve a
-desired level of power. Meta-analytic estimates of effect sizes can also
-aid in design choices: If a certain paradigm or measure tends to yield
-overall larger effect sizes than another, the strategic researcher might
-select this paradigm in order to maximize the power achieved with a
-given sample size. These and other advantages, illustrated with the same
-database used here, are explained in Bergmann et al.~(in prep.).
+In this paper, we focused on theoretical motivations for building
+meta-analysis, but naturally, there are many other practical reasons for
+conducting a quantitative synthesis. For example, when planning an
+experiment, an estimate of the size of an effect on the basis of prior
+literature can inform the sample size needed to achieve a desired level
+of power. Meta-analytic estimates of effect sizes can also aid in design
+choices: If a certain paradigm or measure tends to yield overall larger
+effect sizes than another, the strategic researcher might select this
+paradigm in order to maximize the power achieved with a given sample
+size. These and other advantages, illustrated with the same database
+used here, are explained in Bergmann et al.~(in prep.).
 
 Despite its potential, there are a number of important limitations to
 the meta-analytic method as tool for theory building in psychological
@@ -679,11 +684,12 @@ less noise than another will produce a bigger effect size for the same
 phenomenon. As a result, it is difficult to determine the extent to
 which a difference in effect size between two phenomena is due to an
 underlying difference in the phenomena, or merely to a difference in
-methods. While method may account for some variability in our dataset,
-we find that method does not have a large impact on effect size for
-phenomena, relative to other moderators like age (see SI). Nevertheless,
-the covariance between method and phenomenon in our dataset limits our
-ability to directly compare effect sizes across phenomena.
+they way it was tested. While method may account for some variability in
+our dataset, we find that method does not have a large impact on effect
+size for phenomena, relative to other moderators like age (see SI).
+Nevertheless, the covariance between method and phenomenon in our
+dataset limits our ability to directly compare effect sizes across
+phenomena.
 
 Second, meta-analysis, like all analysis methods, requires the
 researcher to make analytical decisions, and these decisions may be
@@ -749,9 +755,9 @@ case study of how meta-analytic methods can be productively leveraged as
 a tool for theory building. Meta-analytic methods allow the researcher
 to determine whether phenomena are robust, synthesize across
 contradictory findings, and ultimately, build an integrative theory
-across phenomena. Moving forward, we see this as a powerful tool in the
-researcher's toolkit for developing quantitative theories to account for
-complex psychological phenomena.
+across phenomena. Moving forward, we see meta-analysis as a powerful
+tool in the researcher's toolkit for developing quantitative theories to
+account for complex psychological phenomena.
 
 \paragraph{Author Contributions}\label{author-contributions}
 
@@ -842,6 +848,10 @@ Glass, G. V. (1976). Primary, secondary, and meta-analysis of research.
 Goodman, N. D., Ullman, T. D., \& Tenenbaum, J. B. (2011). Learning a
 theory of causality. \emph{Psychological Review}, \emph{118}(1), 110.
 
+\hypertarget{ref-hedges2014statistical}{}
+Hedges, L. V., \& Olkin, I. (2014). \emph{Statistical methods for
+meta-analysis}. Academic press.
+
 \hypertarget{ref-ioannidis2005most}{}
 Ioannidis, J. P. (2005). Why most published research findings are false.
 \emph{PLoS Med}, \emph{2}(8), e124.
@@ -931,10 +941,21 @@ Sterne, J. A., \& Egger, M. (2005). Regression methods to detect
 publication and other bias in meta-analysis. \emph{Publication Bias in
 Meta-Analysis: Prevention, Assessment, and Adjustments}, 99--110.
 
+\hypertarget{ref-tincoff1999some}{}
+Tincoff, R., \& Jusczyk, P. W. (1999). Some beginnings of word
+comprehension in 6-month-olds. \emph{Psychological Science},
+\emph{10}(2), 172--175.
+
 \hypertarget{ref-tsuji2014perceptual}{}
 Tsuji, S., \& Cristia, A. (2014). Perceptual attunement in vowels: A
 meta-analysis. \emph{Developmental Psychobiology}, \emph{56}(2),
 179--191.
+
+\hypertarget{ref-valentine2010many}{}
+Valentine, J. C., Pigott, T. D., \& Rothstein, H. R. (2010). How many
+studies do you need? A primer on statistical power for meta-analysis.
+\emph{Journal of Educational and Behavioral Statistics}, \emph{35}(2),
+215--247.
 
 \hypertarget{ref-werker2007infant}{}
 Werker, J. F., Pons, F., Dietrich, C., Kajikawa, S., Fais, L., \& Amano,

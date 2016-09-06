@@ -465,6 +465,14 @@
   example:
   required:     no
 
+- field:        condition_type
+  description:  critical or control
+  type:         string
+  format:
+  example:      for some analyses, need to filter on critical trials
+  required:     no
+
+
 
 
 

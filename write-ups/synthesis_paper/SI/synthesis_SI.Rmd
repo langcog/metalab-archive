@@ -21,9 +21,7 @@ rm(list = ls())
 
 # load packages
 source("../paper_analyses/pcurve.R")
-library(metafor)
 library(knitr)
-library(MultinomialCI)
 
 opts_chunk$set(echo = T, message = F, warning = F, 
                error = F, cache = F, tidy = F)
@@ -67,8 +65,7 @@ all_data$dataset = plyr::mapvalues(all_data$dataset , from = c("Pointing and voc
 ```
 
 ### Statistical approach
-Effect sizes were computed by a script, [compute_es.R](https://github.com/langcog/metalab/blob/master/scripts/compute_es.R). We calculated effect sizes from reported means and standard deviations where available, otherwise we relied on reported test-statistics (*t* and *F*). Several pre-existing MAs deal with special cases, and these are listed in the script. Except where noted, formulas are from [Hedges & Olkin's textbook](http://www.amazon.com/Statistical-Methods-Meta-Analysis-Larry-Hedges/dp/0123363802). All analyses were conducted with the [metafor](http://www.metafor-project.org/doku.php) package, using random-effects models. Note that a subset of individual MAs (such as Sound Symbolism) contain effect sizes that are not statistically independent, while the current implementation of random-effect models assumes independence of all individual effect sizes
-
+Effect sizes were computed by a script, [compute_es.R](https://github.com/langcog/metalab/blob/master/scripts/compute_es.R). We calculated effect sizes from reported means and standard deviations where available, otherwise we relied on reported test-statistics (*t* and *F*). Several pre-existing MAs deal with special cases, and these are listed in the script. Except where noted, formulas are from [Hedges & Olkin's textbook](http://www.amazon.com/Statistical-Methods-Meta-Analysis-Larry-Hedges/dp/0123363802). All analyses were conducted with the [metafor](http://www.metafor-project.org/doku.php) package (Viechtbauer, 2010), using random-effects models. Note that a subset of individual MAs (such as Sound Symbolism) contain effect sizes that are not statistically independent, while the current implementation of random-effect models assumes independence of all individual effect sizes
 
 ### Search strategies
 Meta-analyses were conducted by the authors for all but two phenomena (IDS preference and Pointing and vocabulary). Data for these two phenomena were obtained by adapting effect size estimates from existing, published meta-analyses (Dunst, Gorman, & Hamby, 2012 and Colonnesi et al., 2010). Across phenomena, meta-analyses varied in their degree of systematicty in selecting papers. Below we describe the search strategy for each phenomenon. Quoted descriptions are taken directly from the published source.
@@ -125,7 +122,7 @@ get.all.CIS.multi <- function(df) {
   props = ps %>%
     map(function(p,d){sum(d == p)}, df$p_round) %>%
     unlist()
-  cis = multinomialCI(props, alpha = .05)
+  cis = MultinomialCI::multinomialCI(props, alpha = .05)
   data.frame(dataset = df$dataset[1],
              p = ps,
              ci.lower = cis[,1],
@@ -150,13 +147,12 @@ pc.data %>%
   ungroup() %>%
   mutate(dataset = as.factor(dataset),
          dataset = plyr::revalue(dataset, 
-                                 c("Infant directed speech preference"="IDS preference",
-                                   "Statistical sound category learning"="Statistical sound learning", 
+                                 c("Statistical sound category learning"="Statistical sound learning", 
                                    "Label advantage in concept learning"="Concept-label advantage",
                                    "Vowel discrimination (native)"="Vowel discrimination\n(native)",
                                    "Vowel discrimination (non-native)"="Vowel discrimination\n(non-native)")),
          dataset = gdata::reorder.factor(dataset, 
-                                    new.order = c(2,6,10,11,9,12,4,8,3,5,1,7)))  %>%
+                                    new.order = c(3, 7, 8, 6, 9, 2, 5, 1, 4))) %>%
   ggplot() + 
   facet_wrap(~ dataset, nrow = 3) +
   geom_ribbon(aes(ymin = ci.lower, ymax = ci.upper, x = p), fill = "grey87", data = ci.data) +
@@ -233,7 +229,7 @@ for (i in 1:length(datasets$name)) {
     
     if (!(datasets$name[i] %in% single_method_datasets)) {
         d = filter(all_data, dataset == datasets$name[i])
-        model = rma(d_calc ~ method - 1, vi = d_var_calc, data = d, method = "REML")
+        model = metafor::rma(d_calc ~ method - 1, vi = d_var_calc, data = d, method = "REML")
   
         d = data.frame(dataset = datasets$name[i], 
                        method = row.names(model$b),
@@ -246,7 +242,11 @@ for (i in 1:length(datasets$name)) {
     }
 }
 
-method.betas$method = gsub("method", "", method.betas$method)
+method.betas = method.betas %>%
+         mutate(dataset = as.factor(dataset),
+         dataset = plyr::revalue(dataset, 
+                                 c("Infant directed speech preference"="IDS preference")),
+         method = gsub("method", "", method))
 
 ggplot(method.betas, aes(x = dataset, y = betas, ymin = ci.lb, 
                              ymax = ci.ub, color = method)) +
@@ -254,7 +254,7 @@ ggplot(method.betas, aes(x = dataset, y = betas, ymin = ci.lb,
   #geom_line(aes(group = method, color = method), position=position_jitter(0.8))  +
   geom_pointrange(position=position_jitter(0.5)) +
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = .1))
+  theme(axis.text.x = element_text(angle = 45, hjust = 1.1))
 
 ```
 
@@ -279,7 +279,9 @@ Lewis, M. & Frank, M. (in prep.). Mutual exclusivity: A meta-analysis.
 
 Lewis, M. & Long, B. (unpublished). A meta-analysis of the concept-label advantage.  
 
-Tsuji, S. & Cristia, A. (2014). Perceptual attunement in vowels: A meta-analysis. _Developmental Psychobiology_, _56_(2), 179-191.                                            
+Tsuji, S. & Cristia, A. (2014). Perceptual attunement in vowels: A meta-analysis. _Developmental Psychobiology_, _56_(2), 179-191.    
+
+
 Viechtbauer, W. (2010). Conducting meta-analyses in R with the metafor package. _Journal of Statistical Software_, _36_(3), 1-48. URL: http://www.jstatsoft.org/v36/i03/
 
 
