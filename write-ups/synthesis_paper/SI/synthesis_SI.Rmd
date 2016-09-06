@@ -13,7 +13,7 @@ output:
 ---
 
 This document was created from an [R Markdown file](https://github.com/mllewis/xtSamp/blob/master/analysis/analysis.Rmd).
-Data from the paper can be interactively explore on the [Metalab website](http://metalab.stanford.edu/). The manuscript itself was also produced from an  [R markdown file](https://github.com/langcog/metalab/blob/master/write-ups/synthesis_paper/metalab_synthesis.Rmd), and thus all analyses presented in the paper can be reproduced from this document.  
+Data from the paper can be interactively explored on the [Metalab website](http://metalab.stanford.edu/). The manuscript itself was also produced from an  [R markdown file](https://github.com/langcog/metalab/blob/master/write-ups/synthesis_paper/metalab_synthesis.Rmd), and thus all analyses presented in the paper can be reproduced from this document.  
 
 
 ```{r setup, include = F}
@@ -23,7 +23,7 @@ rm(list = ls())
 source("../paper_analyses/pcurve.R")
 library(metafor)
 library(knitr)
-library(boot)
+library(MultinomialCI)
 
 opts_chunk$set(echo = T, message = F, warning = F, 
                error = F, cache = F, tidy = F)
@@ -67,11 +67,11 @@ all_data$dataset = plyr::mapvalues(all_data$dataset , from = c("Pointing and voc
 ```
 
 ### Statistical approach
-Effect sizes were computed by a script, [compute_es.R](https://github.com/langcog/metalab/blob/master/scripts/compute_es.R). We calculated effect sizes from reported means and standard deviations where available, otherwise we relied on reported test-statistics (*t* and *F*). Several pre-existing MAs deal with special cases, and these are listed in the script. Except where noted, formulas are from [Hedges & Olkin's textbook](http://www.amazon.com/Statistical-Methods-Meta-Analysis-Larry-Hedges/dp/0123363802). All analyses are conducted with the [metafor](http://www.metafor-project.org/doku.php) package, using random-effects models.
+Effect sizes were computed by a script, [compute_es.R](https://github.com/langcog/metalab/blob/master/scripts/compute_es.R). We calculated effect sizes from reported means and standard deviations where available, otherwise we relied on reported test-statistics (*t* and *F*). Several pre-existing MAs deal with special cases, and these are listed in the script. Except where noted, formulas are from [Hedges & Olkin's textbook](http://www.amazon.com/Statistical-Methods-Meta-Analysis-Larry-Hedges/dp/0123363802). All analyses were conducted with the [metafor](http://www.metafor-project.org/doku.php) package, using random-effects models. Note that a subset of individual MAs (such as Sound Symbolism) contain effect sizes that are not statistically independent, while the current implementation of random-effect models assumes independence of all individual effect sizes
 
 
 ### Search strategies
-Meta-analyses were conducted by the authors for all but two phenomena (IDS preference and Pointing and Vocabulary). Data for these two phenomena were obtained by adapting effect size estimates from existing, published meta-analyses (Dunst, Gorman, & Hamby, 2012 and Colonnesi et al., 2010). Across phenomena, meta-analyses varied in their degree of systematicty in selecting papers. Below we describe the search strategy for each phenomenon. Descriptions are taken directly from the published source when available.
+Meta-analyses were conducted by the authors for all but two phenomena (IDS preference and Pointing and vocabulary). Data for these two phenomena were obtained by adapting effect size estimates from existing, published meta-analyses (Dunst, Gorman, & Hamby, 2012 and Colonnesi et al., 2010). Across phenomena, meta-analyses varied in their degree of systematicty in selecting papers. Below we describe the search strategy for each phenomenon. Quoted descriptions are taken directly from the published source.
 
 ```{r}
 datasets %>%
@@ -84,14 +84,14 @@ datasets %>%
                                    "Vowel discrimination (native)"="Native vowel discrimination",
                                    "Vowel discrimination (non-native)"="Non-native vowel discrimination"))) %>%
 
-  mutate(name= paste(name, internal_citation)) %>%
+  mutate(name=paste(name, internal_citation)) %>%
   select(-internal_citation) %>%
   .[c(1, 6, 4, 5, 7, 8, 10, 12, 2, 9, 3, 11),]  %>% 
   kable(col.names = c("Phenomenon",  "Search Strategy"), row.names = F)
 ```
 
 ### P-curves
-When available,  we calculated p-values based on test statistics reported in the paper. However, when unavailable, we calculated p-values based on raw descriptive statistics (means and standard deviations) or reported effect sizes (the method used for IDS preference). The main text shows the results of the p-curve analysis based on p-values derived by both approaches. Here, we compare these results to the same analysis on the subset of p-values derived only from reported test statistics. 
+When available,  we calculated p-values based on test statistics reported in the paper. However, when unavailable, we calculated p-values based on raw descriptive statistics (means and standard deviations) or reported effect sizes (the method used for IDS preference). The main text shows the results of the p-curve analysis based on p-values derived by both approaches. Here, we compare these results to the same analysis on the subset of p-values derived only from reported test statistics. Presented below are p-curves calculated form this subset (error bars are 95% confidence intervals calculated from a multinomial distribution).
 
 ```{r get_pcurves, fig.height = 6}
 ALPHA = .05
@@ -120,36 +120,21 @@ p.source = pc.data %>%
          prop.ts.string = as.character(round(prop.ts, digits = 2))) %>%
   as.data.frame()
 
-prop.p <- function(d, i, p){
-  sum(d[i] == p) / sum(d[i] < ALPHA)
-}
-
-get.CI <- function(my.p, v, ci) {
-  boot.out = boot(data = v, prop.p, R = 1000, p = my.p)
-  if (ci == "upper") {
-    quantile(boot.out$t, 0.975, na.rm = T)
-  } else {
-    quantile(boot.out$t, 0.025, na.rm = T)
-  }
-}
-
-get.all.CIS <- function(df) {
+get.all.CIS.multi <- function(df) {
   ps <-  seq(P_INCREMENT, ALPHA, P_INCREMENT)
-  lower = ps %>%
-    map(get.CI, df$p_round, "low") %>%
+  props = ps %>%
+    map(function(p,d){sum(d == p)}, df$p_round) %>%
     unlist()
-  upper= ps %>%
-    map(get.CI, df$p_round, "upper") %>%
-    unlist()
+  cis = multinomialCI(props, alpha = .05)
   data.frame(dataset = df$dataset[1],
              p = ps,
-             ci.lower = lower,
-             ci.upper = upper)
+             ci.lower = cis[,1],
+             ci.upper = cis[,2])
 }
 
 ci.data = pc.data %>%
   split(.$dataset) %>%
-  map(function(data) get.all.CIS(data)) %>%
+  map(function(data) get.all.CIS.multi(data)) %>%
   bind_rows() %>%
   mutate(dataset = as.factor(dataset),
          dataset = plyr::revalue(dataset, 
@@ -195,7 +180,7 @@ pc.data %>%
        strip.background = element_rect(fill="grey"))
 ```
 
-Below we compare the test of right-skew presented in the main text (Stouffer method) for both the full set of p-values and those only derived from test statistics. In no case does the significance of the test differ between the two analyses.
+We next compare the test of right-skew presented in the main text (Stouffer method) for both the full set of p-values and those only derived from test statistics. In no case does the significance of the test differ between the two analyses.
 ```{r}
 stouffer.data = pc.data %>%
   group_by(dataset) %>%
@@ -234,8 +219,8 @@ left_join(stouffer.data_all, stouffer.data, by = "dataset") %>%
 
 
 ### Method heterogeneity
-The plot below present model coefficients for method for datasets with more than one method. Coefficients are estimated from random-effects meta-analytic models.
-```{r, fig.height = 6}
+The plot below present model coefficients for method for datasets with more than one method. Coefficients are estimated from random-effects meta-analytic models. For the most part, we see that method only has a small effect on the effect size within a given phenomenon. There are exceptions, however: For example, for both IDS Preference and Sound Symbolism the forced choice method has an overall larger effect size than other methods.
+```{r, fig.height = 6, fig.width = 10}
 
 single_method_datasets = c("Gaze following",
                            "Label advantage in concept learning", 
@@ -263,11 +248,13 @@ for (i in 1:length(datasets$name)) {
 
 method.betas$method = gsub("method", "", method.betas$method)
 
-ggplot(method.betas, aes(x = dataset, y = betas, ymin = ci.lb, ymax = ci.ub, color = method)) +
+ggplot(method.betas, aes(x = dataset, y = betas, ymin = ci.lb, 
+                             ymax = ci.ub, color = method)) +
   geom_hline(aes(yintercept = 0), linetype = "dashed") +
-  geom_pointrange() +
+  #geom_line(aes(group = method, color = method), position=position_jitter(0.8))  +
+  geom_pointrange(position=position_jitter(0.5)) +
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  theme(axis.text.x = element_text(angle = 90, hjust = .1))
 
 ```
 
@@ -293,7 +280,6 @@ Lewis, M. & Frank, M. (in prep.). Mutual exclusivity: A meta-analysis.
 Lewis, M. & Long, B. (unpublished). A meta-analysis of the concept-label advantage.  
 
 Tsuji, S. & Cristia, A. (2014). Perceptual attunement in vowels: A meta-analysis. _Developmental Psychobiology_, _56_(2), 179-191.                                            
-                                                                                
 Viechtbauer, W. (2010). Conducting meta-analyses in R with the metafor package. _Journal of Statistical Software_, _36_(3), 1-48. URL: http://www.jstatsoft.org/v36/i03/
 
 
