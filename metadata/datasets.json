@@ -140,7 +140,8 @@
 	{
 		"name": "Statistical sound category learning",
 		"short_name": "sounds",
-		"key": "1rZl-Ub5qOE_WJwHg23g8ijgANdRC82PQUXRbh6TJeKQ",
+		"unpaired_key": "1rZl-Ub5qOE_WJwHg23g8ijgANdRC82PQUXRbh6TJeKQ",
+		"key": "1sbeoPlEKxyjzlmWgzeSCVrumoS0wlMpX_Puv074r9lM",
 		"filename": "AGL_soundsDL",
 		"citation": "Cristia (in prep.)",
 		"internal_citation": "(Cristia, in prep.)",

@@ -30,9 +30,11 @@ opts_chunk$set(echo = T, message = F, warning = F,
 ```{r load data, include = F}
 source("../../../dashboard/global.R", chdir = TRUE)
 
-# Remove incomplete/longitidinal MAs
-all_data <- filter(all_data, dataset != "Statistical word segementation") %>%
-            filter(dataset != "Pointing and vocabulary (longitudinal)")
+# remove inappropriate conditions
+all_data <- filter(all_data, dataset != "Statistical word segementation") %>% # incomplete MA
+            filter(dataset != "Pointing and vocabulary (longitudinal)") %>%  # longitidinal MA
+            filter(is.na(condition_type) | condition_type == "critical") # remove control conditions from labadv
+
 
 # need to recompute datasets summary data, based on filtered all_data
 studies <- all_data %>%
@@ -215,6 +217,26 @@ left_join(stouffer.data_all, stouffer.data, by = "dataset") %>%
 
 
 ### Method heterogeneity
+```{r}
+all_data %>%
+  mutate(dataset = plyr::revalue(dataset, 
+                                 c("Infant directed speech preference"="IDS preference",
+                                   "Statistical sound category learning"="Statistical sound learning", 
+                                   "Label advantage in concept learning"="Concept-label advantage",
+                                   "Vowel discrimination (native)"="Vowel discrimination\n(native)",
+                                   "Vowel discrimination (non-native)"="Vowel discrimination\n(non-native)")),
+          dataset = as.factor(dataset),
+          dataset = gdata::reorder.factor(dataset, 
+                                    new.order = c(2,6,10,11,9,12,4,8,3,5,1,7))) %>%
+ggplot(aes(x = mean_age_1/365, y = d_calc, color = method)) +
+         facet_wrap(~dataset, scales = "free_y") +
+         geom_smooth(method = "lm", formula = y ~ log(x)) +
+         xlab("age (years)") +
+         ylab("effect size (d)") +
+         theme_bw()
+         
+```
+
 The plot below present model coefficients for method for datasets with more than one method. Coefficients are estimated from random-effects meta-analytic models. For the most part, we see that method only has a small effect on the effect size within a given phenomenon. There are exceptions, however: For example, for both IDS Preference and Sound Symbolism the forced choice method has an overall larger effect size than other methods.
 ```{r, fig.height = 6, fig.width = 10}
 
@@ -257,6 +279,8 @@ ggplot(method.betas, aes(x = dataset, y = betas, ymin = ci.lb,
   theme(axis.text.x = element_text(angle = 45, hjust = 1.1))
 
 ```
+
+
 
 ***
 ***
