@@ -174,9 +174,9 @@ all_ds = all_data %>%
   mutate(d_string = paste0(overall.d, " [", ci_lower, ", ",ci_upper, "]")) %>%
   mutate(short_name = dataset)
 ```
-To estimate the overall effect size of a literature, effect sizes are pooled across papers to obtain a single meta-analytic estimate. This meta-analytic effect-size can be thought of as the "best estimate" of the effect size for a phenomenon given all the available data in the literature. Table 2, column 2 presents meta-analytic effect size estimates for each of our phenomena. We find evidence for a non-zero effect size in 11 out of 12 of the phenomena in our dataset, suggesting these literatures provide evidential value. In the case of phonotactic learning, however, we find that the meta-analytic effect size estimate does not differ from zero, indicating that this literature does not describe a robust effect (Cristia, in prep.). 
+To estimate the overall effect size of a literature, effect sizes are pooled across papers to obtain a single meta-analytic estimate. This meta-analytic effect-size can be thought of as the "best estimate" of the effect size for a phenomenon given all the available data in the literature. Table 2, column 2 presents meta-analytic effect size estimates for each of our phenomena. We find evidence for a non-zero effect size in 10 out of 12 of the phenomena in our dataset, suggesting these literatures provide evidential value. In the case of phonotactic learning and sound category learning, however, we find that the meta-analytic effect size estimate does not differ from zero, indicating that this literature does not describe a robust effect (Cristia, in prep.). 
 
-We next turn to methods of assessing evidential value that describe the *degree* to which a literature has evidential value, and thus the degree to which it should constrain our theory building. In the following three analyses---fail-safe-N, funnel plots, and p-curves---we attempt to quantify the evidential value of these literatures.
+We next turn to methods of assessing evidential value that describe the degree to which a literature has evidential value, and thus the degree to which it should constrain our theory building. In the following three analyses---fail-safe-N, funnel plots, and p-curves---we attempt to quantify the evidential value of these literatures.
 
 \begin{table}[t]
 \footnotesize
@@ -457,7 +457,7 @@ In sum, then, meta-analytic methods, along with our dataset of effect sizes, pro
 
 Next, we turn to how these data can be used to constrain and develop theories of language acquisition.
 
-Meta-analytic methods provide a precise, quantitative description of the developmental trajectory of individual phenomena. Figure 3 presents the developmental trajectories of the phenomena in our dataset at each level in the linguistic hierarchy.\footnote{The pointing and vocabulary dataset is excluded from this analysis because it does not contain effect sizes at multiple ages.} By describing how effect sizes change as a function of age,  we can begin to understand what factors might moderate that trajectory, such as aspects of a child's experience or maturation.  For example, the meta-analysis on mutual-exclusivity [the bias for children to select a novel object, given a novel word; @markman1988] suggests a steep developmental trajectory of this skill. We then can use these data to build quantitative models to understand how aspects of experience (e.g., vocabulary development) or maturational constraints may be related to this trajectory [e.g., @frank2009using; @mcmurray2012word]. 
+Meta-analytic methods provide a precise, quantitative description of the developmental trajectory of individual phenomena. Figure 3 presents the developmental trajectories of the phenomena in our dataset at each level in the linguistic hierarchy. By describing how effect sizes change as a function of age,  we can begin to understand what factors might moderate that trajectory, such as aspects of a child's experience or maturation.  For example, the meta-analysis on mutual-exclusivity [the bias for children to select a novel object, given a novel word; @markman1988] suggests a steep developmental trajectory of this skill. We then can use these data to build quantitative models to understand how aspects of experience (e.g., vocabulary development) or maturational constraints may be related to this trajectory [e.g., @frank2009using; @mcmurray2012word]. 
 
 
 ```{r, fig.pos = 'T',  fig.width=8, fig.height=3.5, fig.cap = "Method-residual effect size plotted as a function of age across all developmental meta-analyses in our dataset. Lines show logarithmic model fits. Each point corresponds to a condition, with the size of the point indicating the number of participants. [fix labels manually; deal with communication]"}
@@ -478,8 +478,8 @@ single_method_datasets = c("Gaze following",
 # get model fits
 all_data.resid = data.frame()
 for (i in 1:length(datasets$name)) {
-    d = filter(all_data, dataset == datasets$name[i],
-               dataset != "Gaze following" | d_calc > 0) # remove negative ES for gaze following
+    d = filter(all_data, dataset == datasets$name[i])
+               #,dataset != "Gaze following" | d_calc > 0) # remove negative ES for gaze following
     if (datasets$name[i] %in% single_method_datasets) {
       full.model = rma(d_calc, vi = d_var_calc, data = d, method = "REML")
     } else {
@@ -498,7 +498,8 @@ for (i in 1:length(datasets$name)) {
 # merge in levels
 residualized.es = all_data.resid %>%
           left_join(ld.df) %>%
-          #filter(dataset != "Pointing and vocabulary") %>%
+          filter(dataset != "Statistical sound category learning") %>%
+          filter(dataset != "Phonotactic learning") %>%
           mutate(age.years = mean_age/365) 
 
 level.plot = 
@@ -507,6 +508,7 @@ level.plot =
   geom_point(aes(size = n), alpha = .1, data = filter(residualized.es, residual.d > -.3 & residual.d < 2 )) +
   geom_smooth(method="lm", se = FALSE, size = 1, fullrange = FALSE, formula = y ~ log(x), data = residualized.es) + 
   xlim(0, 3.1) +
+  ylim(-.5, 2.5) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   xlab("Age (years)") + 
   ylab("Method-residual effect size") + 
@@ -565,9 +567,13 @@ simulated.development.all = mutate(simulated.development, dataset = as.factor(da
 real.levels = levels(simulated.development.all$dataset)
 fake.levels = c("1", "2", "3") 
 
+#simulated.development.all = simulated.development.all %>%
+#  mutate(dataset.label = as.factor(dataset)) %>%
+#  mutate(dataset.label = plyr::mapvalues(dataset.label, from = c("1", "2", "3", "Phonotactic learning", "Statistical sound category learning", "Gaze following",  "Infant directed speech preference", "Label advantage in concept learning", "Mutual exclusivity", "Vowel discrimination (native)", "Vowel discrimination (non-native)", "Sound symbolism" , "Online word recognition" , "Word segmentation"), to = c("","","", "PL", "SL", "GF", "IDS", "LA", "ME", "VD-N", "VD-NN", "SS", "WR", "WS")))
+
 simulated.development.all = simulated.development.all %>%
   mutate(dataset.label = as.factor(dataset)) %>%
-  mutate(dataset.label = plyr::mapvalues(dataset.label, from = c("1", "2", "3", "Phonotactic learning", "Statistical sound category learning", "Gaze following",  "Infant directed speech preference", "Label advantage in concept learning", "Mutual exclusivity", "Vowel discrimination (native)", "Vowel discrimination (non-native)", "Sound symbolism" , "Online word recognition" , "Word segmentation"), to = c("","","", "PL", "SL", "GF", "IDS", "LA", "ME", "VD-N", "VD-NN", "SS", "WR", "WS")))
+  mutate(dataset.label = plyr::mapvalues(dataset.label, from = c("1", "2", "3", "Gaze following",  "Infant directed speech preference", "Label advantage in concept learning", "Mutual exclusivity", "Vowel discrimination (native)", "Vowel discrimination (non-native)", "Sound symbolism" , "Online word recognition" , "Word segmentation"), to = c("","","", "GF", "IDS", "LA", "ME", "VD-N", "VD-NN", "SS", "WR", "WS")))
 
 ggrepel.data = simulated.development.all %>% 
   filter(model == "Observed") %>%
@@ -579,7 +585,7 @@ ggrepel.data = simulated.development.all %>%
 
 ## plot
 ggplot(simulated.development.all,
-       aes(x = age.years, y = residual.d, col = dataset, weight=1/n)) + 
+       aes(x = age.years, y = residual.d, col = dataset)) + 
   geom_line(data = filter(simulated.development.all,
                           model != "Observed"), size = 1) +
   geom_hline(yintercept = 0, linetype = "dashed") +
@@ -594,7 +600,7 @@ ggplot(simulated.development.all,
                       breaks = real.levels[real.levels!=fake.levels]) +
   xlab("Age (years)") +
   ylab("Effect size (d)") +
-  ylim(c(-.3, 2)) +
+  ylim(-.5, 2.5) +
   xlim(0,3.1) +
   theme_bw() + 
   theme(legend.position = "none",
@@ -640,7 +646,6 @@ In sum, understanding the psychological mechanisms underlying complex phenomena 
 # TO DO:
 #   Data: 
 #   - Axes labels on plots 3 and 4? For figure 4, if you don't restrict the range, it looks crazy (but then this feels dishonest, and differs from fig 3)
-#    - pair for alex's
 #   - fix plot labels in adobe
 #   - add pointing to meta-meta? looks kind of wonky.
 #   - filter non-sigificant for meta-meta
