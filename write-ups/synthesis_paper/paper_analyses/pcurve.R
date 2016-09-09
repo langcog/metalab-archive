@@ -16,7 +16,7 @@ get_ncp <- function(df1, df2, power, ALPHA) {
   root
 }
 
-# get_all_pc_data: computes f, df, p, pp, and ncp33 values
+# get_all_pc_data: computes f, df, p, pp, and ncp33 values. transform flag determines whether p-values are calculated from descriptive statistics (TRUE).
 get_all_pc_data <- function(df, ALPHA, P_INCREMENT, transform){
   
   df %>% # convert rs and ts to fs, then get p-values
