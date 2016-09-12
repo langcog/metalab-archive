@@ -68,11 +68,11 @@ ld.df = data.frame(dataset = datasets$name,
 
 ld.df$domain = factor(ld.df$domain, levels = c("Prosody","Sounds", "Words", "Communication"))
 
-single_method_datasets = c("Gaze following",
-                           "Label advantage in concept learning", 
-                           "Mutual exclusivity", 
-                           "Pointing and vocabulary",
-                           "Online word recognition")
+single_method_datasets = all_data %>%
+  group_by(dataset) %>%
+  summarise(n_methods = length(levels(as.factor(method)))) %>%
+  filter(n_methods == 1) %>%
+  .[["dataset"]]
 
 # get model fits
 all_data.resid = data.frame()

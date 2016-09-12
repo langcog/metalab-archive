@@ -52,7 +52,7 @@ output: papaja::apa6_pdf
 ---
 
 ```{r message = FALSE, warning = FALSE}
-knitr::opts_chunk$set(warning = FALSE, message = FALSE, cache = FALSE, fig.pos = "T")
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, cache = TRUE, fig.pos = "T")
 require("papaja")
 apa_prepare_doc() # prepare document for rendering
 ```
@@ -125,30 +125,30 @@ To obtain estimates of effect size, we either coded or adapted others’ coding 
 
 \renewcommand{\arraystretch}{1.5}
 \begin{table}[h!]
-		\footnotesize
-		\begin{tabular}{lp{4cm} p{5cm}r}
-			\toprule
-			\textbf{Level} & \textbf{Phenomenon}                                                               & \textbf{Description}                                                                                 & \textbf{N papers (conditions)}                                                                                                                                               \\
-						\midrule
-
-			Prosody        & IDS  preference  \newline  {\scriptsize (Dunst, Gorman, \& Hamby, 2012)}          & {\scriptsize  `r datasets[datasets$name == "Infant directed speech preference", "short_desc"]`}      & `r datasets[datasets$name == "Infant directed speech preference", "num_papers"]` (`r datasets[datasets$name == "Infant directed speech preference", "num_experiments"]`)     \\
-			Sounds         & Phonotactic learning  \newline {\scriptsize (Cristia, in prep.)}                   & {\scriptsize `r datasets[datasets$name == "Phonotactic learning", "short_desc"]`  }                  & `r datasets[datasets$name == "Phonotactic learning", "num_papers"]` (`r datasets[datasets$name == "Phonotactic learning", "num_experiments"]`)                               \\
-			~              & Vowel discrimination (native) \newline {\scriptsize (Tsuji \& Cristia, 2014)}     & {\scriptsize `r datasets[datasets$name == "Vowel discrimination (native)", "short_desc"]`  }         & `r datasets[datasets$name == "Vowel discrimination (native)", "num_papers"]` (`r datasets[datasets$name == "Vowel discrimination (native)", "num_experiments"]`)             \\ 
-			~              & Vowel discrimination (non-native) \newline {\scriptsize (Tsuji \& Cristia, 2014)} & {\scriptsize `r datasets[datasets$name == "Vowel discrimination (non-native)", "short_desc"]`  }     & `r datasets[datasets$name == "Vowel discrimination (non-native)", "num_papers"]` (`r datasets[datasets$name == "Vowel discrimination (non-native)", "num_experiments"]`)     \\
-			   & Statistical sound learning  \newline {\scriptsize (Cristia, in prep.)}             & {\scriptsize `r datasets[datasets$name == "Statistical sound category learning", "short_desc"]`   }  & `r datasets[datasets$name == "Statistical sound category learning", "num_papers"]` (`r datasets[datasets$name == "Statistical sound category learning", "num_experiments"]`) \\ 
-			& Word segmentation \newline {\scriptsize  (Bergmann \& Cristia, 2015) }            & {\scriptsize `r datasets[datasets$name == "Word segmentation", "short_desc"]`  }                     & `r datasets[datasets$name == "Word segmentation", "num_papers"]` (`r datasets[datasets$name == "Word segmentation", "num_experiments"]`)                                     \\
-			Words     &   Mutual exclusivity \newline {\scriptsize (Lewis \& Frank, in prep.)} &{\scriptsize  `r datasets[datasets$name == "Mutual exclusivity", "short_desc"]`}
-			& `r datasets[datasets$name == "Mutual exclusivity", "num_papers"]` (`r datasets[datasets$name == "Mutual exclusivity", "num_experiments"]`)             \\
-			~ &   Sound Symbolism \newline {\scriptsize (Lammertink et al., 2016)} &{\scriptsize  `r datasets[datasets$name == "Sound symbolism", "short_desc"]`}
-			& `r datasets[datasets$name == "Sound symbolism", "num_papers"]` (`r datasets[datasets$name == "Sound symbolism", "num_experiments"]`)             \\
-			~              & Concept-label advantage   \newline {\scriptsize (Lewis \& Long, unpublished)}     & {\scriptsize `r datasets[datasets$name == "Label advantage in concept learning", "short_desc"]`    } & `r datasets[datasets$name == "Label advantage in concept learning", "num_papers"]` (`r datasets[datasets$name == "Label advantage in concept learning", "num_experiments"]`) \\
-			~              & Online word recognition \newline {\scriptsize (Frank, Lewis, \& MacDonald, 2016)} & {\scriptsize `r datasets[datasets$name == "Online word recognition", "short_desc"]`   }              & `r datasets[datasets$name == "Online word recognition", "num_papers"]` (`r datasets[datasets$name == "Online word recognition", "num_experiments"]`)                         \\
-			Communication  & Gaze following  \newline {\scriptsize  (Frank, Lewis, \& MacDonald, 2016)}        & {\scriptsize `r datasets[datasets$name == "Gaze following", "short_desc"]`   }                       & `r datasets[datasets$name == "Gaze following", "num_papers"]` (`r datasets[datasets$name == "Gaze following", "num_experiments"]`)                                           \\
-			~              & Pointing and vocabulary  \newline {\scriptsize (Colonnesi et al., 2010)}          & {\scriptsize `r datasets[datasets$name == "Pointing and vocabulary", "short_desc"]`}  & `r datasets[datasets$name == "Pointing and vocabulary", "num_papers"]` (`r datasets[datasets$name == "Pointing and vocabulary", "num_experiments"]`)                         \\ 
-			\bottomrule
-		\end{tabular}
-		\caption{Overview of meta-analyses in dataset.}
-	\end{table}
+	\footnotesize
+	\begin{tabular}{lp{4cm} p{5cm}r}
+		\toprule
+		\textbf{Level} & \textbf{Phenomenon}                                                               & \textbf{Description}                                                                    & \textbf{N papers (conditions)}                                                                                                                           \\
+		\midrule
+		
+		Prosody        & IDS  preference  \newline  {\scriptsize (Dunst, Gorman, \& Hamby, 2012)}          & {\scriptsize  `r datasets[datasets$short_name == "idspref", "short_desc"]`}             & `r datasets[datasets$short_name == "idspref", "num_papers"]` (`r datasets[datasets$short_name == "idspref", "num_experiments"]`)                         \\
+		Sounds         & Phonotactic learning  \newline {\scriptsize (Cristia, in prep.)}                  & {\scriptsize `r datasets[datasets$short_name == "phonotactics", "short_desc"]`  }       & `r datasets[datasets$short_name == "phonotactics", "num_papers"]` (`r datasets[datasets$short_name == "phonotactics", "num_experiments"]`)               \\
+		~              & Vowel discrimination (native) \newline {\scriptsize (Tsuji \& Cristia, 2014)}     & {\scriptsize `r datasets[datasets$short_name == "inphondb-native", "short_desc"]`  }    & `r datasets[datasets$short_name == "inphondb-native", "num_papers"]` (`r datasets[datasets$short_name == "inphondb-native", "num_experiments"]`)         \\ 
+		~              & Vowel discrimination (non-native) \newline {\scriptsize (Tsuji \& Cristia, 2014)} & {\scriptsize `r datasets[datasets$short_name == "inphondb-nonnative", "short_desc"]`  } & `r datasets[datasets$short_name == "inphondb-nonnative", "num_papers"]` (`r datasets[datasets$short_name == "inphondb-nonnative", "num_experiments"]`)   \\
+		               & Statistical sound learning  \newline {\scriptsize (Cristia, in prep.)}            & {\scriptsize `r datasets[datasets$short_name == "sounds", "short_desc"]`   }            & `r datasets[datasets$short_name == "sounds", "num_papers"]` (`r datasets[datasets$short_name == "sounds", "num_experiments"]`)                           \\ 
+		               & Word segmentation \newline {\scriptsize  (Bergmann \& Cristia, 2015) }            & {\scriptsize `r datasets[datasets$short_name == "inworddb", "short_desc"]`  }           & `r datasets[datasets$short_name == "inworddb", "num_papers"]` (`r datasets[datasets$short_name == "inworddb", "num_experiments"]`)                       \\
+		Words     &   Mutual exclusivity \newline {\scriptsize (Lewis \& Frank, in prep.)} &{\scriptsize  `r datasets[datasets$short_name == "mutex", "short_desc"]`}
+		& `r datasets[datasets$short_name == "mutex", "num_papers"]` (`r datasets[datasets$short_name == "mutex", "num_experiments"]`)             \\
+		~ &   Sound Symbolism \newline {\scriptsize (Lammertink et al., 2016)} &{\scriptsize  `r datasets[datasets$short_name == "symbolism", "short_desc"]`}
+		& `r datasets[datasets$short_name == "symbolism", "num_papers"]` (`r datasets[datasets$short_name == "symbolism", "num_experiments"]`)             \\
+		~              & Concept-label advantage   \newline {\scriptsize (Lewis \& Long, unpublished)}     & {\scriptsize `r datasets[datasets$short_name == "labadv", "short_desc"]`    }           & `r datasets[datasets$short_name == "labadv", "num_papers"]` (`r datasets[datasets$short_name == "labadv", "num_experiments"]`)                           \\
+		~              & Online word recognition \newline {\scriptsize (Frank, Lewis, \& MacDonald, 2016)} & {\scriptsize `r datasets[datasets$short_name == "word_recognition", "short_desc"]`   }  & `r datasets[datasets$short_name == "word_recognition", "num_papers"]` (`r datasets[datasets$short_name == "word_recognition", "num_experiments"]`)       \\
+		Communication  & Gaze following  \newline {\scriptsize  (Frank, Lewis, \& MacDonald, 2016)}        & {\scriptsize `r datasets[datasets$short_name == "gaze_following", "short_desc"]`   }    & `r datasets[datasets$short_name == "gaze_following", "num_papers"]` (`r datasets[datasets$short_name == "gaze_following", "num_experiments"]`)           \\
+		~              & Pointing and vocabulary  \newline {\scriptsize (Colonnesi et al., 2010)}          & {\scriptsize `r datasets[datasets$short_name == "pointing_concurrent", "short_desc"]`}  & `r datasets[datasets$short_name == "pointing_concurrent", "num_papers"]` (`r datasets[datasets$short_name == "pointing_concurrent", "num_experiments"]`) \\ 
+		\bottomrule
+	\end{tabular}
+	\caption{Overview of meta-analyses in dataset.}
+\end{table}
 	
 
 # Replicability of the field
@@ -462,11 +462,11 @@ ld.df = data.frame(dataset = datasets$name,
 
 ld.df$domain = factor(ld.df$domain, levels = c("Prosody","Sounds", "Words", "Communication"))
 
-single_method_datasets = c("Gaze following",
-                           "Label advantage in concept learning", 
-                           "Mutual exclusivity", 
-                           "Pointing and vocabulary",
-                           "Online word recognition")
+single_method_datasets = all_data %>%
+  group_by(dataset) %>%
+  summarise(n_methods = length(levels(as.factor(method)))) %>%
+  filter(n_methods == 1) %>%
+  .[["dataset"]]
 
 # get model fits
 all_data.resid = data.frame()

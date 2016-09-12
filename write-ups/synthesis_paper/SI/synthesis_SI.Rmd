@@ -217,7 +217,7 @@ left_join(stouffer.data_all, stouffer.data, by = "dataset") %>%
 
 
 ### Method heterogeneity
-```{r}
+```{r, eval = F}
 all_data %>%
   mutate(dataset = plyr::revalue(dataset, 
                                  c("Infant directed speech preference"="IDS preference",
