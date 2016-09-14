@@ -394,6 +394,7 @@ tabs <- c(list(tab_home, tab_visualizations, tab_power, tab_data,
                tab_documentation, tab_contribute, tab_team), report_tabs)
 
 body <- dashboardBody(
+  tags$head(includeScript("google_analytics.js")),
   includeCSS("www/custom.css"),
   tags$style(type = "text/css",
              ".shiny-output-error { visibility: hidden; }",
