@@ -73,7 +73,8 @@ compute_es <- function(participant_design, x_1 = NA, x_2 = NA, x_dif = NA,
       es_method  <- "f_two"
     }
     if (complete(n_1, d_calc)) {
-      d_var_calc <- ((1 / n_1) + (d_calc ^ 2 / (2 * n_1))) * 2 * (1 - corr)
+      #d_var_calc <- ((1 / n_1) + (d_calc ^ 2 / (2 * n_1))) * 2 * (1 - corr) we used this until 9/15/16
+      d_var_calc <- (2 * (1 - corr)/ n_1) + (d_calc ^ 2 / (2 * n_1))
     } else  if (complete(r)) {
       d_calc <- 2 * r / sqrt(1 - r ^ 2)
       d_var_calc <- 4 * r_var / ((1 - r ^ 2) ^ 3)
