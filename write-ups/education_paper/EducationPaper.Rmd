@@ -280,15 +280,17 @@ method_exclude_data = all_data %>%
   mutate(ageC = ifelse(participant_design == "between",
                        ((mean_age_1 - mean(mean_age_1)) + (mean_age_1 - mean(mean_age_1)))/2,
                        ((mean_age_1 - mean(mean_age_1))))) %>%
+  mutate(keep = ifelse(is.na(n_2), n_1, n_1 + n_2)) %>%
   mutate(dropout = ifelse(is.na(n_excluded_1), NA, ifelse(is.na(n_excluded_2), n_excluded_1, n_excluded_1+n_excluded_2))) %>%
+  mutate(total_run = keep + dropout) %>%
   filter(!is.na(dropout)) %>%
-  mutate(percent_dropout = dropout / (n+dropout)) %>%
+  mutate(percent_dropout = dropout / total_run) %>%
   group_by(method) %>%
   mutate(number = n()) %>%
   ungroup() %>%
   filter(number >10) %>%
   mutate(method = factor(method)) %>%
-  select(percent_dropout, dropout, dataset, ageC, n, method)
+  select(percent_dropout, keep, dropout, total_run, dataset, ageC, method)
 
 
 method_exclude.m <- lmer(percent_dropout ~ method + ageC +
@@ -297,7 +299,6 @@ method_exclude.m_sum = summary(method_exclude.m)
 
 kable(coef(method_exclude.m_sum), caption = "Method vs Dropout")
 ```
-
 
 
 ```{r Effect of Method, echo = FALSE}
