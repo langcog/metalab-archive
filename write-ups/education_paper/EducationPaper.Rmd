@@ -251,8 +251,6 @@ d_comparison_full = inner_join(d_comparison, MA_summary) %>%
 d_comparison_diff.plot = ggplot(d_comparison_full, aes(x = largest_d, y = diff_d)) +
  geom_point(aes(color = dataset)) +
  geom_smooth(method = "lm", color = "black") +
- xlim(-0.2, 9) +
- ylim(-0.2, 9) +
  xlab("Largest d for Oldest Paper") +
  ylab("Difference between largest d and meta-analytic d") +
  labs(color = "Meta-analysis") +
