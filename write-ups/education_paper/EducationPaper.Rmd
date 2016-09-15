@@ -1,5 +1,5 @@
 ---
-title: "Building broad-shouldered giants: meta-analytic methods for reproducible research"
+title: 'Building broad-shouldered giants: meta-analytic methods for reproducible research'
 author:
 - affiliation: 1
   name: Christina Bergmann
@@ -15,44 +15,6 @@ author:
   name: Michael C. Frank
 - affiliation: 1
   name: Alejandrina Cristia
-abstract:
-
-
-# - Survey of status quo --> what we're doing OK and what we're doing wrong
-#     - What do we report or neglect --> demographic & outcome variables, let alone ES!
-#      - power based on original versus median --> yikes
-#      - power to guide sample size: fields that are doing OK versus not
-#      - fields that are not doing OK: could it be the fact that no clear prediction? (i.e. both novelty and familiarity can be expected)
-#      - method has a huge effect on ES and probably some are more stable i.e. lower heterogeneity than others
-#      - Fuss out X ES (controling for method) --> :)
-# 
-# - Recommendations
-#     - report crucial stuff -- e.g. m SD and learn to understand ES (here para on APA)
-#     - use MAs: Who do we look at (citation but also study planning) --> wrong!
-#     - make informed decisions, e.g. on method -- take into account average ES, heterogeneity, data exclusion/loss, clarity in response prediction/interpretation (dir of effects)
-#     - dangers of small sample sizes: not just underpowered, also overestimates of actual effects
-#     - do MAs (para on MAs & ES)
-#     - avoid burying your results
-#     - we have not checked: reproducibility, sharing data & scripts, documenting, etc. but suspect it's not great - recommend sites
-bibliography: metalab_education.bib
-class: man
-figsintext: yes
-header-includes:
-- \usepackage{setspace}
-- \usepackage{float}
-- \usepackage{graphicx}
-- \AtBeginEnvironment{tabular}{\singlespacing}
-- \usepackage{pbox}
-
-#output: papaja::apa6_pdf
-output: html_document
-
-keywords: replicability, reproducibility, meta-analysis, developmental psychology,
-  language acquisition
-lang: english
-lineno: no
-note: |
-  Correspondence concerning this article should be addressed to Christina Bergmann, Laboratoire de Sciences Cognitives et Psycholinguistique, ENS. 29 Rue d'Ulm, 75005 Paris, France. E-mail: chbergma@gmail.com
 affiliation:
 - id: 1
   institution: Laboratoire de Sciences Cognitives et Psycholinguistique, ENS
@@ -60,10 +22,31 @@ affiliation:
   institution: NeuroPsychologie Interventionnelle, ENS
 - id: 3
   institution: Department Psychology, Stanford University
+
+keywords: replicability, reproducibility, meta-analysis, developmental psychology,
+  language acquisition
+lineno: no
+note: |
+  Correspondence concerning this article should be addressed to Christina Bergmann, Laboratoire de Sciences Cognitives et Psycholinguistique, ENS. 29 Rue d'Ulm, 75005 Paris, France. E-mail: chbergma@gmail.com
+abstract: null
 shorttitle: MetaLab Education
 Overall goal: How can developmental scientists improve their practices towards more
   robust, reliable, and reproducible research?
 wordcount: XXXX
+
+class: man
+lang: english
+figsintext: yes
+bibliography:
+  - metalab_education.bib
+header-includes:
+- \usepackage{setspace}
+- \usepackage{float}
+- \usepackage{graphicx}
+- \AtBeginEnvironment{tabular}{\singlespacing}
+- \usepackage{pbox}
+
+output: papaja::apa6_pdf
 ---
 
 ```{r Preamble, echo = FALSE, warning = FALSE, message = FALSE}
@@ -71,8 +54,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE, cache = TRUE, fig.pos = 
 require("papaja")
 apa_prepare_doc() # prepare document for rendering
 
-source("../Metalab/metalab/dashboard/global.R", chdir = TRUE) # Christina source
-#source("../../Desktop/Experiments/MetaLab/Results/metalab/dashboard/global.R", chdir = TRUE) # Page source
+source("../../dashboard/global.R", chdir = TRUE)
 library(metafor)
 library(dplyr)
 library(tidyr)

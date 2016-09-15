@@ -1,0 +1,854 @@
+\documentclass[english,floatsintext,man]{apa6}
+
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+
+% Table formatting
+\usepackage{longtable,booktabs}
+\usepackage[counterclockwise]{rotating}   % Landscape page setup for large tables
+\usepackage{multirow}		% Table styling
+\usepackage{tabularx}		% Control Column width
+\usepackage[flushleft]{threeparttable}	% Allows for three part tables with a specified notes section
+\usepackage{threeparttablex}            % Lets threeparttable work with longtable
+\usepackage{longtable}              % Allows tables to break across pages
+
+  \usepackage{graphicx}
+  \makeatletter
+  \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+  \def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+  \makeatother
+  % Scale images if necessary, so that they will not overflow the page
+  % margins by default, and it is still possible to overwrite the defaults
+  % using explicit options in \includegraphics[width, height, ...]{}
+  \setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            pdfauthor={},
+            pdftitle={Building broad-shouldered giants: meta-analytic methods for reproducible research},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=black,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+
+\setlength{\parindent}{0pt}
+%\setlength{\parskip}{0pt plus 0pt minus 0pt}
+
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+
+\setcounter{secnumdepth}{0}
+\ifxetex
+  \usepackage{polyglossia}
+  \setmainlanguage{}
+\else
+  \usepackage[english]{babel}
+\fi
+
+% Manuscript styling
+\captionsetup{font=singlespacing,justification=justified}
+\usepackage{csquotes}
+
+
+
+\usepackage{tikz} % Variable definition to generate author note
+
+% fix for \tightlist problem in pandoc 1.14
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+% Essential manuscript parts
+  \title{Building broad-shouldered giants: meta-analytic methods for reproducible
+research}
+
+  \shorttitle{MetaLab Education}
+
+
+  \author{
+          Christina Bergmann\textsuperscript{1},
+          Sho Tsuji\textsuperscript{1},
+          Page Piccinini\textsuperscript{2},
+          Molly Lewis\textsuperscript{3},
+          Mika Braginsky\textsuperscript{3},
+          Michael C. Frank\textsuperscript{3},
+          Alejandrina Cristia\textsuperscript{1}  }
+
+  \def\affdep{{"", "", "", "", "", "", ""}}%
+  \def\affcity{{"", "", "", "", "", "", ""}}%
+
+  \affiliation{
+    \vspace{0.5cm}
+          \textsuperscript{1} Laboratoire de Sciences Cognitives et Psycholinguistique, ENS\\
+          \textsuperscript{2} NeuroPsychologie Interventionnelle, ENS\\
+          \textsuperscript{3} Department Psychology, Stanford University  }
+
+
+%   \def\affinst{{"init", "Laboratoire de Sciences Cognitives et Psycholinguistique, ENS", "NeuroPsychologie Interventionnelle, ENS", "Department Psychology, Stanford University"}}%
+%   \def\affstate{{"init", "", "", ""}}%
+%   \def\affcntry{{"init", "", "", ""}}%
+
+  \note{
+    \vspace{1cm}
+    Author note
+
+    \raggedright
+    \setlength{\parindent}{0.4in}
+
+    \newcounter{author}
+
+%     %     %       %       \setcounter{author}{0}
+%         %           \addtocounter{author}{1}
+%         %         \expandafter\edef\csname authorid\endcsname{\theauthor}
+%         Christina Bergmann, \pgfmathparse{\affdep[\authorid]} \pgfmathresult, \pgfmathparse{\affinst[\authorid]} \pgfmathresult, \pgfmathparse{\affcity[\authorid]} \pgfmathresult, \pgfmathparse{\affstate[\authorid]} \pgfmathresult, \pgfmathparse{\affcntry[\authorid]} \pgfmathresult
+%       %     ;
+%     %       %       \setcounter{author}{0}
+%         %           \addtocounter{author}{1}
+%         %         \expandafter\edef\csname authorid\endcsname{\theauthor}
+%         Sho Tsuji, \pgfmathparse{\affdep[\authorid]} \pgfmathresult, \pgfmathparse{\affinst[\authorid]} \pgfmathresult, \pgfmathparse{\affcity[\authorid]} \pgfmathresult, \pgfmathparse{\affstate[\authorid]} \pgfmathresult, \pgfmathparse{\affcntry[\authorid]} \pgfmathresult
+%       %     ;
+%     %       %       \setcounter{author}{0}
+%         %           \addtocounter{author}{2}
+%         %         \expandafter\edef\csname authorid\endcsname{\theauthor}
+%         Page Piccinini, \pgfmathparse{\affdep[\authorid]} \pgfmathresult, \pgfmathparse{\affinst[\authorid]} \pgfmathresult, \pgfmathparse{\affcity[\authorid]} \pgfmathresult, \pgfmathparse{\affstate[\authorid]} \pgfmathresult, \pgfmathparse{\affcntry[\authorid]} \pgfmathresult
+%       %     ;
+%     %       %       \setcounter{author}{0}
+%         %           \addtocounter{author}{3}
+%         %         \expandafter\edef\csname authorid\endcsname{\theauthor}
+%         Molly Lewis, \pgfmathparse{\affdep[\authorid]} \pgfmathresult, \pgfmathparse{\affinst[\authorid]} \pgfmathresult, \pgfmathparse{\affcity[\authorid]} \pgfmathresult, \pgfmathparse{\affstate[\authorid]} \pgfmathresult, \pgfmathparse{\affcntry[\authorid]} \pgfmathresult
+%       %     ;
+%     %       %       \setcounter{author}{0}
+%         %           \addtocounter{author}{3}
+%         %         \expandafter\edef\csname authorid\endcsname{\theauthor}
+%         Mika Braginsky, \pgfmathparse{\affdep[\authorid]} \pgfmathresult, \pgfmathparse{\affinst[\authorid]} \pgfmathresult, \pgfmathparse{\affcity[\authorid]} \pgfmathresult, \pgfmathparse{\affstate[\authorid]} \pgfmathresult, \pgfmathparse{\affcntry[\authorid]} \pgfmathresult
+%       %     ;
+%     %       %       \setcounter{author}{0}
+%         %           \addtocounter{author}{3}
+%         %         \expandafter\edef\csname authorid\endcsname{\theauthor}
+%         Michael C. Frank, \pgfmathparse{\affdep[\authorid]} \pgfmathresult, \pgfmathparse{\affinst[\authorid]} \pgfmathresult, \pgfmathparse{\affcity[\authorid]} \pgfmathresult, \pgfmathparse{\affstate[\authorid]} \pgfmathresult, \pgfmathparse{\affcntry[\authorid]} \pgfmathresult
+%       %     ;
+%     %       %       \setcounter{author}{0}
+%         %           \addtocounter{author}{1}
+%         %         \expandafter\edef\csname authorid\endcsname{\theauthor}
+%         Alejandrina Cristia, \pgfmathparse{\affdep[\authorid]} \pgfmathresult, \pgfmathparse{\affinst[\authorid]} \pgfmathresult, \pgfmathparse{\affcity[\authorid]} \pgfmathresult, \pgfmathparse{\affstate[\authorid]} \pgfmathresult, \pgfmathparse{\affcntry[\authorid]} \pgfmathresult
+%       %     .
+%     
+    Correspondence concerning this article should be addressed to Christina
+    Bergmann, Laboratoire de Sciences Cognitives et Psycholinguistique, ENS.
+    29 Rue d'Ulm, 75005 Paris, France. E-mail:
+    \href{mailto:chbergma@gmail.com}{\nolinkurl{chbergma@gmail.com}}
+
+                                                                                    }
+
+  \keywords{replicability, reproducibility, meta-analysis, developmental psychology,
+language acquisition \\
+
+    \indent Word count: XXXX
+  }
+
+  \usepackage{setspace}
+  \usepackage{float}
+  \usepackage{graphicx}
+  \AtBeginEnvironment{tabular}{\singlespacing}
+  \usepackage{pbox}
+
+\begin{document}
+
+\maketitle
+
+
+
+\section{Introduction}\label{introduction}
+
+Psychology has seen a recent \enquote{crisis of confidence} in key
+findings, as many subfields are plagued by issues of low reliability and
+validity of their data {[}CITE{]}. Replicability, that is conducting
+conceptually similar experiment with new stimuli and in a slightly
+different population but following the same procedure and analyses
+(based on the published report) with the same outcome as reported
+(allowing for a margin of error), is a core concept in this recent
+crisis. Being able to (repeatedly) successfully replicate a study can be
+taken as an indicator that the phenomenon under investigation is true
+and theories can be built on it. This means that a single published
+report is not sufficient to establish the existence of a phenomenon, and
+misleading reports might be caused by a number of issues. Next to
+spurious findings (which can occur even when following best practices),
+a number of habits in psychological research might result in outcomes
+not reflecting whether or not a phenomenon is present in the population.
+These habits include running underpowered studies as well as confining
+non-significant results to the file-drawer.
+
+The above mentioned issues are potentially exacerbated in child studies,
+because the population under investigation is difficult and costly to
+both recruit and test. Small sample sizes and noisy measures are a
+consequence, which in turn lead to habitually underpowered studies. It
+is thus no surprise that some assume the next \enquote{crisis of
+confidence} brought about by low replicability of core effects will be
+concerning the field of developmental psychology (Frank). The present
+paper aims to quantify both some of the potentially problematic habits
+of developmental researchers, and show a way forward. We are thus adding
+to a recently emerging literature that critically examines long-held
+standards and practices in order to make the whole field more reliable
+and robust (Mills-Smith, Spangler, Panneton, \& Fritz, 2015, Csibra,
+Hernik, Mascaro, Tatone, \& Lengyel (2016)).
+
+\section{The status quo}\label{the-status-quo}
+
+\textbf{\emph{TO DO: Expand }}
+
+In this section, we survey current practices in the field of
+developmental psychology. We focus on reporting and experiment planning
+practices.
+
+\subsection{The Dataset: MetaLab}\label{the-dataset-metalab}
+
+The subsequent analyses are based on MetaLab, an online collection of
+meta-analyses on early language development. Meta-analyses are built on
+a collection of standardized effect sizes on a single, well-defined
+phenomenon. By accumulating effect sizes and weighting them by their
+reliability, it is possible to compute an estimate of the population
+effect. Consequently, meta-analyses do not rely on one (possibly false)
+study outcome, be it significant or not. Despite their overall utility,
+meta-analyses are not frequently conducted in most branches of
+developmental psychology. Instead, narrative summaries are the dominant
+tool to build theories, and that single studies are cited as evidence
+for the presence or absence of an ability instead of meta-analyses.
+Currently, MetaLab contains 12 meta-analyses, but it is open to
+submissions and updates. The present analyses thus are a snapshot;
+through dynamic reports on the website, and by downloading the freely
+available data, it is continuously possible to obtain the most recent
+data.
+
+In MetaLab, various meta-analyses are combined that address phenomena
+ranging from infant-directed speech preference to mutual exclusivity.
+Those datasets were either added by the authors (n=XXX) or extracted
+from published papers (n=XXXX). In the former case, we attempted to code
+as much detail as possible for each entered experiment (note that a
+paper can contain many experiments). A high level of detail allows not
+only to retrieve general measures of interest, but also to conduct
+follow-up analyses into different possible research questions and
+prospective power calculations taking as much methodological detail as
+possible into account.
+
+Overall, parts of each meta-analysis are standardized to allow for the
+computation of common effect size estimates and for analyses that span
+different phenomena. These standardized variables include study
+descriptors (such as citation and peer review status), participant
+characteristics (including mean age and age range, percent female
+participants), methodological infomation (for example what dependent
+variable was measured), and information necessary to compute effect
+sizes (number of participants, if available means and standard
+deviations of the dependent measure, otherwise test statistics, such as
+t-values or F scores).
+
+As dependent measure, we report Cohen's \emph{d}, a standardized effect
+size based on comparing sample means. This effect size was calculated
+when possible from sample means and standard deviations across designs
+with the appropriate formula. When these data were not available, we
+used test statistics, more precisely t-values or F scores of the test
+assessing the main hypothesis. We also computed the variance of this
+effect size, which allows to weigh each effect size when aggregating
+across studies. The variance is mainly determined by the number of
+participants; intuitively effect sizes based on larger samples will be
+weighted higher. Note that for research designs testing participants in
+two conditions that need to be compared (for example exposing the same
+infants to infant- and adult-directed speech), correlations between
+those two measures are needed to estimate the effect size variance. This
+measure is usually not reported. Some correlations could be obtained
+through direct contact with the original authors (see e.g., (Bergmann \&
+Cristia, 2015) for details), for others we estimated this factor.
+
+Descriptions of all phenomena covered by MetaLab, including which papers
+and other sources have been considered, can be found on the companion
+website at metalab.stanford.edu and in the supporting information. Table
+XX shows an overview of the phenomena covered.
+
+\subsection{Average sample size, effect size, and power per
+phenomenon}\label{average-sample-size-effect-size-and-power-per-phenomenon}
+
+A first assessment of current practices in developmental psychology
+concerns which variables of interest are habitually reported, and what
+crucial information is ommitted in published papers. To this end we
+survey the data available in MetaLab, with a focus on participant
+descriptors, that is age, age range, total participant number and
+percentage of girls tested; and outcome variables, including the mean
+and standard deviation of the dependent variable, a test statistic, that
+is a t-value or F-score, for the main hypothesis test (for example
+whether looking times differ), and the correlation between outcome
+variables when infants were tested in multiple conditions (frequently
+target and control). The data are summarized in Table 1. We break these
+statistics down by topic and provide the number of papers and
+experiments (one paper usually contains several experiments). Note that
+the values are compiled after authors were contacted when information
+was missing from the published report (details are available in the
+respective publications). Further, we note whether effect sizes in the
+form of a variant of Cohen's \emph{d} were already available; this
+number includes meta-analyses that were entered based on published
+papers ({\textbf{???}}, ({\textbf{???}})).
+
+APA recommendations (American Psychological Association, 2001) have for
+almost two decades included the requirement to always report and
+interpret an effect size for all measures of relevance, along with
+p-values. Effect sizes should, according to those recommendations, be
+interpreted both when the p-value is above the significance threshold as
+well as when the significance criterion is met. However, current
+reproting habits do not follow this recommendation, especially for
+nonsignificant findings, and if effect sizes are reported, their
+interpretation is either lacking or misleading (Mills-Smith et al.,
+2015). This practice has strong implications for theory building, as the
+data they are based on might not be reliable.
+
+The table below provides summary information for each meta-analysis in
+MetaLab regarding a number of factors, including the number of single
+effect sizes and that of papers contributing to a given dataset.
+Phenomena differ in the age groups typically tested and the age range
+covered. This is of high importance, both theoretically, as younger
+infants might generate more noisy behaviors and are not as advanced in
+their linguistic abilities, and practically, as older infants might be
+subjected to more robust methods and could be a more readily available
+participant pool. The typical sample size as well as the minimum and
+maximum (allowing to estimate the range in our data) is noted as well.
+Based on the meta-analytical effect size and the average number of
+participants, we calculated typical power. Note that recommendations are
+for this value to be above 80\%, which refers to a likelihood that 4 out
+of 5 studies show a significant outcome for an effect truly present in
+the population.
+
+Underpowered studies, that is studies with a low probability to detect
+an effect given it is present in the population, pose a problem for
+branches of developmental studies that interpret both significant and
+nonsignificant findings; for example when tracking the emergence of an
+ability as children mature or when examining the boundary conditions of
+an ability. This practice is problematic for two reasons: On one hand,
+the null hypothesis, for example that two groups do not differ, is not
+being tested, so it cannot be adopted based on a high p-value. Instead,
+p-values can only support rejections of the null hypothesis with a
+certainty that the data at hand are incompatible with it below a pre-set
+threshold. On the other hand, even in the most rigorous study design and
+execution, null results will occur ever so often; for example in a study
+with 80\% power (a number typically deemed sufficient), every fifth
+result will not reflect that there is a true effect present in the
+population. Disentangling whether a non-significant finding indicates
+the absence of a skill, random measurement noise, or the lack of
+experimental power to detect this skill reliably and with statistical
+support is impossible based on p-values.
+
+\begin{longtable}[]{@{}lrrrrrrrrr@{}}
+\caption{Descriptions of meta-analyses currently in
+MetaLab.}\tabularnewline
+\toprule
+Meta Analysis (MA) & Mean Age in Months & Mean Sample Size & Min. Sample
+Size & Max. Sample Size & \# Effect Sizes & \# Papers & d & SE & Avg
+Power\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+Meta Analysis (MA) & Mean Age in Months & Mean Sample Size & Min. Sample
+Size & Max. Sample Size & \# Effect Sizes & \# Papers & d & SE & Avg
+Power\tabularnewline
+\midrule
+\endhead
+Gaze following & 13.63 & 31.61 & 12 & 63 & 33 & 11 & 1.29 & 0.18 &
+1.00\tabularnewline
+Infant directed speech preference & 4.72 & 22.11 & 10 & 60 & 50 & 16 &
+0.74 & 0.10 & 0.67\tabularnewline
+Label advantage in concept learning & 10.96 & 16.44 & 9 & 32 & 100 & 17
+& 0.40 & 0.06 & 0.20\tabularnewline
+Mutual exclusivity & 27.68 & 18.83 & 8 & 72 & 60 & 19 & 1.03 & 0.17 &
+0.87\tabularnewline
+Online word recognition & 20.30 & 39.40 & 16 & 95 & 15 & 6 & 1.36 & 0.25
+& 1.00\tabularnewline
+Phonotactic learning & 10.18 & 19.45 & 8 & 40 & 47 & 15 & 0.02 & 0.07 &
+0.05\tabularnewline
+Pointing and vocabulary (concurrent) & 21.03 & 26.58 & 6 & 50 & 12 & 12
+& 0.94 & 0.14 & 0.92\tabularnewline
+Pointing and vocabulary (longitudinal) & 18.51 & 32.22 & 12 & 72 & 18 &
+18 & 0.58 & 0.12 & 0.63\tabularnewline
+Sound symbolism & 11.76 & 19.02 & 11 & 26 & 42 & 10 & 0.15 & 0.06 &
+0.07\tabularnewline
+Statistical sound category learning & 7.46 & 16.35 & 5 & 35 & 18 & 9 &
+-0.24 & 0.11 & 0.10\tabularnewline
+Statistical word segementation & 8.30 & 21.19 & 15 & 32 & 21 & 6 & 0.25
+& 0.09 & 0.13\tabularnewline
+Vowel discrimination (native) & 7.51 & 16.00 & 6 & 50 & 143 & 32 & 0.65
+& 0.06 & 0.43\tabularnewline
+Vowel discrimination (non-native) & 8.08 & 17.69 & 8 & 30 & 48 & 15 &
+0.69 & 0.13 & 0.52\tabularnewline
+Word segmentation & 9.20 & 22.14 & 4 & 64 & 291 & 66 & 0.21 & 0.02 &
+0.11\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{\emph{TO DO: Exclude dbs based on published MAs from total d
+reported?!}}
+
+\begin{longtable}[]{@{}lrrr@{}}
+\caption{Reporting practices of study outcome measures and demographic
+information for all papers in MetaLab.}\tabularnewline
+\toprule
+Variable & \# Coded & \# Uncoded & Total\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+Variable & \# Coded & \# Uncoded & Total\tabularnewline
+\midrule
+\endhead
+test\_statistic & 467 & 431 & 898\tabularnewline
+means & 657 & 241 & 898\tabularnewline
+SD & 693 & 205 & 898\tabularnewline
+d & 228 & 670 & 898\tabularnewline
+corr\_within\_two & 172 & 358 & 530\tabularnewline
+mean\_age & 898 & 0 & 898\tabularnewline
+age\_range & 614 & 284 & 898\tabularnewline
+gender & 344 & 554 & 898\tabularnewline
+*** TO DO: Add sum & mary acros & s datasets? & ***\tabularnewline
+\bottomrule
+\end{longtable}
+
+\subsubsection{Power: Comparing meta-analytic effect size and oldest
+paper}\label{power-comparing-meta-analytic-effect-size-and-oldest-paper}
+
+As Table 1 shows, experimenters are habitually not including a
+sufficient number of participants to observe a given effect, assuming
+the meta-analytic estimate for a given topic. It might, however, be
+possible, that power has been determined based on a seminal paper to be
+replicated. Initial reports tend to overestimate effect sizes
+{[}CITE{]}, possibly explaining the lack of power in some sub-domains.
+We extracted for each dataset the oldest paper and therein the largest
+reported effect size and re-calculated power accordingly. The results
+are shown in the table below. It turns out that in some cases, such as
+tests into native and non-native vowel discrimination, sample size
+choices match well with the oldest report.
+
+\begin{longtable}[]{@{}llrrr@{}}
+\caption{For each meta-analysis, largest d from oldest paper and
+meta-analytic d.}\tabularnewline
+\toprule
+Meta-analysis (MA) & Oldest Paper & Oldest d & Mean Sample Size &
+Power\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+Meta-analysis (MA) & Oldest Paper & Oldest d & Mean Sample Size &
+Power\tabularnewline
+\midrule
+\endhead
+Phonotactic learning & Chambers et al. (2003) & 0.98 & 19.45 &
+0.84\tabularnewline
+Vowel discrimination (native) & Trehub (1973) & 1.87 & 16.00 &
+1.00\tabularnewline
+Vowel discrimination (non-native) & Trehub (1976) & 1.02 & 17.69 &
+0.84\tabularnewline
+Pointing and vocabulary (concurrent) & Murphy (1978) & 0.65 & 26.58 &
+0.65\tabularnewline
+Pointing and vocabulary (longitudinal) & Bates et al. (1979) & 0.56 &
+32.22 & 0.60\tabularnewline
+Infant directed speech preference & Glenn \& Cunningham (1983) & 2.56 &
+22.11 & 1.00\tabularnewline
+Mutual exclusivity & Merriman et al. (1989) & 0.70 & 18.83 &
+0.55\tabularnewline
+Word segmentation & Jusczyk \& Aslin (1995) & 0.56 & 22.14 &
+0.44\tabularnewline
+Statistical word segementation & Saffran, Aslin, \& Newport (1996) &
+-0.39 & 21.19 & 0.24\tabularnewline
+Label advantage in concept learning & Balaban \& Waxman (1997) & 0.86 &
+16.44 & 0.67\tabularnewline
+Gaze following & Mundy \& Gomes (1998) & 4.52 & 31.61 &
+1.00\tabularnewline
+Statistical sound category learning & Maye, Werker, \& Gerken (2002) &
+0.56 & 16.35 & 0.34\tabularnewline
+Online word recognition & Zangl et al. (2005) & 0.89 & 39.40 &
+0.97\tabularnewline
+Sound symbolism & Maurer, Pathman, \& Mondloch (2006) & 0.95 & 19.02 &
+0.82\tabularnewline
+\bottomrule
+\end{longtable}
+
+*** To Do: align with table 1***
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{EducationPaper_files/figure-latex/Plot\%20of\%20Difference\%20of\%20d\%20Values-1.pdf}
+\caption{Correlation of largest d from oldest paper and difference
+between oldest d and meta-analytic d.}
+\end{figure}
+
+To illustrate the disparity between the oldest effect size and the
+meta-analytic effect, we plot the difference between both against the
+oldest effect. The difference is larger as oldest effect size increases.
+This plot showcases that researchers might want to be wary of large
+effects, as they are more likely to be non-representative of the true
+phenomenon compared to smaller initial effects being reported.
+
+\subsection{What is the effect of method
+choice?}\label{what-is-the-effect-of-method-choice}
+
+\subsubsection{Do researchers chose efficient
+methods?}\label{do-researchers-chose-efficient-methods}
+
+Are methods chosen based on the proportion of participants that can be
+retained for data analysis?
+
+\begin{longtable}[]{@{}lrrr@{}}
+\caption{Method vs Dropout}\tabularnewline
+\toprule
+& Estimate & Std. Error & t value\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+& Estimate & Std. Error & t value\tabularnewline
+\midrule
+\endhead
+(Intercept) & 0.3272837 & 0.0426996 & 7.664793\tabularnewline
+methodconditioned head-turn & 0.1947841 & 0.0297706 &
+6.542825\tabularnewline
+methodhead-turn preference procedure & -0.0437157 & 0.0357490 &
+-1.222851\tabularnewline
+methodstimulus alternation & 0.2243003 & 0.0387015 &
+5.795651\tabularnewline
+ageC & 0.0002742 & 0.0001024 & 2.678189\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}lrrrrrr@{}}
+\caption{Effect of d by method with hpp as baseline
+method.}\tabularnewline
+\toprule
+& estimate & se & zval & pval & ci.lb & ci.ub\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+& estimate & se & zval & pval & ci.lb & ci.ub\tabularnewline
+\midrule
+\endhead
+intrcpt & 0.2892681 & 0.1421133 & 2.0354750 & 0.0418031 & 0.0107311 &
+0.5678050\tabularnewline
+ageC & 0.0005812 & 0.0002314 & 2.5118668 & 0.0120094 & 0.0001277 &
+0.0010347\tabularnewline
+relevel(method, \enquote{head-turn preference procedure})central
+fixation & -0.1174488 & 0.0898991 & -1.3064511 & 0.1913992 & -0.2936479
+& 0.0587502\tabularnewline
+relevel(method, \enquote{head-turn preference procedure})conditioned
+head-turn & 1.6154095 & 0.3059403 & 5.2801453 & 0.0000001 & 1.0157774 &
+2.2150416\tabularnewline
+relevel(method, \enquote{head-turn preference procedure})forced-choice &
+0.1944334 & 0.1992622 & 0.9757664 & 0.3291802 & -0.1961134 &
+0.5849801\tabularnewline
+relevel(method, \enquote{head-turn preference procedure})looking while
+listening & 0.1574168 & 0.2047348 & 0.7688813 & 0.4419638 & -0.2438560 &
+0.5586895\tabularnewline
+relevel(method, \enquote{head-turn preference procedure})pointing &
+0.2755598 & 0.3740201 & 0.7367514 & 0.4612736 & -0.4575061 &
+1.0086256\tabularnewline
+relevel(method, \enquote{head-turn preference procedure})stimulus
+alternation & -0.1707422 & 0.1957474 & -0.8722576 & 0.3830678 &
+-0.5544001 & 0.2129157\tabularnewline
+ageC:relevel(method, \enquote{head-turn preference procedure})central
+fixation & -0.0001246 & 0.0003060 & -0.4070361 & 0.6839814 & -0.0007243
+& 0.0004752\tabularnewline
+ageC:relevel(method, \enquote{head-turn preference
+procedure})conditioned head-turn & 0.0051961 & 0.0017093 & 3.0399230 &
+0.0023664 & 0.0018460 & 0.0085463\tabularnewline
+ageC:relevel(method, \enquote{head-turn preference
+procedure})forced-choice & 0.0015039 & 0.0002833 & 5.3077238 & 0.0000001
+& 0.0009485 & 0.0020592\tabularnewline
+ageC:relevel(method, \enquote{head-turn preference procedure})looking
+while listening & 0.0009826 & 0.0004102 & 2.3952135 & 0.0166107 &
+0.0001786 & 0.0017867\tabularnewline
+ageC:relevel(method, \enquote{head-turn preference procedure})pointing &
+0.0002097 & 0.0006849 & 0.3061095 & 0.7595213 & -0.0011328 &
+0.0015521\tabularnewline
+ageC:relevel(method, \enquote{head-turn preference procedure})stimulus
+alternation & -0.0003119 & 0.0008911 & -0.3499932 & 0.7263438 &
+-0.0020583 & 0.0014346\tabularnewline
+\bottomrule
+\end{longtable}
+
+We built a meta-analytic model with the effect size measure Cohen's
+\emph{d} as the dependent variable, method and mean age of population
+centered as independent variables. The model also includes the variance
+of \emph{d} for sampling variance, and paper within meta-analysis as a
+random effect (because we assume that within a paper experiments and
+thus effect sizes will be more similar to each other than across
+papers). Only methods with at least 20 associated effect sizes in
+MetaLab were included in the model. Thus, the present analyses are
+limited to 865 observations. The included methods are central
+fixationconditioned head-turnforced-choicehead-turn preference
+procedurelooking while listeningpointingstimulus alternation. Since the
+model compares one method as the baseline to all other methods, a
+baseline method had to be chosen. \enquote{Head-turn preference
+procedure} was included as the baseline method, as it appears most
+frequently in MetaLab (350 times out of 898 total entries).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{EducationPaper_files/figure-latex/Plot\%20of\%20Effect\%20of\%20Method-1.pdf}
+\caption{Effect size as explained by different methods and mean age of
+participants.}
+\end{figure}
+
+\textbf{\emph{TO DO: Add caveats}}
+
+\section{General Discussion}\label{general-discussion}
+
+\subsection{Recommendation: appreciate meta-analyses
+more}\label{recommendation-appreciate-meta-analyses-more}
+
+Meta-analyses and meta-analytic thinking might help solve some of the
+issues we uncovered.
+
+The reluctance to appreciate meta-analyses is evident when comparing
+citation rates of the initial paper with a meta-analysis on the same
+phenomenon. Consider the example of infant-directed speech preference,
+where infants listen longer to speech stimuli showing the typical
+characteristics of parents talking to their young children. This
+phenomenon is both theoretically and practically highly relevant and
+thus receives substantial attention from the field, not the least in a
+recent large-scale replication attempt (Frank). A meta-analysis on this
+phenomenon was published in 2012 ({\textbf{???}}), taking 34 studies
+into account. The oldest paper stems from 1983 {[}Cite Glenn \&
+Cunningham \enquote{What do babies listen to most? A developmental study
+of auditory preferences in nonhandicapped infants and infants with
+Down's syndrome.}{]}, and the seminal work (measured by the number of
+citations) was published in 1990 {[}CITE Cooper Aslin
+\enquote{Preference for infant-directed speech in the first month after
+birth}{]}. Comparing these three papers by the number of citations
+divided by the years since publication (retreived from google scholar on
+September 2, 2016) shows that the seminal paper is cited an order of
+magnitude more every year (on average 24.3 times) than the meta-analysis
+(2.75 times). This is indicative of practices both when constructing
+theories and planning experiment: The quantified evidence is
+under-appreciated, despite providing a number of useful measures, such
+as effect sizes for different age groups and for various methodological
+decisions such as stimulus type (synthetic versus natural speech, the
+own mother versus a stranger, among other things). This is both highly
+relevant for theories, as the observation of an increased preference for
+infant-directed speech is a qualitative observation that can allow for
+more fine-grained hypothesizing. Practically, the information about
+effect size changes and the impact of method allow for more robust
+experiment planning and power calculations. We will come back to the
+issue of power and the impact of considering a seminal paper versus a
+meta-analysis below. Similar observations hold for other meta-analyses
+currently available {[}CITE inphondb, inworddb, others outside language
+development?{]}.
+
+While anecdotal, this survey showcases current practices and points to
+one reason for underpowered studies. If authors only consider a single
+seminal paper to estimate the number of participants necessary, they
+might habitually run under-powered studies. We show this in dedicated
+analyses on meta-analytic versus seminal effect size and the resulting
+typical power in a literature.
+
+\subsubsection{Why don't we do MAs?}\label{why-dont-we-do-mas}
+
+Meta-analyses are also seldomly conducted. This is due to high hurdles
+and few rewards. Conducting a meta-analysis is a laborious process,
+particularly according to common practice where only a few people do the
+work, with little ready-to-use support tools and educational materials
+available. Incentives for creating meta-analyses are low, as public
+recognition is tied to a single publication. The benefits of
+meta-analyses for the field, for instance the possibility to conduct
+power analyses, are often neither evident nor accessible to individual
+researchers, as the data are not shared and traditional meta-analyses
+remain static after publication, aging quickly as new results emerge.
+
+A final impediment to meta-analyses in developmental science are, as we
+illustrated in more detail in section XXX, current reporting standards,
+which make it difficult and at times even impossible to compute effect
+sizes from the published literature. As consequence, both systematic,
+full-scale meta-analyses, and a targeted priori calculation of power and
+thus the determination of appropriate sample sizes are not yet common
+practice. Our analyses span various journals and publication years and
+are thus complementary to recent reports on the overall lack of power in
+(developmental) psychology based on single-journal/-year samples (e.g.,
+Marszalek, Barber, Kohlhart, \& Holmes, 2011).
+
+\subsection{Going forward: How can MetaLab help change
+practices?}\label{going-forward-how-can-metalab-help-change-practices}
+
+MetaLab is built on two core principles: lowering hurdles to foster the
+implementation of practices which are rapidly becoming standard
+procedure, not only in other branches of psychology (such as effect size
+estimation and power calculation), and crowdsourcing to decrease the
+workload of single researchers. MetaLab is based on the recently
+proposed concept of community-augmented meta-analyses (CAMAs; Tsuji,
+Bergmann, \& Cristia, 2014), which combine meta-analyses and open
+repositories. The advantages of this union are that meta-analyses are
+shared and get updated continuously, so they can capture the most recent
+state of the literature and are open to contributions of unpublished
+results.
+
+MetaLab expands on CAMAs by providing an infrastructure for a range of
+uses. It is possible to gain an overview of the literature, get insights
+into specific topics through dynamically rendered reports, conduct power
+calculations, and contribute not only single recent or unpublished
+datasets, but whole meta-analyses that can then be opened to
+contributions and analysis. All meta-analyses share a core of 20
+variables which not only allow for the computation of effect sizes
+across vastly different studies, but also provide the basis for further
+comparisons. These comparisons are both of practical and theoretical
+importance, for example can we compare which method is more robust and
+suitable for various ages. Researchers then can both better compare
+existent findings and plan their own research to be more effective. This
+becomes possible by focusing on a high-level but specific and
+constrained topic, in the case of MetaLab this is early language
+development and adjacent phenomena.
+
+MetaLab also poses several advantages compared to existing software for
+meta-analyses. First, adding meta-analyses is supported not only by
+sharing standardized formats but also by offering guidance in
+identifying the correct data to enter, based on the extant data and
+examples from the developmental psychology literature. Further, novice
+users can easily engage with the platform to estimate, for example,
+effect sizes, or decide on sample sizes with a simple interactive tool.
+Secondly, since all data and scripts are freely and openly available, it
+is possible to inspect and if needed correct all computations. Errors
+are thus removed much more swiftly than would be the case for
+(commercial) software, without losing the benefit of a stable platform.
+By changing current practices, we aim to increase the reliability of
+developmental findings and thus the credibility of the field, which has
+recently come under fire (e.g., Peterson, 2016).
+
+\subsection{With these tools, what do we have to
+do?}\label{with-these-tools-what-do-we-have-to-do}
+
+{[}Tutorial section{]}
+
+On the individual level:
+
+\begin{itemize}
+\tightlist
+\item
+  How to determine participants: Power calculator, typical N in the
+  field
+\item
+  How to run the best possible study: Make design choices to have a more
+  robust measure (smaller sample and more power)
+\item
+  How do I report my data? Best reporting practices (include
+  correlations for within, always report means and SD); and possibly
+  best visualization practices
+\end{itemize}
+
+Further individual benefits:
+
+\begin{itemize}
+\tightlist
+\item
+  Don't despair when a null result occurs, you can still help the
+  community with it
+\item
+  For replication / training purposes possible to compare ES and select
+  robust ones
+\end{itemize}
+
+On the general level:
+
+\begin{itemize}
+\tightlist
+\item
+  Evidence becomes more reliable
+\item
+  New evidence can be integrated with previous work directly without
+  much effort
+\item
+  Complete, unbiased overview of a research literature
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Identify unexplained variance
+  \item
+    Where are gaps?
+  \item
+    Which moderators (do not) affect outcomes
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Examples from published MAs:
+
+      \begin{itemize}
+      \tightlist
+      \item
+        InWordDB lack of age effect (predicted and strongly assumed in
+        the field)
+      \item
+        InPhonDB confirmation of diverging effects for native /
+        nonnative, with a quantitative timeline
+      \end{itemize}
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\section*{References}\label{references}
+\addcontentsline{toc}{section}{References}
+
+\hypertarget{refs}{}
+\hypertarget{ref-APA2001}{}
+American Psychological Association. (2001). \emph{Publication manual of
+the american psychological association} (5th ed.). Washington, DC:
+American Psychological Association.
+
+\hypertarget{ref-InWordDB}{}
+Bergmann, C., \& Cristia, A. (2015). Development of infants'
+segmentation of words from native speech: A meta-analytic approach.
+\emph{Developmental Science}.
+
+\hypertarget{ref-Csibra}{}
+Csibra, G., Hernik, M., Mascaro, O., Tatone, D., \& Lengyel, M. (2016).
+Statistical treatment of looking-time data. \emph{Developmental
+Psychology}, \emph{52}(4), 521--536.
+
+\hypertarget{ref-Manybabies}{}
+Frank, M. C. (). A collaborative approach to infant research: Promoting
+reproducibility, best practices, and theory-building.
+
+\hypertarget{ref-Marszalek2011}{}
+Marszalek, J. M., Barber, C., Kohlhart, J., \& Holmes, C. B. (2011).
+Sample size in psychological research over the past 30 years 1, 2.
+\emph{Perceptual and Motor Skills}, \emph{112}(2), 331--348.
+
+\hypertarget{ref-Mills-Smith2015}{}
+Mills-Smith, L., Spangler, D. P., Panneton, R., \& Fritz, M. S. (2015).
+A missed opportunity for clarity: Problems in the reporting of effect
+size estimates in infant developmental science. \emph{Infancy},
+\emph{20}(4), 416--432.
+
+\hypertarget{ref-Peterson2016}{}
+Peterson, D. (2016). The baby factory: Difficult research objects,
+disciplinary standards, and the production of statistical significance.
+\emph{Socius: Sociological Research for a Dynamic World}, \emph{2},
+1--10.
+
+\hypertarget{ref-Tsuji2014}{}
+Tsuji, S., Bergmann, C., \& Cristia, A. (2014). Community-augmented
+meta-analyses: Toward cumulative data assessment. \emph{Psychological
+Science}, \emph{9}(6), 661--665.
+
+
+
+\end{document}
