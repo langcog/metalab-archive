@@ -67,7 +67,7 @@ all_data$dataset = plyr::mapvalues(all_data$dataset , from = c("Pointing and voc
 ```
 
 ### Statistical approach
-Effect sizes were computed by a script, [compute_es.R](https://github.com/langcog/metalab/blob/master/scripts/compute_es.R). We calculated effect sizes from reported means and standard deviations where available, otherwise we relied on reported test-statistics (*t* and *F*). Several pre-existing MAs deal with special cases, and these are listed in the script. Except where noted, formulas are from [Hedges & Olkin's textbook](http://www.amazon.com/Statistical-Methods-Meta-Analysis-Larry-Hedges/dp/0123363802). All analyses were conducted with the [metafor](http://www.metafor-project.org/doku.php) package (Viechtbauer, 2010), using random-effects models. Note that a subset of individual MAs (such as Sound Symbolism) contain effect sizes that are not statistically independent, while the current implementation of random-effect models assumes independence of all individual effect sizes.
+Effect sizes were computed by a script, [compute_es.R](https://github.com/langcog/metalab/blob/master/scripts/compute_es.R). We calculated effect sizes from reported means and standard deviations where available, otherwise we relied on reported test-statistics (*t* and *F*). Several pre-existing MAs deal with special cases, and these are listed in the script. Except where noted, formulas are from [Hedges & Olkin's textbook](http://www.amazon.com/Statistical-Methods-Meta-Analysis-Larry-Hedges/dp/0123363802) (2014). All analyses were conducted with the [metafor](http://www.metafor-project.org/doku.php) package (Viechtbauer, 2010), using random-effects models. Note that a subset of individual MAs (such as Sound Symbolism) contain effect sizes that are not statistically independent, while the current implementation of random-effect models assumes independence of all individual effect sizes.
 
 ### Search strategies
 Meta-analyses were conducted by the authors for all but two phenomena (IDS preference and Pointing and vocabulary). Data for these two phenomena were obtained by adapting effect size estimates from existing, published meta-analyses (Dunst, Gorman, & Hamby, 2012 and Colonnesi et al., 2010). Across phenomena, meta-analyses varied in their degree of systematicty in selecting papers. Below we describe the search strategy for each phenomenon. Quoted descriptions are taken directly from the published source.
@@ -143,6 +143,8 @@ ci.data = pc.data %>%
                                    "Vowel discrimination (native)"="Vowel discrimination\n(native)",
                                    "Vowel discrimination (non-native)"="Vowel discrimination\n(non-native)")))
 
+ci.data[ci.data$dataset == "Sound symbolism" & ci.data$p == .01, "ci.lower"] = 0 # there's only one datapoint for this dataset
+
 pc.data %>%
   group_by(dataset) %>%
   do(get_p_curve_df(., ALPHA, P_INCREMENT)) %>%
@@ -155,7 +157,7 @@ pc.data %>%
                                    "Vowel discrimination (non-native)"="Vowel discrimination\n(non-native)")),
          dataset = gdata::reorder.factor(dataset, 
                                     new.order = c(3, 7, 8, 6, 9, 2, 5, 1, 4))) %>%
-  ggplot() + 
+ggplot() + 
   facet_wrap(~ dataset, nrow = 3) +
   geom_ribbon(aes(ymin = ci.lower, ymax = ci.upper, x = p), fill = "grey87", data = ci.data) +
   geom_line(size = 1, aes(x = p, y = value, linetype = measure, color = measure)) +
@@ -217,26 +219,6 @@ left_join(stouffer.data_all, stouffer.data, by = "dataset") %>%
 
 
 ### Method heterogeneity
-```{r, eval = F}
-all_data %>%
-  mutate(dataset = plyr::revalue(dataset, 
-                                 c("Infant directed speech preference"="IDS preference",
-                                   "Statistical sound category learning"="Statistical sound learning", 
-                                   "Label advantage in concept learning"="Concept-label advantage",
-                                   "Vowel discrimination (native)"="Vowel discrimination\n(native)",
-                                   "Vowel discrimination (non-native)"="Vowel discrimination\n(non-native)")),
-          dataset = as.factor(dataset),
-          dataset = gdata::reorder.factor(dataset, 
-                                    new.order = c(2,6,10,11,9,12,4,8,3,5,1,7))) %>%
-ggplot(aes(x = mean_age_1/365, y = d_calc, color = method)) +
-         facet_wrap(~dataset, scales = "free_y") +
-         geom_smooth(method = "lm", formula = y ~ log(x)) +
-         xlab("age (years)") +
-         ylab("effect size (d)") +
-         theme_bw()
-         
-```
-
 The plot below present model coefficients for method for datasets with more than one method. Coefficients are estimated from random-effects meta-analytic models. For the most part, we see that method only has a small effect on the effect size within a given phenomenon. There are exceptions, however: For example, for both IDS Preference and Sound Symbolism the forced choice method has an overall larger effect size than other methods.
 ```{r, fig.height = 6, fig.width = 10}
 
@@ -279,6 +261,31 @@ ggplot(method.betas, aes(x = dataset, y = betas, ymin = ci.lb,
   theme(axis.text.x = element_text(angle = 45, hjust = 1.1))
 
 ```
+
+```{r}
+# filter to only those with multiple methods; add text; fix x-axis
+all_data %>%
+  mutate(dataset = plyr::revalue(dataset, 
+                                 c("Infant directed speech preference"="IDS preference",
+                                   "Statistical sound category learning"="Statistical sound learning", 
+                                   "Label advantage in concept learning"="Concept-label advantage",
+                                   "Vowel discrimination (native)"="Vowel discrimination\n(native)",
+                                   "Vowel discrimination (non-native)"="Vowel discrimination\n(non-native)")),
+          dataset = as.factor(dataset),
+          dataset = gdata::reorder.factor(dataset, 
+                                    new.order = c(2,6,10,11,9,12,4,8,3,5,1,7))) %>%
+  filter(mean_age_1/365 < 3) %>%
+ggplot(aes(x = mean_age_1/365, y = d_calc, color = method)) +
+         facet_wrap(~dataset, scales = "free_y") +
+         geom_smooth(method = "lm", formula = y ~ log(x)) +
+         xlab("Age (years)") +
+         ylab("Effect size (d)") +
+         theme_bw() +
+        theme(legend.position = "bottom",
+        legend.key = element_blank(),
+        legend.background = element_rect(fill = "transparent"))
+```
+
 
 
 
