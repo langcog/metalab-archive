@@ -8,11 +8,10 @@ output:
     toc: true
     number_sections: false
     theme: cerulean
-    #toc_float: true
     code_folding: hide
 ---
 
-This document was created from an  <a href="http://github.com/langcog/metalab/blob/master/write-ups/synthesis_paper/SI/synthesis_SI.Rmd" target= "_top"> R markdown file</a>. Data from the paper can be interactively explored on the [Metalab website](http://metalab.stanford.edu/). The manuscript itself was also produced from an <a href="http://github.com/langcog/metalab/blob/master/write-ups/synthesis_paper/metalab_synthesis.Rmd" target= "_top"> R markdown file</a>, and thus all analyses presented in the paper can be reproduced from this document.  
+This document was created from an  <a href="http://github.com/langcog/metalab/blob/master/write-ups/synthesis_paper/SI/synthesis_SI.Rmd" target= "_top"> R markdown file</a>. Data from the paper can be interactively explored on the [Metalab website](http://metalab.stanford.edu/). The manuscript itself was also produced from an <a href="http://github.com/langcog/metalab/blob/master/write-ups/synthesis_paper/metalab_synthesis.Rmd" target= "_top"> R markdown file</a>, and thus all analyses presented in the paper can be reproduced from that document.  
 
 
 ```{r setup, include = F}
@@ -23,7 +22,7 @@ source("../paper_analyses/pcurve.R")
 library(knitr)
 
 opts_chunk$set(echo = T, message = F, warning = F, 
-               error = F, cache = T, tidy = F)
+               error = F, cache = F, tidy = F)
 ```
 
 ```{r load data, include = F}
@@ -87,6 +86,130 @@ datasets %>%
   .[c(1, 6, 4, 5, 7, 8, 10, 12, 2, 9, 3, 11),]  %>% 
   kable(col.names = c("Phenomenon",  "Search Strategy"), row.names = F)
 ```
+
+### Funnel plots
+If an effect size is an extreme outlier from the overall mean, this may indicate that the effect size estimates a different psychological phenomenon than the one estimated by the others in the sample. One approach for dealing with this type of heterogenity is to exclude outliers from analyses. Here we present funnel plots that exclude effect sizes that lie 3 standard deviations above or below the mean effect size for each meta-analysis. Of the 808 effect sizes in the dataset, 8 were outliers (.08%).
+```{r,  fig.pos = "T!", fig.width=8, fig.height=5.5}
+
+CRIT_95 = 1.96 
+
+funnel.es.data = all_data %>%
+  mutate(dataset = as.factor(dataset),
+         dataset= gdata::reorder.factor(dataset, 
+                                    new.order = c(2,6,10,11,9,12,4,8,3,5,1,7)),
+         dataset = plyr::revalue(dataset, 
+                                 c("Infant directed speech preference"="IDS preference",
+                                   "Statistical sound category learning"="Statistical sound learning", 
+                                   "Label advantage in concept learning"="Concept-label advantage",
+                                   "Vowel discrimination (native)"="Vowel discrimination\n(native)",
+                                   "Vowel discrimination (non-native)"="Vowel discrimination\n(non-native)"))) %>%
+  group_by(dataset) %>%
+  mutate(outlier = ifelse(d_calc > mean(d_calc)  + (3 * sd(d_calc)) | d_calc < mean(d_calc)  - (3 * sd(d_calc)), 1, 0),
+         outlier = as.factor(outlier)) %>%
+  filter(outlier == 0) %>%
+  mutate(se = sqrt(d_var_calc), 
+         es = d_calc, 
+         center = mean(d_calc), 
+         lower_lim = max(se) + .05 * max(se))
+
+# separate df for 95 CI funnel shape
+funnel95.data.wide <- funnel.es.data %>%
+                select(center, lower_lim, dataset) %>%
+                group_by(dataset) %>%
+                summarise(x1 = (center-lower_lim * CRIT_95)[1], 
+                          x2 = center[1],
+                          x3 = center[1] + lower_lim[1] * CRIT_95,
+                          y1 = -lower_lim[1],
+                          y2 =  0, 
+                          y3 = -lower_lim[1]) 
+
+funnel95.data.x = funnel95.data.wide  %>%
+                  select(dataset,  dplyr::contains("x")) %>%
+                  gather("coordx", "x", 2:4) %>%
+                  arrange(dataset, coordx) %>%
+                  select(-coordx)
+
+funnel95.data.y = funnel95.data.wide  %>%
+                  select(dataset, dplyr::contains("y")) %>%
+                  gather("coordy", "y", 2:4) %>%
+                  arrange(dataset, coordy) %>%
+                  select(-coordy)
+
+funnel95.data = bind_cols(funnel95.data.x, funnel95.data.y)
+
+ggplot(funnel.es.data, aes(x = es, y = -se)) +
+  facet_wrap(~dataset, scales = "free") +
+  xlab("Effect Size")  +
+  ylab("Standard Error\n")  +
+  scale_colour_solarized(name = "") +
+  geom_polygon(aes(x = x, y = y), 
+               data = funnel95.data,
+               fill = "white") +
+  geom_vline(aes(xintercept=x2), 
+             linetype = "dashed", color = "red", size = .8, data = funnel95.data.wide) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey44",  size = .8) +
+  scale_y_continuous(labels = function(x){abs(x)}) +
+  geom_point(size = .5) +
+  theme(panel.grid.major = element_line(colour = "grey", size = 0.2),
+        panel.grid.minor = element_line(colour = "grey", size = 0.5),
+        strip.text.x = element_text(size = 9),
+        strip.background = element_rect(fill="grey")) 
+```
+Funnel plots for each meta-analysis. Each effect size estimate is represented by a point, and the mean effect size is shown as a red dashed line. The grey dashed line shows an effect size of zero. The funnel corresponds to a 95%  CI around this mean.
+
+We next compare the results of funnel skew (Egger's test) for the dataset with outliers excluded to the full dataset (which is reported in the main text). There is a difference in significance for only IDS preference and statistical sound learning: With outliers excluded, these meta-analyses no longer show evidence for skew.
+
+```{r, funnel_skew}
+eggers_tests <- function(ma_data){
+    model = metafor::rma(d_calc, d_var_calc, data = ma_data) # model
+    egg.random = metafor::regtest(model) # Egger's test
+    data.frame(dataset = ma_data$short_name[1],
+               egg.random.z = egg.random$zval,
+               egg.random.p = egg.random$pval)
+}
+
+eggers.data.f = all_data %>%
+  group_by(dataset) %>%
+  mutate(outlier = ifelse(d_calc > mean(d_calc)  + (3 * sd(d_calc)) | d_calc < mean(d_calc)  - (3 * sd(d_calc)), 1, 0),
+         outlier = as.factor(outlier)) %>%
+  filter(outlier == 0) %>%
+  ungroup() %>%
+  split(.$short_name) %>%
+  map(function(ma_data) eggers_tests(ma_data)) %>%
+  bind_rows() %>%
+  mutate(egg.random.z = round(egg.random.z, digits = 2)) %>%
+  mutate(egg.random.p = round(egg.random.p, digits = 2)) %>%
+  mutate(egg_string.f = paste0(egg.random.z, " (", egg.random.p, ")")) %>%
+  select(dataset, egg_string.f)
+
+eggers.data.all = all_data %>%
+  group_by(dataset) %>%
+  ungroup() %>%
+  split(.$short_name) %>%
+  map(function(ma_data) eggers_tests(ma_data)) %>%
+  bind_rows() %>%
+  mutate(egg.random.z = round(egg.random.z, digits = 2)) %>%
+  mutate(egg.random.p = round(egg.random.p, digits = 2)) %>%
+  mutate(egg_string.all = paste0(egg.random.z, " (", egg.random.p, ")")) %>%
+  select(dataset, egg_string.all)
+
+left_join(eggers.data.all, eggers.data.f) %>%
+              ungroup() %>%
+             .[c(2,8,3,4,10,5,7,11,6,12,1,9),]  %>% # reorder rows 
+              left_join(select(datasets, name, short_name), by=c("dataset" = "short_name" )) %>%
+              select(-dataset) %>%
+              mutate(dataset = as.factor(name),
+                    dataset = plyr::revalue(dataset, c("Infant directed speech preference" ="IDS preference", # shorten dataset names
+                                                   "Statistical sound category learning"= "Statistical sound learning",
+                                                   "Label advantage in concept learning" =  "Concept-label advantage"))) %>%
+
+              mutate(egg_string.f = sub("(0)", "(< .01)", egg_string.f, fixed = T),
+                      egg_string.all = sub("(0)", "(< .01)", egg_string.all, fixed = T)) %>%
+  select(dataset, egg_string.all, egg_string.f) %>%
+  kable(col.names = c("Phenomenon", "funnel skew (all conditions)",
+                      "funnel skew (excluding outliers)"), align = c("l", "r", "r"))
+```
+
 
 ### P-curves
 When available,  we calculated p-values based on test statistics reported in the paper. However, when unavailable, we calculated p-values based on raw descriptive statistics (means and standard deviations) or reported effect sizes (the method used for IDS preference). The main text shows the results of the p-curve analysis based on p-values derived by both approaches. Here, we compare these results to the same analysis on the subset of p-values derived only from reported test statistics. Presented below are p-curves calculated form this subset (error bars are 95% confidence intervals calculated from a multinomial distribution).
@@ -179,7 +302,8 @@ ggplot() +
        strip.background = element_rect(fill="grey"))
 ```
 
-We next compare the test of right-skew presented in the main text (Stouffer method) for both the full set of p-values and those only derived from test statistics. In no case does the significance of the test differ between the two analyses.
+We next compare the test of right-skew presented in the main text for both the full set of p-values and those only derived from test statistics. In the main text, we calculate p-curves based on all conditions in the dataset. In cases where a p-value was not directly available from the reported test statistic, we calculated a p-value based on a significance test using the reported means and standard deviations. The table below compares the test of right-skew (Stouffer method) for this full dataset, as reported in the main text, to the subset of conditions for which  p-values were directly available. In no case does the significance of the test differ between the two analyses.
+
 ```{r}
 stouffer.data = pc.data %>%
   group_by(dataset) %>%
@@ -218,7 +342,7 @@ left_join(stouffer.data_all, stouffer.data, by = "dataset") %>%
 
 
 ### Method heterogeneity
-The plot below present model coefficients for method for datasets with more than one method. Coefficients are estimated from random-effects meta-analytic models. For the most part, we see that method only has a small influence on the effect size within a given phenomenon. There are exceptions, however: For example, for both IDS Preference and Sound Symbolism the forced choice method has an overall larger effect size than other methods.
+The plot below presents model coefficients for method for datasets with more than one method. Coefficients are estimated from random-effects meta-analytic models. For the most part, we see that method only has a small influence on the effect size within a given phenomenon. There are exceptions, however: For example, for both IDS Preference and Sound Symbolism the forced choice method has an overall larger effect size than other methods.
 ```{r, fig.height = 6, fig.width = 10}
 
 single_method_datasets = all_data %>%
@@ -260,14 +384,14 @@ ggplot(method.betas, aes(x = dataset, y = betas, ymin = ci.lb,
 
 ```
 
-The plot below presents the developmental trajectory of each phenomenon, with a separate color for each method. Lines show  log-linear model fits. Word segmentation shows the most notable interaction between age and method: Effect sizes increase with age for head-turn preference procedure, but decrease for central fixation.
+The plot below presents the developmental trajectory of each phenomenon, with a separate color for each method. Lines showlog-linear model fits. Word segmentation shows the most notable interaction between age and method: Effect sizes increase with age for head-turn preference procedure, but decrease for central fixation.
 
 ```{r, fig.height = 10, fig.width = 10}
   all_data %>%
     filter(mean_age_1/365 < 3) %>%
   mutate(dataset = as.factor(dataset),
          dataset= gdata::reorder.factor(dataset, 
-                                    new.order = c(2,6,10,11,9,12,4,8,3,5,1,7)),
+                                    new.order = c(2, 6, 10, 11, 9, 12, 4, 8, 3, 5, 1, 7)),
          dataset = plyr::revalue(dataset, 
                                  c("Infant directed speech preference"="IDS preference",
                                    "Statistical sound category learning"="Statistical sound learning", 

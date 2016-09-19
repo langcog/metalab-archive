@@ -27,7 +27,7 @@ affiliation:
   - id: 4
     institution: NeuroPsychologie Interventionnelle, ENS
     
-abstract: To acquire a language, children must learn a range of skills, from the sounds of their language to the meanings of words. These skills are typically studied in isolation in separate research programs, but there is a growing body of evidence that these skills may depend on each other (e.g., Feldman, Myers, White, Griffiths, & Morgan, 2013; Johnson, Demuth, Jones, & Black, 2010; Shukla, White, & Aslin, 2011). We suggest that the meta-analytic method can support the process of building theories that take a systems-level perspective, as well as provide a tool for detecting bias in a literature. Here we present meta-analyses of 12 phenomena in language acquisition, with over 800 effect sizes. We find that the language acquisition literature overall has a high degree of evidential value. We then present a quantitative synthesis of language acquisition phenomena that suggests interactivity across the system.
+abstract: To acquire a language, children must learn a range of skills, from the sounds of their language to the meanings of words. These skills are typically studied in isolation in separate research programs, but there is a growing body of evidence that these skills may depend on each other in acquisition (e.g., Feldman, Myers, White, Griffiths, & Morgan, 2013; Johnson, Demuth, Jones, & Black, 2010; Shukla, White, & Aslin, 2011). We suggest that the meta-analytic method can support the process of building theories that take a systems-level perspective, as well as provide a tool for detecting bias in a literature. Here we present meta-analyses of 12 phenomena in language acquisition, with over 800 effect sizes. We find that the language acquisition literature overall has a high degree of evidential value. We then present a quantitative synthesis of language acquisition phenomena that suggests interactivity across the system.
    
    
 note: |  
@@ -60,7 +60,7 @@ apa_prepare_doc() # prepare document for rendering
 ```
 
 # Introduction
-Children beginning to acquire a language must learn its sounds, its word forms, and their meanings, and a number of other component skills of language understanding and use. A synthetic theory that explains the inputs, mechanisms, and timeline of this process is an aspirational goal for the field of early language learning. One important aspect of such a theory is an account of how the acquisition of individual skills depends on others. For example, to what extent must the sounds of a language be mastered prior to learning word meanings? Although a huge body of research addresses individual aspects of early language learning  [see e.g., @kuhl2004early for review], only a small amount of work addresses the question of dependencies between different skills [e.g., @feldman2013word; @johnson2010synergies; @shukla2011prosody]. Yet if such dependencies exist, they should play a central role in our theories. 
+Children beginning to acquire a language must learn its sounds, its word forms, and their meanings, and a number of other component skills of language understanding and use. A synthetic theory that explains the inputs, mechanisms, and timeline of this process is an aspirational goal for the field of early language learning. One important aspect of such a theory is an account of how the acquisition of individual skills depends on others. For example, to what extent must the sounds of a language be mastered prior to learning word meanings? Although a huge body of research addresses individual aspects of early language learning  [see e.g., @kuhl2004early for review], only a small amount of work addresses the question of relationships between different skills [e.g., @feldman2013word; @johnson2010synergies; @shukla2011prosody]. Yet if such relationships exist, they should play a central role in our theories. 
 
 The effort to build synthetic theories is further complicated by the fact that there is often uncertainty about the developmental trajectory of individual skills. Developmental trajectories are typically communicated via verbal (often binary) summaries of a set of variable experimental findings (e.g., "by eight months, infants can segment words from fluent speech"). In the case of contradictory findings then, theorists may be uncertain about which experimental findings can be used to constrain the theory, and often must resort to verbal discounting of one finding or the other based on methodological or theoretical factors. Resolving this issue requires a method for synthesizing findings in a more systematic and principled fashion. 
 
@@ -298,7 +298,7 @@ ggplot(funnel.es.data, aes(x = es, y = -se)) +
 ```{r, funnel_skew}
 eggers_tests <- function(ma_data){
     model = rma(d_calc, d_var_calc, data = ma_data) # model
-    egg.random = regtest(model) # Eggers test
+    egg.random = regtest(model) # Egger's test
     data.frame(dataset = ma_data$short_name[1],
                egg.random.z = egg.random$zval,
                egg.random.p = egg.random$pval)
