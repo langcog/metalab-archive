@@ -27,9 +27,8 @@ affiliation:
   - id: 4
     institution: NeuroPsychologie Interventionnelle (NPI), ENS
     
-abstract: |
+abstract: To acquire a language, children must learn a range of skills, from the sounds of their language to the meanings of words. These skills are typically studied in isolation in separate research programs, but there is a growing body of evidence that these skills may depend on each other (e.g., Feldman, Myers, White, Griffiths, & Morgan, 2013; Johnson, Demuth, Jones, & Black, 2010; Shukla, White, & Aslin, 2011). However, to understand these dependencies, a whole-systems view of the empirical landscape is needed. We suggest that meta-analytic methods can support this goal, and provide a method for detecting bias in the literature. Here we present meta-analyses of 12 phenomena in language acquisition, with over 800 effect sizes. We find that the language acquisition literature overall has evidential value, and present a quantitative synthesis of phenomena that suggests a high-degree of interactivity across the language acquistion system.
    
-  
 note: |  
   Correspondence concerning this article should be addressed to Molly Lewis, Psychology Department, Stanford University. 450 Serra Mall, Stanford, CA 94305. E-mail: mll@stanford.edu.
   
@@ -124,7 +123,7 @@ all_data$dataset = plyr::mapvalues(all_data$dataset , from = c("Pointing and voc
 
 We analyzed `r nrow(datasets)` different phenomena in language acquisition (Table 1). These phenomena cover development at many different levels of linguistic representation and processing, from the acquisition of prosody and phonemic contrasts, to gaze following in communicative interaction. This wide range of phenomena allowed us to compare the course of development across different domains, as well as to explore questions about the interactive nature of language acquisition. We selected these particular phenomena because of their theoretical importance or because a previously-published meta-analysis already existed. 
 
-To obtain estimates of effect size, we either coded or adapted others’ coding of papers reporting experimental data (see SI for details). Within each paper, we calculated a separate effect size estimate for each experiment and age group (we refer to each measurement separated by age as a "condition"). In total, our sample includes estimates from `r sum(datasets$num_papers)` papers, `r sum(datasets$num_experiments)` different conditions and `r format(floor(sum(datasets$num_subject)), big.mark=",", scientific=FALSE)` participants. The process for selecting papers from the literature differed by domain, with some individual meta-analyses using more systematic approaches than others (see SI for specific search strategies). Nevertheless, meta-analytic methods for aggregating even the smallest sample of studies is likely to be less biased than qualitative methods [@valentine2010many].
+To obtain estimates of effect size, we either coded or adapted others’ coding of papers reporting experimental data (see SI for details\footnote{Supplemental Information available at: http://rpubs.com/mll/synthesis}). Within each paper, we calculated a separate effect size estimate for each experiment and age group (we refer to each measurement separated by age as a "condition"). In total, our sample includes estimates from `r sum(datasets$num_papers)` papers, `r sum(datasets$num_experiments)` different conditions and `r format(floor(sum(datasets$num_subject)), big.mark=",", scientific=FALSE)` participants. The process for selecting papers from the literature differed by domain, with some individual meta-analyses using more systematic approaches than others (see SI for specific search strategies). Nevertheless, meta-analytic methods for aggregating even the smallest sample of studies is likely to be less biased than qualitative methods [@valentine2010many].
 
 \renewcommand{\arraystretch}{1.5}
 \begin{table}[h!]
@@ -665,7 +664,6 @@ dev.off()
 ```{r, fig.width=8, fig.height=3.5,  fig.pos = "T", fig.cap="The left two panels show the developmental trajectories predicted under different meta-theories of language acqusition. The stage-like theory predicts that a child will not begin learning the next skill in the linguistic hierarchy until the previous skill has been mastered. The interactive theory predicts that multiple skills may be simultaneously acquired. The third panel shows other possible developmental trajectories (decreasing, linear, and non-monotonic). The fourth panel shows the observed meta-analytic data. Effect size is plotted as a function of age from 0-3 years, across 10 different phenomena (excluding phonotactic learning and sound category learning). Model fits are the same as in Figure 3. These developmental curves suggest there is interactivity across language skills, rather than stage-like learning of the linguistic hierarchy."}
 
 include_graphics("figs/fig4_lab.pdf")
-
 ```
 
 In addition, meta-analytic methods provide an approach for synthesizing across different linguistic skills via the language of effect sizes. The ultimate goal is to use meta-analytic data to build a single, quantitative model of the language acquisition system, much like those developed for individual language acquisition phenomena, like word learning. Developing a single quantitative model is a lofty goal, however, and will likely require much more precise description of the phenomena than is available in our dataset. Nevertheless, we can use our data to distinguish between broad meta-theories about the interdependency of skills.

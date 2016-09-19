@@ -12,8 +12,7 @@ output:
     code_folding: hide
 ---
 
-This document was created from an [R Markdown file](https://github.com/mllewis/xtSamp/blob/master/analysis/analysis.Rmd).
-Data from the paper can be interactively explored on the [Metalab website](http://metalab.stanford.edu/). The manuscript itself was also produced from an  [R markdown file](https://github.com/langcog/metalab/blob/master/write-ups/synthesis_paper/metalab_synthesis.Rmd), and thus all analyses presented in the paper can be reproduced from this document.  
+This document was created from an  <a href="http://github.com/langcog/metalab/blob/master/write-ups/synthesis_paper/SI/synthesis_SI.Rmd" target= "_top"> R markdown file</a>. Data from the paper can be interactively explored on the [Metalab website](http://metalab.stanford.edu/). The manuscript itself was also produced from an <a href="http://github.com/langcog/metalab/blob/master/write-ups/synthesis_paper/metalab_synthesis.Rmd" target= "_top"> R markdown file</a>, and thus all analyses presented in the paper can be reproduced from this document.  
 
 
 ```{r setup, include = F}
@@ -24,7 +23,7 @@ source("../paper_analyses/pcurve.R")
 library(knitr)
 
 opts_chunk$set(echo = T, message = F, warning = F, 
-               error = F, cache = F, tidy = F)
+               error = F, cache = T, tidy = F)
 ```
 
 ```{r load data, include = F}
@@ -67,7 +66,7 @@ all_data$dataset = plyr::mapvalues(all_data$dataset , from = c("Pointing and voc
 ```
 
 ### Statistical approach
-Effect sizes were computed by a script, [compute_es.R](https://github.com/langcog/metalab/blob/master/scripts/compute_es.R). We calculated effect sizes from reported means and standard deviations where available, otherwise we relied on reported test-statistics (*t* and *F*). Several pre-existing MAs deal with special cases, and these are listed in the script. Except where noted, formulas are from [Hedges & Olkin's textbook](http://www.amazon.com/Statistical-Methods-Meta-Analysis-Larry-Hedges/dp/0123363802) (2014). All analyses were conducted with the [metafor](http://www.metafor-project.org/doku.php) package (Viechtbauer, 2010), using random-effects models. Note that a subset of individual MAs (such as Sound Symbolism) contain effect sizes that are not statistically independent, while the current implementation of random-effect models assumes independence of all individual effect sizes.
+Effect sizes were computed by a script, <a href="https://github.com/langcog/metalab/blob/master/scripts/compute_es.R" target= "_top"> compute_es.R</a>. We calculated effect sizes from reported means and standard deviations where available, otherwise we relied on reported test-statistics (*t* and *F*). Several pre-existing MAs deal with special cases, and these are listed in the script. Except where noted, formulas are from<a href="http://www.amazon.com/Statistical-Methods-Meta-Analysis-Larry-Hedges/dp/0123363802" target= "_top"> Hedges & Olkin's textbook</a> (2014). All analyses were conducted with the [metafor](http://www.metafor-project.org/doku.php) package (Viechtbauer, 2010), using random-effects models. Note that a subset of individual MAs (such as Sound Symbolism) contain effect sizes that are not statistically independent, while the current implementation of random-effect models assumes independence of all individual effect sizes.
 
 ### Search strategies
 Meta-analyses were conducted by the authors for all but two phenomena (IDS preference and Pointing and vocabulary). Data for these two phenomena were obtained by adapting effect size estimates from existing, published meta-analyses (Dunst, Gorman, & Hamby, 2012 and Colonnesi et al., 2010). Across phenomena, meta-analyses varied in their degree of systematicty in selecting papers. Below we describe the search strategy for each phenomenon. Quoted descriptions are taken directly from the published source.
@@ -219,14 +218,14 @@ left_join(stouffer.data_all, stouffer.data, by = "dataset") %>%
 
 
 ### Method heterogeneity
-The plot below present model coefficients for method for datasets with more than one method. Coefficients are estimated from random-effects meta-analytic models. For the most part, we see that method only has a small effect on the effect size within a given phenomenon. There are exceptions, however: For example, for both IDS Preference and Sound Symbolism the forced choice method has an overall larger effect size than other methods.
+The plot below present model coefficients for method for datasets with more than one method. Coefficients are estimated from random-effects meta-analytic models. For the most part, we see that method only has a small influence on the effect size within a given phenomenon. There are exceptions, however: For example, for both IDS Preference and Sound Symbolism the forced choice method has an overall larger effect size than other methods.
 ```{r, fig.height = 6, fig.width = 10}
 
-single_method_datasets = c("Gaze following",
-                           "Label advantage in concept learning", 
-                           "Mutual exclusivity", 
-                           "Pointing and vocabulary",
-                           "Online word recognition")
+single_method_datasets = all_data %>%
+  group_by(dataset) %>%
+  summarise(n_methods = length(levels(as.factor(method)))) %>%
+  filter(n_methods == 1) %>%
+  .[["dataset"]]
 
 method.betas = data.frame()
 for (i in 1:length(datasets$name)) {
@@ -255,35 +254,36 @@ method.betas = method.betas %>%
 ggplot(method.betas, aes(x = dataset, y = betas, ymin = ci.lb, 
                              ymax = ci.ub, color = method)) +
   geom_hline(aes(yintercept = 0), linetype = "dashed") +
-  #geom_line(aes(group = method, color = method), position=position_jitter(0.8))  +
   geom_pointrange(position=position_jitter(0.5)) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1.1))
 
 ```
 
-```{r}
-# filter to only those with multiple methods; add text; fix x-axis
-all_data %>%
-  mutate(dataset = plyr::revalue(dataset, 
+The plot below presents the developmental trajectory of each phenomenon, with a separate color for each method. Lines show  log-linear model fits. Word segmentation shows the most notable interaction between age and method: Effect sizes increase with age for head-turn preference procedure, but decrease for central fixation.
+
+```{r, fig.height = 10, fig.width = 10}
+  all_data %>%
+    filter(mean_age_1/365 < 3) %>%
+  mutate(dataset = as.factor(dataset),
+         dataset= gdata::reorder.factor(dataset, 
+                                    new.order = c(2,6,10,11,9,12,4,8,3,5,1,7)),
+         dataset = plyr::revalue(dataset, 
                                  c("Infant directed speech preference"="IDS preference",
                                    "Statistical sound category learning"="Statistical sound learning", 
                                    "Label advantage in concept learning"="Concept-label advantage",
                                    "Vowel discrimination (native)"="Vowel discrimination\n(native)",
-                                   "Vowel discrimination (non-native)"="Vowel discrimination\n(non-native)")),
-          dataset = as.factor(dataset),
-          dataset = gdata::reorder.factor(dataset, 
-                                    new.order = c(2,6,10,11,9,12,4,8,3,5,1,7))) %>%
-  filter(mean_age_1/365 < 3) %>%
-ggplot(aes(x = mean_age_1/365, y = d_calc, color = method)) +
-         facet_wrap(~dataset, scales = "free_y") +
+                                   "Vowel discrimination (non-native)"="Vowel discrimination\n(non-native)"))) %>%
+      ggplot(aes(x = mean_age_1/365, y = d_calc, color = method)) +
+        geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+         facet_wrap(~dataset, scales = "free_y", ncol = 3) +
          geom_smooth(method = "lm", formula = y ~ log(x)) +
          xlab("Age (years)") +
          ylab("Effect size (d)") +
          theme_bw() +
-        theme(legend.position = "bottom",
-        legend.key = element_blank(),
-        legend.background = element_rect(fill = "transparent"))
+         theme(legend.position = "right",
+         legend.key = element_blank(),
+         legend.background = element_rect(fill = "transparent"))
 ```
 
 
@@ -311,7 +311,6 @@ Lewis, M. & Frank, M. (in prep.). Mutual exclusivity: A meta-analysis.
 Lewis, M. & Long, B. (unpublished). A meta-analysis of the concept-label advantage.  
 
 Tsuji, S. & Cristia, A. (2014). Perceptual attunement in vowels: A meta-analysis. _Developmental Psychobiology_, _56_(2), 179-191.    
-
 
 Viechtbauer, W. (2010). Conducting meta-analyses in R with the metafor package. _Journal of Statistical Software_, _36_(3), 1-48. URL: http://www.jstatsoft.org/v36/i03/
 
