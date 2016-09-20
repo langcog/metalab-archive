@@ -63,12 +63,8 @@ datasets$name = plyr::mapvalues(datasets$name, from = c("Pointing and vocabulary
 all_data$dataset = plyr::mapvalues(all_data$dataset , from = c("Pointing and vocabulary (concurrent)"),
                                    to = c("Pointing and vocabulary"))
 ```
-
-### Statistical approach
-Effect sizes were computed by a script, <a href="https://github.com/langcog/metalab/blob/master/scripts/compute_es.R" target= "_top"> compute_es.R</a>. We calculated effect sizes from reported means and standard deviations where available, otherwise we relied on reported test-statistics (*t* and *F*). Several pre-existing MAs deal with special cases, and these are listed in the script. Except where noted, formulas are from<a href="http://www.amazon.com/Statistical-Methods-Meta-Analysis-Larry-Hedges/dp/0123363802" target= "_top"> Hedges & Olkin's textbook</a> (2014). All analyses were conducted with the [metafor](http://www.metafor-project.org/doku.php) package (Viechtbauer, 2010), using random-effects models. Note that a subset of individual MAs (such as Sound Symbolism) contain effect sizes that are not statistically independent, while the current implementation of random-effect models assumes independence of all individual effect sizes.
-
 ### Search strategies
-Meta-analyses were conducted by the authors for all but two phenomena (IDS preference and Pointing and vocabulary). Data for these two phenomena were obtained by adapting effect size estimates from existing, published meta-analyses (Dunst, Gorman, & Hamby, 2012 and Colonnesi et al., 2010). Across phenomena, meta-analyses varied in their degree of systematicty in selecting papers. Below we describe the search strategy for each phenomenon. Quoted descriptions are taken directly from the published source.
+Meta-analyses were conducted by the authors for all but two phenomena (IDS preference and Pointing and Vocabulary). Data for these two phenomena were obtained by adapting effect size estimates from existing, published meta-analyses (Dunst, Gorman, & Hamby, 2012 and Colonnesi et al., 2010). Across phenomena, meta-analyses varied in their degree of systematicty in selecting papers. Below we describe the search strategy for each phenomenon. Quoted descriptions are taken directly from the published source.
 
 ```{r}
 datasets %>%
@@ -87,9 +83,65 @@ datasets %>%
   kable(col.names = c("Phenomenon",  "Search Strategy"), row.names = F)
 ```
 
+
+### Statistical approach
+Effect sizes were computed by a script, <a href="https://github.com/langcog/metalab/blob/master/scripts/compute_es.R" target= "_top"> compute_es.R</a>. We calculated effect sizes from reported means and standard deviations where available, otherwise we relied on reported test-statistics (*t* and *F*). Several pre-existing MAs deal with special cases, and these are listed in the script. Except where noted, formulas are from<a href="http://www.amazon.com/Statistical-Methods-Meta-Analysis-Larry-Hedges/dp/0123363802" target= "_top"> Hedges & Olkin's textbook</a> (2014). All analyses were conducted with the [metafor](http://www.metafor-project.org/doku.php) package (Viechtbauer, 2010), using random-effects models. Note that a subset of individual MAs (such as Sound Symbolism) contain effect sizes that are not statistically independent, while the current implementation of random-effect models assumes independence of all individual effect sizes.
+
+For many analyses, the use of a multi-level approach (with grouping by paper) is useful. We do not implement these models in our main analyses because many common statistics are not implemented for these models, e.g. the test for funnel-plot asymmetry. The table below compares the overall ES estimate for the multi-level model to the random effect model (presented in the main text). 95% confidence intervals are given in brackets. These models differ only slightly in their estimates of overall effect size, and in no case do they affect whether the ES differs from zero.
+
+```{r}
+overall_es <- function(ma_data, multilevel){
+    if (multilevel){
+        model = metafor::rma.mv(d_calc, V = d_var_calc,
+                random = ~ 1 | short_cite, data = ma_data)
+    } else {
+        model = metafor::rma(d_calc, d_var_calc, data = ma_data)
+    }
+    data.frame(dataset = ma_data$short_name[1],
+               overall.d = model$b,
+               ci_lower = model$ci.lb,
+               ci_upper = model$ci.ub)
+}
+
+all_ds_random = all_data %>%
+  split(.$short_name) %>%
+  map(function(ma_data) overall_es(ma_data, 0)) %>%
+  bind_rows() %>%
+  mutate_each_(funs(round(., digits = 2)), 
+               vars = c("overall.d", "ci_lower", "ci_upper")) %>%
+  mutate(d_string_random = paste0(overall.d, " [", ci_lower, ", ",ci_upper, "]")) %>%
+  mutate(short_name = dataset) %>%
+  select(short_name, d_string_random)
+
+all_ds_multi = all_data %>%
+  split(.$short_name) %>%
+  map(function(ma_data) overall_es(ma_data, 1)) %>%
+  bind_rows() %>%
+  mutate_each_(funs(round(., digits = 2)), 
+               vars = c("overall.d", "ci_lower", "ci_upper")) %>%
+  mutate(d_string_multi = paste0(overall.d, " [", ci_lower, ", ",ci_upper, "]")) %>%
+  mutate(short_name = dataset) %>%
+  select(short_name, d_string_multi)
+
+left_join(all_ds_random, all_ds_multi) %>%
+            left_join(select(datasets, name, short_name)) %>%
+select(name, d_string_random, d_string_multi) %>%
+mutate(name = as.factor(name),
+      name = plyr::revalue(name, 
+                           c("Infant directed speech preference"="IDS preference",
+                             "Statistical sound category learning"="Statistical sound learning", 
+                             "Label advantage in concept learning"="Concept-label advantage",
+                             "Vowel discrimination (native)"="Native vowel discrimination",
+                             "Vowel discrimination (non-native)"="Non-native vowel discrimination"))) %>%
+  .[c(2,8,3,4,10,5,7,11,6,12,1,9),]   %>%
+  kable(col.names = c("Phenomenon", "Random-effect model ES",  "Mixed-effect model ES"), row.names = F, align = c("l", "r", "r"))
+
+```
+
 ### Funnel plots
-If an effect size is an extreme outlier from the overall mean, this may indicate that the effect size estimates a different psychological phenomenon than the one estimated by the others in the sample. One approach for dealing with this type of heterogenity is to exclude outliers from analyses. Here we present funnel plots that exclude effect sizes that lie 3 standard deviations above or below the mean effect size for each meta-analysis. Of the 808 effect sizes in the dataset, 8 were outliers (.08%).
-```{r,  fig.pos = "T!", fig.width=8, fig.height=5.5}
+If an effect size is an extreme outlier from the overall mean, this may indicate that the effect size estimates a different psychological phenomenon than the one estimated by others in the sample. One approach for dealing with this type of heterogenity is to exclude outliers from analyses. Here we present funnel plots that exclude effect sizes that lie 3 standard deviations above or below the mean effect size for each meta-analysis. Of the 808 effect sizes in the dataset, 8 were outliers (.08%).
+
+```{r,  fig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Figure S1: Funnel plots for each meta-analysis with outliers excluded. Each effect size estimate is represented by a point, and the mean effect size is shown as a red dashed line. The grey dashed line shows an effect size of zero. The funnel corresponds to a 95%  CI around this mean."}
 
 CRIT_95 = 1.96 
 
@@ -155,9 +207,9 @@ ggplot(funnel.es.data, aes(x = es, y = -se)) +
         strip.text.x = element_text(size = 9),
         strip.background = element_rect(fill="grey")) 
 ```
-Funnel plots for each meta-analysis. Each effect size estimate is represented by a point, and the mean effect size is shown as a red dashed line. The grey dashed line shows an effect size of zero. The funnel corresponds to a 95%  CI around this mean.
 
-We next compare the results of funnel skew (Egger's test) for the dataset with outliers excluded to the full dataset (which is reported in the main text). There is a difference in significance for only IDS preference and statistical sound learning: With outliers excluded, these meta-analyses no longer show evidence for skew.
+
+We next compare the results of funnel skew (Egger's test) for the dataset with outliers excluded to the full dataset (which is reported in the main text). There is a difference in significance for only IDS Preference and Statistical Sound Learning: With outliers excluded, these meta-analyses no longer show evidence for skew.
 
 ```{r, funnel_skew}
 eggers_tests <- function(ma_data){
@@ -212,9 +264,9 @@ left_join(eggers.data.all, eggers.data.f) %>%
 
 
 ### P-curves
-When available,  we calculated p-values based on test statistics reported in the paper. However, when unavailable, we calculated p-values based on raw descriptive statistics (means and standard deviations) or reported effect sizes (the method used for IDS preference). The main text shows the results of the p-curve analysis based on p-values derived by both approaches. Here, we compare these results to the same analysis on the subset of p-values derived only from reported test statistics. Presented below are p-curves calculated form this subset (error bars are 95% confidence intervals calculated from a multinomial distribution).
+When available,  we calculated p-values based on test statistics reported in the paper. However, when unavailable, we calculated p-values based on raw descriptive statistics (means and standard deviations) or reported effect sizes (the method used for IDS Preference). The main text shows the results of the p-curve analysis based on p-values derived by both approaches. Here, we compare these results to the same analysis on the subset of p-values derived only from reported test statistics. Presented below are p-curves calculated from this subset.
 
-```{r get_pcurves, fig.height = 6}
+```{r get_pcurves, fig.height = 6, fig.cap = "Figure S2: In the main text, we calculate p-curves based on all conditions in the dataset. In cases where a p-value was not directly available from the reported test statistic, we calculated a p-value based on a significance test using the reported means and standard deviations. The table compares the test of right-skew (Stouffer method) for this full dataset, as reported in the main text, to the subset of conditions for which  p-values were directly available. Error bars are 95% confidence intervals calculated from a multinomial distribution."}
 ALPHA = .05
 P_INCREMENT = .01 
 
@@ -302,7 +354,7 @@ ggplot() +
        strip.background = element_rect(fill="grey"))
 ```
 
-We next compare the test of right-skew presented in the main text for both the full set of p-values and those only derived from test statistics. In the main text, we calculate p-curves based on all conditions in the dataset. In cases where a p-value was not directly available from the reported test statistic, we calculated a p-value based on a significance test using the reported means and standard deviations. The table below compares the test of right-skew (Stouffer method) for this full dataset, as reported in the main text, to the subset of conditions for which  p-values were directly available. In no case does the significance of the test differ between the two analyses.
+We next compare the test of right-skew presented in the main text for both the full set of p-values and those only derived from test statistics.  In no case does the significance of the test differ between the two analyses.
 
 ```{r}
 stouffer.data = pc.data %>%
@@ -343,7 +395,7 @@ left_join(stouffer.data_all, stouffer.data, by = "dataset") %>%
 
 ### Method heterogeneity
 The plot below presents model coefficients for method for datasets with more than one method. Coefficients are estimated from random-effects meta-analytic models. For the most part, we see that method only has a small influence on the effect size within a given phenomenon. There are exceptions, however: For example, for both IDS Preference and Sound Symbolism the forced choice method has an overall larger effect size than other methods.
-```{r, fig.height = 6, fig.width = 10}
+```{r, fig.height = 5.5, fig.width = 10}
 
 single_method_datasets = all_data %>%
   group_by(dataset) %>%
@@ -384,7 +436,7 @@ ggplot(method.betas, aes(x = dataset, y = betas, ymin = ci.lb,
 
 ```
 
-The plot below presents the developmental trajectory of each phenomenon, with a separate color for each method. Lines showlog-linear model fits. Word segmentation shows the most notable interaction between age and method: Effect sizes increase with age for head-turn preference procedure, but decrease for central fixation.
+The plot below presents the developmental trajectory of each phenomenon, with a separate color for each method. Lines show log-linear model fits. Word Segmentation shows the most notable interaction between age and method: Effect sizes increase with age for head-turn preference procedure, but decrease for central fixation.
 
 ```{r, fig.height = 10, fig.width = 10}
   all_data %>%
