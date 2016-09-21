@@ -22,13 +22,46 @@
 \IfFileExists{microtype.sty}{\usepackage{microtype}}{}
 
 % Table formatting
-\usepackage{longtable,booktabs}
-\usepackage[counterclockwise]{rotating}   % Landscape page setup for large tables
+\usepackage{longtable, booktabs}
+\usepackage{lscape}
+% \usepackage[counterclockwise]{rotating}   % Landscape page setup for large tables
 \usepackage{multirow}		% Table styling
 \usepackage{tabularx}		% Control Column width
 \usepackage[flushleft]{threeparttable}	% Allows for three part tables with a specified notes section
 \usepackage{threeparttablex}            % Lets threeparttable work with longtable
-\usepackage{longtable}              % Allows tables to break across pages
+
+% Create new environments so endfloat can handle them
+\newenvironment{ltable}
+  {\begin{landscape}\begin{center}\begin{threeparttable}}
+  {\end{threeparttable}\end{center}\end{landscape}}
+
+\newenvironment{lltable}
+  {\begin{landscape}\begin{center}\begin{ThreePartTable}}
+  {\end{ThreePartTable}\end{center}\end{landscape}}
+
+\usepackage{ifthen} % Only add declarations when endfloat package is loaded
+\ifthenelse{\equal{man}{\string jou}}{%
+  \DeclareDelayedFloatFlavor{ThreePartTable}{table} % Make endfloat play with longtable
+  \DeclareDelayedFloatFlavor{ltable}{table} % Make endfloat play with lscape
+  \DeclareDelayedFloatFlavor{lltable}{table} % Make endfloat play with lscape & longtable
+}{}%
+
+
+% The following enables adjusting longtable caption width to table width
+% Solution found at http://golatex.de/longtable-mit-caption-so-breit-wie-die-tabelle-t15767.html
+\makeatletter
+\newcommand\LastLTentrywidth{1em}
+\newlength\longtablewidth
+\setlength{\longtablewidth}{1in}
+\newcommand\getlongtablewidth{%
+ \begingroup
+  \ifcsname LT@\roman{LT@tables}\endcsname
+  \global\longtablewidth=0pt
+  \renewcommand\LT@entry[2]{\global\advance\longtablewidth by ##2\relax\gdef\LastLTentrywidth{##2}}%
+  \@nameuse{LT@\roman{LT@tables}}%
+  \fi
+\endgroup}
+
 
   \usepackage{graphicx}
   \makeatletter
@@ -72,6 +105,7 @@
 % Manuscript styling
 \captionsetup{font=singlespacing,justification=justified}
 \usepackage{csquotes}
+\usepackage{upgreek}
 
 
 
@@ -88,14 +122,7 @@ research}
   \shorttitle{MetaLab Education}
 
 
-  \author{
-          Christina Bergmann\textsuperscript{1},
-          Sho Tsuji\textsuperscript{1},
-          Page Piccinini\textsuperscript{2},
-          Molly Lewis\textsuperscript{3},
-          Mika Braginsky\textsuperscript{3},
-          Michael C. Frank\textsuperscript{3},
-          Alejandrina Cristia\textsuperscript{1}  }
+  \author{Christina Bergmann\textsuperscript{1}, Sho Tsuji\textsuperscript{1}, Page Piccinini\textsuperscript{2}, Molly Lewis\textsuperscript{3}, Mika Braginsky\textsuperscript{3}, Michael C. Frank\textsuperscript{3}, \& Alejandrina Cristia\textsuperscript{1}}
 
   \def\affdep{{"", "", "", "", "", "", ""}}%
   \def\affcity{{"", "", "", "", "", "", ""}}%
@@ -106,68 +133,23 @@ research}
           \textsuperscript{2} NeuroPsychologie Interventionnelle, ENS\\
           \textsuperscript{3} Department Psychology, Stanford University  }
 
-
-%   \def\affinst{{"init", "Laboratoire de Sciences Cognitives et Psycholinguistique, ENS", "NeuroPsychologie Interventionnelle, ENS", "Department Psychology, Stanford University"}}%
-%   \def\affstate{{"init", "", "", ""}}%
-%   \def\affcntry{{"init", "", "", ""}}%
-
-  \note{
-    \vspace{1cm}
-    Author note
-
-    \raggedright
-    \setlength{\parindent}{0.4in}
-
+ % If no author_note is defined give only author information if available
+    \authornote{
     \newcounter{author}
-
-%     %     %       %       \setcounter{author}{0}
-%         %           \addtocounter{author}{1}
-%         %         \expandafter\edef\csname authorid\endcsname{\theauthor}
-%         Christina Bergmann, \pgfmathparse{\affdep[\authorid]} \pgfmathresult, \pgfmathparse{\affinst[\authorid]} \pgfmathresult, \pgfmathparse{\affcity[\authorid]} \pgfmathresult, \pgfmathparse{\affstate[\authorid]} \pgfmathresult, \pgfmathparse{\affcntry[\authorid]} \pgfmathresult
-%       %     ;
-%     %       %       \setcounter{author}{0}
-%         %           \addtocounter{author}{1}
-%         %         \expandafter\edef\csname authorid\endcsname{\theauthor}
-%         Sho Tsuji, \pgfmathparse{\affdep[\authorid]} \pgfmathresult, \pgfmathparse{\affinst[\authorid]} \pgfmathresult, \pgfmathparse{\affcity[\authorid]} \pgfmathresult, \pgfmathparse{\affstate[\authorid]} \pgfmathresult, \pgfmathparse{\affcntry[\authorid]} \pgfmathresult
-%       %     ;
-%     %       %       \setcounter{author}{0}
-%         %           \addtocounter{author}{2}
-%         %         \expandafter\edef\csname authorid\endcsname{\theauthor}
-%         Page Piccinini, \pgfmathparse{\affdep[\authorid]} \pgfmathresult, \pgfmathparse{\affinst[\authorid]} \pgfmathresult, \pgfmathparse{\affcity[\authorid]} \pgfmathresult, \pgfmathparse{\affstate[\authorid]} \pgfmathresult, \pgfmathparse{\affcntry[\authorid]} \pgfmathresult
-%       %     ;
-%     %       %       \setcounter{author}{0}
-%         %           \addtocounter{author}{3}
-%         %         \expandafter\edef\csname authorid\endcsname{\theauthor}
-%         Molly Lewis, \pgfmathparse{\affdep[\authorid]} \pgfmathresult, \pgfmathparse{\affinst[\authorid]} \pgfmathresult, \pgfmathparse{\affcity[\authorid]} \pgfmathresult, \pgfmathparse{\affstate[\authorid]} \pgfmathresult, \pgfmathparse{\affcntry[\authorid]} \pgfmathresult
-%       %     ;
-%     %       %       \setcounter{author}{0}
-%         %           \addtocounter{author}{3}
-%         %         \expandafter\edef\csname authorid\endcsname{\theauthor}
-%         Mika Braginsky, \pgfmathparse{\affdep[\authorid]} \pgfmathresult, \pgfmathparse{\affinst[\authorid]} \pgfmathresult, \pgfmathparse{\affcity[\authorid]} \pgfmathresult, \pgfmathparse{\affstate[\authorid]} \pgfmathresult, \pgfmathparse{\affcntry[\authorid]} \pgfmathresult
-%       %     ;
-%     %       %       \setcounter{author}{0}
-%         %           \addtocounter{author}{3}
-%         %         \expandafter\edef\csname authorid\endcsname{\theauthor}
-%         Michael C. Frank, \pgfmathparse{\affdep[\authorid]} \pgfmathresult, \pgfmathparse{\affinst[\authorid]} \pgfmathresult, \pgfmathparse{\affcity[\authorid]} \pgfmathresult, \pgfmathparse{\affstate[\authorid]} \pgfmathresult, \pgfmathparse{\affcntry[\authorid]} \pgfmathresult
-%       %     ;
-%     %       %       \setcounter{author}{0}
-%         %           \addtocounter{author}{1}
-%         %         \expandafter\edef\csname authorid\endcsname{\theauthor}
-%         Alejandrina Cristia, \pgfmathparse{\affdep[\authorid]} \pgfmathresult, \pgfmathparse{\affinst[\authorid]} \pgfmathresult, \pgfmathparse{\affcity[\authorid]} \pgfmathresult, \pgfmathparse{\affstate[\authorid]} \pgfmathresult, \pgfmathparse{\affcntry[\authorid]} \pgfmathresult
-%       %     .
-%     
-    Correspondence concerning this article should be addressed to Christina
-    Bergmann, Laboratoire de Sciences Cognitives et Psycholinguistique, ENS.
-    29 Rue d'Ulm, 75005 Paris, France. E-mail:
-    \href{mailto:chbergma@gmail.com}{\nolinkurl{chbergma@gmail.com}}
-
                                                                                     }
+  
+  \note{Correspondence concerning this article should be addressed to Christina
+Bergmann, Laboratoire de Sciences Cognitives et Psycholinguistique, ENS.
+29 Rue d'Ulm, 75005 Paris, France. E-mail:
+\href{mailto:chbergma@gmail.com}{\nolinkurl{chbergma@gmail.com}}}
 
   \keywords{replicability, reproducibility, meta-analysis, developmental psychology,
 language acquisition \\
 
     \indent Word count: XXXX
   }
+
+
 
   \usepackage{setspace}
   \usepackage{float}
@@ -207,21 +189,27 @@ both recruit and test. Small sample sizes and noisy measures are a
 consequence, which in turn lead to habitually underpowered studies. It
 is thus no surprise that some assume the next \enquote{crisis of
 confidence} brought about by low replicability of core effects will be
-concerning the field of developmental psychology (Frank). The present
-paper aims to quantify both some of the potentially problematic habits
-of developmental researchers, and show a way forward. We are thus adding
-to a recently emerging literature that critically examines long-held
-standards and practices in order to make the whole field more reliable
-and robust (Mills-Smith, Spangler, Panneton, \& Fritz, 2015, Csibra,
-Hernik, Mascaro, Tatone, \& Lengyel (2016)).
+concerning the field of developmental psychology (Frank).
 
-\section{The status quo}\label{the-status-quo}
+The present paper aims to quantify both some of the potentially
+problematic habits of developmental researchers, and show a way forward.
+We are thus adding to a recently emerging literature that critically
+examines long-held standards and practices in order to make the whole
+field more reliable and robust (Mills-Smith, Spangler, Panneton, \&
+Fritz, 2015, Csibra, Hernik, Mascaro, Tatone, \& Lengyel (2016)). To be
+able to comment on general trends in the field, we make use of a
+collection of meta-analyses on child development. The unique opportunity
+afforded by such a dataset, which is harnessing data from thousands of
+participants, is that we can quantify patterns important for
+experimental practices as well as the role of specific research
+questions. More precisely, we can quantify whether across different
+topics, current practices differ. Based on such an assessment,
+recommendations become possible, that either take the specific of
+sub-fields into account or can, if supported by the data, be applied
+across the board.
 
-\textbf{\emph{TO DO: Expand }}
-
-In this section, we survey current practices in the field of
-developmental psychology. We focus on reporting and experiment planning
-practices.
+We explain in the next section in detail the meta-analytical approach
+and why power is a crucial factor for experimental sciences.
 
 \subsection{The Dataset: MetaLab}\label{the-dataset-metalab}
 
@@ -245,7 +233,8 @@ data.
 In MetaLab, various meta-analyses are combined that address phenomena
 ranging from infant-directed speech preference to mutual exclusivity.
 Those datasets were either added by the authors (n=XXX) or extracted
-from published papers (n=XXXX). In the former case, we attempted to code
+from published meta-analyses related to language development (n=2, i.e.
+(Colonessi, {\textbf{???}})). In the former case, we attempted to code
 as much detail as possible for each entered experiment (note that a
 paper can contain many experiments). A high level of detail allows not
 only to retrieve general measures of interest, but also to conduct
@@ -283,43 +272,10 @@ Cristia, 2015) for details), for others we estimated this factor.
 
 Descriptions of all phenomena covered by MetaLab, including which papers
 and other sources have been considered, can be found on the companion
-website at metalab.stanford.edu and in the supporting information. Table
-XX shows an overview of the phenomena covered.
+website at metalab.stanford.edu and in the supporting information.
 
 \subsection{Average sample size, effect size, and power per
 phenomenon}\label{average-sample-size-effect-size-and-power-per-phenomenon}
-
-A first assessment of current practices in developmental psychology
-concerns which variables of interest are habitually reported, and what
-crucial information is ommitted in published papers. To this end we
-survey the data available in MetaLab, with a focus on participant
-descriptors, that is age, age range, total participant number and
-percentage of girls tested; and outcome variables, including the mean
-and standard deviation of the dependent variable, a test statistic, that
-is a t-value or F-score, for the main hypothesis test (for example
-whether looking times differ), and the correlation between outcome
-variables when infants were tested in multiple conditions (frequently
-target and control). The data are summarized in Table 1. We break these
-statistics down by topic and provide the number of papers and
-experiments (one paper usually contains several experiments). Note that
-the values are compiled after authors were contacted when information
-was missing from the published report (details are available in the
-respective publications). Further, we note whether effect sizes in the
-form of a variant of Cohen's \emph{d} were already available; this
-number includes meta-analyses that were entered based on published
-papers ({\textbf{???}}, ({\textbf{???}})).
-
-APA recommendations (American Psychological Association, 2001) have for
-almost two decades included the requirement to always report and
-interpret an effect size for all measures of relevance, along with
-p-values. Effect sizes should, according to those recommendations, be
-interpreted both when the p-value is above the significance threshold as
-well as when the significance criterion is met. However, current
-reproting habits do not follow this recommendation, especially for
-nonsignificant findings, and if effect sizes are reported, their
-interpretation is either lacking or misleading (Mills-Smith et al.,
-2015). This practice has strong implications for theory building, as the
-data they are based on might not be reliable.
 
 The table below provides summary information for each meta-analysis in
 MetaLab regarding a number of factors, including the number of single
@@ -356,7 +312,20 @@ the absence of a skill, random measurement noise, or the lack of
 experimental power to detect this skill reliably and with statistical
 support is impossible based on p-values.
 
-\begin{longtable}[]{@{}lrrrrrrrrr@{}}
+A second problem emerges when underpowered studies yield significant
+outcomes, as the effects reported in such cases will be over-estimating
+the true effect. This makes appropriate planning for future research
+which aims to build on this report more difficult, as sample sizes will
+be too small, leading to null-results which do not speak to the
+phenomenon under investigation. This poses a serious hindrance for work
+building on seminal studies, including replications across languages and
+extensions. However, aggregating over such null-results using a graded
+estimate, i.e.~a standardized effect size, can reveal whether a
+phenomenon is present in the population and correct for the initial
+over-estimation. In short, even a true positive result is insufficient
+in the quest for the truth when it is underpowered.
+
+\begin{longtable}[c]{@{}lrrrrrrrrr@{}}
 \caption{Descriptions of meta-analyses currently in
 MetaLab.}\tabularnewline
 \toprule
@@ -371,60 +340,32 @@ Size & Max. Sample Size & \# Effect Sizes & \# Papers & d & SE & Avg
 Power\tabularnewline
 \midrule
 \endhead
-Gaze following & 13.63 & 31.61 & 12 & 63 & 33 & 11 & 1.29 & 0.18 &
-1.00\tabularnewline
+Gaze following & 13.63 & 31.61 & 12 & 63 & 33 & 11 & 1.14 & 0.18 &
+0.99\tabularnewline
 Infant directed speech preference & 4.72 & 22.11 & 10 & 60 & 50 & 16 &
-0.74 & 0.10 & 0.67\tabularnewline
+0.77 & 0.15 & 0.70\tabularnewline
 Label advantage in concept learning & 10.96 & 16.44 & 9 & 32 & 100 & 17
-& 0.40 & 0.06 & 0.20\tabularnewline
-Mutual exclusivity & 27.68 & 18.83 & 8 & 72 & 60 & 19 & 1.03 & 0.17 &
-0.87\tabularnewline
-Online word recognition & 20.30 & 39.40 & 16 & 95 & 15 & 6 & 1.36 & 0.25
+& 0.35 & 0.06 & 0.16\tabularnewline
+Mutual exclusivity & 27.68 & 18.83 & 8 & 72 & 60 & 19 & 0.83 & 0.14 &
+0.70\tabularnewline
+Online word recognition & 20.30 & 39.40 & 16 & 95 & 15 & 6 & 1.18 & 0.22
 & 1.00\tabularnewline
-Phonotactic learning & 10.18 & 19.45 & 8 & 40 & 47 & 15 & 0.02 & 0.07 &
-0.05\tabularnewline
-Pointing and vocabulary (concurrent) & 21.03 & 26.58 & 6 & 50 & 12 & 12
-& 0.94 & 0.14 & 0.92\tabularnewline
-Pointing and vocabulary (longitudinal) & 18.51 & 32.22 & 12 & 72 & 18 &
-18 & 0.58 & 0.12 & 0.63\tabularnewline
-Sound symbolism & 11.76 & 19.02 & 11 & 26 & 42 & 10 & 0.15 & 0.06 &
+Phonotactic learning & 10.18 & 19.45 & 8 & 40 & 47 & 15 & 0.12 & 0.07 &
 0.07\tabularnewline
+Pointing and vocabulary (concurrent) & 21.03 & 26.58 & 6 & 50 & 12 & 12
+& 0.98 & 0.18 & 0.94\tabularnewline
+Pointing and vocabulary (longitudinal) & 18.51 & 32.22 & 12 & 72 & 18 &
+18 & 0.54 & 0.12 & 0.56\tabularnewline
+Sound symbolism & 11.76 & 19.02 & 11 & 26 & 42 & 10 & 0.25 & 0.11 &
+0.12\tabularnewline
 Statistical sound category learning & 7.46 & 16.35 & 5 & 35 & 18 & 9 &
--0.24 & 0.11 & 0.10\tabularnewline
-Statistical word segementation & 8.30 & 21.19 & 15 & 32 & 21 & 6 & 0.25
-& 0.09 & 0.13\tabularnewline
-Vowel discrimination (native) & 7.51 & 16.00 & 6 & 50 & 143 & 32 & 0.65
-& 0.06 & 0.43\tabularnewline
+-0.29 & 0.15 & 0.13\tabularnewline
+Vowel discrimination (native) & 7.51 & 16.00 & 6 & 50 & 143 & 32 & 0.62
+& 0.09 & 0.40\tabularnewline
 Vowel discrimination (non-native) & 8.08 & 17.69 & 8 & 30 & 48 & 15 &
-0.69 & 0.13 & 0.52\tabularnewline
-Word segmentation & 9.20 & 22.14 & 4 & 64 & 291 & 66 & 0.21 & 0.02 &
-0.11\tabularnewline
-\bottomrule
-\end{longtable}
-
-\textbf{\emph{TO DO: Exclude dbs based on published MAs from total d
-reported?!}}
-
-\begin{longtable}[]{@{}lrrr@{}}
-\caption{Reporting practices of study outcome measures and demographic
-information for all papers in MetaLab.}\tabularnewline
-\toprule
-Variable & \# Coded & \# Uncoded & Total\tabularnewline
-\midrule
-\endfirsthead
-\toprule
-Variable & \# Coded & \# Uncoded & Total\tabularnewline
-\midrule
-\endhead
-test\_statistic & 467 & 431 & 898\tabularnewline
-means & 657 & 241 & 898\tabularnewline
-SD & 693 & 205 & 898\tabularnewline
-d & 228 & 670 & 898\tabularnewline
-corr\_within\_two & 172 & 358 & 530\tabularnewline
-mean\_age & 898 & 0 & 898\tabularnewline
-age\_range & 614 & 284 & 898\tabularnewline
-gender & 344 & 554 & 898\tabularnewline
-*** TO DO: Add sum & mary acros & s datasets? & ***\tabularnewline
+1.00 & 0.30 & 0.82\tabularnewline
+Word segmentation & 9.20 & 22.14 & 4 & 64 & 291 & 66 & 0.17 & 0.03 &
+0.08\tabularnewline
 \bottomrule
 \end{longtable}
 
@@ -440,10 +381,10 @@ replicated. Initial reports tend to overestimate effect sizes
 We extracted for each dataset the oldest paper and therein the largest
 reported effect size and re-calculated power accordingly. The results
 are shown in the table below. It turns out that in some cases, such as
-tests into native and non-native vowel discrimination, sample size
-choices match well with the oldest report.
+native and non-native vowel discrimination, sample size choices match
+well with the oldest report.
 
-\begin{longtable}[]{@{}llrrr@{}}
+\begin{longtable}[c]{@{}llrrr@{}}
 \caption{For each meta-analysis, largest d from oldest paper and
 meta-analytic d.}\tabularnewline
 \toprule
@@ -456,63 +397,90 @@ Meta-analysis (MA) & Oldest Paper & Oldest d & Mean Sample Size &
 Power\tabularnewline
 \midrule
 \endhead
-Phonotactic learning & Chambers et al. (2003) & 0.98 & 19.45 &
-0.84\tabularnewline
-Vowel discrimination (native) & Trehub (1973) & 1.87 & 16.00 &
+Gaze following & Mundy \& Gomes (1998) & 4.52 & 31.61 &
 1.00\tabularnewline
-Vowel discrimination (non-native) & Trehub (1976) & 1.02 & 17.69 &
+Infant directed speech preference & Glenn \& Cunningham (1983) & 2.56 &
+22.11 & 1.00\tabularnewline
+Label advantage in concept learning & Balaban \& Waxman (1997) & 0.86 &
+16.44 & 0.67\tabularnewline
+Mutual exclusivity & Merriman et al. (1989) & 0.70 & 18.83 &
+0.55\tabularnewline
+Online word recognition & Zangl et al. (2005) & 0.89 & 39.40 &
+0.97\tabularnewline
+Phonotactic learning & Chambers et al. (2003) & 0.98 & 19.45 &
 0.84\tabularnewline
 Pointing and vocabulary (concurrent) & Murphy (1978) & 0.65 & 26.58 &
 0.65\tabularnewline
 Pointing and vocabulary (longitudinal) & Bates et al. (1979) & 0.56 &
 32.22 & 0.60\tabularnewline
-Infant directed speech preference & Glenn \& Cunningham (1983) & 2.56 &
-22.11 & 1.00\tabularnewline
-Mutual exclusivity & Merriman et al. (1989) & 0.70 & 18.83 &
-0.55\tabularnewline
-Word segmentation & Jusczyk \& Aslin (1995) & 0.56 & 22.14 &
-0.44\tabularnewline
-Statistical word segementation & Saffran, Aslin, \& Newport (1996) &
--0.39 & 21.19 & 0.24\tabularnewline
-Label advantage in concept learning & Balaban \& Waxman (1997) & 0.86 &
-16.44 & 0.67\tabularnewline
-Gaze following & Mundy \& Gomes (1998) & 4.52 & 31.61 &
-1.00\tabularnewline
-Statistical sound category learning & Maye, Werker, \& Gerken (2002) &
-0.56 & 16.35 & 0.34\tabularnewline
-Online word recognition & Zangl et al. (2005) & 0.89 & 39.40 &
-0.97\tabularnewline
 Sound symbolism & Maurer, Pathman, \& Mondloch (2006) & 0.95 & 19.02 &
 0.82\tabularnewline
+Statistical sound category learning & Maye, Werker, \& Gerken (2002) &
+0.56 & 16.35 & 0.34\tabularnewline
+Vowel discrimination (native) & Trehub (1973) & 1.87 & 16.00 &
+1.00\tabularnewline
+Vowel discrimination (non-native) & Trehub (1976) & 1.02 & 17.69 &
+0.84\tabularnewline
+Word segmentation & Jusczyk \& Aslin (1995) & 0.56 & 22.14 &
+0.44\tabularnewline
 \bottomrule
 \end{longtable}
 
-*** To Do: align with table 1***
-
 \begin{figure}[htbp]
 \centering
-\includegraphics{EducationPaper_files/figure-latex/Plot\%20of\%20Difference\%20of\%20d\%20Values-1.pdf}
+\includegraphics{EducationPaper_files/figure-latex/Plot of Difference of d Values-1.pdf}
 \caption{Correlation of largest d from oldest paper and difference
 between oldest d and meta-analytic d.}
 \end{figure}
 
 To illustrate the disparity between the oldest effect size and the
 meta-analytic effect, we plot the difference between both against the
-oldest effect. The difference is larger as oldest effect size increases.
-This plot showcases that researchers might want to be wary of large
-effects, as they are more likely to be non-representative of the true
-phenomenon compared to smaller initial effects being reported.
+oldest effect. This difference is larger as oldest effect size
+increases, with an average of 0.65 compared with an average effect size
+of 0.63 (note that we based this on the absolute value). The plot
+showcases that researchers might want to be wary of large effects, as
+they are more likely to be non-representative of the true phenomenon
+compared to smaller initial effects being reported. Especially when
+making decisions about sample sizes, large effect might thus not be the
+best guide. Taking the above-mentioned mean values as example, a
+realistic sample size to ensure 80\% power would be 40.15 participants,
+instead of 10.59 participants suggested by the first paper. While these
+numbers average over research questions and methods, which all influence
+the specific number of participants necessary, this example showcases
+that experimenters should take into account as much evidence as
+available to be able tp plan for robust and reproducible studies.
 
 \subsection{What is the effect of method
 choice?}\label{what-is-the-effect-of-method-choice}
 
-\subsubsection{Do researchers chose efficient
-methods?}\label{do-researchers-chose-efficient-methods}
+The number of paradigms available in developmental research when testing
+infants and children, is somewhat limited by a number of factors, such
+as time. Nonetheless, often there is more than one way to measure a
+specific construct available. Consider a measurement of preference, for
+example when trying to establish that infants distinguish
+infant-directed from adult-directed speech and in fact prefer the
+former. This preference can be measured in a number of ways, as it is
+something children bring to the lab. In the meta-analysis on IDS
+preference there are 4 different methods, all aiming to pick up the very
+same phenomenon, and with this approach this specific line of
+investigation is no exception, as 4 datasets of the 13 included datasets
+contain 3 or more methods.
 
-Are methods chosen based on the proportion of participants that can be
-retained for data analysis?
+Choosing a robust method can also help increase the power of studies,
+such that more precise measurements lead to larger effects and thus
+require fewer participants to be tested. However, the number of
+participants relates to the final sample and not how many infants had to
+be invited into the lab. We thus first quantify whether methods differ
+in their typical drop-out rate. To this end we consider all methods
+across datasets in metalab which have more than 10 records. The results
+of the linear mixed effect model predicting droout rate by method and
+mean participant age (with dataset as fixed factor to account for the
+different effects being tested) are summarized in the table below. The
+results show that, taking central fixation as baseline, conditioned
+headturn and stimulus alternation have significantly more drop-outs.
+These effects seem to hold across age groups.
 
-\begin{longtable}[]{@{}lrrr@{}}
+\begin{longtable}[c]{@{}lrrr@{}}
 \caption{Method vs Dropout}\tabularnewline
 \toprule
 & Estimate & Std. Error & t value\tabularnewline
@@ -522,19 +490,32 @@ retained for data analysis?
 & Estimate & Std. Error & t value\tabularnewline
 \midrule
 \endhead
-(Intercept) & 0.3138433 & 0.0332107 & 9.450078\tabularnewline
-methodconditioned head-turn & 0.1933085 & 0.0296464 &
-6.520473\tabularnewline
-methodhead-turn preference procedure & -0.0386924 & 0.0341008 &
--1.134650\tabularnewline
-methodstimulus alternation & 0.2223084 & 0.0386053 &
-5.758491\tabularnewline
-ageC & 0.0002734 & 0.0001026 & 2.664730\tabularnewline
+(Intercept) & 0.2830431 & 0.0247088 & 11.4551620\tabularnewline
+methodconditioned head-turn & 0.2693826 & 0.0541791 &
+4.9720801\tabularnewline
+methodhead-turn preference procedure & -0.0249028 & 0.0337799 &
+-0.7372074\tabularnewline
+methodstimulus alternation & 0.2161717 & 0.0416199 &
+5.1939453\tabularnewline
+ageC & 0.0026638 & 0.0046998 & 0.5667801\tabularnewline
+methodconditioned head-turn:ageC & 0.0214482 & 0.0114067 &
+1.8803223\tabularnewline
+methodhead-turn preference procedure:ageC & 0.0122659 & 0.0071521 &
+1.7150021\tabularnewline
+methodstimulus alternation:ageC & -0.0012706 & 0.0093964 &
+-0.1352257\tabularnewline
 \bottomrule
 \end{longtable}
 
-\begin{longtable}[]{@{}lrrrrrr@{}}
-\caption{Effect of d by method with hpp as baseline
+\begin{figure}[htbp]
+\centering
+\includegraphics{EducationPaper_files/figure-latex/Plot of Effect of Method on Dropout Rate-1.pdf}
+\caption{Percent dropout as explained by different methods and mean age
+of participants.}
+\end{figure}
+
+\begin{longtable}[c]{@{}lrrrrrr@{}}
+\caption{Effect of d by method with central fixation as baseline
 method.}\tabularnewline
 \toprule
 & estimate & se & zval & pval & ci.lb & ci.ub\tabularnewline
@@ -544,46 +525,66 @@ method.}\tabularnewline
 & estimate & se & zval & pval & ci.lb & ci.ub\tabularnewline
 \midrule
 \endhead
-intrcpt & 0.2892681 & 0.1421133 & 2.0354750 & 0.0418031 & 0.0107311 &
-0.5678050\tabularnewline
-ageC & 0.0005812 & 0.0002314 & 2.5118668 & 0.0120094 & 0.0001277 &
-0.0010347\tabularnewline
-relevel(method, \enquote{head-turn preference procedure})central
-fixation & -0.1174488 & 0.0898991 & -1.3064511 & 0.1913992 & -0.2936479
-& 0.0587502\tabularnewline
-relevel(method, \enquote{head-turn preference procedure})conditioned
-head-turn & 1.6154095 & 0.3059403 & 5.2801453 & 0.0000001 & 1.0157774 &
-2.2150416\tabularnewline
-relevel(method, \enquote{head-turn preference procedure})forced-choice &
-0.1944334 & 0.1992622 & 0.9757664 & 0.3291802 & -0.1961134 &
-0.5849801\tabularnewline
-relevel(method, \enquote{head-turn preference procedure})looking while
-listening & 0.1574168 & 0.2047348 & 0.7688813 & 0.4419638 & -0.2438560 &
-0.5586895\tabularnewline
-relevel(method, \enquote{head-turn preference procedure})pointing &
-0.2755598 & 0.3740201 & 0.7367514 & 0.4612736 & -0.4575061 &
-1.0086256\tabularnewline
-relevel(method, \enquote{head-turn preference procedure})stimulus
-alternation & -0.1707422 & 0.1957474 & -0.8722576 & 0.3830678 &
--0.5544001 & 0.2129157\tabularnewline
-ageC:relevel(method, \enquote{head-turn preference procedure})central
-fixation & -0.0001246 & 0.0003060 & -0.4070361 & 0.6839814 & -0.0007243
-& 0.0004752\tabularnewline
-ageC:relevel(method, \enquote{head-turn preference
-procedure})conditioned head-turn & 0.0051961 & 0.0017093 & 3.0399230 &
-0.0023664 & 0.0018460 & 0.0085463\tabularnewline
-ageC:relevel(method, \enquote{head-turn preference
-procedure})forced-choice & 0.0015039 & 0.0002833 & 5.3077238 & 0.0000001
-& 0.0009485 & 0.0020592\tabularnewline
-ageC:relevel(method, \enquote{head-turn preference procedure})looking
-while listening & 0.0009826 & 0.0004102 & 2.3952135 & 0.0166107 &
-0.0001786 & 0.0017867\tabularnewline
-ageC:relevel(method, \enquote{head-turn preference procedure})pointing &
-0.0002097 & 0.0006849 & 0.3061095 & 0.7595213 & -0.0011328 &
-0.0015521\tabularnewline
-ageC:relevel(method, \enquote{head-turn preference procedure})stimulus
-alternation & -0.0003119 & 0.0008911 & -0.3499932 & 0.7263438 &
--0.0020583 & 0.0014346\tabularnewline
+intrcpt & 0.5132018 & 0.1156527 & 4.4374395 & 0.0000091 & 0.2865267 &
+0.7398769\tabularnewline
+ageC & 0.0140214 & 0.0068290 & 2.0532200 & 0.0400512 & 0.0006368 &
+0.0274059\tabularnewline
+relevel(method, \enquote{central fixation})anticipatory eye movements &
+-1.3797138 & 9.8476930 & -0.1401053 & 0.8885768 & -20.6808373 &
+17.9214098\tabularnewline
+relevel(method, \enquote{central fixation})conditioned head-turn &
+1.6519226 & 0.3462236 & 4.7712590 & 0.0000018 & 0.9733368 &
+2.3305085\tabularnewline
+relevel(method, \enquote{central fixation})forced-choice & 1.0215165 &
+0.3167291 & 3.2252061 & 0.0012588 & 0.4007389 & 1.6422940\tabularnewline
+relevel(method, \enquote{central fixation})head-turn preference
+procedure & -0.0250973 & 0.2478096 & -0.1012765 & 0.9193310 & -0.5107951
+& 0.4606005\tabularnewline
+relevel(method, \enquote{central fixation})high-amplitude sucking &
+-1.2312867 & 4.1786021 & -0.2946647 & 0.7682500 & -9.4211963 &
+6.9586229\tabularnewline
+relevel(method, \enquote{central fixation})hybrid visual habituation
+procedure & -4.7403364 & 2.8763087 & -1.6480625 & 0.0993399 &
+-10.3777979 & 0.8971251\tabularnewline
+relevel(method, \enquote{central fixation})looking while listening &
+-0.3061340 & 0.2380212 & -1.2861626 & 0.1983863 & -0.7726471 &
+0.1603790\tabularnewline
+relevel(method, \enquote{central fixation})oddball & -0.3026225 &
+0.4108786 & -0.7365255 & 0.4614110 & -1.1079298 &
+0.5026847\tabularnewline
+relevel(method, \enquote{central fixation})stimulus alternation &
+-0.0496753 & 0.2256594 & -0.2201341 & 0.8257667 & -0.4919597 &
+0.3926090\tabularnewline
+relevel(method, \enquote{central fixation})word-object pairing &
+-0.3321379 & 0.5057796 & -0.6566851 & 0.5113834 & -1.3234476 &
+0.6591718\tabularnewline
+ageC:relevel(method, \enquote{central fixation})anticipatory eye
+movements & -0.4723527 & 3.1999856 & -0.1476109 & 0.8826499 & -6.7442092
+& 5.7995038\tabularnewline
+ageC:relevel(method, \enquote{central fixation})conditioned head-turn &
+0.1468464 & 0.0592087 & 2.4801498 & 0.0131327 & 0.0307995 &
+0.2628933\tabularnewline
+ageC:relevel(method, \enquote{central fixation})forced-choice &
+-0.0392280 & 0.0211849 & -1.8516968 & 0.0640694 & -0.0807496 &
+0.0022936\tabularnewline
+ageC:relevel(method, \enquote{central fixation})head-turn preference
+procedure & -0.0275691 & 0.0270572 & -1.0189186 & 0.3082416 & -0.0806003
+& 0.0254621\tabularnewline
+ageC:relevel(method, \enquote{central fixation})high-amplitude sucking &
+-0.2315320 & 0.4806216 & -0.4817344 & 0.6299946 & -1.1735330 &
+0.7104691\tabularnewline
+ageC:relevel(method, \enquote{central fixation})hybrid visual
+habituation procedure & -0.8201068 & 0.6222136 & -1.3180470 & 0.1874879
+& -2.0396230 & 0.3994094\tabularnewline
+ageC:relevel(method, \enquote{central fixation})looking while listening
+& -0.0090959 & 0.0145594 & -0.6247419 & 0.5321405 & -0.0376317 &
+0.0194400\tabularnewline
+ageC:relevel(method, \enquote{central fixation})oddball & -0.0643442 &
+0.0521788 & -1.2331484 & 0.2175204 & -0.1666129 &
+0.0379244\tabularnewline
+ageC:relevel(method, \enquote{central fixation})stimulus alternation &
+0.0007789 & 0.0288999 & 0.0269516 & 0.9784983 & -0.0558639 &
+0.0574217\tabularnewline
 \bottomrule
 \end{longtable}
 
@@ -595,17 +596,15 @@ random effect (because we assume that within a paper experiments and
 thus effect sizes will be more similar to each other than across
 papers). Only methods with at least 20 associated effect sizes in
 MetaLab were included in the model. Thus, the present analyses are
-limited to 865 observations. The included methods are central
-fixationconditioned head-turnforced-choicehead-turn preference
-procedurelooking while listeningpointingstimulus alternation. Since the
-model compares one method as the baseline to all other methods, a
-baseline method had to be chosen. \enquote{Head-turn preference
-procedure} was included as the baseline method, as it appears most
-frequently in MetaLab (350 times out of 898 total entries).
+limited to 283 observations. Since the model compares one method as the
+baseline to all other methods, a baseline method had to be chosen.
+\enquote{Central fixation} was included as the baseline method, as it
+appears most frequently in the 4 datasets included in this analysis (107
+times out of 283 total entries of the selected meta-analyses).
 
 \begin{figure}[htbp]
 \centering
-\includegraphics{EducationPaper_files/figure-latex/Plot\%20of\%20Effect\%20of\%20Method-1.pdf}
+\includegraphics{EducationPaper_files/figure-latex/Plot of Effect of Method-1.pdf}
 \caption{Effect size as explained by different methods and mean age of
 participants.}
 \end{figure}
@@ -740,7 +739,7 @@ do?}\label{with-these-tools-what-do-we-have-to-do}
 On the individual level:
 
 \begin{itemize}
-\tightlist
+\itemsep1pt\parskip0pt\parsep0pt
 \item
   How to determine participants: Power calculator, typical N in the
   field
@@ -756,7 +755,7 @@ On the individual level:
 Further individual benefits:
 
 \begin{itemize}
-\tightlist
+\itemsep1pt\parskip0pt\parsep0pt
 \item
   Don't despair when a null result occurs, you can still help the
   community with it
@@ -768,7 +767,7 @@ Further individual benefits:
 On the general level:
 
 \begin{itemize}
-\tightlist
+\itemsep1pt\parskip0pt\parsep0pt
 \item
   Evidence becomes more reliable
 \item
@@ -778,7 +777,7 @@ On the general level:
   Complete, unbiased overview of a research literature
 
   \begin{itemize}
-  \tightlist
+  \itemsep1pt\parskip0pt\parsep0pt
   \item
     Identify unexplained variance
   \item
@@ -787,12 +786,12 @@ On the general level:
     Which moderators (do not) affect outcomes
 
     \begin{itemize}
-    \tightlist
+    \itemsep1pt\parskip0pt\parsep0pt
     \item
       Examples from published MAs:
 
       \begin{itemize}
-      \tightlist
+      \itemsep1pt\parskip0pt\parsep0pt
       \item
         InWordDB lack of age effect (predicted and strongly assumed in
         the field)
@@ -807,47 +806,36 @@ On the general level:
 \section*{References}\label{references}
 \addcontentsline{toc}{section}{References}
 
-\hypertarget{refs}{}
-\hypertarget{ref-APA2001}{}
-American Psychological Association. (2001). \emph{Publication manual of
-the american psychological association} (5th ed.). Washington, DC:
-American Psychological Association.
-
-\hypertarget{ref-InWordDB}{}
 Bergmann, C., \& Cristia, A. (2015). Development of infants'
 segmentation of words from native speech: A meta-analytic approach.
 \emph{Developmental Science}.
 
-\hypertarget{ref-Csibra}{}
 Csibra, G., Hernik, M., Mascaro, O., Tatone, D., \& Lengyel, M. (2016).
 Statistical treatment of looking-time data. \emph{Developmental
 Psychology}, \emph{52}(4), 521--536.
 
-\hypertarget{ref-Manybabies}{}
 Frank, M. C. (). A collaborative approach to infant research: Promoting
 reproducibility, best practices, and theory-building.
 
-\hypertarget{ref-Marszalek2011}{}
 Marszalek, J. M., Barber, C., Kohlhart, J., \& Holmes, C. B. (2011).
 Sample size in psychological research over the past 30 years 1, 2.
 \emph{Perceptual and Motor Skills}, \emph{112}(2), 331--348.
 
-\hypertarget{ref-Mills-Smith2015}{}
 Mills-Smith, L., Spangler, D. P., Panneton, R., \& Fritz, M. S. (2015).
 A missed opportunity for clarity: Problems in the reporting of effect
 size estimates in infant developmental science. \emph{Infancy},
 \emph{20}(4), 416--432.
 
-\hypertarget{ref-Peterson2016}{}
 Peterson, D. (2016). The baby factory: Difficult research objects,
 disciplinary standards, and the production of statistical significance.
 \emph{Socius: Sociological Research for a Dynamic World}, \emph{2},
 1--10.
 
-\hypertarget{ref-Tsuji2014}{}
 Tsuji, S., Bergmann, C., \& Cristia, A. (2014). Community-augmented
 meta-analyses: Toward cumulative data assessment. \emph{Psychological
 Science}, \emph{9}(6), 661--665.
+
+
 
 
 
