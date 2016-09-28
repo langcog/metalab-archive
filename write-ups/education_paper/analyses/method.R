@@ -12,7 +12,7 @@ method_exclude_data = all_data %>%
   mutate(dropout = ifelse(is.na(n_excluded_1), NA, ifelse(is.na(n_excluded_2), n_excluded_1, n_excluded_1+n_excluded_2))) %>%
   mutate(total_run = keep + dropout) %>%
   filter(!is.na(dropout)) %>%
-  mutate(percent_dropout = dropout / total_run) %>%
+  mutate(percent_dropout = dropout*100 / total_run) %>%
   group_by(method) %>%
   mutate(number = n()) %>%
   ungroup() %>%
@@ -50,6 +50,10 @@ method_data = all_data %>%
   mutate(number = length(levels(as.factor(method)))) %>%
   ungroup() %>%
   filter(number > 2) %>%
+  group_by(method) %>%
+  mutate(number = n()) %>%
+  ungroup() %>%
+  filter(number > 10) %>%
   mutate(method = factor(method))
 
 # Build model
@@ -67,8 +71,8 @@ method.plot = ggplot(method_data, aes(x = mean_age_months, y = d_calc, color = m
   geom_smooth(method = "lm") +
   xlab("Mean age of participants in months") +
   ylab("Effect size (d)") +
-  xlim(0, 40) +
-  ylim(-1.5, 3.3) +
+  #xlim(0, 40) +
+  #ylim(-1.5, 3.3) +
   labs(color = "Method") +
   theme_classic() +
   theme(axis.line.x = element_line(), axis.line.y = element_line(),

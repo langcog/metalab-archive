@@ -11,7 +11,7 @@ get_power = function(df){
 # Organize data to get descriptors
 data_rma = all_data %>%
   nest(-dataset, .key = information) %>%
-  mutate(model = map(information, ~rma.mv(d_calc, d_var_calc, random = ~ 1 | study_ID, data=.))) %>%
+  mutate(model = map(information, ~rma.mv(d_calc, d_var_calc, random = ~ study_ID, data=.))) %>%
   mutate(d = map(model, "b")) %>%
   mutate(se = map(model, "se"))  %>%
   select(dataset, d, se) %>%
@@ -22,8 +22,8 @@ data_rma = all_data %>%
 MA_descriptives = all_data %>%
   mutate(n_total = n) %>% #ifelse(!is.na(n_2), n_1 + n_2, n_1)) %>% I think n does the same thing
   group_by(dataset) %>%
-  summarise(age_dataset = mean(mean_age_months),
-            n_dataset = mean(n_total),
+  summarise(age_dataset = median(mean_age_months),
+            n_dataset = median(n_total),
             n_min = min(n_total),
             n_max = max(n_total),
             n_records = n(),

@@ -2,16 +2,7 @@
 #source("analyses/initial_data.R") # only do this if running script alone, otherwise leave commented
 
 
-## COMPUTE META-ANALYTIC D FOR ALL PAPERS ####
-# Make function
-overall_es <- function(ma_data){
-  model = metafor::rma.mv(ma_data$d_calc, ma_data$d_var_calc, , random = ~ 1 | study_ID, method = "REML",
-                          control = list(maxiter = 1000, stepadj = 0.5))
-  data.frame(dataset = ma_data$dataset[1],
-             overall.d = model$b,
-             ci_lower = model$ci.lb,
-             ci_upper = model$ci.ub)
-}
+## COMPUTE POWER FOR ALL PAPERS ####
 
 get_power_oldest = function(df){
   pwr.t.test(n = df$n_dataset, d = df$largest_d, sig.level = 0.05)
@@ -28,23 +19,22 @@ oldest = all_data %>%
   filter(row_number() == 1) %>%
   ungroup()
 
-# Get subset of summary data
-MA_summary_sub = select(MA_summary, c(dataset, n_dataset))
-
 # Combine summary with oldest paper
-d_comparison = inner_join(oldest, MA_summary_sub) %>%
-  select(dataset, short_cite, largest_d, n_dataset)
+d_comparison = inner_join(oldest, MA_summary) %>%
+  select(dataset, short_cite, largest_d, n_dataset, power)
 
 # Include power
 d_comparison_power = d_comparison %>%
   nest(-dataset, .key = descriptives) %>%
   mutate(power = map(descriptives, get_power_oldest)) %>%
-  mutate(power = map(power, "power")) %>%
-  select(dataset, power) %>%
-  mutate(power = as.numeric(as.character(power)))
+  mutate(old_power = map(power, "power")) %>%
+  select(dataset, old_power) %>%
+  mutate(old_power = as.numeric(as.character(old_power)))
 
 # Save overall summary
-d_comparison_summary = inner_join(d_comparison, d_comparison_power)
+d_comparison_summary = inner_join(d_comparison, d_comparison_power) %>%
+  mutate(difference = old_power-as.numeric(power)) %>%
+  select(-power)
 
 
 ## PLOT OF DIFFERENCE OF D VALUES ####
@@ -63,3 +53,52 @@ d_comparison_diff.plot = ggplot(d_comparison_full, aes(x = largest_d, y = diff_d
   theme_classic() +
   theme(axis.line.x = element_line(), axis.line.y = element_line(),
         legend.position = "top")
+
+
+## Power / ES over time ##
+
+
+
+
+
+
+# Very simplistic, just look for a general effect of year.
+power_year = rma.mv(d_calc, d_var_calc, mods = ~year, random = ~ short_cite | dataset, data = all_data)
+
+# Make plot
+
+power_year.plot = ggplot(all_data , aes(x = year, y = d_calc, color = dataset)) +
+  geom_smooth(method = "lm") +
+  xlab("Publication year") +
+  ylab("Effect size (d)") +
+  theme_classic() +
+  theme(axis.line.x = element_line(), axis.line.y = element_line(),
+        legend.position = "top")
+
+
+# Alternative analysis taking into account method and age
+
+full.model = rma.mv(d_calc, d_var_calc, mods = ~mean_age_1+method,
+                    random = ~ short_cite | dataset, data = all_data)
+
+predicted = predict(full.model)
+
+all_data = all_data %>%
+  bind_cols(as.data.frame(predicted$pred),
+            as.data.frame(predicted$se)) %>%
+  rename(predicted_d = `predicted$pred`, 
+         predicted_se = `predicted$se`) 
+
+power_estimate = pwr.t.test(n = all_data$n, d = all_data$predicted_d, sig.level = 0.05)$power
+
+all_data = cbind(all_data, power_estimate)
+
+
+power_year.plot = ggplot(all_data , aes(x = year, y = power_estimate, color = dataset)) +
+  geom_smooth(method = "lm") +
+  xlab("Publication year") +
+  ylab("Estimated Power") +
+  theme_classic() +
+  theme(axis.line.x = element_line(), axis.line.y = element_line(),
+        legend.position = "top")
+
