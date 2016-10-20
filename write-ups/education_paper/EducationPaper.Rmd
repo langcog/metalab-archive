@@ -66,77 +66,111 @@ load("educationpaper_environment.RData") # if no changes to analyses run this, c
 
 # Introduction
 
-Psychology has recently seen a  "crisis of confidence", as recent findings challenge both the validity  of certain key findings CITE-MANYLABS1 as well as the general replicability rate of published findings CITE-MANYLABS2. In this process, certain generalized practices, ranging from data collection and analysis to publication, are discussed as being potentially intrinsically flawed CITE-FALSEPOSPSYC,SCIUTOPIA1,2. In other words, psychology is facing today the same issues that caused substantial changes in research practices within the medical sciences a decade ago CITE-http://www.nejm.org/doi/full/10.1056/nejme048225. The present paper aims to discuss to what extent these issues are potentially present in developmental psychology, provide a quantitative estimation of the prevalence certain problematic practices, and discuss potential solutions. 
+Psychology has recently seen a  "crisis of confidence", as recent findings challenge both the validity of key findings CITE-MANYLABS1 as well as the general replicability rate of published findings CITE-MANYLABS2. In this process, some practices have been discussed as introducing bias and error, starting at data collection, over analysis to publication, CITE-FALSEPOSPSYC,SCIUTOPIA1,2. In other words, psychology is today facing the same issues that caused substantial changes in research practices within the medical sciences a decade ago CITE-http://www.nejm.org/doi/full/10.1056/nejme048225. The present paper discusses to what extent these issues are present in developmental psychology, provides a quantitative estimation of the prevalence certain problematic practices, and discuss potential solutions. 
+
+***CB:This last sentence (together with the next section) implies we will look at p-hacking, which we currently don't and I wonder whether we should.***
 
 ## Relevance of the confidence crisis for developmental psychology
-The problems underlying recent confidence crises are thought to be true of empirical sciences at large, given the current reward structure CITE-UTOPIA. Specifically,  at present researchers are valued on the basis of the quantity and impact of their publications, and publication on a high-impact venue is dependent, among other factors, on (a) the topic being "hot"; (b) the result being surprising; and (c) the result being statistically significant. One of the obvious consequences of this reward structure is that replications and even conceptual extensions are less likely to be undertaken (since they are not rewarded as much), and even if they are, they are unlikely to be published, particularly if they reveal a non-significant result. Furthermore, modeling suggests that these issues may be exacerbated depending on the characteristics of a given subfield  [@Ioannidis2005], being enhanced in fields where the underlying effect sizes and common sample sizes are smaller.
 
-We believe that all of these descriptions are saliently relevant to developmental studies, particularly those focusing early and middle childhood. Since the population under investigation is costly to recruit and difficult test, there is a pressure towards small sample sizes. Moreover, the populations are intrinsically variable, likely leading to greater variance and smaller underlying effect sizes. At the confluence of these two factors, one expects to find habitually underpowered studies, which is problematic both when assessing whether an effect is truly present or absent, and when estimating its magnitude. 
+The problems underlying recent confidence crises are thought to be true of empirical sciences at large, given the current reward structure CITE-UTOPIA. Specifically, at present researchers are valued on the basis of the quantity and (some measure of) impact of their publications, and publication in a high-impact venue is dependent, among other factors, on (a) the topic being "hot"; (b) the result being surprising; and (c) the result being statistically significant. One of the obvious consequences of this reward structure is that replications and even conceptual extensions are less likely to be undertaken (since they are not rewarded as much), and if they are, they are unlikely to be published, particularly if they reveal a non-significant result. Furthermore, modeling suggests that these issues may be exacerbated depending on the characteristics of a given subfield  [@Ioannidis2005], specifically in fields where both the underlying effect sizes and typical sample sizes are small.
 
-There is a conceptually separate set of issues, which is nonetheless relevant given the aforementioned  warning signs for the developmental psychology. One of the habits that has become under attack recently pertains flexibility in data collection and analysis, as arguably this flexibility exacerbates the incidence of false positives CITE-FALSEPOSPSYC. And yet as developmentalists we often feel the need to "tweak" our paradigms, and explore new ones, in the constant search for more reliable and functional methods. As a result, multiple ways to tap into the same phenomenon have been developed, but it is an open question to what extent these lead to comparable results. Moreover, although current discussions appear to discourage flexibility, we believe a strong argument can be made for continuous exploration and evaluation of alternative methods, given that another responsibility we have as scientists is to gather data of the highest quality and interpretability. In that sense, sticking to old methods for the sake of comparability would be uneconomical.
+We believe that all of these descriptions are highly relevant to developmental studies, particularly those focusing early and middle childhood. Since the population under investigation is costly to recruit and difficult test, there is a pressure towards small sample sizes. Moreover, populations are intrinsically variable, possibly leading to greater variance and smaller underlying effect sizes. At the confluence of these two factors, one expects to find habitually underpowered studies, which is problematic both when assessing whether an effect is truly present or absent, and when estimating its magnitude. 
 
-Such a description would  lead one to believe that developmental psychology, particularly that focusing early childhood, should be particularly liable to the issues that have been identified and discussed in other subfields. In the present project, we seek to provide a more informed overview of a subset of questions that we have identified as key issues. 
+There is a conceptually separate set of issues, which is nonetheless relevant given the aforementioned warning signs for developmental psychology. One of the habits that has become under attack recently pertains flexibility in data collection and analysis, as arguably this flexibility exacerbates the incidence of false positives CITE-FALSEPOSPSYC. And yet as developmentalists we often "tweak" our paradigms, and explore new ones, in the constant search for more reliable and robust methods. This is because testing infants and children is inherently difficult, as there are both methodological and time constraints. Explicitly instructing participants to respond with a defined behavior, for example, is not possible before the second or third birthday, adn even then, such measures are not always implementable. Further, emerging technologies, such as eye-tracking and tablets, have been eagerly adopted CITE-TABET [?]. 
+As a result of all these factors, multiple ways to tap into the same phenomenon have been developed, but it is an open question to what extent these lead to comparable results. Moreover, although current discussions appear to discourage flexibility, we believe a strong argument can be made for continuous exploration and evaluation of alternative methods, given that another responsibility we have as scientists is to gather data of the highest quality and interpretability. In that sense, sticking to old methods for the sake of comparability would be uneconomical.
+
+The above description would lead one to believe that developmental psychology, particularly that focusing early childhood, should be liable to the issues that have been identified and discussed in other subfields as leading to a crisis in confidence. In the present paper, we seek to provide a more informed overview of a subset of questions that we have identified as key issues. 
 
 ## Key issues
 
-### Sample size and statistical power 
+### Replication and replicability
 
-***General question: Leave here to move to introduction?***
+Replicability is a core concept in the recent crisis, as exactly this property of scientific studies (and potentially whole sub-fields) in Psychology has turned out to be surprisingly problematic. We define the concept here, as authors vary in their understanding of what constitutes a replication. Replicating a study means (in the context of this paper) conducting a conceptually similar experiment with new stimuli and in a slightly different population but following the same procedure and analyses (based on the published report), tapping into the same phenomenon, and with the same outcome as previously reported (allowing for a margin of error). Being able to (repeatedly) successfully replicate a study can be taken as an indicator that the phenomenon under investigation is true and therefore that theories can be built on it. In addition, varying populations and using different, yet comparable stimuli, assesses generalizability across presumably irrelevant dimensions. If an effect does not generalize across stimuli or populations, it is possible that a previously unknown limitation has been uncovered, which needs to be specified for future replications and within all theories building on the general effect.
+
+Replicability can be assessed when aggregating all studies that aim to tap into a given phenomenon and assessing whether -- taking all evidence together -- the effect is statistically different from 0. A next step consists of comparing the direction and magnitude of initial reports and replications.  
+***The second bit is only there implicitly***
+
+
+### Sample size and statistical power 
 
 Underpowered studies, that is studies with a low probability to detect an effect given it is present in the population, pose a problem for branches of developmental studies that interpret both significant and nonsignificant findings; for example when tracking the emergence of an ability as children mature or when examining the boundary conditions of an ability. This practice is problematic for two reasons: On one hand, the null hypothesis, for example that two groups do not differ, is not being tested, so it cannot be adopted based on a high p-value. Instead, p-values can only support rejections of the null hypothesis with a certainty that the data at hand are incompatible with it below a pre-set threshold. On the other hand, even in the most rigorous study design and execution, null results will occur ever so often; for example in a study with 80% power (a number typically deemed sufficient), every fifth result will not reflect that there is a true effect present in the population. Disentangling whether a non-significant finding indicates the absence of a skill, random measurement noise, or the lack of experimental power to detect this skill reliably and with statistical support is impossible based on p-values.
 
 A second problem emerges when underpowered studies yield significant outcomes, as the effects reported in such cases will be over-estimating the true effect. This makes appropriate planning for future research which aims to build on this report more difficult, as sample sizes will be too small, leading to null-results which do not speak to the phenomenon under investigation. This poses a serious hindrance for work building on seminal studies, including replications across languages and extensions. However, aggregating over such null-results using a graded estimate, i.e. a standardized effect size, can reveal whether a phenomenon is present in the population and correct for the initial over-estimation. In short, even a true positive result is insufficient in the quest for the truth when it is underpowered. 
 
+In developmental psychology, reasons for sample size decisions are rarely reported, it is thus unclear how (or if) decisions about sample size are made before commencing data collection. Formal prospective power calculations are as yet rare, especially those based on multiple studies. Alternatively, it is possible that resource limitations determine sample size, as recruitment can be difficult and is very costly. 
+
+To investigate the status quo, we first compute typical power across a range of phenomena in early language acquisition, and explore which effect sizes are detectable with sample sizes in the included studies. Further, we investigate how researchers might determine sample sizes (for example by following the first paper in a literature), and whether they take into account sensitivity of methods used.
+
 ### Procedural variability
-***AC - seeing the whole paper together makes me see that our topic choices have been confounding a number of issues. If we want to talk about this, then the intro needs to be about more than biases; see an attempt above***
-Experiment planning goes beyond deciding how many participants to test. Often there is more than one way to measure a specific construct available, even though the number of paradigms available in developmental research when testing infants and children, is somewhat limited by a number of factors, such as time. Consider for example a measurement of preference, such as when trying to establish that infants distinguish infant-directed from adult-directed speech and in fact prefer the former. This preference can be measured in a number of ways, as it is something children bring to the lab. In the meta-analysis on IDS preference there are `r length(unique(all_data[all_data$short_name=="idspref",]$method))` different methods, all aiming to pick up the very same phenomenon, and this specific line of investigation is no exception, as four datasets of the `r length(unique(all_data$dataset))` included datasets contain three or more methods. 
+
+Often there is more than one way to measure a specific construct. Consider for example a measurement of preference, such as when trying to establish that infants distinguish infant-directed from adult-directed speech (IDS and ADS, respectively) and show a strong preference for  the former. This preference can be measured in a number of ways, as it is something children bring to the lab. In the meta-analysis on IDS preference there are `r length(unique(all_data[all_data$short_name=="idspref",]$method))` different methods, all aiming to pick up the very same phenomenon, and this specific line of investigation is no exception in developmental psychology. 
+
+We will assess in how far the different methods used to test the same construct vary in their sensitivity. Further, taking possible resource limitations into account, we consider drop-out rates as a potential measure of interest and discuss whether higher exclusion rates coincide with more precise measures, yielding higher effect sizes.
 
 
-### P-hacking and publication biases
+### P-hacking 
+
+During data collection and analysis, a number of practices can inflate the number of significant p-values, effectively rendering p-values and the notion of statistical significance meaningless [false pos psy]. First, flexible stopping rules, including adding observations when the test statistic is "promising" or stopping data collection when a result is "significant" increases the likelihood to obtain a "significant" outcome. Another form of p-hacking is measuring several dependent variables and conducting multiple significance tests with each variable and with a combination of the variables. *** Check the next statement: imo correct *** In developmental research, this problematic practice further encompasses computing several dependent variables (such as mean scores, difference scores, percentages, and so on) based on the same measured data as well as selectively excluding trials and re-testing the new data. Next, multiple conditions that selectively can be dropped from the final report increase the number of significance tests. Finally, it is problematic to post hoc introduce covariates, most prominently gender, and test for an interaction with the main effect. Finally combining two or more of these strategies again inflated the number of significant results. All these practices might seem innocuous and geared towards "helping" an effect to emerge that the researcher believes to be real. 
+
+A "symptom" of such practices is a distribution of p-values with increased frequency just below the significance threshold. P-curves test for this problem, but they come with some limitations and only consider statistically significant reports. 
+
+*** TODO/ Question: test variety in outcome measures,such as longest look vs looking time vs reaction time vs other?***
+
+### Publication biases
+
+*** Include? I think it's sufficiently covered in previous sections***
+
+As mentioned in the general introduction, current incentives including publication of data in a prestigious journal, are geared towards surprising and statistically significant studies. However, even when an effect is robust and tested with sufficiently high participant numbers, null results are expected to occur. This becomes even more pressing in a field with small effect sizes and low numbers of participants. For an accurate estimate of the true effect it is crucial to have access to all results, to avoid overestimations. 
 
 
-### Working towards cumulativity
+*** TODO: Add table with overview and remedies [?] ***
 
+
+|Problematic practices  |Underlying issue     |Symptoms     |Solution         |
+|:----------------------|:--------------------|:------------|:----------------|
+|Small studies          |Effect size under    |Unpredictable|Prospective power|
+|                       |investigation unknown|Outcomes, low|calculations     |
+      
 
 
 # Methods
 ## Source data: MetaLab
 ***AC- Not all information provided below seems relevant to the goal of documenting good/bad practices (e.g. % female participants) from the point of view of the reader. Shouldn't the goal of this section be to provide the minimal relevant info for the reader to understand how we can answer our questions?***
+***ChB: tried to shorten, feel free to streamline more, we will have extensive submat and have the website***
 
-We make use of a collection of meta-analyses on child development so as to be able to comment on general trends in the field. Meta-analyses are built on a collection of standardized effect sizes on a single, well-defined phenomenon. By accumulating effect sizes and weighting them by their reliability, it is possible to compute an estimate of the population effect, as well as its structured variance. By harnessing data from hundreds of studies, we can quantify patterns important for experimental practices. Furthermore, combining multiple meta-analysis, each centered on a different research question, allows ut to assess whether current practices differ across different topics. Based on such an assessment, we can provide recommendations  that are likely to be relevant across the board. 
+In this paper, we extract measures of interest from meta-analyses of child language development. Meta-analyses are built on a collection of standardized effect sizes on a single, well-defined phenomenon. By accumulating effect sizes and weighting them by their reliability (effectively the sample size), it is possible to compute an estimate of the population effect, as well as its structured variance. By harnessing data from hundreds of studies, we can quantify patterns important for experimental practices. Furthermore, combining multiple meta-analysis -- each centered on a different research question -- allows us to assess whether current practices differ across different topics. 
 
+Given that all `r length(MA_descriptives$dataset)` meta-analyses we discuss in this paper focus on language acquisition in early childhood, our suggestions will be most relevant to this subfield. We present our methods and results to researchers on developmental psychology in general to encourage others to build similar meta-meta-analyses, thus allowing them to explore the state of their own subfields and to improve their practices if necessary. The analyses in this paper are based on MetaLab, an online collection of meta-analyses on early language development. Currently, MetaLab contains `r length(MA_descriptives$dataset)` meta-analyses, but it is open to submissions and updates. The present analyses thus are a snapshot; through dynamic reports on the website, and by downloading the freely available data, it is continuously possible to obtain the most recent results. 
 
+In MetaLab, parts of each meta-analysis are standardized to allow for the computation of common effect size estimates and for analyses that span across different phenomena. These standardized variables include study descriptors (such as citation and peer review status), participant characteristics (including mean age, native language), methodological information (for example what dependent variable was measured), and information necessary to compute effect sizes (number of participants, if available means and standard deviations of the dependent measure, otherwise test statistics, such as t-values or F scores). 
 
-Given that all `r length(MA_descriptives$dataset)` meta-analyses focus on language acquisition in early childhood, our suggestions will be most relevant to this subfield. We present our methods and results to the general developmental psychology population to encourage other developmentalists to build similar meta-meta-analyses, allowing them to explore the state of their own subfields.
-
-The analyses in this paper are based on MetaLab, an online collection of meta-analyses on early language development. Currently, MetaLab contains `r length(MA_descriptives$dataset)` meta-analyses, but it is open to submissions and updates. The present analyses thus are a snapshot; through dynamic reports on the website, and by downloading the freely available data, it is continuously possible to obtain the most recent data. 
-
-In MetaLab, parts of each meta-analysis are standardized to allow for the computation of common effect size estimates and for analyses that span across different phenomena. These standardized variables include study descriptors (such as citation and peer review status), participant characteristics (including mean age and age range, percent female participants), methodological information (for example what dependent variable was measured), and information necessary to compute effect sizes (number of participants, if available means and standard deviations of the dependent measure, otherwise test statistics, such as t-values or F scores). 
-
-***Question: More on sampling datasets?***
+MetaLab contains datasets that address phenomena ranging from infant-directed speech preference to mutual exclusivity, sampled opportunistically based on data collected with involvement of (some) authors of this paper (n=`r length(MA_descriptives$dataset)-2` datasets) or they were extracted from previously conducted meta-analyses related to language development (n=2, i.e. [@Colonessi, @DunstHamby]). In the former case, we attempted to document as much detail as possible for each entered experiment (note that a paper can contain many experiments). 
+Detailed descriptions of all phenomena covered by MetaLab, including which papers and other sources have been considered, can be found on the companion website at metalab.stanford.edu and in the supporting information. 
 
 
-MetaLab contains datasets that address phenomena ranging from infant-directed speech preference to mutual exclusivity, sampled  opportunistically based on data collected with involvement of (some) authors of this paper (n=`r length(MA_descriptives$dataset)-2` datasets) or they were extracted from published meta-analyses related to language development (n=2, i.e. [Colonessi, @DunstHamby]). In the former case, we attempted to document as much detail as possible for each entered experiment (note that a paper can contain many experiments). 
-Detailed descriptions of all phenomena covered by MetaLab, including which papers and other sources have been considered, can be found on the companion website at metalab.stanford.edu and in the supporting information. Further, a throughout investigation into data quality within MetaLab, including publication biases, and a meta-meta-analyses have been conducted based on the same data [@SynthesisPaper]. ***<-- AC: I think the question of publication biases should ABSOLUTELY be targeted in this paper, we need to explain what all this means for our field!!!! ***
-***AC- recommend removal of the following; to me it sounds like we selected only replicable findings, which would therefore not constitute a representative or random sample of the field as a whole (i.e., we would use a biased sample)*** It turns out that all databases have evidential value and can thus be utilized for further investigation. 
+**** To be discussed***
+Further, a throughout investigation into data quality within MetaLab, including publication biases, and a meta-meta-analyses have been conducted based on the same data [@SynthesisPaper]. ***<-- AC: I think the question of publication biases should ABSOLUTELY be targeted in this paper, we need to explain what all this means for our field!!!! *** ***ChB: Is that double dipping or so?***
 
+***AC- now this just sounds like unsupported bashing, too bad you had to remove the justification. Incidentally, I don't think it's relevant in this paper that is on practices, and not on main effects*** 
 
+***ChB: Actually, we want to incentivice making and using MAs here as well, that's for the recommendations part (too be written once we are clear on the results section, as those should be in parallel)***
 
-***AC- now this just sounds like unsupported bashing, too bad you had to remove the justification. Incidentally, I don't think it's relevant in this paper that is on practices, and not on main effects*** Consequently, meta-analyses do not rely on one (possibly inaccurate) study outcome, be it significant or not. Despite their overall utility, meta-analyses are not frequently conducted in most branches of developmental psychology. Instead, narrative summaries are the dominant tool to build theories, and that single studies are cited as evidence for the presence or absence of an ability instead of meta-analyses. 
+Meta-analyses do not rely on one (possibly inaccurate) study outcome, be it significant or not. Despite their overall utility, meta-analyses are not frequently conducted in most branches of developmental psychology. Instead, narrative summaries are the dominant tool to build theories, and that single studies are cited as evidence for the presence or absence of an ability instead of meta-analyses. 
 
 
 ## Statistical approach
 
 As dependent measure, we report Cohen's *d*, a standardized effect size based on comparing sample means and their variance. This effect size was calculated when possible from means and standard deviations across designs with the appropriate formula. When these data were not available, we used test statistics, more precisely t-values or F scores of the test assessing the main hypothesis. We also computed effect size variance, which allows to weigh each effect size when aggregating across studies. The variance is mainly determined by the number of participants; intuitively effect sizes based on larger samples will be weighted higher. Note that for research designs testing participants in two conditions that need to be compared (for example exposing the same infants to infant- and adult-directed speech), correlations between those two measures are needed to estimate the effect size variance. This measure is usually not reported, despite being necessary for effect size calculation. Some correlations could be obtained through direct contact with the original authors (see e.g., [@InWordDB] for details), for others we estimated this factor based on the information in our database. 
 
-To aggregate effect sizes within a phenomenon, we used a multilevel approach, which takes into account not only the effect sizes and their variance of single studies, but also that effect sizes from the same paper will be based on more similar studies than effect sizes from different papers [@konstantopoulos2011], implemented in the metafor package [@metafor] of R [@R]. We excluded as outliers effect sizes that were more than three standard deviations away from the median effect size within each dataset, thus accounting for the difference in median effect size.
+To aggregate effect sizes within a phenomenon, we used a multilevel approach, which takes into account not only the effect sizes and their variance of single studies, but also that effect sizes from the same paper will be based on more similar studies than effect sizes from different papers [@konstantopoulos2011], implemented in the metafor package [@metafor] of R [@R]. We excluded as outliers effect sizes that were more than three standard deviations away from the median effect size within each dataset, thus accounting for the difference in median effect size across phenomena.
 
 # Results and discussion
 
-## Average sample size, effect size, and power per phenomenon
+## Measures of a typical study on early language acquisition
 
-The table below provides summary information for each meta-analysis in MetaLab regarding a number of factors, including the number of single effect sizes and that of papers contributing to a given dataset, in the order of typical age in a specific dataset. 
-The typical sample size as well as the minimum and maximum (allowing to estimate the range in our data) is noted as well. Based on the meta-analytical effect size and the average number of participants, we calculated typical power (using the pwr package [@pwr]). Note that recommendations are for this value to be above 80%, which refers to a likelihood that 4 out of 5 studies show a significant outcome for an effect truly present in the population [CITE]. 
+Table 1 provides a summary of typical sample sizes and effect sizes by phenomenon, but before discussing those descriptors in detail, we begin by characterizing the overall snapshot provided by our data. Overall, we observe small sample sizes (the overall median in our dataset is `r median(all_data$n)`). With such a sample size, and assuming a paired t-test based on within-participant comparisons (the most frequent experiment design and test statistic) it is possible to detect an effect in 80% of all studies when Cohen's *d* = `r round(pwr.t.test(n=median(all_data$n), d=NULL, power = .8, type = "paired")$d,  digits = 2)`, in other words when investigating a medium to large effect. When comparing groups, this number increases to Cohen's *d* = `r round(pwr.t.test(n=median(all_data$n), d=NULL, power = .8, type = "two.sample")$d,  digits = 2)`, a large effect. 
+
+The above observation about sample sizes and which effect size could be detected in a typical study on early language acquisition is in stark contrast with the effect sizes we actually observe, which tend to fall into ranges of small to medium effects. Taking a closer look at single phenomena, which we characterize along a number of dimensions, such as typical age and the number of studies (and papers) we base our observations on. Each effect size was calculated with a hierarchical random effects model [@metafor], taking into account increased similarity between studies in the same paper and weighting effect sizes by their variance (driven by the number of participants). Based on the meta-analytical effect size and the median number of participants, we calculated typical power (using the pwr package [@pwr]). We remind the reader that recommendations are for this value to be above 80%, which refers to a likelihood that 4 out of 5 studies show a significant outcome for an effect truly present in the population. It turns out that by and large, studies are underpowered.
 
 *** Question: Is the next bit over-interpreting our data? ***
 
@@ -155,7 +189,7 @@ kable(arrange(MA_summary, age_dataset), col.names = c("Topic", "Mean Age (Months
 
 
 
-***TODO: Visualize power***
+***TODO: Visualize power / Question: How?***
 
 ### Comparing meta-analytic effect size and oldest paper to estimate power
 
@@ -176,10 +210,9 @@ To illustrate the disparity between the oldest effect size and the meta-analytic
 The comparison of initial and meta-analytic effect size has a number of caveats, for example, as we will lay out in the next section, methods might be different between initial reports and our overall sample; the availability of methods changes over time, as new approaches are being developed and automated procedures become more common. Further, the largest effect size from a seminal paper might have been spurious, and the research community could well be aware of that. In additional, as infant research becomes more common, recruitment and obtaining funds might both become easier, thereby increasing typical sample size over the years. 
 For a more continuous approach, we thus investigate power (which is determined by effect size and sample size) as follows. We first generate a meta-analytic model for each dataset that takes into account infant age and method and then derive the respective to be expected effect size base on those data for each entry in this dataset. Power is then estimated based on the sample size actually tested. 
 
+Across datasets we observe a general negative trend, with its steepness varyig avross dataset. The only positive trends occur in the upper ranges of estimated power and for older children. 
 
-
-***TO DO: Add***
-
+*** Add more here? ***
 
 ```{r Plot of power over time, echo = FALSE, fig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap="To BE UPDATED: Summary plot of power across years and meta-analyses"}
 power_year.plot
@@ -188,7 +221,7 @@ power_year.plot
 
 ## Procedure comparison
 
-In this section we address how methods might be chosen from two angles. We first take a pragmatic, resource-oriented approach and compare methods with respect to their dropout rate. Then we compare how effect size across phenomena is affected by method choice. 
+In this section we address how methods might be chosen, adopting two angles. We first take a pragmatic, resource-oriented approach and compare methods with respect to their dropout rate. Then we compare how effect size across phenomena is relating to method choice. 
 
 ### Drop-out rates across methods and age
 
@@ -198,7 +231,7 @@ The results of the linear mixed effect model predicting dropout rate by method a
 
 Interestingly, the methods with lower drop-out rates, namely central fixation and headturn preference procedure, are among the most frequent ones in MetaLab and certainly more frequent than those with higher drop-out rates, indicating that drop-out rate might inform researchers' choices. Being able to retain more participants as a factor in method choice points to the mentioned limitations regarding the participant pool we mentioned before, as more participants will have to be tested to arrive at the same sample size. 
 
-*** Question: method by total participants run (aka ressource-intensity)?***
+*** Question: method by total participants run (aka resource-intensity)?***
 
 
 ```{r Method vs excluded, echo = FALSE}
@@ -221,7 +254,6 @@ We built a meta-analytic model with the effect size measure Cohen's *d* as the d
 
 ```{r Plot of Effect of Method, echo = FALSE, ig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Effect size as explained by different methods and mean age of participants."}
 method.plot
-
 ```
 
 The model results in Table XXX show that compared to central fixation only conditioned headturn yields reliably higher effect sizes, all other methods do not statistically differ from this baseline. When factoring in age, no interaction reaches significance, while this factor on its own is marginally below the significance threshold, indicating that as infants mature effect sizes increase across methods -- an observation consistent with the view that infants and toddlers become more proficient language users and are increasingly able to react appropriately in the lab. 
@@ -232,38 +264,35 @@ There is an important caveat to this interpretation that some methods, specifica
 
 ## P-hacking and publication biases
 
+*** Note: Previously not part of this paper. Possible analyses include funnel plot asymmetry, p-curves. See synthesis paper. ***
+
 
 ## Working towards cumulativity
-***REMOVED: Data availability. Awaiting coding for those MAs where it is tracable, will be incorporated in text***
+
+*** ChB: Alex, what do you envision here?***
 
 # Summary and suggestions for the future
 We set out to discuss potentially problematic practices. We see X Y and Z. We are thus adding to a recently emerging literature that critically examines long-held standards and practices in order to make the whole field more reliable and robust [@Mills-Smith2015, @Csibra]. 
 
 ## Concrete recommendations for developmental psychologists
-***AC: this section really shows the change in direction of the paper; it's all about metalab and MA, whereas I thought you wanted to write about practices in the field... Do we change the introduction to be specific about metalab (and then potentially go to a different journal), or change this section (to address the topics set out in the intro)?***
+
+*** Check table to be made in the beginning ****
+
+### 1. Calculate power prospectively
+
+### 2. 
 
 
-- Reporting: Make it easier to conduct MAs (include correlations, report means and SDs)
-- Reporting: Share failures for a more accurate measure, either in MetaLab or on emerging platforms (both allow for anonymzation if you do not want to associate your name for fear of repercussions)
 
-- Study planning: prospective power
-- MiniMA if not available in MetaLab: share then
-
-
+### Increase availability and use of meta-analyses
 
 To support the improvement current practices, we propose to make meta-analyses available in the form of ready-to-use online tools, dynamic reports, and as raw data. These different levels allow researchers with varying interest and expertise interests to make the best use of the extant record on infant language development, including study planning by choosing robust methods and appropriate sample sizes. There are additional advantages for interpreting single results and for theory building that emerge from our dataset. On one hand, researchers can easily check whether their study result falls within the expected range of outcomes for their research question -- indicating whether or not a potential moderator influenced the result. On the other hand, aggregating over many data points allows for the tracing of emerging abilities over time, quantifying their growth, and identifying possible trajectories and dependencies across phenomena (for a demonstration see [@Lewis]). Finally, by making our data and source code open, we also invite contributions and can update our data, be it by adding new results, filedrawer studies, or new datasets. Our implementation of this proposal is freely online available at metalab.stanford.edu.
-
-## Facilitating the creation and use of meta-analyses
 
 We have shown that power varies greatly across phenomena and that method choice is important. It turns out, however, that researchers do not choose the most robust methods. This might to be due to a lack of consideration of meta-analytic effect size estimates. One of the reasons for this is a lack of information on and experience in how to interpret effect size estimates and use them for study planning [cite infancy paper]. 
 Meta-analyses on infant language development are also rare, as showcased by the fact that the present dataset relied on the authors' involvement, and only two out of 12 meta-analyses used could be extracted from the extant work, and an extensive search in the present literature did not yield additional candidates (excluding clinical contexts). Conducting a meta-analysis is a laborious process, particularly according to common practice where only a few people do the work, with little support tools and educational materials available. Incentives for creating meta-analyses are low, as public recognition is tied to a single publication. The benefits of meta-analyses for the field, for instance the possibility to conduct power analyses, are often neither evident nor accessible to individual researchers, as the data are not shared and traditional meta-analyses remain static after publication, aging quickly as new results emerge.
 
 A second possible reason lies in the availability of data allowing for the conclusions we were able to draw here, be it in the form of reported effect sizes within paper or as ready-to-use dataset. As noted elsewhere, researchers do not report effect sizes [@Panneton], despite long-standing recommendations to move beyond the persistent focus on p-values (eg. APA Recommendations). 
 A final impediment to meta-analyses in developmental science are current reporting standards, which make it difficult and at times even impossible to compute effect sizes from the published literature. 
-
-***TODO: ADD data from systematic MAs on author contact***
-
-
 
 
 
@@ -272,59 +301,5 @@ A final impediment to meta-analyses in developmental science are current reporti
 
 # References
 
-# TEMPORARILY REMOVED MATERIAL
-Replicability is a core concept in this recent crisis, as exactly this property of scientific studies and whole fields has come under fire. Replicating a study means conducting a conceptually similar experiment with new stimuli and in a slightly different population but following the same procedure and analyses (based on the published report) with the same outcome as reported (allowing for a margin of error). Being able to (repeatedly) successfully replicate a study can be taken as an indicator that the phenomenon under investigation is true and theories can be built on it. In addition, testing different populations and using different, yet comparable stimuli, implies generalizability across supposedly irrelevant dimensions. 
-
-Science is a cumulative effort, meaning that a single published report is not sufficient to establish whether an effect is truly present in the population, because misleading reports speaking for or against the existence of a phenomenon might be caused by a number of issues. Next to spurious findings (which can occur even when following best practices due to sampling error alone), a number of habits in psychological research might result in outcomes not reflecting whether or not a phenomenon is truly present in the population. 
-These habits include confining null-results to the filedrawer and running studies with too few participants to reliably detect the effect.
 
 
-
-
-In the next section we discuss in detail the possible causes and unwanted negative consequences of underpowered studies, while examining the status quo in developmental research. 
-
-
-This flexibility is sometimes boosted by the fact that some of our methods are rather indirectly related to the underlying process we are trying to measure. For instance, when working with infants, one often needs to rely on visual attention as the sole behavioral index, and thus our paradigms are built on designing conditions that provoke measurably different levels of visual attention.-- @CB could you please explain? I thought I understood, but not sure I do... In what ways is CF more indirect than say lexical decision judgments? If you're interested in phonotactics, your measure is indirect in both cases. Perhaps remove this para?
-
-
-## Introducing MetaLab
-
-
-MetaLab is built on two core principles: lowering hurdles to foster the implementation of practices which are rapidly becoming standard procedure, not only in other branches of psychology (such as effect size estimation and power calculation), and crowdsourcing to decrease the workload of single researchers. MetaLab is based on the recently proposed concept of community-augmented meta-analyses (CAMAs; [@Tsuji2014]), which combine meta-analyses and open repositories. The advantages of this union are that meta-analyses are shared and get updated continuously, so they can capture the most recent state of the literature and are open to contributions of unpublished results. 
-
-MetaLab expands on CAMAs by providing an infrastructure for a range of uses. It is possible to gain an overview of the literature, get insights into specific topics through dynamically rendered reports, conduct power calculations, and contribute not only single recent or unpublished datasets, but whole meta-analyses that can then be opened to contributions and analysis. All meta-analyses share a core of 20 variables which not only allow for the computation of effect sizes across vastly different studies, but also provide the basis for further comparisons. These comparisons are both of practical and theoretical importance, for example can we compare which method is more robust and suitable for various ages. Researchers then can both better compare existent findings and plan their own research to be more effective. This becomes possible by focusing on a high-level but specific and constrained topic, in the case of MetaLab this is early language development and adjacent phenomena. 
-
-MetaLab also poses several advantages compared to existing software for meta-analyses. First, adding meta-analyses is supported not only by sharing standardized formats but also by offering guidance in identifying the correct data to enter, based on the extant data and examples from the developmental psychology literature. Further, novice users can easily engage with the platform to estimate, for example, effect sizes, or decide on sample sizes with a simple interactive tool. Secondly, since all data and scripts are freely and openly available, it is possible to inspect and if needed correct all computations. Errors are thus removed much more swiftly than would be the case for (commercial) software, without losing the benefit of a stable platform. By changing current practices, we aim to increase the reliability of developmental findings and thus the credibility of the field. 
-
-
-
-
-------
-
-
-## With these tools, what do we have to do?
-
-[Tutorial section]
-
-On the individual level:
-
--	How to determine participants: Power calculator, typical N in the field
--	How to run the best possible study: Make design choices to have a more robust measure (smaller sample and more power)
--	How do I report my data? Best reporting practices (include correlations for within, always report means and SD); and possibly best visualization practices
-
-Further individual benefits:
-
--	Don't despair when a null result occurs, you can still help the community with it 
--	For replication / training purposes possible to compare ES and select robust ones
-
-On the general level:
-
--	Evidence becomes more reliable
--	New evidence can be integrated with previous work directly without much effort 
--	Complete, unbiased overview of a research literature 
-    -	Identify unexplained variance
-    -	Where are gaps? 
-    -	Which moderators (do not) affect outcomes 
-        -	Examples from published MAs: 
-            -	InWordDB lack of age effect (predicted and strongly assumed in the field)
-            -	InPhonDB confirmation of diverging effects for native / nonnative, with a quantitative timeline
