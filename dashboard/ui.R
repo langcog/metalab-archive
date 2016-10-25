@@ -39,7 +39,8 @@ sidebar <- dashboardSidebar(
 dataset_box <- function(i) {
   dataset <- datasets[i,]
   box(
-    width = 12, status = "danger", solidHeader = TRUE,
+    width = 12, #status = "danger",
+    solidHeader = TRUE,
     fluidRow(
       column(width = 3,
              img(src = dataset$src, width = "100%", class = "dataset-img")),
@@ -91,7 +92,7 @@ tab_home <- tabItem(
 
 tab_documentation <- tabItem(
   tabName = "documentation",
-  tabBox(width = "100%", status = "danger",
+  tabBox(width = "100%", #status = "danger",
          tabPanel("Overview",
                   includeRmd("rmarkdown/overview.Rmd")),
          tabPanel("Statistical Approach",
@@ -118,7 +119,7 @@ tab_documentation <- tabItem(
 
 tab_contribute <- tabItem(
   tabName = "contribute",
-  tabBox(width = "100%", status = "danger",
+  tabBox(width = "100%", #status = "danger",
          tabPanel("Motivation and Background",
                   includeRmd("rmarkdown/background.Rmd")),
          tabPanel("Building a MA",
@@ -133,7 +134,7 @@ tab_contribute <- tabItem(
 
 tab_data <- tabItem(
   tabName = "data",
-  box(width = "100%", status = "danger",
+  box(width = "100%", #status = "danger",
       fluidRow(
         column(width = 5,
                selectInput("table_dataset_name", label = "Dataset",
@@ -151,7 +152,7 @@ tab_data <- tabItem(
 
 ma_choices <- c("Random effects" = "REML",
                 "Multi-level random effects with study grouping" = "REML_mv",
-                "Fixed effects" = "FE", 
+                "Fixed effects" = "FE",
                 "Empirical bayes" = "EB")
 
 scatter_choices <- c("Locally-linear regression (loess)" = "loess",
@@ -168,7 +169,7 @@ tab_visualizations <- tabItem(
   fluidRow(
     column(
       width = 6,
-      box(width = NULL, status = "danger",
+      box(width = NULL, #status = "danger",
           downloadButton("download_data", "Download data",
                          class = "btn-xs pull-right"),
           br(),
@@ -190,7 +191,7 @@ tab_visualizations <- tabItem(
       ),
       conditionalPanel(
         condition = "output.longitudinal == 'FALSE'",
-        box(width = NULL, status = "danger",
+        box(width = NULL, #status = "danger",
             fluidRow(
               column(
                 width = 10,
@@ -206,7 +207,7 @@ tab_visualizations <- tabItem(
                           choices = scatter_choices, selected = "loess")),
             plotOutput("scatter"), height = 530)
       ),
-      box(width = NULL, status = "danger",
+      box(width = NULL, #status = "danger",
           fluidRow(
             column(width = 10,
                    p(strong("Funnel plot"), "of bias in effect sizes")),
@@ -215,7 +216,7 @@ tab_visualizations <- tabItem(
                                   class = "btn-xs pull-right"))),
           plotOutput("funnel"),
           div(class = "text-center", textOutput("funnel_test"))),
-      box(width = NULL, status = "danger",
+      box(width = NULL, #status = "danger",
           fluidRow(
             column(width = 10,
                    p(strong("Violin plot"), "of effect size density")),
@@ -229,7 +230,7 @@ tab_visualizations <- tabItem(
       fluidRow(
         uiOutput("viz_boxes")),
       fluidRow(
-        box(width = NULL, status = "danger",
+        box(width = NULL, #status = "danger",
             fluidRow(
               column(
                 width = 10,
@@ -248,7 +249,7 @@ tab_visualizations <- tabItem(
                                       "alphabetical" = "study_ID",
                                       "chronological" = "year"))),
             plotOutput("forest", height = "auto")),
-        box(width = NULL, status = "danger",
+        box(width = NULL, #status = "danger",
             fluidRow(
               column(width = 12,
                      p(strong("Meta-analytic model summary")),
@@ -274,7 +275,8 @@ tab_power <- tabItem(
   fluidRow(
     column(
       width = 6,
-      box(width = NULL, status = "danger", solidHeader = TRUE,
+      box(width = NULL, #status = "danger",
+          solidHeader = TRUE,
           title = "Experiment planning",
           p("Select a meta-analysis and a set of moderators to see statistical
              power estimates using the estimated effect size (random effects) for that
@@ -286,7 +288,7 @@ tab_power <- tabItem(
       fluidRow(
         valueBoxOutput("power_d", width = 6),
         valueBoxOutput("power_n", width = 6)),
-      box(width = NULL, status = "danger",
+      box(width = NULL, #status = "danger",
           fluidRow(
             column(width = 10,
                    p(strong("Power plot"), "of N necessary to achieve p < .05")),
@@ -299,7 +301,8 @@ tab_power <- tabItem(
             shows necessary sample size to achieve that level of power."))),
     column(
       width = 6,
-      box(width = NULL, status = "danger", solidHeader = TRUE,
+      box(width = NULL, #status = "danger",
+          solidHeader = TRUE,
           title = "Experiment simulation",
           p(
             "Run a simulation of a looking-time experiment, choosing an effect
@@ -360,7 +363,8 @@ report_tabs <- map(reports, function(report) {
 # TEAM
 
 person_content <- function(person) {
-  box(width = 3, align = "center", status = "danger", solidHeader = TRUE,
+  box(width = 3, align = "center", #status = "danger",
+      solidHeader = TRUE,
       img(src = person$image, width = 180, height = 180),
       a(h4(strong(person$name)), href = person$website, target = "_blank"),
       person$affiliation, br(),
@@ -375,7 +379,7 @@ person_content <- function(person) {
 
 tab_team <- tabItem(
   tabName = "team",
-  box(status = "danger", width = "100%",
+  box(width = "100%", #status = "danger",
       h3("Meet the MetaLab team"), br(),
       map(split(people, ceiling(seq_along(people) / 4)),
           function(people_row) {
