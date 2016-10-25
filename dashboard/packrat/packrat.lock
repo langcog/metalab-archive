@@ -1,6 +1,6 @@
 PackratFormat: 1.4
-PackratVersion: 0.4.7.1
-RVersion: 3.2.3
+PackratVersion: 0.4.8.1
+RVersion: 3.3.1
 Repos: CRAN=https://cran.rstudio.com/
 
 Package: BH
@@ -17,7 +17,18 @@ Package: DT
 Source: CRAN
 Version: 0.1
 Hash: 66d3d04d40c505e567c1328eae0409ee
-Requires: htmltools, htmlwidgets, magrittr
+Requires: magrittr, htmltools, htmlwidgets
+
+Package: MASS
+Source: CRAN
+Version: 7.3-45
+Hash: 0650d5701aa7e369e77c9e2c8e1dc913
+
+Package: Matrix
+Source: CRAN
+Version: 1.2-6
+Hash: 6d5b4689f994e2af7e9cc11324c5cbeb
+Requires: lattice
 
 Package: R6
 Source: CRAN
@@ -38,6 +49,11 @@ Package: assertthat
 Source: CRAN
 Version: 0.1
 Hash: 0afb92b59b02593c70ff8046700ba9d3
+
+Package: base64enc
+Source: CRAN
+Version: 0.1-3
+Hash: c590d29e555926af053055e23ee79efb
 
 Package: bitops
 Source: CRAN
@@ -74,7 +90,7 @@ Package: dplyr
 Source: CRAN
 Version: 0.4.3
 Hash: 35bc70760e4bbd3f4bc05fac3bbde3c3
-Requires: BH, DBI, R6, Rcpp, assertthat, lazyeval, magrittr
+Requires: BH, DBI, R6, Rcpp, assertthat, lazyeval, magrittr, tibble
 
 Package: evaluate
 Source: CRAN
@@ -86,7 +102,7 @@ Package: feather
 Source: github
 Version: 0.0.0.9000
 Hash: 52fb8e51e501d34a51dce00bbd850f91
-Requires: Rcpp, tibble
+Requires: Rcpp, hms, tibble
 GithubRepo: feather
 GithubUsername: wesm
 GithubRef: master
@@ -102,7 +118,7 @@ Package: ggplot2
 Source: CRAN
 Version: 2.1.0
 Hash: 50e297b0191179c39c7dcae0eff72b51
-Requires: digest, gtable, plyr, reshape2, scales
+Requires: MASS, digest, gtable, plyr, scales, reshape2
 
 Package: gtable
 Source: CRAN
@@ -114,6 +130,11 @@ Source: CRAN
 Version: 0.5.1
 Hash: 114ef5abcf58bebbf6ac083b9cacbbd8
 
+Package: hms
+Source: CRAN
+Version: 0.2
+Hash: c1b6ded8c65ae31a98d73a312b2e6574
+
 Package: htmltools
 Source: CRAN
 Version: 0.3.5
@@ -124,7 +145,7 @@ Package: htmlwidgets
 Source: CRAN
 Version: 0.6
 Hash: 267a36d738dd98cec3dc9c471becb717
-Requires: htmltools, jsonlite, yaml
+Requires: jsonlite, yaml, htmltools
 
 Package: httpuv
 Source: CRAN
@@ -141,7 +162,7 @@ Package: knitr
 Source: CRAN
 Version: 1.12.3
 Hash: d537760d13021cf23fa2446381d9e0b2
-Requires: digest, evaluate, formatR, highr, markdown, stringr, yaml
+Requires: digest, formatR, highr, yaml, markdown, stringr, evaluate
 
 Package: labeling
 Source: CRAN
@@ -152,11 +173,16 @@ Package: langcog
 Source: github
 Version: 0.1.9000
 Hash: f318f8f311b14b10ca52bd9852da9d6d
-Requires: assertthat, dplyr, ggplot2, lazyeval, quadprog
+Requires: assertthat, lazyeval, quadprog, dplyr, ggplot2
 GithubRepo: langcog
 GithubUsername: langcog
 GithubRef: master
 GithubSha1: 8fc386bcd2f2d3b3032c6b4a1c8901989572237f
+
+Package: lattice
+Source: CRAN
+Version: 0.20-33
+Hash: d7158cf4e63e8c12cb227738076b37d8
 
 Package: lazyeval
 Source: CRAN
@@ -178,6 +204,7 @@ Package: metafor
 Source: CRAN
 Version: 1.9-8
 Hash: 9430098dbc94581c33d4c299997b815c
+Requires: Matrix
 
 Package: mime
 Source: CRAN
@@ -209,7 +236,7 @@ Package: purrr
 Source: CRAN
 Version: 0.2.1
 Hash: 7b5f27613432da903992bd0ce91f5ea9
-Requires: BH, Rcpp, dplyr, lazyeval, magrittr
+Requires: BH, Rcpp, lazyeval, magrittr, dplyr
 
 Package: pwr
 Source: CRAN
@@ -225,7 +252,7 @@ Package: readr
 Source: CRAN
 Version: 0.2.2
 Hash: a93ccbf0aac9156f350656072afc97d7
-Requires: BH, Rcpp, curl
+Requires: BH, R6, Rcpp, curl, hms, tibble
 
 Package: reshape2
 Source: CRAN
@@ -237,19 +264,21 @@ Package: rmarkdown
 Source: CRAN
 Version: 0.9.5
 Hash: c47e8fb40e81162783fe1335a13a0ca3
-Requires: caTools, htmltools, knitr, yaml
+Requires: base64enc, jsonlite, yaml, caTools, htmltools, evaluate,
+    knitr
 
 Package: scales
 Source: CRAN
 Version: 0.4.0
 Hash: 53844c573fd30a70f592fa45ec1e33a1
-Requires: RColorBrewer, Rcpp, dichromat, labeling, munsell, plyr
+Requires: RColorBrewer, Rcpp, dichromat, labeling, plyr, munsell
 
 Package: shiny
 Source: CRAN
 Version: 0.13.2
 Hash: 28d6903a44dc53bd4823fa43ccdc08e5
-Requires: R6, digest, htmltools, httpuv, jsonlite, mime, xtable
+Requires: R6, digest, jsonlite, mime, sourcetools, xtable, httpuv,
+    htmltools
 
 Package: shinydashboard
 Source: github
@@ -260,6 +289,11 @@ GithubRepo: shinydashboard
 GithubUsername: rstudio
 GithubRef: master
 GithubSha1: 8c735c623117657cd16711846a87ca59dd69e35a
+
+Package: sourcetools
+Source: CRAN
+Version: 0.1.5
+Hash: 04ddeb1c288302222562326a471e2945
 
 Package: stringi
 Source: CRAN
@@ -282,7 +316,7 @@ Package: tidyr
 Source: CRAN
 Version: 0.4.1
 Hash: f04fea3f45f0fd8246e22d3c38f0e98f
-Requires: Rcpp, dplyr, lazyeval, magrittr, stringi
+Requires: Rcpp, lazyeval, magrittr, stringi, tibble, dplyr
 
 Package: xtable
 Source: CRAN
