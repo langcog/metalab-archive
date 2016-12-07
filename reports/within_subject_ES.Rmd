@@ -1,0 +1,37 @@
+---
+title: "Within Subject Effect sizes"
+author: "Molly Lewis"
+date: "This report was rendered on `r Sys.Date()` and will be automatically re-rendered nightly, reflecting any changes in the data or code."
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+ggplot2::theme_set(langcog::theme_mikabr(base_family = "Ubuntu"))
+source("../dashboard/global.R", chdir = TRUE)
+```
+
+Exploring issue with differences in effect size as a function of how its calculated. Described in more detail [here](https://github.com/langcog/metalab/issues/113).
+
+```{r, }
+es.counts = all_data %>%
+  filter(dataset != "Pointing and vocabulary (concurrent)") %>%
+  select(dataset,es_method, participant_design) %>%
+  group_by(dataset, es_method) %>%
+  summarise(n = n(),
+            participant_design = participant_design[1]) %>%
+  arrange(es_method) %>%
+  mutate(es_type = ifelse(es_method == "special_case", "special_case", 
+                                 ifelse(es_method == "between", "between",
+                                        ifelse(es_method %in% c("t_two", "f_two", "d_two", "subj_diff_two"), "subj-level", "group-level"))))
+
+ggplot(es.counts, aes(x = es_method, fill = es_type, group= es_type, y = n)) +
+         geom_bar(stat= "identity", position = "dodge") +
+  theme_bw() +
+  ylab("n studies") +
+  facet_wrap(~dataset, scales = "free_y") + 
+  scale_x_discrete(drop=TRUE) +
+  theme(axis.text.x  = element_text(angle=90, vjust = .5))
+```
+
+It looks like this issue is primary problematic for vowel discrimination and potentially IDS. For IDS ([Dunst, et al.](http://earlyliteracylearning.org/cellreviews/cellreviews_v5_n1.pdf)), we don't really know how d was calculated. 
+

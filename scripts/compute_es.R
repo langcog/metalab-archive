@@ -21,8 +21,10 @@ compute_es <- function(participant_design, x_1 = NA, x_2 = NA, x_dif = NA,
 
   d_calc <- NA
   d_var_calc <- NA
+  es_method <- "missing"
 
   if (participant_design == "between") {
+    es_method  <- "between"
     if (complete(x_1, x_2, SD_1, SD_2)) {
       pooled_SD <- sqrt(((n_1 - 1) * SD_1 ^ 2 + (n_2 - 1) * SD_2 ^ 2) / (n_1 + n_2 - 2))
       d_calc <- (x_1 - x_2) / pooled_SD
@@ -48,39 +50,50 @@ compute_es <- function(participant_design, x_1 = NA, x_2 = NA, x_dif = NA,
     if (complete(x_1, x_2, SD_1, SD_2)) {
       pooled_SD <- sqrt((SD_1 ^ 2 + SD_2 ^ 2) / 2)
       d_calc <- (x_1 - x_2) / pooled_SD
+      es_method  <- "group_means_two"
     } else if (complete(x_1, x_2, SD_dif)) {
       within_SD <- SD_dif / sqrt(2 * (1 - corr))
       d_calc <- (x_1 - x_2) / within_SD
+      es_method  <- "group_means_two"
     } else if (complete(x_dif, SD_1, SD_2)) {
       pooled_SD <- sqrt((SD_1 ^ 2 + SD_2 ^ 2) / 2)
       d_calc <- x_dif / pooled_SD
+      es_method  <- "subj_diff_two"
     } else if (complete(x_dif, SD_dif)) {
       wc <- sqrt(2 * (1 - corr))
       d_calc <- (x_dif / SD_dif) * wc
+      es_method  <- "subj_diff_two"
     } else if (complete(t)) {
       wc <- sqrt(2 * (1 - corr))
       d_calc <- (t / sqrt(n_1)) * wc
+      es_method  <- "t_two"
     } else if (complete(f)) {
       wc <- sqrt(2 * (1 - corr))
       d_calc <- sqrt(f / n_1) * wc
+      es_method  <- "f_two"
     }
     if (complete(n_1, d_calc)) {
       d_var_calc <- ((1 / n_1) + (d_calc ^ 2 / (2 * n_1))) * 2 * (1 - corr)
     } else  if (complete(r)) {
       d_calc <- 2 * r / sqrt(1 - r ^ 2)
       d_var_calc <- 4 * r_var / ((1 - r ^ 2) ^ 3)
+      es_method  <- "r_two"
     } else if (complete(d, d_var)) {
       d_calc <- d
       d_var_calc <- d_var
+      es_method  <- "d_two"
     }
 
   } else if (participant_design == "within_one") {
     if (complete(x_1, x_2, SD_1)) {
       d_calc <- (x_1 - x_2) / SD_1
+      es_method  <- "group_means_one"
     } else if (complete(t)) {
       d_calc <- t / sqrt(n_1)
+      es_method  <- "t_one"
     } else if (complete(f)) {
       d_calc <- sqrt(f / n_1)
+      es_method  <- "f_one"
     }
     if (complete(n_1, d_calc)) {
       #d_var_calc <- (1 / n_1) + (d_calc ^ 2 / (2 * n_1))
@@ -99,18 +112,25 @@ compute_es <- function(participant_design, x_1 = NA, x_2 = NA, x_dif = NA,
       d_calc = 2 * r / (sqrt(1 - r ^ 2)) # from (Hunter and Schmidt, pg. 279)
       d_var_calc = (4 * var_r)/(1 - r ^ 2) ^ 3 # from https://www.meta-analysis.com/downloads/Meta-analysis%20Converting%20among%20effect%20sizes.pdf (pg. 4)
       
+      es_method  <- "r_one"
+      
     } else if (complete(r)) {
       d_calc <- 2 * r / sqrt(1 - r ^ 2)
       d_var_calc <- 4 * r_var / ((1 - r ^ 2) ^ 3)
+     
+       es_method  <- "r_one"
+      
     } else  if (complete(d, d_var)) {
       d_calc <- d
       d_var_calc <- d_var
+      es_method  <- "d_one"
     }
   }
 
   # SPECIAL CASES
   if (!complete(d_calc, d_var_calc)) {
-
+    es_method <- "special_case"
+    
     special <- special_cases_measures %>% as.character() %>% strsplit(";") %>%
       unlist() %>% as.numeric()
     pooled_SD <- NA
@@ -181,6 +201,7 @@ compute_es <- function(participant_design, x_1 = NA, x_2 = NA, x_dif = NA,
                     "r_calc" = r_calc, "r_var_calc" = r_var_calc,
                     "z_calc" = z_calc, "z_var_calc" = z_var_calc,
                     "log_odds_calc" = log_odds_calc,
-                    "log_odds_var_calc" = log_odds_var_calc))
+                    "log_odds_var_calc" = log_odds_var_calc,
+                    "es_method" = es_method))
 
 }
