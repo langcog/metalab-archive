@@ -6,23 +6,31 @@ date: "This report was rendered on `r Sys.Date()` and will be automatically re-r
 
 ```{r, include=FALSE}
 knitr::opts_chunk$set(warning = FALSE, message = FALSE)
-ggplot2::theme_set(langcog::theme_mikabr(base_family = "Ubuntu"))
+#ggplot2::theme_set(langcog::theme_mikabr(base_family = "Ubuntu"))
 source("../dashboard/global.R", chdir = TRUE)
+
+library(metafor)
+library(tidyverse)
 ```
 
 Exploring issue with differences in effect size as a function of how its calculated. Described in more detail [here](https://github.com/langcog/metalab/issues/113).
 
 ```{r, }
+all_data = all_data %>%
+            mutate(es_type = ifelse(es_method == "special_case", "special_case", 
+                                 ifelse(es_method == "between", "between",
+                                        ifelse(es_method %in% c("t_two", "f_two", "d_two",
+                                                                "subj_diff_two"), "subj-level",
+                                               "group-level"))))
+
+
 es.counts = all_data %>%
-  filter(dataset != "Pointing and vocabulary (concurrent)") %>%
-  select(dataset,es_method, participant_design) %>%
-  group_by(dataset, es_method) %>%
+  filter(dataset != "Pointing and vocabulary (longitudinal)") %>%
+  select(dataset,es_method, participant_design, es_type) %>%
+  group_by(dataset, es_method, es_type) %>%
   summarise(n = n(),
             participant_design = participant_design[1]) %>%
-  arrange(es_method) %>%
-  mutate(es_type = ifelse(es_method == "special_case", "special_case", 
-                                 ifelse(es_method == "between", "between",
-                                        ifelse(es_method %in% c("t_two", "f_two", "d_two", "subj_diff_two"), "subj-level", "group-level"))))
+  arrange(es_method) 
 
 ggplot(es.counts, aes(x = es_method, fill = es_type, group= es_type, y = n)) +
          geom_bar(stat= "identity", position = "dodge") +
@@ -34,4 +42,120 @@ ggplot(es.counts, aes(x = es_method, fill = es_type, group= es_type, y = n)) +
 ```
 
 It looks like this issue is primary problematic for vowel discrimination and potentially IDS. For IDS ([Dunst, et al.](http://earlyliteracylearning.org/cellreviews/cellreviews_v5_n1.pdf)), we don't really know how d was calculated. 
+
+For vowel discrimination, let's look at whether there's a difference in effect size as a funciton of how it was calculated.
+```{r}
+within.only.vowel.native = all_data %>%
+  filter(dataset == "Vowel discrimination (native)") %>%
+  filter(es_type != "special_case" & es_type != "between") 
+
+ggplot(within.only.vowel.native, aes(x = es_type, y = d_calc)) +
+  geom_boxplot()
+
+table(within.only.vowel.native$es_type, within.only.vowel.native$method)
+# within subject are central fixation and HPP
+
+table(within.only.vowel.native$es_type, within.only.vowel.native$response_mode)
+# all within subject are central fixation and HPP (method) OR eyetracing (response_mode)
+
+rma(d_calc ~ mean_age + es_type + response_mode , vi = d_var_calc, data = within.only.vowel.native)
+
+within.only.vowel.nnative = all_data %>%
+  filter(dataset == "Vowel discrimination (non-native)") %>%
+  filter(es_type != "special_case" & es_type != "between") 
+
+ggplot(within.only.vowel.nnative, aes(x = es_type, y = d_calc)) +
+  geom_boxplot()
+
+table(within.only.vowel.nnative$es_type, within.only.vowel.nnative$method)
+# within subject are central fixation and HPP
+
+table(within.only.vowel.nnative$es_type, within.only.vowel.nnative$response_mode)
+# all within subject are central fixation and HPP (method) OR eyetracing (response_mode)
+
+
+rma(d_calc ~ mean_age + es_type , vi = d_var_calc, data = within.only.vowel.nnative)
+
+```
+In a simple anaylsis subj-level es claculations are overall lower than group-level. But subj-level calculations are perfectly correlated for native with es_type/method. So, hard to know what's going on here.
+
+```{r, levels plot}
+# need to recompute datasets summary data, based on filtered all_data
+datasets <- datasets %>%
+  rename(dataset = name) %>%
+  select(-num_experiments, -num_papers, -num_subjects) %>%
+  filter(dataset != "Statistical word segementation") %>% 
+  filter(dataset != "Pointing and vocabulary (longitudinal)")
+
+# rename pointing and vocabulary 
+datasets$name = plyr::mapvalues(datasets$name, from = c("Pointing and vocabulary (concurrent)"), 
+                                to = c("Pointing and vocabulary"))
+
+all_data$dataset = plyr::mapvalues(all_data$dataset , from = c("Pointing and vocabulary (concurrent)"),
+                                   to = c("Pointing and vocabulary"))
+
+# make levels df
+ld.df = data.frame(dataset = datasets$name,
+                   domain = c("Prosody", "Words", "Communication", "Sounds",
+                              "Sounds", "Sounds", "Sounds", "Sounds", "Words",
+                              "Words", "Communication", "Words"))
+
+ld.df$domain = factor(ld.df$domain, levels = c("Prosody","Sounds", "Words", "Communication"))
+
+all_data_groups = all_data %>%
+  filter(es_type != "subj-level" | es_method == "d_two") # include IDS because we don't know because based on d
+
+single_method_datasets = all_data_groups %>%
+  group_by(dataset) %>%
+  summarise(n_methods = length(levels(as.factor(method)))) %>%
+  filter(n_methods == 1) %>%
+  .[["dataset"]]
+
+# get model fits
+all_data.resid = data.frame()
+for (i in 1:length(datasets$name)) {
+    d = filter(all_data_groups, dataset == datasets$name[i])
+    if (datasets$name[i] %in% single_method_datasets) {
+      full.model = rma(d_calc, vi = d_var_calc, data = d)
+    } else {
+      full.model = rma(d_calc ~ method, vi = d_var_calc, data = d)
+    }
+  
+  d = as.data.frame(rstandard(full.model)$resid) %>%
+       cbind(d) %>%
+       rename(residual.d = `rstandard(full.model)$resid`) %>%
+       mutate(residual.d = residual.d + full.model$b[1]) %>% # add in intercept term
+       inner_join(all_data) 
+  
+  all_data.resid = rbind(all_data.resid,d)
+}
+
+# merge in levels
+residualized.es = all_data.resid %>%
+          left_join(ld.df) %>%
+          filter(dataset != "Statistical sound category learning") %>%
+          filter(dataset != "Phonotactic learning") %>%
+          mutate(age.years = mean_age/365) %>%
+          filter(age.years < 3)
+
+fs = 16
+ggplot(residualized.es, aes(x = age.years, y = residual.d, col = dataset)) +
+  facet_grid(~ domain) +
+  geom_point(aes(size = n), alpha = .1, data = filter(residualized.es, residual.d > -.5 & residual.d < 2.5 )) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_line(stat="smooth", method="lm", se = FALSE, size = 1, formula = y ~ log(x)) +
+  coord_cartesian(ylim = c(-.5, 2.5), xlim = c(0, 3.1)) +  # doesn't remove data from geom_smooth
+  xlab("Age (years)") +
+  ylab("Method-residualized\n effect size") +
+  theme_bw() +
+  scale_color_solarized() +
+  theme(legend.position = "none",
+        legend.key = element_blank(),
+        axis.line= element_line(size = 1),
+        axis.text = element_text(colour = "black", size = fs),
+        strip.text.x = element_text(size = 14),
+        axis.title = element_text(colour = "black", size = fs),
+        strip.background = element_rect(fill="grey"))
+```
+Even when exclding within-subject ES for vowel discrimination, meta-meta plot looks mostly the same.
 
