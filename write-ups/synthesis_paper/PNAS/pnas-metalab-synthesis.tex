@@ -12,16 +12,15 @@
 \usepackage{tabularx}
 \usepackage{graphicx}
 
-\title{A Quantitative Synthesis of Early Language Acquisition Using
-Meta-Analysis}
+\title{A Quantitative Synthesis of Early Language Acquisition Using Meta-Analysis}
 
 % Use letters for affiliations, numbers to show equal authorship (if applicable) and to indicate the corresponding author
-\author[a]{ Molly Lewis}
+\author[a,1]{ Molly Lewis}
 \author[b]{Mika Braginsky} 
 \author[c]{Sho Tsuji}
 \author[c]{Christina Bergmann}
 \author[d]{Page Piccinini}
-\author[c]{ Alejandrina Cristia}
+\author[c]{Alejandrina Cristia}
 \author[a]{Michael C. Frank}
 
 \affil[a]{Department of Psychology, Stanford University}
@@ -29,7 +28,12 @@ Meta-Analysis}
 \affil[c]{Laboratoire de Sciences Cognitives et Psycholinguistique, ENS}
 \affil[d]{ NeuroPsychologie Interventionnelle, ENS }
 
-
+% TO DO:
+%- move method?
+%- reformat SI
+%- fix bib names
+%- write significance statement
+% - fix fig positions
 
 % Please give the surname of the lead author for the running footer
 \leadauthor{Lewis} 
@@ -40,7 +44,10 @@ Meta-Analysis}
 % Please include corresponding author, author contribution and author declaration information
 \authorcontributions{ ML, ST, CB, PP, AC, and MF wrote the paper. ML, ST, CB, AC, and MF coded papers for the meta-analytic dataset. All authors contributed to data analysis. MB, MF, and ML developed the Metalab website infrastructure.}
 \authordeclaration{The authors declare no conflict of interest.}
-\correspondingauthor{\textsuperscript{2} Molly Lewis E-mail: mollyllewis@gmail.com}
+{\correspondingauthor{\textsuperscript{1}To whom correspondence should be addressed. E-mail: mollyllewis@gmail.com}
+
+\authordeclaration{This article contains supporting information online at \url{http://rpubs.com/mll/synthesis}}
+
 
 % Keywords are not mandatory, but authors are strongly encouraged to provide them. If provided, please include two to five keywords, separated by the pipe symbol, e.g:
 \keywords{developmental psychology $|$ language acquisition $|$ quantitative theories $|$ meta-analysis} 
@@ -48,13 +55,12 @@ Meta-Analysis}
 \begin{abstract}
 To acquire a language, children must learn a range of skills, from the
 sounds of their language to the meanings of words. These skills are
-typically studied in isolation in separate research programs, but there
-is a growing body of evidence that these skills may depend on each other
-in acquisition (e.g., Feldman, Myers, White, Griffiths, \& Morgan, 2013;
+typically studied in isolation in separate research programs, but a growing body of evidence reveals interdependencies across skills
+in the acquisition process (e.g., Feldman, Myers, White, Griffiths, \& Morgan, 2013;
 Johnson, Demuth, Jones, \& Black, 2010; Shukla, White, \& Aslin, 2011).
-We suggest that the meta-analytic method can support the process of
-building theories that take a systems-level perspective, as well as
-provide a tool for detecting bias in a literature. Here we present
+Here, we suggest that the meta-analytic method can support the process of
+building systems-level theories, as well as
+provide a tool for detecting bias in a literature. We present
 meta-analyses of 12 phenomena in language acquisition, with over 800
 effect sizes. We find that the language acquisition literature overall
 has a high degree of evidential value. We then present a quantitative
@@ -115,6 +121,38 @@ precise predictions. In this paper, we consider the domain of language
 acquisition and demonstrate how the quantitative tools of meta-analysis
 can support theory building in psychological research.
 
+
+\renewcommand{\arraystretch}{1.5}
+
+\begin{table*}[t!]
+    \footnotesize
+        \setlength\tabcolsep{1.5pt}
+        \caption{Overview of meta-analyses in dataset.}
+
+    \begin{tabular}{lp{4cm} p{8cm}r}
+        \toprule
+        \textbf{Level} & \textbf{Phenomenon}                                                               & \textbf{Description}                                                                    & \textbf{N papers (conditions)}                                                                                                                           \\
+        \midrule
+        
+        Prosody        & IDS  preference  \newline  {\scriptsize (Dunst, Gorman, \& Hamby, 2012)}          & {\scriptsize  Looking times as a function of whether infant-directed vs.\ adult-directed speech is presented as stimulation.}             & 16 (50)                         \\
+        Sounds         & Phonotactic learning  \newline {\scriptsize (Cristia, in prep.)}                  & {\scriptsize Infants' ability to learn phonotactic generalizations from a short exposure.  }       & 15 (47)               \\
+        ~              & Vowel discrimination (native) \newline {\scriptsize (Tsuji \& Cristia, 2014)}     & {\scriptsize Discrimination of native-language vowels, including results from a variety of methods.  }    & 32 (143)         \\ 
+        ~              & Vowel discrimination (non-native) \newline {\scriptsize (Tsuji \& Cristia, 2014)} & {\scriptsize Discrimination of non-native vowels, including results from a variety of methods.  } & 15 (48)   \\
+                       & Statistical sound learning  \newline {\scriptsize (Cristia, in prep.)}            & {\scriptsize Infants' ability to learn sound categories from their acoustic distribution.   }            & 10 (18)                           \\ 
+                       & Word segmentation \newline {\scriptsize  (Bergmann \& Cristia, 2015) }            & {\scriptsize Recognition of familiarized words from running, natural speech using behavioral methods.  }           & 66 (291)                       \\
+        Words     &   Mutual exclusivity \newline {\scriptsize (Lewis \& Frank, in prep.)} &{\scriptsize  Bias to assume that a novel word refers to a novel object in forced-choice paradigms.}
+        & 20 (60)             \\
+        ~ &   Sound Symbolism \newline {\scriptsize (Lammertink et al., 2016)} &{\scriptsize  Bias to assume a non-arbitrary relationship between form and meaning ("bouba-kiki effect") in forced-choice paradigms.}
+        & 10 (42)             \\
+        ~              & Concept-label advantage   \newline {\scriptsize (Lewis \& Long, unpublished)}     & {\scriptsize Infants' categorization judgments in the presence and absence of labels.    }           & 14 (49)                           \\
+        ~              & Online word recognition \newline {\scriptsize (Frank, Lewis, \& MacDonald, 2016)} & {\scriptsize Online word recognition of familiar words using two-alternative forced choice preferential looking.   }  & 6 (15)       \\
+        Communication  & Gaze following  \newline {\scriptsize  (Frank, Lewis, \& MacDonald, 2016)}        & {\scriptsize Gaze following using standard multi-alternative forced-choice paradigms.   }    & 12 (33)           \\
+        ~              & Pointing and vocabulary  \newline {\scriptsize (Colonnesi et al., 2010)}          & {\scriptsize Concurrent correlations between pointing and vocabulary.}  & 12 (12) \\ 
+        \bottomrule
+    \end{tabular}
+\end{table*}
+
+
 Meta-analysis is a quantitative method for aggregating across
 experimental findings (Glass, 1976; Hedges \& Olkin, 2014). The
 fundamental unit of meta-analysis is the \emph{effect size}: a
@@ -160,6 +198,10 @@ across papers using meta-analytic methods, however, we may be better
 able to detect these changes, leading to more precise description of the
 empirical phenomena.
 
+
+
+
+
 Finally, effect size estimates also provide a common language for
 comparing across phenomena. In the current work, this common language
 allows us to consider the relationship between different phenomena in
@@ -183,6 +225,18 @@ developmental datasets means that replications are relatively rare in
 the field. Meta-analysis provides a method for addressing these issues
 by harnessing existing data to estimate effect sizes and developmental
 trends.
+
+\begin{figure*}[t!]
+\centering
+\includegraphics[width=17.5cm]{figs/unnamed-chunk-2-1.pdf}
+\caption{Funnel plots for each meta-analysis. Each effect size estimate
+is represented by a point, and the mean effect size is shown as a red
+dashed line. The grey dashed line shows an effect size of zero. The
+funnel corresponds to a 95\% CI around this mean. In the absence of true
+heterogeneity in effect sizes (no moderators) and bias, we should expect
+all points to fall inside the funnel.}
+\end{figure*}
+
 
 We take as our ultimate goal a broad theory of language acquisition that
 can explain and predict the range of linguistic skills a child acquires.
@@ -210,9 +264,11 @@ interactive nature of language acquisition. We selected these particular
 phenomena because of their theoretical importance or because a
 previously-published meta-analysis already existed.
 
+
+
 To obtain estimates of effect size, we either coded or adapted others'
 coding of papers reporting experimental data (see SI for
-details\footnote{Supplemental Information available at: http://rpubs.com/mll/synthesis}).
+details).
 Within each paper, we calculated a separate effect size estimate for
 each experiment and age group (we refer to each measurement separated by
 age as a \enquote{condition}). In total, our sample includes estimates
@@ -224,35 +280,7 @@ meta-analytic methods for aggregating even the smallest sample of
 studies are likely to be less biased than qualitative methods
 (Valentine, Pigott, \& Rothstein, 2010).
 
-\renewcommand{\arraystretch}{1.5}
 
-\begin{table*}[tbhp]
-    \footnotesize
-        \setlength\tabcolsep{1.5pt}
-        \caption{Overview of meta-analyses in dataset.}
-
-    \begin{tabular}{lp{4cm} p{8cm}r}
-        \toprule
-        \textbf{Level} & \textbf{Phenomenon}                                                               & \textbf{Description}                                                                    & \textbf{N papers (conditions)}                                                                                                                           \\
-        \midrule
-        
-        Prosody        & IDS  preference  \newline  {\scriptsize (Dunst, Gorman, \& Hamby, 2012)}          & {\scriptsize  Looking times as a function of whether infant-directed vs.\ adult-directed speech is presented as stimulation.}             & 16 (50)                         \\
-        Sounds         & Phonotactic learning  \newline {\scriptsize (Cristia, in prep.)}                  & {\scriptsize Infants' ability to learn phonotactic generalizations from a short exposure.  }       & 15 (47)               \\
-        ~              & Vowel discrimination (native) \newline {\scriptsize (Tsuji \& Cristia, 2014)}     & {\scriptsize Discrimination of native-language vowels, including results from a variety of methods.  }    & 32 (143)         \\ 
-        ~              & Vowel discrimination (non-native) \newline {\scriptsize (Tsuji \& Cristia, 2014)} & {\scriptsize Discrimination of non-native vowels, including results from a variety of methods.  } & 15 (48)   \\
-                       & Statistical sound learning  \newline {\scriptsize (Cristia, in prep.)}            & {\scriptsize Infants' ability to learn sound categories from their acoustic distribution.   }            & 10 (18)                           \\ 
-                       & Word segmentation \newline {\scriptsize  (Bergmann \& Cristia, 2015) }            & {\scriptsize Recognition of familiarized words from running, natural speech using behavioral methods.  }           & 66 (291)                       \\
-        Words     &   Mutual exclusivity \newline {\scriptsize (Lewis \& Frank, in prep.)} &{\scriptsize  Bias to assume that a novel word refers to a novel object in forced-choice paradigms.}
-        & 20 (60)             \\
-        ~ &   Sound Symbolism \newline {\scriptsize (Lammertink et al., 2016)} &{\scriptsize  Bias to assume a non-arbitrary relationship between form and meaning ("bouba-kiki effect") in forced-choice paradigms.}
-        & 10 (42)             \\
-        ~              & Concept-label advantage   \newline {\scriptsize (Lewis \& Long, unpublished)}     & {\scriptsize Infants' categorization judgments in the presence and absence of labels.    }           & 14 (49)                           \\
-        ~              & Online word recognition \newline {\scriptsize (Frank, Lewis, \& MacDonald, 2016)} & {\scriptsize Online word recognition of familiar words using two-alternative forced choice preferential looking.   }  & 6 (15)       \\
-        Communication  & Gaze following  \newline {\scriptsize  (Frank, Lewis, \& MacDonald, 2016)}        & {\scriptsize Gaze following using standard multi-alternative forced-choice paradigms.   }    & 12 (33)           \\
-        ~              & Pointing and vocabulary  \newline {\scriptsize (Colonnesi et al., 2010)}          & {\scriptsize Concurrent correlations between pointing and vocabulary.}  & 12 (12) \\ 
-        \bottomrule
-    \end{tabular}
-\end{table*}
 
 \section*{Replicability of the field}\label{replicability-of-the-field}
 
@@ -270,59 +298,7 @@ find evidence for some bias, as well as evidence that two
 phenomena---phonotactic learning and statistical sound learning---likely
 describe null or near-null effects.
 
-
-\subsection*{Meta-Analytic Effect Size}\label{meta-analytic-effect-size}
-
-To estimate the overall effect size of a literature, effect sizes are
-pooled across papers to obtain a single meta-analytic estimate. This
-meta-analytic effect-size can be thought of as the \enquote{best
-estimate} of the effect size for a phenomenon given all the available
-data in the literature. Table 2, column 2 presents meta-analytic effect
-size estimates for each of our phenomena. We find evidence for a
-non-zero effect size in 10 out of 12 of the phenomena in our dataset,
-suggesting these literatures describe non-zero effects. In the case of
-phonotactic learning and sound category learning, however, we find that
-the meta-analytic effect size estimate does not differ from zero,
-indicating that these literatures do not describe robust effects (as
-first reported in Cristia, in prep.).
-
-We next turn to methods of assessing evidential value that describe the
-degree to which a literature has evidential value, and thus the degree
-to which it should constrain our theory building. In the following three
-analyses---fail-safe-N, funnel plots, and p-curves---we attempt to
-quantify the evidential value of these literatures.
-
-
-
-\subsection*{Fail-safe-N}\label{fail-safe-n}
-
-One approach for quantifying the reliability of a literature is to ask,
-How many missing studies with null effects would have to exist in the
-\enquote{file drawer} in order for the overall effect size to be zero?
-This is called the \enquote{fail-safe} number of studies (Orwin, 1983).
-This number provides an estimate of the size and variance of an effect
-using the intuitive unit of number of studies. To calculate this effect,
-we estimated the overall effect size for each phenomenon (Table 2,
-column 2), and then used this to estimate the fail-safe-N (Table 2,
-column 3).
-
-Because of the large number of positive studies in many of the
-meta-analyses we assessed, this analysis suggests a very large number of
-studies would have to be \enquote{missing} in each literature (\(M\) =
-3,634) in order for the overall effect sizes to be 0. Thus, while it is
-possible that some reporting bias is present in the literature, the
-overall large fail-safe-N suggests that the literature nonetheless
-likely describes robust effects.
-
-This analysis provides a quantitative estimate of the size of an effect
-in an intuitive unit, but it does not assess analytical or publication
-bias (Scargle, 2000). Importantly, if experimenters are exercising
-analytical flexibility through practices like selective reporting of
-analyses or p-hacking, then the number and magnitude of observed true
-effects in the literature may be greatly inflated. In the next analysis,
-we assess the presence of bias through funnel plots.
-
-\begin{table}[tbhp]
+\begin{table}[b!]
 \scriptsize
     \setlength\tabcolsep{1.2pt}
 \caption{Summary of replicability analyses.}
@@ -354,6 +330,61 @@ Pointing and vocabulary & 0.98 [0.62, 1.34] & 1617 & 1.25 & -6.33*\\
 \end{table}
 
 
+\subsection*{Meta-Analytic Effect Size}\label{meta-analytic-effect-size}
+
+To estimate the overall effect size of a literature, effect sizes are
+pooled across papers to obtain a single meta-analytic estimate. This
+meta-analytic effect-size can be thought of as the \enquote{best
+estimate} of the effect size for a phenomenon given all the available
+data in the literature. Table 2, column 2 presents meta-analytic effect
+size estimates for each of our phenomena. We find evidence for a
+non-zero effect size in 10 out of 12 of the phenomena in our dataset,
+suggesting these literatures describe non-zero effects. In the case of
+phonotactic learning and sound category learning, however, we find that
+the meta-analytic effect size estimate does not differ from zero,
+indicating that these literatures do not describe robust effects (as
+first reported in Cristia, in prep.).
+
+We next turn to methods of assessing evidential value that describe the
+degree to which a literature has evidential value, and thus the degree
+to which it should constrain our theory building. In the following three
+analyses---fail-safe-N, funnel plots, and p-curves---we attempt to
+quantify the evidential value of these literatures.
+
+
+
+
+\subsection*{Fail-safe-N}\label{fail-safe-n}
+
+One approach for quantifying the reliability of a literature is to ask,
+How many missing studies with null effects would have to exist in the
+\enquote{file drawer} in order for the overall effect size to be zero?
+This is called the \enquote{fail-safe} number of studies (Orwin, 1983).
+This number provides an estimate of the size and variance of an effect
+using the intuitive unit of number of studies. To calculate this effect,
+we estimated the overall effect size for each phenomenon (Table 2,
+column 2), and then used this to estimate the fail-safe-N (Table 2,
+column 3).
+
+Because of the large number of positive studies in many of the
+meta-analyses we assessed, this analysis suggests a very large number of
+studies would have to be \enquote{missing} in each literature (\(M\) =
+3,634) in order for the overall effect sizes to be 0. Thus, while it is
+possible that some reporting bias is present in the literature, the
+overall large fail-safe-N suggests that the literature nonetheless
+likely describes robust effects.
+
+This analysis provides a quantitative estimate of the size of an effect
+in an intuitive unit, but it does not assess analytical or publication
+bias (Scargle, 2000). Importantly, if experimenters are exercising
+analytical flexibility through practices like selective reporting of
+analyses or p-hacking, then the number and magnitude of observed true
+effects in the literature may be greatly inflated. In the next analysis,
+we assess the presence of bias through funnel plots.
+
+
+
+
 
 \subsection*{Funnel Plots}\label{funnel-plots}
 
@@ -374,22 +405,12 @@ ages).\footnote{The role of moderators such as age can be interactively explored
 P-curve analyses provide one method for addressing this issue, which we
 turn to next.
 
-\begin{figure*}[tbhp]
-\centering
-\includegraphics{figs/unnamed-chunk-2-1.pdf}
-\caption{Funnel plots for each meta-analysis. Each effect size estimate
-is represented by a point, and the mean effect size is shown as a red
-dashed line. The grey dashed line shows an effect size of zero. The
-funnel corresponds to a 95\% CI around this mean. In the absence of true
-heterogeneity in effect sizes (no moderators) and bias, we should expect
-all points to fall inside the funnel.}
-\end{figure*}
 
 \subsection*{P-curves}\label{p-curves}
 
-\begin{figure*}[tbhp]
+\begin{figure*}[t!]
 \centering
-\includegraphics{figs/p_curve_plots-1.pdf}
+\includegraphics[width=17.5cm]{figs/p_curve_plots-1.pdf}
 \caption{P-curve for each meta-analysis (Simonsohn, Nelson, \& Simmons,
 2014). In the absence of p-hacking, we should expect the observed
 p-curve (blue) to be right-skewed (more small values). The red dashed
@@ -457,9 +478,9 @@ how aspects of experience (e.g., vocabulary development) or maturational
 constraints may be related to this trajectory (e.g., Frank, Goodman, \&
 Tenenbaum, 2009; McMurray, Horst, \& Samuelson, 2012).
 
-\begin{figure*}[tbhp]
+\begin{figure*}[t!]
 \centering
-\includegraphics[width=17.8cm]{figs/fig3_lab.pdf}
+\includegraphics[width=17.5cm]{figs/fig3_lab.pdf}
 \caption{Method-residualized effect size plotted as a function of age
 across the 10 meta-analyses in our dataset shown to have evidential
 value (excluding phonotactic learning and sound category learning).
@@ -502,9 +523,9 @@ boundaries (e.g., Jusczyk, Houston, \& Newsome, 1999), grammatical
 categories (e.g., Shi, Werker, \& Morgan, 1999), and even word learning
 (e.g., Shukla et al., 2011).
 
-\begin{figure*}[htbp]
+\begin{figure*}[t!]
 \centering
-\includegraphics[width=17.8cm]{figs/fig4_lab.pdf}
+\includegraphics[width=17.5cm]{figs/fig4_lab.pdf}
 \caption{The left two panels show the developmental trajectories
 predicted under different meta-theories of language acquisition. The
 stage-like theory predicts that a child will not begin learning the next
@@ -677,28 +698,9 @@ across phenomena. Moving forward, we see meta-analysis as a powerful
 tool in the researcher's toolkit for developing quantitative theories to
 account for complex psychological phenomena.
 
-\subsection*{References}
-
-References should be cited in numerical order as they appear in text; this will be done automatically via bibtex, e.g. \cite{belkin2002using} and \cite{berard1994embedding,coifman2005geometric}. All references, including for the SI, should be included in the main manuscript file. References appearing in both sections should not be duplicated.  SI references included in tables should be included with the main reference section. 
 
 
-\subsection*{Supporting Information (SI)}
-
-The main text of the paper must stand on its own without the SI. Refer to SI in the manuscript at an appropriate point in the text. Number supporting figures and tables starting with S1, S2, etc. Authors are limited to no more than 10 SI files, not including movie files. Authors who place detailed materials and methods in SI must provide sufficient detail in the main text methods to enable a reader to follow the logic of the procedures and results and also must reference the online methods. If a paper is fundamentally a study of a new method or technique, then the methods must be described completely in the main text. Because PNAS edits SI and composes it into a single PDF, authors must provide the following file formats only.
-
-\subsubsection*{SI Text}
-
-Supply Word, RTF, or LaTeX files (LaTeX files must be accompanied by a PDF with the same file name for visual reference).
-
-
-
-\subsubsection*{SI Datasets} 
-
-Supply Excel (.xls), RTF, or PDF files. This file type will be published in raw format and will not be edited or composed. 
-
-
-
-\matmethods{Please describe your materials and methods here. This can be more than one paragraph, and may contain subsections and equations as required. Authors should include a statement in the methods section describing how readers will be able to access the data in the paper. 
+\matmethods{[WHAT SHOULD GO HERE]Please describe your materials and methods here. This can be more than one paragraph, and may contain subsections and equations as required. Authors should include a statement in the methods section describing how readers will be able to access the data in the paper. 
 
 \subsection*{Subsection for Method}
 Example text for subsection.
@@ -706,16 +708,18 @@ Example text for subsection.
 
 \showmatmethods % Display the Materials and Methods section
 
-\acknow{Please include your acknowledgments here, set in a single paragraph. Please do not include any acknowledgments in the Supporting Information, or anywhere else in the manuscript.}
+\acknow{We thank....}
 
 \showacknow % Display the acknowledgments section
 
 % \pnasbreak splits and balances the columns before the references.
 % If you see unexpected formatting errors, try commenting out this line
 % as it can run into problems with floats and footnotes on the final page.
-\pnasbreak
+%\pnasbreak
 
-% Bibliography
-%\bibliography{pnas-sample}
+%Bibliography
+\bibliography{metalab_synthesis}
+
+\nocite{kuhl2004early,feldman2013word,johnson2010synergies,shukla2011prosody,hedges2014statistical,glass1976primary,ebersole2015many,open2012open,open2015estimating,Gilbert1037,anderson2016response,button2013power,valentine2010many,orwin1983fail,simonsohn2014p,simonsohn2014power,simonsohn2015better,orwin1983fail,scargle1999publication,simonsohn2014p,simonsohn2014power,simonsohn2015better,markman1988,frank2009using,mcmurray2012word,werker2007infant,jusczyk1999beginnings,shi1999newborn,shukla2011prosody,goodman2011learning,feldman2013word,bergelson2016,tincoff1999some,lfprep,dunst2012preference,frank2016performance,tsuji2014perceptual,bergmann2015development,sterne2005regression,bergmanneducational,lammertink2016,lewisunpublished,colonnesi2010relation,cristiastatisticalinprep}
 
 \end{document}
