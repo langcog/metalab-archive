@@ -50,9 +50,11 @@
 \authordeclaration{The authors declare no conflict of interest.}
 {\correspondingauthor{\textsuperscript{1}To whom correspondence should be addressed. E-mail: mollyllewis@gmail.com}
 
-\authordeclaration{Data deposition: The data reported in this paper have been deposited in GitHub, a web-based repository hosting service, https://github.com/langcog/metalab/}
 
-\authordeclaration{This article contains supporting information online at \url{http://rpubs.com/mll/synthesis}}
+\authordeclaration{This article contains supporting information online at \url{http://rpubs.com/mll/synthesis}\\ \\
+Data deposition: The data reported in this paper have been deposited in GitHub, a web-based repository hosting service, \url{https://github.com/langcog/metalab/}
+
+\authordeclaration{}}
 
 
 % Keywords are not mandatory, but authors are strongly encouraged to provide them. If provided, please include two to five keywords, separated by the pipe symbol, e.g:
@@ -126,8 +128,6 @@ common language for comparing across phenomena, and a way to make more
 precise predictions. In this paper, we consider the domain of language
 acquisition and demonstrate how the quantitative tools of meta-analysis
 can support theory building in psychological research.
-
-
 
 
 Meta-analysis is a quantitative method for aggregating across
@@ -249,9 +249,11 @@ all points to fall inside the funnel.}
 We take as our ultimate goal a broad theory of language acquisition that
 can explain and predict the range of linguistic skills a child acquires.
 As a first step toward this end, we collected a dataset of effect sizes
-in the language acquisition literature across 12 phenomena (Metalab;
-\url{http://metalab.stanford.edu}). We use this dataset to demonstrate
-how meta-analysis supports building this theory in two ways. We first
+in the language acquisition literature across 12 phenomena  at many different levels of linguistic
+representation and processing (Metalab;
+\url{http://metalab.stanford.edu}; see Table 1 for description of phenomena). 
+We use this dataset to demonstrate
+how meta-analysis supports building  theory building in two ways. We first
 use meta-analytic techniques to evaluate the evidential value of the
 empirical landscape in language acquisition research. We find broadly
 that this literature has strong evidential value, and thus that the
@@ -259,35 +261,6 @@ effects reported in the literature should constrain our theorizing of
 language acquisition. We then turn toward the task of synthesizing these
 findings across phenomena and offer a preliminary, quantitative
 synthesis.
-
-\section*{Method}
-
-We analyzed 12 different phenomena in language acquisition (Table 1).
-These phenomena cover development at many different levels of linguistic
-representation and processing, from the acquisition of prosody and
-phonemic contrasts, to gaze following in communicative interaction. This
-wide range of phenomena allowed us to compare the course of development
-across different domains, as well as to explore questions about the
-interactive nature of language acquisition. We selected these particular
-phenomena because of their theoretical importance or because a
-previously-published meta-analysis already existed.
-
-
-
-To obtain estimates of effect size, we either coded or adapted others'
-coding of papers reporting experimental data (see SI for
-details).
-Within each paper, we calculated a separate effect size estimate for
-each experiment and age group (we refer to each measurement separated by
-age as a \enquote{condition}). In total, our sample includes estimates
-from 228 papers, 808 different conditions and 9,799 participants. The
-process for selecting papers from the literature differed by domain,
-with some individual meta-analyses using more systematic approaches than
-others (see SI for specific search strategies). Nevertheless,
-meta-analytic methods for aggregating even the smallest sample of
-studies are likely to be less biased than qualitative methods
-(Valentine, Pigott, \& Rothstein, 2010).
-
 
 
 \section*{Replicability of the field}\label{replicability-of-the-field}
@@ -365,6 +338,7 @@ we assess the presence of bias through funnel plots.
 
 
 
+
 \subsection*{Funnel Plots}\label{funnel-plots}
 
 Funnel plots provide a visual method for evaluating whether variability
@@ -383,6 +357,7 @@ possibility is that this bias reflects true heterogeneity in phenomena
 ages).\footnote{The role of moderators such as age can be interactively explored on the Metalab website (http://metalab.stanford.edu).}
 P-curve analyses provide one method for addressing this issue, which we
 turn to next.
+
 
 
 \subsection*{P-curves}\label{p-curves}
@@ -406,6 +381,19 @@ that were derived from test statistics reported in the paper
 analyses on the descriptive statistics or transforming reported effect
 sizes.}
 \end{figure*}
+
+
+A p-curve is the distribution of p-values for the statistical test of
+the main hypothesis across a literature (Simonsohn et al., 2014b, 2014a,
+2015). Critically, if there is a robust effect in the literature, the
+shape of the p-curve should reflect this. In particular, we should
+expect the p-curve to be right-skewed with more small values (e.g., .01)
+than large values (e.g., .04). An important property of this analysis is
+that we should expect this skew independent of any true heterogeneity in
+the data, such as age. Evidence that the curve is in fact right-skewed
+would suggest that the literature is not biased, and that it provides
+evidential value for theory building.
+
 
 \begin{table}[b!]
 \scriptsize
@@ -437,17 +425,6 @@ Pointing and vocabulary & 0.98 [0.62, 1.34] & 1617 & 1.25 & -6.33*\\
 \addtabletext{ \textit{d} = Effect size (Cohen's {\it d}) estimated from a random-effect model; fail-safe-N = number of missing studies that would have to exist in order for the overall effect size to be zero; funnel skew = test of asymmetry in funnel plot using the random-effect Egger's test (Sterne \& Egger, 2005); p-curve skew = test of the right skew of the p-curve using the Stouffer method (Simonsohn, Simmons, \& Nelson, 2015); Brackets give 95\% confidence intervals. Star indicates p-values less than .05. $\dagger$Fail-safe-N is not available here because the meta-analytic effect size estimate is less than 0.}
 
 \end{table}
-
-A p-curve is the distribution of p-values for the statistical test of
-the main hypothesis across a literature (Simonsohn et al., 2014b, 2014a,
-2015). Critically, if there is a robust effect in the literature, the
-shape of the p-curve should reflect this. In particular, we should
-expect the p-curve to be right-skewed with more small values (e.g., .01)
-than large values (e.g., .04). An important property of this analysis is
-that we should expect this skew independent of any true heterogeneity in
-the data, such as age. Evidence that the curve is in fact right-skewed
-would suggest that the literature is not biased, and that it provides
-evidential value for theory building.
 
 P-values for each condition were calculated based on the reported test
 statistic. However, test statistics were not available for many
@@ -541,23 +518,7 @@ boundaries (e.g., Jusczyk, Houston, \& Newsome, 1999), grammatical
 categories (e.g., Shi, Werker, \& Morgan, 1999), and even word learning
 (e.g., Shukla et al., 2011).
 
-\begin{figure*}[t!]
-\centering
-\includegraphics[width=17.3cm]{figs/fig4_lab.pdf}
-\caption{The left two panels show the developmental trajectories
-predicted under different meta-theories of language acquisition. The
-stage-like theory predicts that a child will not begin learning the next
-skill in the linguistic hierarchy until the previous skill has been
-mastered. The interactive theory predicts that multiple skills may be
-simultaneously acquired. The third panel shows other possible
-developmental trajectories (decreasing, linear, and non-monotonic). The
-fourth panel shows the observed meta-analytic data. Effect size is
-plotted as a function of age from 0-3 years, across 10 different
-phenomena (excluding phonotactic learning and sound category learning).
-Model fits are the same as in Figure 3. These developmental curves
-suggest there is interactivity across language skills, rather than
-stage-like learning of the linguistic hierarchy.}
-\end{figure*}
+
 
 A second possibility is that there is interactivity in the language
 system such that multiple skills are learned simultaneously across the
@@ -621,6 +582,24 @@ mostly robust phenomena and thus should form the basis of theory
 development. We then aggregate across phenomena to offer the first
 quantitative synthesis of the field. We find evidence that linguistic
 skills are acquired interactively rather than in a stage-like fashion.
+
+\begin{figure*}[t!]
+\centering
+\includegraphics[width=17.3cm]{figs/fig4_lab.pdf}
+\caption{The left two panels show the developmental trajectories
+predicted under different meta-theories of language acquisition. The
+stage-like theory predicts that a child will not begin learning the next
+skill in the linguistic hierarchy until the previous skill has been
+mastered. The interactive theory predicts that multiple skills may be
+simultaneously acquired. The third panel shows other possible
+developmental trajectories (decreasing, linear, and non-monotonic). The
+fourth panel shows the observed meta-analytic data. Effect size is
+plotted as a function of age from 0-3 years, across 10 different
+phenomena (excluding phonotactic learning and sound category learning).
+Model fits are the same as in Figure 3. These developmental curves
+suggest there is interactivity across language skills, rather than
+stage-like learning of the linguistic hierarchy.}
+\end{figure*}
 
 In this paper, we focused on theoretical motivations for building
 meta-analysis, but naturally, there are many other practical reasons for
@@ -718,11 +697,26 @@ account for complex psychological phenomena.
 
 
 
-\matmethods{[WHAT SHOULD GO HERE]Please describe your materials and methods here. This can be more than one paragraph, and may contain subsections and equations as required. Authors should include a statement in the methods section describing how readers will be able to access the data in the paper. 
+\matmethods{
 
-\subsection*{Subsection for Method}
-Example text for subsection.
+We analyzed 12 different phenomena in language acquisition. We selected these particular
+phenomena because of their theoretical importance or because a
+previously-published meta-analysis already existed.
+
+To obtain estimates of effect size, we either coded or adapted others'
+coding of papers reporting experimental data (see SI for
+details). Within each paper, we calculated a separate effect size estimate for
+each experiment and age group (we refer to each measurement separated by
+age as a \enquote{condition}). In total, our sample includes estimates
+from 228 papers, 808 different conditions and 9,799 participants. The
+process for selecting papers from the literature differed by domain,
+with some individual meta-analyses using more systematic approaches than
+others (see SI for specific search strategies). Nevertheless,
+meta-analytic methods for aggregating even the smallest sample of
+studies are likely to be less biased than qualitative methods
+(Valentine, Pigott, \& Rothstein, 2010).
 }
+
 
 \showmatmethods % Display the Materials and Methods section
 
