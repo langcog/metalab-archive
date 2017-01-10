@@ -12,6 +12,7 @@
 \usepackage{tabularx}
 \usepackage{graphicx}
 
+
 \title{A Quantitative Synthesis of Early Language Acquisition Using Meta-Analysis}
 
 % Use letters for affiliations, numbers to show equal authorship (if applicable) and to indicate the corresponding author
@@ -29,22 +30,27 @@
 \affil[d]{ NeuroPsychologie Interventionnelle, ENS }
 
 % TO DO:
-%- move method?
-%- reformat SI
-%- fix bib names
-%- write significance statement
-% - fix fig positions
-
+% move method?
+% fix bib names
+% ackknowledgements
+% reformat SI
+% cover letter
+% Editorial Board Members and three NAS member Editors
+% Preferred Reviewers
+ 
 % Please give the surname of the lead author for the running footer
 \leadauthor{Lewis} 
 
 % Please add here a significance statement to explain the relevance of your work
-\significancestatement{Authors must submit a 120-word maximum statement about the significance of their research paper written at a level understandable to an undergraduate educated scientist outside their field of speciality. The primary goal of the Significance Statement is to explain the relevance of the work in broad context to a broad readership. The Significance Statement appears in the paper itself and is required for all research papers.}
+\significancestatement{The acquisition of natural language is one of the most striking feats in human development: A baby born into any community will learn the sounds, words, and grammar of the language spoken. To develop a theory of this  process, psychologists have conducted many experimental studies examining linguistic skills in isolation, such as the acquisition of  sounds or words. However, there is reason to think these skills may not be learned in isolation, but instead  may depend on each other. We present a meta-analysis of the literature spanning 12 different linguistic skills. We use this dataset to provide the first broad quantitative synthesis of the language acquisition field. Our findings suggest a high degree of inter-dependence in the language acquisition process.}
+
 
 % Please include corresponding author, author contribution and author declaration information
 \authorcontributions{ ML, ST, CB, PP, AC, and MF wrote the paper. ML, ST, CB, AC, and MF coded papers for the meta-analytic dataset. All authors contributed to data analysis. MB, MF, and ML developed the Metalab website infrastructure.}
 \authordeclaration{The authors declare no conflict of interest.}
 {\correspondingauthor{\textsuperscript{1}To whom correspondence should be addressed. E-mail: mollyllewis@gmail.com}
+
+\authordeclaration{Data deposition: The data reported in this paper have been deposited in GitHub, a web-based repository hosting service, https://github.com/langcog/metalab/}
 
 \authordeclaration{This article contains supporting information online at \url{http://rpubs.com/mll/synthesis}}
 
@@ -55,7 +61,7 @@
 \begin{abstract}
 To acquire a language, children must learn a range of skills, from the
 sounds of their language to the meanings of words. These skills are
-typically studied in isolation in separate research programs, but a growing body of evidence reveals interdependencies across skills
+typically studied in isolation in separate research programs, but a growing body of evidence points to interdependencies across skills
 in the acquisition process (e.g., Feldman, Myers, White, Griffiths, \& Morgan, 2013;
 Johnson, Demuth, Jones, \& Black, 2010; Shukla, White, \& Aslin, 2011).
 Here, we suggest that the meta-analytic method can support the process of
@@ -122,35 +128,6 @@ acquisition and demonstrate how the quantitative tools of meta-analysis
 can support theory building in psychological research.
 
 
-\renewcommand{\arraystretch}{1.5}
-
-\begin{table*}[t!]
-    \footnotesize
-        \setlength\tabcolsep{1.5pt}
-        \caption{Overview of meta-analyses in dataset.}
-
-    \begin{tabular}{lp{4cm} p{8cm}r}
-        \toprule
-        \textbf{Level} & \textbf{Phenomenon}                                                               & \textbf{Description}                                                                    & \textbf{N papers (conditions)}                                                                                                                           \\
-        \midrule
-        
-        Prosody        & IDS  preference  \newline  {\scriptsize (Dunst, Gorman, \& Hamby, 2012)}          & {\scriptsize  Looking times as a function of whether infant-directed vs.\ adult-directed speech is presented as stimulation.}             & 16 (50)                         \\
-        Sounds         & Phonotactic learning  \newline {\scriptsize (Cristia, in prep.)}                  & {\scriptsize Infants' ability to learn phonotactic generalizations from a short exposure.  }       & 15 (47)               \\
-        ~              & Vowel discrimination (native) \newline {\scriptsize (Tsuji \& Cristia, 2014)}     & {\scriptsize Discrimination of native-language vowels, including results from a variety of methods.  }    & 32 (143)         \\ 
-        ~              & Vowel discrimination (non-native) \newline {\scriptsize (Tsuji \& Cristia, 2014)} & {\scriptsize Discrimination of non-native vowels, including results from a variety of methods.  } & 15 (48)   \\
-                       & Statistical sound learning  \newline {\scriptsize (Cristia, in prep.)}            & {\scriptsize Infants' ability to learn sound categories from their acoustic distribution.   }            & 10 (18)                           \\ 
-                       & Word segmentation \newline {\scriptsize  (Bergmann \& Cristia, 2015) }            & {\scriptsize Recognition of familiarized words from running, natural speech using behavioral methods.  }           & 66 (291)                       \\
-        Words     &   Mutual exclusivity \newline {\scriptsize (Lewis \& Frank, in prep.)} &{\scriptsize  Bias to assume that a novel word refers to a novel object in forced-choice paradigms.}
-        & 20 (60)             \\
-        ~ &   Sound Symbolism \newline {\scriptsize (Lammertink et al., 2016)} &{\scriptsize  Bias to assume a non-arbitrary relationship between form and meaning ("bouba-kiki effect") in forced-choice paradigms.}
-        & 10 (42)             \\
-        ~              & Concept-label advantage   \newline {\scriptsize (Lewis \& Long, unpublished)}     & {\scriptsize Infants' categorization judgments in the presence and absence of labels.    }           & 14 (49)                           \\
-        ~              & Online word recognition \newline {\scriptsize (Frank, Lewis, \& MacDonald, 2016)} & {\scriptsize Online word recognition of familiar words using two-alternative forced choice preferential looking.   }  & 6 (15)       \\
-        Communication  & Gaze following  \newline {\scriptsize  (Frank, Lewis, \& MacDonald, 2016)}        & {\scriptsize Gaze following using standard multi-alternative forced-choice paradigms.   }    & 12 (33)           \\
-        ~              & Pointing and vocabulary  \newline {\scriptsize (Colonnesi et al., 2010)}          & {\scriptsize Concurrent correlations between pointing and vocabulary.}  & 12 (12) \\ 
-        \bottomrule
-    \end{tabular}
-\end{table*}
 
 
 Meta-analysis is a quantitative method for aggregating across
@@ -198,6 +175,37 @@ across papers using meta-analytic methods, however, we may be better
 able to detect these changes, leading to more precise description of the
 empirical phenomena.
 
+\renewcommand{\arraystretch}{1.5}
+
+\begin{table*}[t!]
+    \footnotesize
+        \setlength\tabcolsep{1.5pt}
+        \caption{Overview of meta-analyses in dataset.}
+
+    \begin{tabular}{lp{4cm} p{8cm}r}
+        \toprule
+        \textbf{Level} & \textbf{Phenomenon}                                                               & \textbf{Description}                                                                    & \textbf{N papers (conditions)}                                                                                                                           \\
+        \midrule
+        
+        Prosody        & IDS  preference  \newline  {\scriptsize (Dunst, Gorman, \& Hamby, 2012)}          & {\scriptsize  Looking times as a function of whether infant-directed vs.\ adult-directed speech is presented as stimulation.}             & 16 (50)                         \\
+        Sounds         & Phonotactic learning  \newline {\scriptsize (Cristia, in prep.)}                  & {\scriptsize Infants' ability to learn phonotactic generalizations from a short exposure.  }       & 15 (47)               \\
+        ~              & Vowel discrimination (native) \newline {\scriptsize (Tsuji \& Cristia, 2014)}     & {\scriptsize Discrimination of native-language vowels, including results from a variety of methods.  }    & 32 (143)         \\ 
+        ~              & Vowel discrimination (non-native) \newline {\scriptsize (Tsuji \& Cristia, 2014)} & {\scriptsize Discrimination of non-native vowels, including results from a variety of methods.  } & 15 (48)   \\
+                       & Statistical sound learning  \newline {\scriptsize (Cristia, in prep.)}            & {\scriptsize Infants' ability to learn sound categories from their acoustic distribution.   }            & 10 (18)                           \\ 
+                       & Word segmentation \newline {\scriptsize  (Bergmann \& Cristia, 2015) }            & {\scriptsize Recognition of familiarized words from running, natural speech using behavioral methods.  }           & 66 (291)                       \\
+        Words     &   Mutual exclusivity \newline {\scriptsize (Lewis \& Frank, in prep.)} &{\scriptsize  Bias to assume that a novel word refers to a novel object in forced-choice paradigms.}
+        & 20 (60)             \\
+        ~ &   Sound Symbolism \newline {\scriptsize (Lammertink et al., 2016)} &{\scriptsize  Bias to assume a non-arbitrary relationship between form and meaning ("bouba-kiki effect") in forced-choice paradigms.}
+        & 10 (42)             \\
+        ~              & Concept-label advantage   \newline {\scriptsize (Lewis \& Long, unpublished)}     & {\scriptsize Infants' categorization judgments in the presence and absence of labels.    }           & 14 (49)                           \\
+        ~              & Online word recognition \newline {\scriptsize (Frank, Lewis, \& MacDonald, 2016)} & {\scriptsize Online word recognition of familiar words using two-alternative forced choice preferential looking.   }  & 6 (15)       \\
+        Communication  & Gaze following  \newline {\scriptsize  (Frank, Lewis, \& MacDonald, 2016)}        & {\scriptsize Gaze following using standard multi-alternative forced-choice paradigms.   }    & 12 (33)           \\
+        ~              & Pointing and vocabulary  \newline {\scriptsize (Colonnesi et al., 2010)}          & {\scriptsize Concurrent correlations between pointing and vocabulary.}  & 12 (12) \\ 
+        \bottomrule
+    \end{tabular}
+\end{table*}
+
+
 
 
 
@@ -228,8 +236,8 @@ trends.
 
 \begin{figure*}[t!]
 \centering
-\includegraphics[width=17.5cm]{figs/unnamed-chunk-2-1.pdf}
-\caption{Funnel plots for each meta-analysis. Each effect size estimate
+\includegraphics[width=17.3cm]{figs/unnamed-chunk-2-1.pdf}
+\caption{Funnel plot for each meta-analysis. Each effect size estimate
 is represented by a point, and the mean effect size is shown as a red
 dashed line. The grey dashed line shows an effect size of zero. The
 funnel corresponds to a 95\% CI around this mean. In the absence of true
@@ -298,36 +306,7 @@ find evidence for some bias, as well as evidence that two
 phenomena---phonotactic learning and statistical sound learning---likely
 describe null or near-null effects.
 
-\begin{table}[b!]
-\scriptsize
-    \setlength\tabcolsep{1.2pt}
-\caption{Summary of replicability analyses.}
-\begin{tabular*}{8.7cm}{lrrrr} 
-\toprule
-%\textbf{Phenomenon} & \textbf{\textit{d}} & \textbf{fail-safe-N} & \textbf{funnel skew} & \textbf{p-curve skew}\\
 
-\textbf{Phenomenon} & \textbf{\textit{d}} & \multicolumn{1}{p{1.1cm}}{\centering \textbf{Fail-Safe} \\ \textbf{N}} & \multicolumn{1}{p{1.1cm}}{\centering \textbf{Funnel} \\ \textbf{Skew}}  &  \multicolumn{1}{p{1.1cm}}{\centering \textbf{P-curve} \\ \textbf{Skew}} \\
-\midrule
-
-IDS preference & 0.72 [0.54, 0.91] & 3762 & 2.14* & -10.7*\\
-Phonotactic learning & 0.04 [-0.09, 0.16] & 45 & -1.43 & -1.52 \\
-Vowel discrim.\ (native) & 0.59 [0.49, 0.7] & 9620 & 9.17* & -9.69*\\
-Vowel discrim.\ (non-native) & 0.66 [0.42, 0.9] & 3391 & 3.86* & -8.89*\\
-Statistical sound learning & -0.22 [-0.43, 0] & $\dagger$ & -2.67*  & -1.03 \\
-Word segmentation & 0.2 [0.16, 0.25] & 5930 & 2.62* & -9.26*\\
-Mutual exclusivity & 1.01 [0.68, 1.33] & 6443 & 8.26* & -12.87*\\
-Sound symbolism & 0.15 [0.04, 0.26] & 538 & -0.18  & -2.33*\\
-Concept-label advantage & 0.47 [0.33, 0.61] & 2337 & 1.37 & -4.79*\\
-Online word recognition & 1.34 [0.86, 1.82] & 2043 & 2.74* & -14.8* \\
-Gaze following & 1.27 [0.93, 1.61] & 4277 & 3.3* & -18.66*\\
-Pointing and vocabulary & 0.98 [0.62, 1.34] & 1617 & 1.25 & -6.33*\\
-
-\bottomrule
-\end{tabular*}
-
-\addtabletext{ \textit{d} = Effect size (Cohen's {\it d}) estimated from a random-effect model; fail-safe-N = number of missing studies that would have to exist in order for the overall effect size to be zero; funnel skew = test of asymmetry in funnel plot using the random-effect Egger's test (Sterne \& Egger, 2005); p-curve skew = test of the right skew of the p-curve using the Stouffer method (Simonsohn, Simmons, \& Nelson, 2015); Brackets give 95\% confidence intervals. Star indicates p-values less than .05. $\dagger$Fail-safe-N is not available here because the meta-analytic effect size estimate is less than 0.}
-
-\end{table}
 
 
 \subsection*{Meta-Analytic Effect Size}\label{meta-analytic-effect-size}
@@ -410,7 +389,7 @@ turn to next.
 
 \begin{figure*}[t!]
 \centering
-\includegraphics[width=17.5cm]{figs/p_curve_plots-1.pdf}
+\includegraphics[width=17.3cm]{figs/p_curve_plots-1.pdf}
 \caption{P-curve for each meta-analysis (Simonsohn, Nelson, \& Simmons,
 2014). In the absence of p-hacking, we should expect the observed
 p-curve (blue) to be right-skewed (more small values). The red dashed
@@ -427,6 +406,37 @@ that were derived from test statistics reported in the paper
 analyses on the descriptive statistics or transforming reported effect
 sizes.}
 \end{figure*}
+
+\begin{table}[b!]
+\scriptsize
+    \setlength\tabcolsep{1.2pt}
+\caption{Summary of replicability analyses.}
+\begin{tabular*}{8.7cm}{lrrrr} 
+\toprule
+%\textbf{Phenomenon} & \textbf{\textit{d}} & \textbf{fail-safe-N} & \textbf{funnel skew} & \textbf{p-curve skew}\\
+
+\textbf{Phenomenon} & \textbf{\textit{d}} & \multicolumn{1}{p{1.1cm}}{\centering \textbf{Fail-Safe} \\ \textbf{N}} & \multicolumn{1}{p{1.1cm}}{\centering \textbf{Funnel} \\ \textbf{Skew}}  &  \multicolumn{1}{p{1.1cm}}{\centering \textbf{P-curve} \\ \textbf{Skew}} \\
+\midrule
+
+IDS preference & 0.72 [0.54, 0.91] & 3762 & 2.14* & -10.7*\\
+Phonotactic learning & 0.04 [-0.09, 0.16] & 45 & -1.43 & -1.52 \\
+Vowel discrim.\ (native) & 0.59 [0.49, 0.7] & 9620 & 9.17* & -9.69*\\
+Vowel discrim.\ (non-native) & 0.66 [0.42, 0.9] & 3391 & 3.86* & -8.89*\\
+Statistical sound learning & -0.22 [-0.43, 0] & $\dagger$ & -2.67*  & -1.03 \\
+Word segmentation & 0.2 [0.16, 0.25] & 5930 & 2.62* & -9.26*\\
+Mutual exclusivity & 1.01 [0.68, 1.33] & 6443 & 8.26* & -12.87*\\
+Sound symbolism & 0.15 [0.04, 0.26] & 538 & -0.18  & -2.33*\\
+Concept-label advantage & 0.47 [0.33, 0.61] & 2337 & 1.37 & -4.79*\\
+Online word recognition & 1.34 [0.86, 1.82] & 2043 & 2.74* & -14.8* \\
+Gaze following & 1.27 [0.93, 1.61] & 4277 & 3.3* & -18.66*\\
+Pointing and vocabulary & 0.98 [0.62, 1.34] & 1617 & 1.25 & -6.33*\\
+
+\bottomrule
+\end{tabular*}
+
+\addtabletext{ \textit{d} = Effect size (Cohen's {\it d}) estimated from a random-effect model; fail-safe-N = number of missing studies that would have to exist in order for the overall effect size to be zero; funnel skew = test of asymmetry in funnel plot using the random-effect Egger's test (Sterne \& Egger, 2005); p-curve skew = test of the right skew of the p-curve using the Stouffer method (Simonsohn, Simmons, \& Nelson, 2015); Brackets give 95\% confidence intervals. Star indicates p-values less than .05. $\dagger$Fail-safe-N is not available here because the meta-analytic effect size estimate is less than 0.}
+
+\end{table}
 
 A p-curve is the distribution of p-values for the statistical test of
 the main hypothesis across a literature (Simonsohn et al., 2014b, 2014a,
@@ -446,6 +456,9 @@ not coded. To remedy this, we also calculated p-values indirectly based
 on descriptive statistics (means and standard deviations; see SI for
 details).
 
+
+
+
 Figure 2 shows p-curves for each of our 12 meta-analyses. All p-curves
 show evidence of right skew, with the exception of phonotactic learning
 and statistical sound learning (Table 2, column 5). This pattern did not
@@ -457,6 +470,8 @@ sizes, provide an opportunity to assess the replicability of the field
 of language acquisition. Across a range of analyses, we find that this
 literature shows some evidence for bias, but overall, it is quite
 robust.
+
+
 
 \section*{Quantitative Evaluation of
 Theories}\label{quantitative-evaluation-of-theories}
@@ -480,7 +495,7 @@ Tenenbaum, 2009; McMurray, Horst, \& Samuelson, 2012).
 
 \begin{figure*}[t!]
 \centering
-\includegraphics[width=17.5cm]{figs/fig3_lab.pdf}
+\includegraphics[width=17.3cm]{figs/fig3_lab.pdf}
 \caption{Method-residualized effect size plotted as a function of age
 across the 10 meta-analyses in our dataset shown to have evidential
 value (excluding phonotactic learning and sound category learning).
@@ -508,6 +523,9 @@ phenomena than is available in our dataset. Nevertheless, we can use our
 data to distinguish between broad meta-theories about the
 interdependency of skills.
 
+
+
+
 We first consider two intuitive theories of task-to-task dependencies
 that have been articulated in a number of forms. The stage-like theory
 proposes that linguistic skills are acquired sequentially beginning with
@@ -525,7 +543,7 @@ categories (e.g., Shi, Werker, \& Morgan, 1999), and even word learning
 
 \begin{figure*}[t!]
 \centering
-\includegraphics[width=17.5cm]{figs/fig4_lab.pdf}
+\includegraphics[width=17.3cm]{figs/fig4_lab.pdf}
 \caption{The left two panels show the developmental trajectories
 predicted under different meta-theories of language acquisition. The
 stage-like theory predicts that a child will not begin learning the next
@@ -719,6 +737,7 @@ Example text for subsection.
 
 %Bibliography
 \bibliography{metalab_synthesis}
+\bibliographystyle{pnas2016}
 
 \nocite{kuhl2004early,feldman2013word,johnson2010synergies,shukla2011prosody,hedges2014statistical,glass1976primary,ebersole2015many,open2012open,open2015estimating,Gilbert1037,anderson2016response,button2013power,valentine2010many,orwin1983fail,simonsohn2014p,simonsohn2014power,simonsohn2015better,orwin1983fail,scargle1999publication,simonsohn2014p,simonsohn2014power,simonsohn2015better,markman1988,frank2009using,mcmurray2012word,werker2007infant,jusczyk1999beginnings,shi1999newborn,shukla2011prosody,goodman2011learning,feldman2013word,bergelson2016,tincoff1999some,lfprep,dunst2012preference,frank2016performance,tsuji2014perceptual,bergmann2015development,sterne2005regression,bergmanneducational,lammertink2016,lewisunpublished,colonnesi2010relation,cristiastatisticalinprep}
 
