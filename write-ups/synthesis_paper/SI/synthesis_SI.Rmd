@@ -1,14 +1,17 @@
 ---
-title: A Quantitative Synthesis of Early Language Acquisition Using Meta-Analysis
-subtitle: Supplementary Information
-author: Molly Lewis, Mika Braginsky, Sho Tsuji, Christina Bergmann, Page Piccinini, Alejandrina Cristia, and Michael C. Frank
-date: "`r Sys.Date()`"
-output: 
- html_document:
-    toc: true
-    number_sections: false
-    theme: cerulean
+title: "A Quantitative Synthesis of Early Language Acquisition Using Meta-Analysis"
+author: Molly Lewis, Mika Braginsky, Sho Tsuji, Christina Bergmann, Page Piccinini,
+  Alejandrina Cristia, and Michael C. Frank
+date: '`r Sys.Date()`'
+output:
+  pdf_document:
+    toc: yes
+  html_document:
     code_folding: hide
+    number_sections: no
+    theme: cerulean
+    toc: yes
+subtitle: Supplementary Information
 ---
 
 This document was created from an  <a href="http://github.com/langcog/metalab/blob/master/write-ups/synthesis_paper/SI/synthesis_SI.Rmd" target= "_top"> R markdown file</a>. Data from the paper can be interactively explored on the [Metalab website](http://metalab.stanford.edu/). The manuscript itself was also produced from an <a href="http://github.com/langcog/metalab/blob/master/write-ups/synthesis_paper/metalab_synthesis.Rmd" target= "_top"> R markdown file</a>, and thus all analyses presented in the paper can be reproduced from that document.  
@@ -392,6 +395,124 @@ left_join(stouffer.data_all, stouffer.data, by = "dataset") %>%
                       "p-curve skew (p-values only from test-statistics)"), align = c("l", "r", "r"))
 ```
 
+### Participant exclusions
+```{r}
+atypical = all_data %>%  
+  group_by(short_name, infant_type) %>%
+  summarize(n = n())  %>%
+  filter(infant_type  != "typical") %>%
+  ungroup() %>%
+  summarize(total_atypical = sum(n)) %>%
+  as.numeric()
+
+total = sum(studies$num_experiments)
+```
+In the main text, we analyzed effect sizes estimate from all populations, including typical and atypically developing children and mono- and multilingual children. It is possible, however, that children drawn from atypically developing or multilingual populations estimate different effect sizes than from their typically developing or monolingual counterparts. Here we re-analyze the dataset excluding conditions with atypically developing or multilingual children. These criteria excluded `r round(atypical/total, 2) * 100`% conditions, leaving `r total-atypical` total effect sizes.
+
+Below, we reproduce the same set of replicability analyses as in Table 2 in the main text. Overall, excluding these conditions has little impact on the replicability analyses.
+```{r}
+all_data_typical = all_data %>%
+  filter(infant_type == "typical")
+
+all_ds_typical = all_data_typical %>%
+  split(.$short_name) %>%
+  map(function(ma_data) overall_es(ma_data,0)) %>%
+  bind_rows() %>%
+  mutate_each_(funs(round(., digits = 2)), 
+               vars = c("overall.d", "ci_lower", "ci_upper")) %>%
+  mutate(d_string = paste0(overall.d, " [", ci_lower, ", ",ci_upper, "]")) %>%
+  mutate(short_name = dataset)
+
+fsn.package.data_typical = all_data_typical %>%
+  group_by(dataset) %>%
+  summarise(fsn_package = metafor::fsn(d_calc, d_var_calc, 
+                         target = .01, type="Orwin")$fsnum) %>%
+  left_join(datasets %>% select(name, short_name), by= c("dataset" = "name")) %>%
+  rename(fsn_string = fsn_package)
+
+funnel.es.data_typical = all_data_typical %>%
+  mutate(dataset = as.factor(dataset),
+         dataset= gdata::reorder.factor(dataset, 
+                                    new.order = c(2,6,10,11,9,12,4,8,3,5,1,7)),
+         dataset = plyr::revalue(dataset, 
+                                 c("Infant directed speech preference"="IDS preference",
+                                   "Statistical sound category learning"="Statistical sound learning", 
+                                   "Label advantage in concept learning"="Concept-label advantage",
+                                   "Vowel discrimination (native)"="Vowel discrimination\n(native)",
+                                   "Vowel discrimination (non-native)"="Vowel discrimination\n(non-native)"))) %>%
+  group_by(dataset) %>%
+  mutate(se = sqrt(d_var_calc), 
+         es = d_calc, 
+         center = mean(d_calc), 
+         lower_lim = max(se) + .05 * max(se))
+
+eggers.data_typical = all_data_typical %>%
+  ungroup() %>%
+  split(.$short_name) %>%
+  map(function(ma_data) eggers_tests(ma_data)) %>%
+  bind_rows() %>%
+  mutate(egg.random.z = round(egg.random.z, digits = 2)) %>%
+  mutate(egg.random.p = round(egg.random.p, digits = 2)) %>%
+  mutate(egg_string = paste0(egg.random.z, " (", egg.random.p, ")")) %>%
+  rename(short_name = dataset) %>%
+  select(short_name, egg_string)
+
+ALPHA = .05
+P_INCREMENT = .01 
+
+pc.data <- get_all_pc_data(all_data_typical, ALPHA, P_INCREMENT, transform = TRUE) 
+# transform flag determines whether p-values are calculated from descriptive statistics 
+
+p.source = pc.data %>%
+  select(f.transform, f.value, dataset, study_ID, p_round) %>%
+  group_by(dataset) %>%
+  summarise(n.total = n(),
+            n.transform = length(which(!is.na(f.transform))),
+            sig.p = length(which(p_round < ALPHA))) %>%
+  mutate(dataset = plyr::revalue(dataset, 
+                                 c("Infant directed speech preference"="IDS preference",
+                                   "Statistical sound category learning"="Statistical sound learning", 
+                                   "Label advantage in concept learning"="Concept-label advantage",
+                                   "Vowel discrimination (native)"="Vowel discrimination\n(native)",
+                                   "Vowel discrimination (non-native)"="Vowel discrimination\n(non-native)")),
+          dataset = as.factor(dataset),
+          dataset = gdata::reorder.factor(dataset, 
+                                    new.order = c(2,6,10,11,9,12,4,8,3,5,1,7))) %>%
+  mutate(stat_only = ifelse(n.total > n.transform, 1, 0)) %>%
+  arrange(-stat_only) %>%
+  mutate(prop.ts = 1-n.transform/n.total,
+         prop.ts.string = as.character(round(prop.ts, digits = 2))) %>%
+  as.data.frame()
+
+stouffer.data_typical = pc.data %>%
+  group_by(dataset) %>%
+  do(data.frame(stouffer = stouffer_test(., ALPHA))) %>%
+  filter(stouffer.pp.measure == "ppr.full") %>%
+  full_join(datasets %>% select(name, short_name), by= c("dataset" = "name")) %>%
+  select(short_name,stouffer.Z.pp, stouffer.p.Z.pp) %>%
+  mutate_each_(funs(round(., digits = 2)), vars = c("stouffer.p.Z.pp",
+                                                    "stouffer.Z.pp")) %>%
+  mutate(stouff_string = ifelse(is.na(as.character(stouffer.Z.pp)), "",
+                                paste0(stouffer.Z.pp, " (", stouffer.p.Z.pp,")"))) %>%
+  select(short_name, stouff_string)
+
+table.data.typical = left_join(select(all_ds_typical, c(short_name, d_string)), fsn.package.data_typical) %>%
+             left_join(eggers.data_typical) %>%
+             left_join(stouffer.data_typical) %>%
+             select(dataset, dplyr::contains("string")) %>%
+             ungroup() %>%
+             .[c(2,8,3,4,10,5,7,11,6,12,1,9),]  %>% # reorder rows 
+             mutate(dataset = as.factor(dataset),
+                 dataset = plyr::revalue(dataset, c("Infant directed speech preference" ="IDS preference", # shorten dataset names
+                                                   "Statistical sound category learning"= "Statistical sound learning",
+                                                   "Label advantage in concept learning" =  "Concept-label advantage"))) %>%
+              mutate(egg_string = sub("(0)", "(< .01)", egg_string, fixed = T),
+                     stouff_string = sub("(0)", "(< .01)", stouff_string, fixed = T), # fix p = 0
+                     fsn_string = sub("Inf", "na", fsn_string)) 
+
+names(table.data.typical) = c("Phenomenon", "d", "Fail-Safe N", "Funnel Skew", "P-curve Skew")
+kable(table.data.typical, booktabs = TRUE) 
+```
 
 ### Method heterogeneity
 The plot below presents model coefficients for method for datasets with more than one method. Coefficients are estimated from random-effects meta-analytic models. For the most part, we see that method only has a small influence on the effect size within a given phenomenon. There are exceptions, however: For example, for both IDS Preference and Sound Symbolism the forced choice method has an overall larger effect size than other methods.

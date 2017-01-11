@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.7.16)  10 JAN 2017 15:53
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.7.16)  11 JAN 2017 10:11
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -1529,10 +1529,6 @@ Package: natbib 2010/09/13 8.31b (PWD, AO)
 LaTeX Info: Redefining \cite on input line 694.
 \c@NAT@ctr=\count209
 )
-
-Package pnas-new Warning: pnas-new.bst and pnas2011.bst not found; falling back
- to unsrtnat instead on input line 167.
-
 (/usr/local/texlive/2015/texmf-dist/tex/latex/lastpage/lastpage.sty
 Package: lastpage 2015/03/29 v1.2m Refers to last page's name (HMM; JPG)
 )
@@ -1994,20 +1990,36 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 Underfull \vbox (badness 3098) has occurred while \output is active []
 
- [7 <./figs/fig4_lab.pdf>] (./pnas-metalab-synthesis.bbl
+ [7 <./figs/fig4_lab.pdf>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:10.0pt when 108.37805pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:0.0pt when 109.37805pt
+(2)Left:109.37805pt Right:108.54997pt Output:109.37805pt
+- LAST -
+Left:109.37805pt
+Right:108.54997pt
+Output:109.37805pt
+
+(./pnas-metalab-synthesis.bbl
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <6> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 11.
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 5.
 LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
-(Font)              scaled to size 5.69998pt on input line 11.
+(Font)              scaled to size 5.69998pt on input line 5.
 ) 
 AED: lastpage setting LastPage
+
+Overfull \vbox (78.71002pt too high) has occurred while \output is active []
+
 - LAST -
-Extra skip:16.57489pt
-Left:505.34981pt/1.1998pt
-Right:488.7065pt/1.26822pt
-Output:502.52815pt
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 738.
+Extra skip:8.0pt
+Left:313.0pt/1.26822pt
+Right:305.0pt/1.26822pt
+Output:313.5pt
+
 [8]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 738.
 Package atveryend Info: Executing hook `AfterLastShipout' on input line 738.
@@ -2024,11 +2036,11 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 738.
 ### simple group (level 1) entered at line 51 ({)
 ### bottom level 
 Here is how much of TeX's memory you used:
- 35650 strings out of 493093
- 665993 string characters out of 6134989
- 862594 words of memory out of 5000000
- 38221 multiletter control sequences out of 15000+600000
- 143400 words of font info for 224 fonts, out of 8000000 for 9000
+ 35633 strings out of 493093
+ 665737 string characters out of 6134989
+ 842584 words of memory out of 5000000
+ 38209 multiletter control sequences out of 15000+600000
+ 139229 words of font info for 217 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  69i,15n,77p,10412b,2636s stack positions out of 5000i,500n,10000p,200000b,80000s
 pdfTeX warning (dest): name{Hfootnote.1} has been referenced bu
@@ -2054,10 +2066,10 @@ ts/type1/public/lm/lmsy7.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/ur
 w/helvetic/uhvb8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/helve
 tic/uhvr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhv
 ro8a.pfb>
-Output written on pnas-metalab-synthesis.pdf (8 pages, 1535375 bytes).
+Output written on pnas-metalab-synthesis.pdf (8 pages, 1533284 bytes).
 PDF statistics:
- 4361 PDF objects out of 5155 (max. 8388607)
- 2239 compressed objects within 23 object streams
+ 4360 PDF objects out of 5155 (max. 8388607)
+ 2238 compressed objects within 23 object streams
  55 named destinations out of 1000 (max. 500000)
- 51241 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 49193 words of extra memory for PDF output out of 51595 (max. 10000000)
 

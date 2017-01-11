@@ -7,8 +7,8 @@ library(purrr)
 library(langcog)
 library(feather)
 
-font <- "Ubuntu"
-theme_set(theme_mikabr(base_family = font) +
+#font <- "Ubuntu"
+theme_set(#theme_mikabr(base_family = font) +
            theme(legend.position = "top",
                  legend.key = element_blank(),
                  legend.background = element_rect(fill = "transparent")))
@@ -17,7 +17,7 @@ fields <- yaml::yaml.load_file("../metadata/spec.yaml")
 fields_derived <- yaml::yaml.load_file("../metadata/spec_derived.yaml") %>%
   transpose() %>%
   simplify_all() %>%
-  as_data_frame()
+  dplyr::as_data_frame()
 
 reports <- yaml::yaml.load_file("../metadata/reports.yaml")
 people <- yaml::yaml.load_file("../metadata/people.yaml")

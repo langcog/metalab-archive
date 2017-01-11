@@ -84,8 +84,8 @@ We take as our ultimate goal a broad theory of language acquisition that can exp
 
 # Method
 ```{r load data}
-source("../../dashboard/global.R", chdir = TRUE)
-source("paper_analyses/pcurve.R")
+source("../../../dashboard/global.R", chdir = TRUE)
+source("../paper_analyses/pcurve.R")
 library(knitr)
 library(metafor)
 library(directlabels)
