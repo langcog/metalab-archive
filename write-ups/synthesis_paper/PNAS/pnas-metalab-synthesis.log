@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.7.16)  11 JAN 2017 10:11
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.7.16)  12 JAN 2017 15:21
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -1649,23 +1649,23 @@ Package csquotes Info: Redefining alias 'default' -> 'english'.
 (./pnas-metalab-synthesis.aux)
 \openout1 = `pnas-metalab-synthesis.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 82.
-LaTeX Font Info:    ... okay on input line 82.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 82.
-LaTeX Font Info:    ... okay on input line 82.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 82.
-LaTeX Font Info:    ... okay on input line 82.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 82.
-LaTeX Font Info:    ... okay on input line 82.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 82.
-LaTeX Font Info:    ... okay on input line 82.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 82.
-LaTeX Font Info:    ... okay on input line 82.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 82.
-LaTeX Font Info:    ... okay on input line 82.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 82.
-LaTeX Font Info:    ... okay on input line 82.
-LaTeX Font Info:    Try loading font information for T1+lmr on input line 82.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 81.
+LaTeX Font Info:    ... okay on input line 81.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 81.
+LaTeX Font Info:    ... okay on input line 81.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 81.
+LaTeX Font Info:    ... okay on input line 81.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 81.
+LaTeX Font Info:    ... okay on input line 81.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 81.
+LaTeX Font Info:    ... okay on input line 81.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 81.
+LaTeX Font Info:    ... okay on input line 81.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 81.
+LaTeX Font Info:    ... okay on input line 81.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 81.
+LaTeX Font Info:    ... okay on input line 81.
+LaTeX Font Info:    Try loading font information for T1+lmr on input line 81.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/lm/t1lmr.fd
 File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -1699,7 +1699,7 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-Package hyperref Info: Link coloring ON on input line 82.
+Package hyperref Info: Link coloring ON on input line 81.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
@@ -1709,9 +1709,9 @@ Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
 \c@section@level=\count233
 )
-LaTeX Info: Redefining \ref on input line 82.
-LaTeX Info: Redefining \pageref on input line 82.
-LaTeX Info: Redefining \nameref on input line 82.
+LaTeX Info: Redefining \ref on input line 81.
+LaTeX Info: Redefining \pageref on input line 81.
+LaTeX Info: Redefining \nameref on input line 81.
 
 (./pnas-metalab-synthesis.out) (./pnas-metalab-synthesis.out)
 \@outlinefile=\write5
@@ -1758,7 +1758,7 @@ Package caption Info: sidecap package is loaded.
 Package caption Info: End \AtBeginDocument code.
 Package lastpage Info: Please have a look at the pageslts package at
 (lastpage)             https://www.ctan.org/pkg/pageslts
-(lastpage)             ! on input line 82.
+(lastpage)             ! on input line 81.
 (/usr/local/texlive/2015/texmf-dist/tex/latex/ms/ragged2e.sty
 Package: ragged2e 2009/05/21 v2.1 ragged2e Package (MS)
 
@@ -1783,7 +1783,7 @@ LaTeX Info: Redefining \selectfont on input line 126.
 \RaggedRightParindent=\skip168
 \JustifyingParindent=\skip169
 )
-LaTeX Info: Redefining \microtypecontext on input line 82.
+LaTeX Info: Redefining \microtypecontext on input line 81.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -1798,7 +1798,7 @@ Package microtype Info: No adjustment of character kerning.
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
 (RS)
 )
-LaTeX Font Info:    Try loading font information for T1+lmss on input line 88.
+LaTeX Font Info:    Try loading font information for T1+lmss on input line 87.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/lm/t1lmss.fd
 File: t1lmss.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -1807,50 +1807,50 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             `lmss' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-LaTeX Font Info:    Try loading font information for T1+phv on input line 88.
+LaTeX Font Info:    Try loading font information for T1+phv on input line 87.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/t1phv.fd
 File: t1phv.fd 2001/06/04 scalable font definitions for T1/phv.
 )
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 8.54997pt on input line 88.
+(Font)              scaled to size 8.54997pt on input line 87.
 Package microtype Info: Loading generic settings for font family
 (microtype)             `phv' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <9> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 88.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 87.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 8.54997pt on input line 88.
-LaTeX Font Info:    Try loading font information for OT1+lmr on input line 88.
+(Font)              scaled to size 8.54997pt on input line 87.
+LaTeX Font Info:    Try loading font information for OT1+lmr on input line 87.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OML+lmm on input line 88.
+LaTeX Font Info:    Try loading font information for OML+lmm on input line 87.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 88.
+LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 87.
 
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMX+lmex on input line 88.
+LaTeX Font Info:    Try loading font information for OMX+lmex on input line 87.
 
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 88.
+(Font)              <9> on input line 87.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 88.
+(Font)              <6> on input line 87.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 88.
-LaTeX Font Info:    Try loading font information for U+msa on input line 88.
+(Font)              <5> on input line 87.
+LaTeX Font Info:    Try loading font information for U+msa on input line 87.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
@@ -1858,7 +1858,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 (/usr/local/texlive/2015/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 88.
+LaTeX Font Info:    Try loading font information for U+msb on input line 87.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -1867,47 +1867,47 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <6> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 88.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 87.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 5.69998pt on input line 88.
+(Font)              scaled to size 5.69998pt on input line 87.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 6.64998pt on input line 88.
+(Font)              scaled to size 6.64998pt on input line 87.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 88.
+(Font)              <7> on input line 87.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 4.74998pt on input line 88.
+(Font)              scaled to size 4.74998pt on input line 87.
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <8> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 90.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 89.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 7.59998pt on input line 90.
+(Font)              scaled to size 7.59998pt on input line 89.
 Package microtype Info: Character `029' is missing
 (microtype)             in font `T1/lmr/m/sc/9'.
 (microtype)             Ignoring protrusion settings for this character.
-Package mdframed Info: mdframed works in twoside mode on input line 131.
+Package mdframed Info: mdframed works in twoside mode on input line 130.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 9.49997pt on input line 131.
+(Font)              scaled to size 9.49997pt on input line 130.
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <10> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 131.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 130.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 9.49997pt on input line 131.
+(Font)              scaled to size 9.49997pt on input line 130.
 Package mdframed Info: mdframed inside float 
- mdframed uses option nobreak mdframed on input line 131.
+ mdframed uses option nobreak mdframed on input line 130.
 Package mdframed Info: mdframed inside minipage 
- mdframed uses option nobreak mdframed on input line 131.
+ mdframed uses option nobreak mdframed on input line 130.
 Package mdframed Info: mdframed inside a box 
- mdframed uses option nobreak mdframed on input line 131.
+ mdframed uses option nobreak mdframed on input line 130.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 5.69998pt on input line 131.
+(Font)              scaled to size 5.69998pt on input line 130.
 
-Underfull \hbox (badness 10000) in paragraph at lines 131--131
+Underfull \hbox (badness 10000) in paragraph at lines 130--130
 
  []
 
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <7> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 161.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 160.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 6.64998pt on input line 161.
-LaTeX Font Info:    Try loading font information for T1+bch on input line 161.
+(Font)              scaled to size 6.64998pt on input line 160.
+LaTeX Font Info:    Try loading font information for T1+bch on input line 160.
 (/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/t1bch.fd
 File: t1bch.fd 2004/10/18 font definitions for T1/bch.
 )
@@ -1919,36 +1919,36 @@ File: mt-bch.cfg 2007/03/03 v1.5 microtype config. file: Bitstream Charter (RS)
 
 ]
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 7.59998pt on input line 183.
+(Font)              scaled to size 7.59998pt on input line 182.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 7.12497pt on input line 185.
-LaTeX Font Info:    Calculating math sizes for size <7.5> on input line 185.
+(Font)              scaled to size 7.12497pt on input line 184.
+LaTeX Font Info:    Calculating math sizes for size <7.5> on input line 184.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7.5> on input line 185.
+(Font)              <7.5> on input line 184.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5.24997> on input line 185.
+(Font)              <5.24997> on input line 184.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <3.75> on input line 185.
+(Font)              <3.75> on input line 184.
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <7.5> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 187.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 186.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 7.12497pt on input line 187.
+(Font)              scaled to size 7.12497pt on input line 186.
 
 <figs/unnamed-chunk-2-1.pdf, id=31, 568.1225pt x 388.45125pt>
 File: figs/unnamed-chunk-2-1.pdf Graphic file (type pdf)
 
 <use figs/unnamed-chunk-2-1.pdf>
-Package pdftex.def Info: figs/unnamed-chunk-2-1.pdf used on input line 239.
+Package pdftex.def Info: figs/unnamed-chunk-2-1.pdf used on input line 238.
 (pdftex.def)             Requested size: 492.23276pt x 336.57472pt.
 
 Underfull \vbox (badness 1527) has occurred while \output is active []
 
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <7> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 328.
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 327.
 LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
-(Font)              scaled to size 6.64998pt on input line 328.
+(Font)              scaled to size 6.64998pt on input line 327.
  [2]
-LaTeX Font Info:    Try loading font information for TS1+lmr on input line 357.
+LaTeX Font Info:    Try loading font information for TS1+lmr on input line 356.
 
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/lm/ts1lmr.fd
@@ -1958,17 +1958,17 @@ File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 File: figs/p_curve_plots-1.pdf Graphic file (type pdf)
 
 <use figs/p_curve_plots-1.pdf>
-Package pdftex.def Info: figs/p_curve_plots-1.pdf used on input line 367.
+Package pdftex.def Info: figs/p_curve_plots-1.pdf used on input line 366.
 (pdftex.def)             Requested size: 492.23276pt x 372.39767pt.
 
-Overfull \hbox (1.44202pt too wide) in paragraph at lines 402--424
+Overfull \hbox (1.44202pt too wide) in paragraph at lines 401--423
 [][] 
  []
 
 [3] <figs/fig3_lab.pdf, id=50, 578.16pt x 252.945pt>
 File: figs/fig3_lab.pdf Graphic file (type pdf)
  <use figs/fig3_lab.pdf>
-Package pdftex.def Info: figs/fig3_lab.pdf used on input line 475.
+Package pdftex.def Info: figs/fig3_lab.pdf used on input line 474.
 (pdftex.def)             Requested size: 492.23276pt x 215.35162pt.
 
 [4 <./figs/unnamed-chunk-2-1.pdf>]
@@ -1982,37 +1982,45 @@ pt>
 File: figs/fig4_lab.pdf Graphic file (type pdf)
 
 <use figs/fig4_lab.pdf>
-Package pdftex.def Info: figs/fig4_lab.pdf used on input line 588.
+Package pdftex.def Info: figs/fig4_lab.pdf used on input line 587.
 (pdftex.def)             Requested size: 492.23276pt x 215.35162pt.
  [6 <./figs/fig3_lab.pdf>]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
-Underfull \vbox (badness 3098) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [7 <./figs/fig4_lab.pdf>]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-Extra height:10.0pt when 108.37805pt
+Extra height:10.0pt when 130.27805pt
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-Extra height:0.0pt when 109.37805pt
-(2)Left:109.37805pt Right:108.54997pt Output:109.37805pt
+Extra height:0.0pt when 131.27805pt
+(2)Left:131.27805pt Right:130.44997pt Output:131.27805pt
 - LAST -
-Left:109.37805pt
-Right:108.54997pt
-Output:109.37805pt
+Left:131.27805pt
+Right:130.44997pt
+Output:131.27805pt
 
 (./pnas-metalab-synthesis.bbl
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <6> not available
 (Font)              Font shape `T1/phv/m/sl' tried instead on input line 5.
 LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
 (Font)              scaled to size 5.69998pt on input line 5.
-) 
+)
+
+Package natbib Warning: Citation `viechtbauer2010conducting' undefined on input
+ line 735.
+
+
+Package natbib Warning: There were undefined citations.
+
+
 AED: lastpage setting LastPage
 
-Overfull \vbox (78.71002pt too high) has occurred while \output is active []
+Overfull \vbox (100.61002pt too high) has occurred while \output is active []
 
 - LAST -
 Extra skip:8.0pt
@@ -2021,28 +2029,32 @@ Right:305.0pt/1.26822pt
 Output:313.5pt
 
 [8]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 738.
-Package atveryend Info: Executing hook `AfterLastShipout' on input line 738.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 737.
+Package atveryend Info: Executing hook `AfterLastShipout' on input line 737.
  (./pnas-metalab-synthesis.xwm) (./pnas-metalab-synthesis.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 738.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 738.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 737.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 737.
 Package rerunfilecheck Info: File `pnas-metalab-synthesis.out' has not changed.
 
 (rerunfilecheck)             Checksum: E2E616883C6C841678D5073D21283D3D;67.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 738.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 737.
  )
 (\end occurred inside a group at level 1)
 
-### simple group (level 1) entered at line 51 ({)
+### simple group (level 1) entered at line 50 ({)
 ### bottom level 
 Here is how much of TeX's memory you used:
- 35633 strings out of 493093
- 665737 string characters out of 6134989
- 842584 words of memory out of 5000000
- 38209 multiletter control sequences out of 15000+600000
+ 35634 strings out of 493093
+ 665764 string characters out of 6134989
+ 844124 words of memory out of 5000000
+ 38210 multiletter control sequences out of 15000+600000
  139229 words of font info for 217 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 69i,15n,77p,10412b,2636s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 67i,15n,73p,10412b,2636s stack positions out of 5000i,500n,10000p,200000b,80000s
 pdfTeX warning (dest): name{Hfootnote.1} has been referenced bu
 t does not exist, replaced by a fixed one
 
@@ -2066,7 +2078,7 @@ ts/type1/public/lm/lmsy7.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/ur
 w/helvetic/uhvb8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/helve
 tic/uhvr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhv
 ro8a.pfb>
-Output written on pnas-metalab-synthesis.pdf (8 pages, 1533284 bytes).
+Output written on pnas-metalab-synthesis.pdf (8 pages, 1533580 bytes).
 PDF statistics:
  4360 PDF objects out of 5155 (max. 8388607)
  2238 compressed objects within 23 object streams

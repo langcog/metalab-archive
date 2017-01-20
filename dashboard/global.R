@@ -7,8 +7,8 @@ library(purrr)
 library(langcog)
 library(feather)
 
-#font <- "Ubuntu"
-theme_set(#theme_mikabr(base_family = font) +
+font <- "Ubuntu"
+theme_set(theme_mikabr(base_family = font) +
            theme(legend.position = "top",
                  legend.key = element_blank(),
                  legend.background = element_rect(fill = "transparent")))
