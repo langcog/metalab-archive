@@ -20,29 +20,3 @@ Note these steps are for the case where where changes are made to the data only 
 		* fig4.pdf, fig4legend.pdf
 (6) Edit figures 3 and 4 in illustrator (just open both and move text), and save as fig3_lab.pdf/fig4_lab.pdf (font size = 9)
 (7) Compile pnas_metalab_synthesis.tex
-
-TO DO:
-- finalize pdf of SI
-- push SI html
-- fix font in repository
-- tag repository before submitting
-- add new names to submission file
-- read over
-
----
-title: "A Quantitative Synthesis of Early Language Acquisition Using Meta-Analysis"
-subtitle: Supplementary Information
-author: Molly Lewis, Mika Braginsky, Sho Tsuji, Christina Bergmann, Page Piccinini,
-  Alejandrina Cristia, and Michael C. Frank
-date: '`r Sys.Date()`'
-output:
-  pdf_document:
-    toc: true
-    number_sections: false
----
-
-  html_document:
-    code_folding: hide
-    number_sections: no
-    theme: cerulean
-    toc: yes
