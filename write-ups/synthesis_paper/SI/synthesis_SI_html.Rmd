@@ -27,9 +27,9 @@ opts_chunk$set(message = F, warning = F,
                error = F, cache = F, tidy = T, tidy.opts=list(width.cutoff=50))
 ```
 
-\vspace{22pt}
+\vspace{20pt}
 
-This document was created from an [R markdown file](http://github.com/langcog/metalab/blob/master/write-ups/synthesis_paper/SI/synthesis_SI.Rmd). Data from the paper can be interactively explored on the [Metalab website, http://metalab.stanford.edu/](http://metalab.stanford.edu/). The manuscript itself was also produced from an  [R markdown file](http://github.com/langcog/metalab/blob/master/write-ups/synthesis_paper/metalab_synthesis.Rmd), and thus all analyses presented in the paper can be reproduced from that document. Supplementary materials can also be viewed online:  [http://rpubs.com/mll/synthesis](http://rpubs.com/mll/synthesis).
+This document was created from an  <a href="http://github.com/langcog/metalab/blob/master/write-ups/synthesis_paper/SI/synthesis_SI.Rmd" target= "_top"> R markdown file</a>. Data from the paper can be interactively explored on the [Metalab website](http://metalab.stanford.edu/). The manuscript itself was also produced from an <a href="http://github.com/langcog/metalab/blob/master/write-ups/synthesis_paper/metalab_synthesis.Rmd" target= "_top"> R markdown file</a>, and thus all analyses presented in the paper can be reproduced from that document. Supplementary materials can also be viewed online: <a href="http://rpubs.com/mll/synthesis"> </a>. 
 
 
 ```{r load data, include = F}
@@ -39,7 +39,7 @@ source("../../../dashboard/global.R", chdir = TRUE)
 all_data <- filter(all_data, dataset != "Statistical word segementation") %>% # incomplete MA
             filter(dataset != "Pointing and vocabulary (longitudinal)") %>%  # longitidinal MA
             filter(is.na(condition_type) | condition_type == "critical") %>% # remove control conditions from labadv
-            filter(infant_type == "typical") # exclude bilingual, delays, etc.
+            filter(infant_type == "typical")
 
 # need to recompute datasets summary data, based on filtered all_data
 studies <- all_data %>%
@@ -75,19 +75,19 @@ Meta-analyses were conducted by the authors for all but two phenomena (IDS prefe
 
 ```{r}
 methods.table = datasets %>%
-                  select(name, search_strategy, internal_citation)  %>%
-                  mutate(name = as.factor(name),
-                  name = plyr::revalue(name, 
-  c("Infant directed speech preference"="IDS preference",
+  select(name, search_strategy, internal_citation)  %>%
+  mutate(name = as.factor(name),
+         name = plyr::revalue(name, 
+                                 c("Infant directed speech preference"="IDS preference",
                                    "Statistical sound category learning"="Statistical sound learning", 
                                    "Label advantage in concept learning"="Concept-label advantage",
                                    "Vowel discrimination (native)"="Native vowel discrimination",
                                    "Vowel discrimination (non-native)"="Non-native vowel discrimination"))) %>%
-                  mutate(name=paste(name, internal_citation)) %>%
-                  select(-internal_citation) %>%
-                  .[c(1, 6, 4, 5, 7, 8, 10, 12, 2, 9, 3, 11),] %>%
-                  rename(Phenomenon = name,
-                          `Search Strategy` = search_strategy)
+  mutate(name=paste(name, internal_citation)) %>%
+  select(-internal_citation) %>%
+  .[c(1, 6, 4, 5, 7, 8, 10, 12, 2, 9, 3, 11),] %>%
+  rename(Phenomenon = name,
+         `Search Strategy` = search_strategy)
 ```
 
 ```{r, results = 'asis', echo = F, include = T}
@@ -104,7 +104,7 @@ kable(methods.table, row.names = F)
 ```
 
 ## Statistical approach
-Effect sizes were computed by a script, [compute_es.R](https://github.com/langcog/metalab/blob/master/scripts/compute_es.R). We calculated effect sizes from reported means and standard deviations where available, otherwise we relied on reported test-statistics (*t* and *F*). Several pre-existing MAs deal with special cases, and these are listed in the script. Except where noted, formulas are from<a href="http://www.amazon.com/Statistical-Methods-Meta-Analysis-Larry-Hedges/dp/0123363802" target= "_top"> Hedges & Olkin's textbook</a> (2014). All analyses were conducted with the [metafor](http://www.metafor-project.org/doku.php) package (Viechtbauer, 2010), using random-effects models. Note that a subset of individual MAs (such as Sound Symbolism) contain effect sizes that are not statistically independent, while the current implementation of random-effect models assumes independence of all individual effect sizes.
+Effect sizes were computed by a script, <a href="https://github.com/langcog/metalab/blob/master/scripts/compute_es.R" target= "_top"> compute_es.R</a>. We calculated effect sizes from reported means and standard deviations where available, otherwise we relied on reported test-statistics (*t* and *F*). Several pre-existing MAs deal with special cases, and these are listed in the script. Except where noted, formulas are from<a href="http://www.amazon.com/Statistical-Methods-Meta-Analysis-Larry-Hedges/dp/0123363802" target= "_top"> Hedges & Olkin's textbook</a> (2014). All analyses were conducted with the [metafor](http://www.metafor-project.org/doku.php) package (Viechtbauer, 2010), using random-effects models. Note that a subset of individual MAs (such as Sound Symbolism) contain effect sizes that are not statistically independent, while the current implementation of random-effect models assumes independence of all individual effect sizes.
 
 For many analyses, the use of a multi-level approach (with grouping by paper) is useful. We do not implement these models in our main analyses because many common statistics are not implemented for these models, e.g. the test for funnel-plot asymmetry. The table below compares the overall ES estimate for the multi-level model to the random effect model (presented in the main text). 95% confidence intervals are given in brackets. These models differ only slightly in their estimates of overall effect size, and in no case do they affect whether the ES differs from zero.
 
@@ -304,7 +304,7 @@ p.source = pc.data %>%
             n.transform = length(which(!is.na(f.transform))),
             sig.p = length(which(p_round < ALPHA))) %>%
   mutate(dataset = plyr::revalue(dataset, 
-  c("Infant directed speech preference"="IDS preference",
+ c("Infant directed speech preference"="IDS preference",
 "Statistical sound category learning"="Statistical sound learning", 
  "Label advantage in concept learning"="Concept-label advantage",
 "Vowel discrimination (native)"="Vowel discrimination\n(native)",
@@ -497,6 +497,7 @@ Hedges, L. V., & Olkin, I. (2014). _Statistical methods for meta-analysis_. Acad
 Lammertink, I., Fort, M., Peperkamp, S., Fikkert, P., Guevara-Rukoz, A., & Tsuji, S. (2016). SymBuki: A meta-analysis on the sound-symbolic bouba-kiki effect in infants and toddlers. Poster presented at the XXI Biennial International Congress of Infant Studies, New Orleans, USA.
 
 Lewis, M. & Frank, M. (in prep.). Mutual exclusivity: A meta-analysis.  
+
 Lewis, M. & Long, B. (unpublished). A meta-analysis of the concept-label advantage.  
 
 Tsuji, S. & Cristia, A. (2014). Perceptual attunement in vowels: A meta-analysis. _Developmental Psychobiology_, _56_(2), 179-191.    

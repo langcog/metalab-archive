@@ -57,7 +57,7 @@ output: papaja::apa6_pdf
 
 ```{r message = FALSE, warning = FALSE}
 #
-knitr::opts_chunk$set(warning = FALSE, message = FALSE, cache = TRUE, fig.pos = "T")
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, cache = FALSE, fig.pos = "T")
 require("papaja")
 apa_prepare_doc() # prepare document for rendering
 ```
@@ -93,7 +93,8 @@ library(directlabels)
 # remove inappropriate conditions
 all_data <- filter(all_data, dataset != "Statistical word segementation") %>% # incomplete MA
             filter(dataset != "Pointing and vocabulary (longitudinal)") %>%  # longitidinal MA
-            filter(is.na(condition_type) | condition_type == "critical") # remove control conditions from labadv
+            filter(is.na(condition_type) | condition_type == "critical") %>% # remove control conditions from labadv
+            filter(infant_type == "typical")
 
 # need to recompute datasets summary data, based on filtered all_data
 studies <- all_data %>%
@@ -190,18 +191,18 @@ We next turn to methods of assessing evidential value that describe the degree t
 \textbf{Phenomenon} & \textbf{\textit{d}} & \textbf{fail-safe-N} & \textbf{funnel skew} & \textbf{p-curve skew}\\
 \midrule
 
-IDS preference & 0.72 [0.54, 0.91] & 3762 & 2.14 (0.03) & -10.7 (< .01)\\
-Phonotactic learning & 0.04 [-0.09, 0.16] & 45 & -1.43 (0.15) & -1.52 (0.06)\\
-Vowel discrimination (native) & 0.59 [0.49, 0.7] & 9620 & 9.17 (< .01) & -9.69 (< .01)\\
-Vowel discrimination (non-native) & 0.66 [0.42, 0.9] & 3391 & 3.86 (< .01) & -8.89 (< .01)\\
-Statistical sound learning & -0.22 [-0.43, 0] & $\dagger$ & -2.67 (0.01) & -1.03 (0.15)\\
-Word segmentation & 0.2 [0.16, 0.25] & 5930 & 2.62 (0.01) & -9.26 (< .01)\\
-Mutual exclusivity & 1.01 [0.68, 1.33] & 6443 & 8.26 (< .01) & -12.87 (< .01)\\
-Sound symbolism & 0.15 [0.04, 0.26] & 538 & -0.18 (0.86) & -2.33 (0.01)\\
-Concept-label advantage & 0.47 [0.33, 0.61] & 2337 & 1.37 (0.17) & -4.79 (< .01)\\
-Online word recognition & 1.34 [0.86, 1.82] & 2043 & 2.74 (0.01) & -14.8 (< .01)\\
-Gaze following & 1.27 [0.93, 1.61] & 4277 & 3.3 (< .01) & -18.66 (< .01)\\
-Pointing and vocabulary & 0.98 [0.62, 1.34] & 1617 & 1.25 (0.21) & -6.33 (< .01)\\
+IDS preference & 0.7 [0.52, 0.88] & 3507 & 1.5 & -10.4*\\
+Phonotactic learning & 0.04 [-0.09, 0.16] & 45 & -1.43 & -1.52\\
+Vowel discrim. (native) & 0.68 [0.56, 0.81] & 8724 & 8.55* & -9.76*\\
+Vowel discrim. (non-native) & 0.66 [0.42, 0.9] & 3391 & 3.86* & -8.89*\\
+Statistical sound learning & -0.19 [-0.42, 0.03] & \$dagger\$ & -2.99* & -1.03\\
+Word segmentation & 0.19 [0.14, 0.23] & 5374 & 2.59* & -9.4*\\
+Mutual exclusivity & 1.01 [0.68, 1.33] & 6443 & 8.26* & -12.87*\\
+Sound symbolism & 0.12 [-0.02, 0.25] & 526 & 1.42 & -5.56*\\
+Concept-label advantage & 0.47 [0.33, 0.61] & 2337 & 1.37 & -4.79*\\
+Online word recognition & 1.36 [0.84, 1.88] & 1934 & 2.61* & -14.51*\\
+Gaze following & 1.27 [0.93, 1.61] & 4277 & 3.3* & -18.66*\\
+Pointing and vocabulary & 0.98 [0.62, 1.34] & 1617 & 1.25 & -6.33*\\
 
 \bottomrule
 \end{tabular}
@@ -314,7 +315,8 @@ eggers.data = all_data %>%
   bind_rows() %>%
   mutate(egg.random.z = round(egg.random.z, digits = 2)) %>%
   mutate(egg.random.p = round(egg.random.p, digits = 2)) %>%
-  mutate(egg_string = paste0(egg.random.z, " (", egg.random.p, ")")) %>%
+  #mutate(egg_string = paste0(egg.random.z, " (", egg.random.p, ")")) %>%
+  mutate(egg_string = ifelse(egg.random.p < .05, paste0(egg.random.z, "*"),egg.random.z))  %>%
   rename(short_name = dataset) %>%
   select(short_name, egg_string)
 ```
@@ -420,8 +422,9 @@ stouffer.data = pc.data %>%
   select(short_name,stouffer.Z.pp, stouffer.p.Z.pp) %>%
   mutate_each_(funs(round(., digits = 2)), vars = c("stouffer.p.Z.pp",
                                                     "stouffer.Z.pp")) %>%
-  mutate(stouff_string = ifelse(is.na(as.character(stouffer.Z.pp)), "",
-                                paste0(stouffer.Z.pp, " (", stouffer.p.Z.pp,")"))) %>%
+  #mutate(stouff_string = ifelse(is.na(as.character(stouffer.Z.pp)), "",
+  #                              paste0(stouffer.Z.pp, " (", stouffer.p.Z.pp,")"))) %>%
+  mutate(stouff_string = ifelse(is.na(as.character(stouffer.Z.pp)), "",ifelse(stouffer.p.Z.pp < .05, paste0(as.character(stouffer.Z.pp), "*"),as.character(stouffer.Z.pp))))  %>%
   select(short_name, stouff_string)
 ```
 
@@ -437,10 +440,12 @@ table.data = left_join(select(all_ds, c(short_name, d_string)), fsn.package.data
              mutate(dataset = as.factor(dataset),
                  dataset = plyr::revalue(dataset, c("Infant directed speech preference" ="IDS preference", # shorten dataset names
                                                    "Statistical sound category learning"= "Statistical sound learning",
-                                                   "Label advantage in concept learning" =  "Concept-label advantage"))) %>%
+                                                   "Label advantage in concept learning" =  "Concept-label advantage",
+                                                   "Vowel discrimination (native)" =  "Vowel discrim.\ (native)",
+                                                   "Vowel discrimination (non-native)" =  "Vowel discrim.\ (non-native)"))) %>%
               mutate(egg_string = sub("(0)", "(< .01)", egg_string, fixed = T),
                      stouff_string = sub("(0)", "(< .01)", stouff_string, fixed = T), # fix p = 0
-                     fsn_string = sub("Inf", "na", fsn_string)) 
+                     fsn_string = sub("Inf", "$\\dagger$", fsn_string)) 
 
 # paste above (so can edit latex - remove \addlinespace, fix header and row formatting):
 # kable(table.data, format = "latex", booktabs = TRUE) 
@@ -516,7 +521,7 @@ level.plot = ggplot(residualized.es, aes(x = age.years, y = residual.d, col = da
   scale_color_solarized() +
   theme(legend.position = "none",
         legend.key = element_blank(),
-        axis.line= element_line(size = 3),
+        #axis.line= element_line(size = .6),
         axis.text = element_text(colour = "black", size = fs),
         strip.text.x = element_text(size = 14),
         axis.title = element_text(colour = "black", size = fs),
@@ -634,7 +639,7 @@ synthesis.plot = ggplot(simulated.development.all,
         legend.key = element_blank(),
         legend.background = element_rect(fill = "transparent"),
         legend.title = element_blank(),
-        axis.line= element_line(size = 3),
+        #axis.line= element_line(size = 3),
         axis.text = element_text(colour = "black", size = fs),
         strip.text.x = element_text(size = 14),
         axis.title = element_text(colour = "black", size = fs),
