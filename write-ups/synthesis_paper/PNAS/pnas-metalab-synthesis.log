@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.7.16)  23 JAN 2017 14:59
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.7.16)  24 JAN 2017 11:56
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -2048,7 +2048,7 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 730.
 Here is how much of TeX's memory you used:
  35634 strings out of 493093
  665764 string characters out of 6134989
- 844232 words of memory out of 5000000
+ 844234 words of memory out of 5000000
  38210 multiletter control sequences out of 15000+600000
  139229 words of font info for 217 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -2076,7 +2076,7 @@ ts/type1/public/lm/lmsy7.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/ur
 w/helvetic/uhvb8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/helve
 tic/uhvr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/urw/helvetic/uhv
 ro8a.pfb>
-Output written on pnas-metalab-synthesis.pdf (8 pages, 1493116 bytes).
+Output written on pnas-metalab-synthesis.pdf (8 pages, 1493111 bytes).
 PDF statistics:
  4125 PDF objects out of 4296 (max. 8388607)
  2121 compressed objects within 22 object streams
