@@ -21,12 +21,12 @@
 - field:        short_cite
   description:  short citation
   type:         string
-  format:       author (year) APA-style in-text citation
+  format:       author (year) APA-style citation
   example:      Smith (2015)
   required:     yes
 
 - field:        peer_reviewed
-  description:  indicates whether study is from a peer-reviewed publication (typically yes if it is a journal paper, no otherwise [with a few exceptions])
+  description:  indicates whether study is from a peer-reviewed publication
   type:         options
   options:
       - "yes"
@@ -42,28 +42,28 @@
   required:     yes
 
 - field:        expt_num
-  description:  experiment/study number in the source paper / report (for later identification of the corresponding effect size)
+  description:  experiment/study number in study (for later identification of corresponding effect size in study)
   type:         numeric
-  format:       copied directly from the paper's numbering, if there are no numbers default to 1
-  example:      1; 2 (if paper has Experiments 1 and 2)
+  format:       copied directly from the study's numbering
+  example:      1; 2 (if study has Experiments 1 and 2)
   required:     yes
 
 - field:        expt_condition
-  description:  identifier of condition within same experiment number (for later identification of corresponding effect size)
+  description:  identifier of condition within same experiment number (for later identification of corresponding effect size in study)
   type:         string
-  format:       any way of uniquely referring to conditions within the same experiment (if there is just one condition, use expt_num)
+  format:       any way of uniquely refering to conditions within an experiment
   example:      nouns; verbs (if experiment has nouns and verbs as conditions)
   required:     yes
 
 - field:        same_infant
   description:  identifier of group of infants within a study (for determining if effect sizes in multiple rows are statistically independent)
   type:         string
-  format:       any way of uniquely referring to group of infants within a study, if infants were tested in more than one condition, otherwise same as expt_condition
+  format:       any way of uniquely refering to group of infants within a study
   example:
   required:     yes
 
 - field:        response_mode
-  description:  way of measuring response in the experiment
+  description:  way of measuring reponse in experiment
   type:         options
   options:
       - behavior: non-oculomotor, choice behavior (e.g. headturn, pointing)
@@ -178,9 +178,9 @@
   required:     yes
 
 - field:        group_name_2
-  description:  name of participant group if there are two groups in a between design
+  description:  name of participant group
   type:         string
-  format:       if participant_design = between: maps onto n_2, mean_age_2, x_2, SD_2
+  format:       maps onto n_2, mean_age_2, x_2, SD_2
   example:      experimental; control
   required:     yes
 
@@ -192,9 +192,9 @@
   required:     yes
 
 - field:        n_2
-  description:  number of participants in group if there are two groups in a between design
+  description:  number of participants in group
   type:         numeric
-  format:       if participant_design = between: maps onto group_name_2, mean_age_2, x_2, SD_2
+  format:       maps onto group_name_2, mean_age_2, x_2, SD_2
   example:      16
   required:     yes
 
@@ -206,77 +206,77 @@
   required:     yes
 
 - field:        mean_age_2
-  description:  mean age of participants in group in days (1 month = 30.44 days; 1 year = 365.25 days)  if there are two groups in a between design
+  description:  mean age of participants in group in days (1 month = 30.44 days; 1 year = 365.25 days)
   type:         numeric
-  format:       if participant_design = between: maps onto group_name_2, n_2, x_2, SD_2
+  format:       maps onto group_name_2, n_2, x_2, SD_2
   example:      304.4
   required:     yes
 
 - field:        x_1
-  description:  mean of dependent variable for measure 1 (participant_design = within_one, within_two) or group 1 (participant_design = between)
+  description:  mean of dependent variable for group
   type:         numeric
   format:       maps onto group_name_1, n_1, mean_age_1, SD_1
   example:      8.56
   required:     yes
 
 - field:        x_2
-  description:  mean of dependent variable for measure 2 (participant_design = within_two) or group 2 (participant_design = between) or chance level (participant_design = within_one, if applicable)
+  description:  mean of dependent variable for group
   type:         numeric
-  format:       second measure if participant_design = within_two; chance level if participant_design = within_one; if participant_design = between maps onto group_name_2, n_2, mean_age_2, SD_2
+  format:       maps onto group_name_2, n_2, mean_age_2, SD_2
   example:      9.03
   required:     yes
 
 - field:        SD_1
-  description:  standard deviation of dependent variable for measure 1 (participant_design = within_one, within_two) or group 1 (participant_design = between)
+  description:  standard deviation of dependent variable for group
   type:         numeric
   format:       maps onto group_name_1, n_1, mean_age_1, x_1
   example:      0.42
   required:     yes
 
 - field:        SD_2
-  description:  standard deviation of dependent variable for measure 2 (participant_design = within_two) or group 2 (participant_design = between) 
+  description:  standard deviation of dependent variable for group
   type:         numeric
   format:       maps onto group_name_2, n_2, mean_age_2, x_2
   example:      0.38
   required:     yes
 
 - field:        t
-  description:  t-statistic for the comparison of interest as specified in participant_design, ideally always note even if means and SDs are available
+  description:  t-statistic for the comparison of interest as specified in participant_design
   type:         numeric
   format:
-  example:	1.9884
+  example:
   required:     yes
 
 - field:        F
   description:  F-statistic for the comparison of interest as specified in participant_design (main effect comparing two measures)
   type:         numeric
   format:
-  example:	5.329
+  example:
   required:     yes
 
 - field:        r
-  description:  Pearson's correlation coefficient
+  description:  Pearson's correlation coeffecient used to calculate effect size.
   type:         numeric
   format:
-  example:	0.35
+  example:
   required:     yes
 
 - field:        d
-  description:  Cohen's d effect size measure, if reported
+  description:  Cohen's d effect size measure
   type:         numeric
   format:
-  example:	0.6
+  example:
   required:     yes
 
 - field:        d_var
-  description:  Cohen's d effect size variance, if reported
+  description:  Cohen's d effect size variance
   type:         numeric
   format:
-  example:	0.1
+  example:
   required:     yes
 
 - field:        corr
-  description:  if participant_design = within_two: Pearson's correlation coefficient of the two dependent measures, this number is needed to calculate effect size / variance 
+  description:  correlation between measures for participant_design within_two
   type:         numeric
   format:
   example:
@@ -342,19 +342,19 @@
 - field:        gender_1
   description:  proportion of female participants
   type:         numeric
-  format:	e.g. = 13/24 for 13 girls in a sample of 24 participants
-  example:	0.541
+  format:
+  example:
   required:     no
 
 - field:        gender_2
-  description:  proportion of female participants in group 2, if participant_design = between
+  description:  proportion of female participants
   type:         numeric
-  format:	e.g. = 13/24 for 13 girls in a sample of 24 participants
-  example:	0.541
+  format:
+  example:
   required:     no
 
 - field:        num_trials
-  description:  number of test trials
+  description:  number of trials
   type:         numeric
   format:
   example:
