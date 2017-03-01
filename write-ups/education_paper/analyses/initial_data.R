@@ -18,6 +18,7 @@ library(lme4)
 
 ## CLEAN DATA ####
 all_data = all_data[all_data$dataset!="Statistical word segementation",]
+all_data = all_data[all_data$dataset!="Pointing and vocabulary (concurrent)",]
 
 
 #This is a fix for mis-formatted data, waiting for the actual data to update.

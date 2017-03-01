@@ -6,8 +6,10 @@ source("analyses/initial_data.R")
 source("analyses/sample_size.R")
 source("analyses/power.R")
 source("analyses/method.R")
-
+source("analyses/p_values.R")
+source("analyses/funnel.R")
+source("analyses/bias.R")
 
 ## SAVE ENVIRONMENT FOR USE IN PAPER ####
-save.image("educationpaper_environment.RData") # may need to change this file path slightly
+save.image("educationpaper_environment2.RData") # may need to change this file path slightly
 
