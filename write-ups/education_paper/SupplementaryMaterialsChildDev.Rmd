@@ -1,0 +1,51 @@
+---
+title: "MetaLab: A platform for cumulative meta-meta-analyses"
+author: Christina Bergmann, Page Piccinini, Sho Tsuji,Molly Lewis, Mika Braginsky, Michael C. Frank, and Alejandrina Cristia 
+header-includes:
+  - \usepackage{longtable}
+  - \usepackage{caption}
+date: '`r Sys.Date()`'
+output:
+  pdf_document:
+  html_document:
+    code_folding: hide
+    number_sections: no
+    theme: cerulean
+subtitle: Supplementary Information
+toc: yes
+---
+
+```{r Preamble, echo = FALSE, warning = FALSE, message = FALSE}
+# These packages are need in the here for some in document commands
+library(knitr)
+library(dplyr)
+library(pwr)
+
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, cache = TRUE, fig.pos = "T")
+
+#source("save_analyses.R") # if changes have been made to any analyses run this, comment below
+load("educationpaper_environment.RData") # if no changes to analyses run this, comment above
+```
+
+
+### Power over time
+
+The comparison of initial and meta-analytic effect size has a number of caveats, for example, as we will lay out in the next section, methods might be different between initial reports and our overall sample; the availability of methods changes over time, as new approaches are being developed and automated procedures become more common. Further, the largest effect size from a seminal paper might have been spurious, and the research community could well be aware of that. In additional, as infant research becomes more common, recruitment and obtaining funds might both become easier, thereby increasing typical sample size over the years. 
+For a more continuous approach, we thus investigate power (which is determined by effect size and sample size) as follows. We first generate a meta-analytic model for each dataset that takes into account infant age and method and then derive the respective to be expected effect size base on those data for each entry in this dataset. Power is then estimated based on the sample size actually tested. 
+Across datasets we observe a general negative trend, with varied steepness. The only positive trends occur in the upper ranges of estimated power and for older children. 
+
+```{r Plot of power over time, echo = FALSE, fig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap="To BE UPDATED: Summary plot of power across years and meta-analyses"}
+power_year.plot
+```
+
+## Publication biases
+
+
+```{r Funnel data, echo = FALSE}
+kable(data_funnel, col.names = c("Meta-analysis (MA)", "Kendall's Tau", "p-value"), digits = 2, caption = "Non-parametric test for funnel plot assymmetry. A significant value indicates bias.")
+```
+
+
+```{r Bias data, echo = FALSE}
+kable(data_bias, col.names = c("Meta-analysis (MA)", "Kendall's Tau", "p-value"), digits = 2, caption = "Non-parametric correlations between sample sizes and effect sizes for each dataset. A significant value indicates bias.")
+```

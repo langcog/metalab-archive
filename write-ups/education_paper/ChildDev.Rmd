@@ -75,11 +75,8 @@ load("educationpaper_environment.RData") # if no changes to analyses run this, c
 - Add table with different DVs / analyses from eye tracking studies (needs diff coding scheme in metalab? take example MA?)
 - visualize power(?) --> is the plot on d vs p enough?
 - p-hacking analyses 
-    - currently issues with p-value calculation fpr p-curve
-- publication bias 
-    - funnel plot ranktest per dataset
-    - kendall's tau per dataset for abs(d) vs N
-    --> add to table 1
+    - currently issues with p-value calculation for p-curve
+
 
 Suggestions I am not sure how to implement:  
 - Show how infants and children are inherently a more "noisy" population  
@@ -223,7 +220,7 @@ For younger children, because sample sizes and effect sizes are both small, powe
 Besides this very general point, we refrain here from strong conclusions based on the above-discussed observations, since the present dataset is not exhaustive and topics typically investigated in younger children are over-represented. However, we sampled in an opportunistic and thus to some degree random fashion and the phenomena covered span very different aspects of language acquisition and linguistic processing.
 
 ```{r Descriptive Information, echo = FALSE}
-kable(arrange(MA_summary, age_dataset), col.names = c("Topic", "Mean Age (Months)", "Median Sample Size", "Min. Sample Size", "Max. Sample Size", "# Effect Sizes", "# Papers", "d", "SE", "Avg Power"), digits = 2, caption = "Descriptions of meta-analyses currently in MetaLab.")
+kable(arrange(MA_summary, age_dataset), col.names = c("Topic", "Mean Age (Months)", "Median Sample Size (Range)", "# Effect Sizes", "# Papers", "Cohen's d (SE)", "Avg Power"), digits = 2, caption = "Descriptions of meta-analyses currently in MetaLab.")
 ```
 
 ### How does effect size relate to *p*-values?
@@ -252,17 +249,6 @@ d_comparison_diff.plot
 ```
 
 To illustrate the disparity between the oldest effect size and the meta-analytic effect, and consequently the difference in power, we plot the difference between both against the oldest effect. This difference is larger as oldest effect size increases, with an average of `r mean(d_comparison_full$diff_d)` compared with an average effect size of `r mean(abs(d_comparison_full$d))` (note that we based this on the absolute value). The plot showcases that researchers might want to be wary of large effects, as they are more likely to be non-representative of the true phenomenon compared to smaller initial effects being reported. Especially when making decisions about sample sizes, large effect might thus not be the best guide. Taking the above-mentioned mean values as example, a realistic sample size to ensure 80% power would be `r round(pwr.t.test(n = NULL,d = mean(abs(d_comparison_full$d)), sig.level = .05, power=.80)$n, digits = 0)` participants, instead of `r round(pwr.t.test(n = NULL,d = mean(abs(d_comparison_full$largest_d)), sig.level = .05, power=.80)$n, digits = 0)` participants suggested by the first paper. While these numbers average over research questions and methods, which all influence the specific number of participants necessary, this example showcases that experimenters should take into account as much evidence as available to be able to plan for robust and reproducible studies. 
-
-### Power over time
-
-The comparison of initial and meta-analytic effect size has a number of caveats, for example, as we will lay out in the next section, methods might be different between initial reports and our overall sample; the availability of methods changes over time, as new approaches are being developed and automated procedures become more common. Further, the largest effect size from a seminal paper might have been spurious, and the research community could well be aware of that. In additional, as infant research becomes more common, recruitment and obtaining funds might both become easier, thereby increasing typical sample size over the years. 
-For a more continuous approach, we thus investigate power (which is determined by effect size and sample size) as follows. We first generate a meta-analytic model for each dataset that takes into account infant age and method and then derive the respective to be expected effect size base on those data for each entry in this dataset. Power is then estimated based on the sample size actually tested. 
-Across datasets we observe a general negative trend, with varied steepness. The only positive trends occur in the upper ranges of estimated power and for older children. 
-
-```{r Plot of power over time, echo = FALSE, fig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap="To BE UPDATED: Summary plot of power across years and meta-analyses"}
-power_year.plot
-```
-
 
 ## Procedure comparison
 
@@ -319,18 +305,12 @@ Funnel plots, displaying effect sizes of single studies against their variance, 
 funnel_grid
 ```
 
-```{r Funnel data, echo = FALSE}
-kable(data_funnel, col.names = c("Meta-analysis (MA)", "Kendall's Tau", "p-value"), digits = 2, caption = "Non-parametric test for funnel plot assymmetry. A significant value indicates bias.")
-```
 
 
 ```{r Bias, echo = FALSE, ig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Caption."}
 bias_grid
 ```
 
-```{r Bias data, echo = FALSE}
-kable(data_bias, col.names = c("Meta-analysis (MA)", "Kendall's Tau", "p-value"), digits = 2, caption = "Non-parametric correlations between sample sizes and effect sizes for each dataset. A significant value indicates bias.")
-```
 
 Only two datasets turn out to have a significant negative relationship between sample size and effect size, indicating bias. As discussed in the methods section, however, a number of alternative explanations are possible. As soon as researchers are aware that they are measuring a more subtle effect (in this case for example when selecting a contrast that is acoustically more difficult to distinguish) and adjust sample sizes, we expect to observe this negative correlation. However, in both datasets, funnel plot asymmetry was also significant. 
 

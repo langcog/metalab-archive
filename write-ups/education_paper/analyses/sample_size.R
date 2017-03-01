@@ -40,7 +40,10 @@ MA_power = MA_descriptives %>%
   mutate(power = as.numeric(as.character(power)))
 
 # Summary
-MA_summary = inner_join(MA_descriptives, MA_power)
+MA_summary = inner_join(MA_descriptives, MA_power) %>%
+  mutate(n = paste(as.character(n_dataset), " (", as.character(n_min), ", ", as.character(n_max), ")", sep = "")) %>%
+  mutate(ES = paste(as.character(round(d, 2)), " (", as.character(round(se, 2)), ")", sep = "")) %>%
+  select(dataset, age_dataset, n, n_records, n_papers, ES, power)
 
 
 ### DATA AVAILABLITY ####
