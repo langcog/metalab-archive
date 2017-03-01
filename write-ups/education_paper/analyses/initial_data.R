@@ -17,14 +17,14 @@ library(lme4)
 
 
 ## CLEAN DATA ####
-all_data = all_data[all_data$dataset!="Statistical word segementation",]
-all_data = all_data[all_data$dataset!="Pointing and vocabulary (concurrent)",]
+all_data = all_data %>%
+  filter(is.na(condition_type) | condition_type == "critical") %>%
+  filter(dataset!="Statistical word segementation") %>%
+  filter(dataset!="Pointing and vocabulary (concurrent)") %>%
+  filter(infant_type == "typical")
 
 
-#This is a fix for mis-formatted data, waiting for the actual data to update.
-all_data[all_data$dataset=="Sound symbolism",]$infant_type="typical"
 
-all_data = all_data[all_data$infant_type == "typical",]
 
 all_data = all_data %>%
   mutate(year = as.numeric(unlist(lapply(strsplit(unlist(study_ID),
@@ -45,3 +45,8 @@ clean_data = all_data %>%
 
 #Comment out if you do not want to remove outliers
 all_data = clean_data
+
+
+#### Collapse non-indepent rows ####
+
+#TODO

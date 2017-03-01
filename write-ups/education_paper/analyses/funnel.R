@@ -13,7 +13,7 @@ funnel.es.data = all_data %>%
   #      outlier = as.factor(outlier)) %>%
   #filter(outlier == 0) %>%
   mutate(se = sqrt(d_var_calc), 
-         es = d_calc, 
+         es = g_calc, 
          center = median(d_calc), 
          lower_lim = max(se) + .05 * max(se))
 
@@ -45,8 +45,8 @@ funnel95.data = bind_cols(funnel95.data.x, funnel95.data.y)
 
 funnel_grid <- ggplot(funnel.es.data, aes(x = es, y = -se)) +
   facet_wrap(~dataset, scales = "free") +
-  xlab("Effect Size")  +
-  ylab("Standard Error\n")  +
+  xlab("Effect Size Cohen's d")  +
+  ylab("Standard Error")  +
   geom_polygon(aes(x = x, y = y), 
                data = funnel95.data,
                fill = "lightgrey") +
@@ -62,5 +62,12 @@ funnel_grid <- ggplot(funnel.es.data, aes(x = es, y = -se)) +
 
 #### Testing for funnel plot asymmetry ####
 
-#TODO
-
+data_funnel = all_data %>%
+  nest(-dataset, .key = information) %>%
+  mutate(model = map(information, ~ranktest(rma.mv(d_calc, d_var_calc, random = ~ study_ID, data=.)))) %>%
+  mutate(p = map(model, "pval")) %>%
+  mutate(tau = map(model, "tau"))  %>%
+  select(dataset, n, tau, p) %>%
+  mutate(p = as.numeric(as.character(p))) %>%
+  mutate(p = ifelse(p < .001, "< .001", as.character(round(p, 3)))) %>%
+  mutate(tau = as.numeric(as.character(tau))) 

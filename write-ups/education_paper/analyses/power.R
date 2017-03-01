@@ -45,11 +45,13 @@ d_comparison_full = inner_join(d_comparison, MA_summary) %>%
 
 # Make plot
 d_comparison_diff.plot = ggplot(d_comparison_full, aes(x = largest_d, y = diff_d)) +
-  geom_point(aes(color = dataset)) +
+  geom_point(colour="grey50", size = 3) +
+  geom_point(aes(color = dataset), size = 2) +
   geom_smooth(method = "lm", color = "black") +
   xlab("Largest d for Oldest Paper") +
   ylab("Difference between largest d and meta-analytic d") +
   labs(color = "Meta-analysis") +
+  scale_color_brewer(type = 'div', palette = 'Paired') +
   theme_classic() +
   theme(axis.line.x = element_line(), axis.line.y = element_line(),
         legend.position = "top")
@@ -70,7 +72,8 @@ power_year = rma.mv(d_calc, d_var_calc, mods = ~year, random = ~ short_cite | da
 power_year.plot = ggplot(all_data , aes(x = year, y = d_calc, color = dataset)) +
   geom_smooth(method = "lm") +
   xlab("Publication year") +
-  ylab("Effect size (d)") +
+  ylab("Effect size (Cohen's d)") +
+  scale_color_brewer(type = 'div', palette = 'Paired') +
   theme_classic() +
   theme(axis.line.x = element_line(), axis.line.y = element_line(),
         legend.position = "top")
@@ -98,6 +101,7 @@ power_year.plot = ggplot(all_data , aes(x = year, y = power_estimate, color = da
   geom_smooth(method = "lm") +
   xlab("Publication year") +
   ylab("Estimated Power") +
+  scale_color_brewer(type = 'div', palette = 'Paired') +
   theme_classic() +
   theme(axis.line.x = element_line(), axis.line.y = element_line(),
         legend.position = "top")

@@ -35,6 +35,7 @@ method_exclude.plot = ggplot(method_exclude_data, aes(x = mean_age_months, y = p
   xlab("Mean age of participants in months") +
   ylab("Percent Dropout") +
   labs(color = "Method") +
+  scale_color_brewer(type = 'div', palette = 'Set2') +
   theme_classic() +
   theme(axis.line.x = element_line(), axis.line.y = element_line(),
         legend.position = "top")
@@ -70,10 +71,11 @@ method.plot = ggplot(method_data, aes(x = mean_age_months, y = d_calc, color = m
   #geom_point() +
   geom_smooth(method = "lm") +
   xlab("Mean age of participants in months") +
-  ylab("Effect size (d)") +
+  ylab("Effect size (Cohen's d)") +
   #xlim(0, 40) +
   #ylim(-1.5, 3.3) +
   labs(color = "Method") +
+  scale_color_brewer(type = 'div', palette = 'Set2') +
   theme_classic() +
   theme(axis.line.x = element_line(), axis.line.y = element_line(),
         legend.position = "top")
