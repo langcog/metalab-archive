@@ -21,7 +21,7 @@ oldest = all_data %>%
 
 # Combine summary with oldest paper
 d_comparison = inner_join(oldest, MA_summary) %>%
-  select(dataset, short_cite, largest_d, n_dataset, power)
+  select(dataset, largest_d, d, n_dataset, power)
 
 # Include power
 d_comparison_power = d_comparison %>%
@@ -44,12 +44,12 @@ d_comparison_full = inner_join(d_comparison, MA_summary) %>%
   mutate(diff_d = abs(largest_d) - abs(d))
 
 # Make plot
-d_comparison_diff.plot = ggplot(d_comparison_full, aes(x = largest_d, y = diff_d)) +
+d_comparison_diff.plot = ggplot(d_comparison_full, aes(x = largest_d, y = d)) +
+  geom_smooth(method = "lm", color = "black") +
   geom_point(colour="grey50", size = 3) +
   geom_point(aes(color = dataset), size = 2) +
-  geom_smooth(method = "lm", color = "black") +
-  xlab("Largest d for Oldest Paper") +
-  ylab("Difference between largest d and meta-analytic d") +
+  xlab("Largest Cohen's d for Oldest Paper") +
+  ylab("Meta-analytic Cohen's d") +
   labs(color = "Meta-analysis") +
   scale_color_brewer(type = 'div', palette = 'Paired') +
   theme_classic() +
@@ -57,10 +57,7 @@ d_comparison_diff.plot = ggplot(d_comparison_full, aes(x = largest_d, y = diff_d
         legend.position = "top")
 
 
-## Power / ES over time ##
-
-
-
+#### Power / ES over time ####
 
 
 
@@ -68,15 +65,6 @@ d_comparison_diff.plot = ggplot(d_comparison_full, aes(x = largest_d, y = diff_d
 power_year = rma.mv(d_calc, d_var_calc, mods = ~year, random = ~ short_cite | dataset, data = all_data)
 
 # Make plot
-
-power_year.plot = ggplot(all_data , aes(x = year, y = d_calc, color = dataset)) +
-  geom_smooth(method = "lm") +
-  xlab("Publication year") +
-  ylab("Effect size (Cohen's d)") +
-  scale_color_brewer(type = 'div', palette = 'Paired') +
-  theme_classic() +
-  theme(axis.line.x = element_line(), axis.line.y = element_line(),
-        legend.position = "top")
 
 
 # Alternative analysis taking into account method and age

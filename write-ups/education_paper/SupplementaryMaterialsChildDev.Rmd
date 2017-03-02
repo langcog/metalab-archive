@@ -27,6 +27,27 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE, cache = TRUE, fig.pos = 
 load("educationpaper_environment.RData") # if no changes to analyses run this, comment above
 ```
 
+# Effect size calculation
+
+- Formulae used
+- Frequency
+- Data availability per dataset
+
+# Supplementary information to the analyses in the paper
+
+
+```{r Plot of Difference of d Values, echo = FALSE, fig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap="Correlation of largest d from oldest paper and difference between oldest d and meta-analytic d."}
+d_comparison_diff.plot
+```
+
+To illustrate the disparity between the oldest effect size and the meta-analytic effect, and consequently the difference in power, we plot the difference between both against the oldest effect. This difference is larger as oldest effect size increases, with an average of `r mean(d_comparison_full$diff_d)` compared with an average effect size of `r mean(abs(d_comparison_full$d))` (note that we based this on the absolute value). The plot showcases that researchers might want to be wary of large effects, as they are more likely to be non-representative of the true phenomenon compared to smaller initial effects being reported. Especially when making decisions about sample sizes, large effect might thus not be the best guide. Taking the above-mentioned mean values as example, a realistic sample size to ensure 80% power would be `r round(pwr.t.test(n = NULL,d = mean(abs(d_comparison_full$d)), sig.level = .05, power=.80)$n, digits = 0)` participants, instead of `r round(pwr.t.test(n = NULL,d = mean(abs(d_comparison_full$largest_d)), sig.level = .05, power=.80)$n, digits = 0)` participants suggested by the first paper. While these numbers average over research questions and methods, which all influence the specific number of participants necessary, this example showcases that experimenters should take into account as much evidence as available to be able to plan for robust and reproducible studies. 
+
+
+
+
+
+
+# Additional analyses
 
 ### Power over time
 

@@ -67,7 +67,7 @@ data_funnel = all_data %>%
   mutate(model = map(information, ~ranktest(rma.mv(d_calc, d_var_calc, random = ~ study_ID, data=.)))) %>%
   mutate(p = map(model, "pval")) %>%
   mutate(tau = map(model, "tau"))  %>%
-  select(dataset, n, tau, p) %>%
+  select(dataset, tau, p) %>%
   mutate(p = as.numeric(as.character(p))) %>%
   mutate(p = ifelse(p < .001, "< .001", as.character(round(p, 3)))) %>%
   mutate(tau = as.numeric(as.character(tau))) 
