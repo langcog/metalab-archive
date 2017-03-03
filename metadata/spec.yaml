@@ -474,6 +474,14 @@
   example:      for some analyses, need to filter on critical trials
   required:     no
 
+- field:        stimulus_naturalness
+  description:  is the speech stimulus a natural recording, a processed natural recording, or synthesized?
+  type:         string
+  format:	natural, natural_processed, synthetic
+  example:      
+  required:     no
+
+
 
 
 
