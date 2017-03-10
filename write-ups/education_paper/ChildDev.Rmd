@@ -199,7 +199,7 @@ A second analysis pertains to the relationship between observed effect sizes in 
 
 # Results
 
-## Measures of a typical study on early language acquisition
+## Sample sizes, effect sizes, and power
 
 Table 1 provides a summary of typical sample sizes and effect sizes by phenomenon. A number of general trends are readily observable. Sample sizes are small across the board, with the overall median in the MetaLab database being `r median(all_data$n)`. As for effect sizes, they tend to fall into ranges of small to medium effects. As a result, it appears that, by and large, studies are underpowered, as follows. With such sample sizes, and assuming a paired t-test based on within-participant comparisons (the most frequent experiment design and test statistic in MetaLab) it is possible to detect an effect in 80% of all studies when Cohen's *d* = `r round(pwr.t.test(n=median(all_data$n), d=NULL, power = .8, type = "paired")$d,  digits = 2)`; in other words, these studies would be appropriate when investigating a medium to large effect. When comparing two independent groups, the effect size that would be detectable with such sample sizes increases to Cohen's *d* = `r round(pwr.t.test(n=median(all_data$n), d=NULL, power = .8, type = "two.sample")$d,  digits = 2)`, a large effect. 
   
@@ -241,12 +241,49 @@ apa_table(arrange(d_comparison_summary, old_power), col.names = c("Meta-analysis
 ```
 
 
+## Evaluation of previous literature
 
-## Procedure comparison
+ Due to publication biases, we might not have access to all null results using the same method, and the resulting overestimation is directly reflected in our effect size estimate. As a next step, we thus quantify the possible publication biases in our data.
+ 
+### P-hacking
+The figure below shows the distribution of p-values around the significance threshold of .05 that were recalculated based on effect sizes for consistency (see @statcheck, cite bishop, etc?). For reliability purposes, we only discuss datasets with more than 10 p-values between 0 and .2. In the absence of questionable research practices and the presence of an effect, we expect a distribution tilted towards small values. In the absence of both p-hacking and an effect, the distribution should be flat. Unexpected "bumps" towards higher p-values in contrast can indicate severe p-hacking, including adding and removing samples and/or predictors, and conducting multiple statistical analyses [@Ioannidis2005]. Out of the datasets that we could include in this analysis, the majority exhibits the expected right-skew. There are two exceptions, however, where we observe a distribution that is not expected in the absence of questionable research practices. 
 
-In this section we address how methods might be chosen, adopting two angles. We first take a pragmatic, resource-oriented approach and compare methods with respect to their dropout rate. Then we compare how effect size across phenomena is relating to method choice.
+```{r P-value distirbutions, echo = FALSE, ig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Caption."}
+pcurve.plot
+```
+ 
+ #to be expanded
+http://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1002106#sec008 
+https://peerj.com/articles/1935/
+https://peerj.com/articles/1715/
 
-### Drop-out rates across methods 
+### Publication biases
+
+Funnel plots, displaying effect sizes of single studies against their variance, show whether observed results are evenly spread around their median. Across datasets, the difference in distributions and range covered in effect sizes is striking, as is the variance in observed precision (the highest points correspond to high precision and low variance). The indicated relationship between effect sizes and their variance was assessed with a nonparametric test and turnd out to be significant (see supplementary materials for details) -- indicating publication bias in favor of significant results -- for four datasets. 
+
+```{r Funnel, echo = FALSE, ig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Funnel plots of all datasets with linear regression line indicated in grey. The dashed red line indicates the median effect size, the dotted black line zero. The grey triangle denotes the expected range area of effect sizes in the absence of bias or heterogeneity."}
+funnel_grid
+#data_funnel
+```
+
+
+
+```{r Bias, echo = FALSE, ig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Caption."}
+bias_grid
+#check the results in the appendix here:
+#data_bias
+```
+
+
+[EXPLAIN METHOD -- PERHAPS INTERSPERSE METHODS WITH RESULTS, BECAUSE OTHERWISE HERE READERS MAY BE CONFUSED] Only two datasets turn out to have a significant negative relationship between sample size and effect size, indicating bias, both assessing infants' ability to discriminate vowels. As discussed in the methods section, however, a number of alternative explanations are possible. As soon as researchers are aware that they are measuring a more subtle effect (in this case for example when selecting a contrast that is acoustically more difficult to distinguish) and adjust sample sizes, we expect to observe this negative correlation. However, in both datasets, funnel plot asymmetry was also significant. Thus, we might conclude that in two out of the `r length(unique(all_data$dataset))` datasets in the present paper, we find significant publication bias. 
+
+
+
+## Practical decisions: Comparison between procedures 
+
+In this final section, we analyze our data to help our readers make an informed choice, particularly in terms of method. We first take a pragmatic, resource-oriented approach and compare methods with respect to their dropout rate. Then we compare how effect size across phenomena is relating to method choice.
+
+### Drop-out rates across procedures 
 
 Choosing a robust method can help increase the power of studies, such that more precise measurements lead to larger effects and thus require fewer participants to be tested. However, the number of participants relates to the final sample and not how many infants had to be invited into the lab. We thus first quantify whether methods differ in their typical drop-out rate, as the available participant pool might inform method choice. To this end we consider all methods across datasets in MetaLab which have more than 10 associated effect sizes and for which information on the number of dropouts was reported; this information is not always available in the published report, and in the case of the two meta-analyses we added based on published reports, the information was not added. Therefore, the following analyses only cover `r length(unique(method_exclude_data$method))` methods and `r length(method_exclude_data$method)` data points.
 
@@ -268,9 +305,11 @@ kable(coef(method_exclude.m_sum),caption = "Caption.")
 method_exclude.plot
 ```
 
-### The effect of method choice on effect sizes (and thus power)
+Methods which retain a higher percentage of participants might either be more suitable to test infants, decreasing noise as most participants are on task, or less selective, thus increasing noise as participants who for example are fussy are more likely to enter the data pool. It is thus relevant to turn to ES.
 
-Methods which retain a higher percentage of participants might either be more suitable to test infants, decreasing noise as most participants are on task, or less selective, thus increasing noise as participants who for example are fussy are more likely to enter the data pool. We analyze the same methods investigated above with respect to their drop-out rates here, this time considering more data (as we do not need to rely on reported drop-out rates). 
+### Effect sizes as a function of procedure
+
+We built a meta-analytic model with the effect size measure Cohen's *d* as the dependent variable, method and mean age centered as independent variables. The model also includes the variance of *d* for sampling variance, and paper within meta-analysis as a random effect (because we assume that within a paper experiments and thus effect sizes will be more similar to each other than across papers). We again selected central fixation as baseline method, but could include more datasets (as some had ES so included here, but not  reported drop-out rates and thus not included above). 
 
 ```{r Effect of Method, echo = FALSE, results='asis'}
 #method_rma_apa <- coef(method.rma_sum)
@@ -285,7 +324,7 @@ Methods which retain a higher percentage of participants might either be more su
 #kable(method.rma_sum, caption = "Effect of d by method with central fixation as baseline method.", digits = 3)
 ```
 
-We built a meta-analytic model with the effect size measure Cohen's *d* as the dependent variable, method and mean age centered as independent variables. The model also includes the variance of *d* for sampling variance, and paper within meta-analysis as a random effect (because we assume that within a paper experiments and thus effect sizes will be more similar to each other than across papers). We again selected central fixation as baseline method.
+
 
 ```{r Plot of Effect of Method, echo = FALSE, ig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Effect size as explained by different methods."}
 method.plot
@@ -293,45 +332,8 @@ method.plot
 
 The model results in Table XXX show that compared to central fixation only conditioned headturn and looking while listening yield reliably higher effect sizes, all other methods do not statistically differ from this baseline. When factoring in age, forced choice and looking while listening show significant interactions, indicating an improvement as infants mature. Age is marginally above the significance threshold, indicating that as infants mature effect sizes increase across methods -- an observation consistent with the view that infants and toddlers become more proficient language users and are increasingly able to react appropriately in the lab, yielding higher effect sizes. 
 
-Comparing our analyses (Table XXX) and Figure YY in this section with those in the previous section, it seems that high drop-out rates might be offset by high effect sizes in the case of conditioned headturn. While drop-out rates are around 40-50%, effect sizes are above 1. Stimulus alternation does not fall into this pattern of high drop-out rates being correlated with high effect sizes, as the observed outcomes are in the range typical for meta-analyses in our dataset. 
-There is an important caveat to this interpretation that some methods, specifically conditioned headturn, which have higher dropout rates, are better at generating high effect sizes due to decreased noise (e.g., by excluding infants that are not on task). Studies with fewer participants (thanks to higher drop-out rates) might simply be underpowered, and thus any significant finding is likely to over-estimate the effect. Due to publication biases, we might not have access to all null results using the same method, and the resulting overestimation is directly reflected in our effect size estimate. As a next step, we thus quantify the possible publication biases in our data.
-
-
-## P-hacking 
-
-The figure below shows the distribution of p-values around the significance threshold of .05 that were recalculated based on effect sizes for consistency (see @statcheck, cite bishop, etc?). For reliability purposes, we only discuss datasets with more than 10 p-values between 0 and .2. In the absence of questionable research practices and the presence of an effect, we expect a distribution tilted towards small values. In the absence of both p-hacking and an effect, the distribution should be flat. Unexpected "bumps" towards higher p-values in contrast can indicate severe p-hacking, including adding and removing samples and/or predictors, and conducting multiple statistical analyses [@Ioannidis2005]. Out of the datasets that we could include in this analysis, the majority exhibits the expected right-skew. There are two exceptions, however, where we observe an unexpected distribution in the absence of questionable research practices. 
-
-```{r P-value distirbutions, echo = FALSE, ig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Caption."}
-pcurve.plot
-```
- 
- #to be expanded
-http://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1002106#sec008 
-https://peerj.com/articles/1935/
-https://peerj.com/articles/1715/
-
-## Publication biases
-
-Funnel plots, displaying effect sizes of single studies against their variance, show whether observed results are evenly spread around their median. Across datasets, the difference in distributions and range covered in effect sizes is striking, as is the variance in observed precision (points plotted upwards close to zero). The indicated relationship between effect sizes and their variance was assessed with a nonparametric test and turnd out to be significant (see supplementary materials for details) -- indicating publication bias in favor of significant results -- for four datasets. 
-
-```{r Funnel, echo = FALSE, ig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Funnel plots of all datasets with linear regression line indicated in grey. The dashed red line indicates the median effect size, the dotted black line zero. The grey triangle denotes the expected range area of effect sizes in the absence of bias or heterogeneity."}
-funnel_grid
-#data_funnel
-```
-
-
-
-```{r Bias, echo = FALSE, ig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Caption."}
-bias_grid
-#check the results in the appendix here:
-#data_bias
-```
-
-
-Only two datasets turn out to have a significant negative relationship between sample size and effect size, indicating bias, both assessing infants' ability to discriminate vowels. As discussed in the methods section, however, a number of alternative explanations are possible. As soon as researchers are aware that they are measuring a more subtle effect (in this case for example when selecting a contrast that is acoustically more difficult to distinguish) and adjust sample sizes, we expect to observe this negative correlation. However, in both datasets, funnel plot asymmetry was also significant. Thus, we might conclude that in two out of the `r length(unique(all_data$dataset))` datasets in the present paper, we find significant publication bias. 
-
-
-
+[CONSIDER MOVING TO DISCUSSION OR REWRITING: Comparing our analyses (Table XXX) and Figure YY in this section with those in the previous section, it seems that high drop-out rates might be offset by high effect sizes in the case of conditioned headturn. While drop-out rates are around 40-50%, effect sizes are above 1. Stimulus alternation does not fall into this pattern of high drop-out rates being correlated with high effect sizes, as the observed outcomes are in the range typical for meta-analyses in our dataset. 
+There is an important caveat to this interpretation that some methods, specifically conditioned headturn, which have higher dropout rates, are better at generating high effect sizes due to decreased noise (e.g., by excluding infants that are not on task). Studies with fewer participants (thanks to higher drop-out rates) might simply be underpowered, and thus any significant finding is likely to over-estimate the effect.]
 
 
 # Discussion 
