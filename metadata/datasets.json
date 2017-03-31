@@ -298,5 +298,29 @@
 		"src": "images/datasets/bouba-kiki.png",
 		"longitudinal": "FALSE",
 		"moderators": []
+	},
+		{
+		"name": "Categorization Bias",
+		"short_name": "catBias",
+		"key": "1PcqwSo6OWNa8XdtcZnCDtPdxUf6sa5BimHsufWlAQu4",
+		"filename": "catBias",
+		"citation": "NA",
+		"internal_citation": "NA",
+		"link": "",
+		"full_citation": "NA",
+		"doi": "",
+		"systematic": "no",
+		"search_strategy": "Seeded with Smiley and Brown (1979) in Google Scholar + manual search",
+		"source": "coded by authors",
+		"last_update": "2017-3-01",
+		"link_fields": "",
+		"short_desc": "In a triad-task, bias to generalize to taxonomic as opposed to thematic alternative.",
+		"description": "In a triad-task, bias to generalize to taxonomic as opposed to thematic alternative.",
+		"curator": "Molly Lewis",
+		"src": "images/datasets/catBias.png",
+		"longitudinal": "FALSE",
+		"moderators": ["label_present", "instruction_code",	"object_stimulus", "taxonomic_type"]
 	}
 ]
+
+

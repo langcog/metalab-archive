@@ -474,6 +474,29 @@
   example:      for some analyses, need to filter on critical trials
   required:     no
 
+- field:        taxonomic_type
+  description:  basic or subordinate
+  type:         string
+  format:
+  example:      For the taxonomic alternative, is the it at the basic level or subordinate level?
+  required:     no
+
+- field:        instruction_code
+  description:  critical words used in instructions for triad task
+  type:         string
+  format:
+  example:      goes with or another
+  required:     no
+
+- field:        label_present
+  description:  Do the instructions contain a novel label?
+  type:         string
+  format:
+  example:      1 or 0
+  required:     no
+
+
+
 
 
 
