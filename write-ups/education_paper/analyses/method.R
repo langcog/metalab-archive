@@ -79,11 +79,12 @@ method_exclude.plot = ggplot(method_exclude_data, aes(x = method, y = percent_dr
 ## EFFECT OF METHOD ####
 
 # Build model
-method.rma <- rma.mv(d_calc, d_var_calc, mods = ~ageC * relevel(method, "central fixation"), random = ~ short_cite |  dataset, data = method_data)
+method.rma <- rma.mv(d_calc, d_var_calc, mods = ~ageC * relevel(method, "central fixation"), random = ~ short_cite | dataset, data = method_data)
 
 # Save summary of model
 method.rma_sum = summary(method.rma)
 
+method.rma_coef = coef(method.rma_sum)
 
 ## PLOT OF EFFECT OF METHOD ####
 # Make plot
