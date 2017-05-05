@@ -1,0 +1,380 @@
+---
+title             : "MetaLab: A platform for cumulative meta-meta-analyses"
+shorttitle        : "MetaLab"
+
+author: 
+  - name          : "Christina Bergmann"
+    affiliation   : "1"
+    corresponding : yes    # Define only one corresponding author
+    address       : "Ecole Normale Sup&#xE9;rieure, Laboratoire de Sciences Cognitives et Psycholinguistique, 29, rue d'Ulm,  75005 Paris, France."
+    email         : "chbergma@gmail.com"
+  - name          : "Sho Tsuji"
+    affiliation   : "2"
+  - name          : "Page Piccinini"
+    affiliation   : "3"
+  - name          : "Molly Lewis"
+    affiliation   : "4"
+  - name          : "Mika Braginsky"
+    affiliation   : "5"
+  - name          : "Michael C. Frank"
+    affiliation   : "4"
+  - name          : "Alejandrina Cristia"
+    affiliation   : "1"
+
+affiliation:
+  - id            : "1"
+    institution   : "Ecole Normale Sup&#xE9;rieure, PSL Research University, D&#xE9;partement d'Etudes Cognitives, Laboratoire de Sciences Cognitives et Psycholinguistique (ENS, EHESS, CNRS)"
+  - id            : "2"
+    institution   : "University of Pennsylvania, Department of Psychology"
+  - id            : "3"
+    institution   : "Ecole Normale Sup&#xE9;rieure, PSL Research University, D&#xE9;partement d'Etudes Cognitives, Neuropsychologie Interventionnelle (ENS, EHESS, CNRS)"
+  - id            : "4"
+    institution   : "Stanford University, Department of Psychology, Language and Cognition Lab"
+  - id            : "5"
+    institution   : "Massachusetts Institute of Technology, Department of Brain and Cognitive Sciences"
+
+author_note: >
+  
+
+abstract: >   
+
+
+
+keywords          : "replicability, reproducibility, meta-analysis, language acquisition"
+wordcount         : "X"
+
+bibliography      : ["metalab_education.bib"]
+
+figsintext        : yes
+figurelist        : no
+tablelist         : no
+footnotelist      : no
+lineno            : yes
+
+lang              : "english"
+class             : "man"
+output            : papaja::apa6_pdf
+---
+
+```{r Preamble, echo = FALSE, warning = FALSE, message = FALSE}
+# These packages are need in the here for some in document commands
+library(knitr)
+library(dplyr)
+library(pwr)
+
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, cache = TRUE, fig.pos = "T")
+require("papaja")
+#apa_prepare_doc() # prepare document for rendering
+
+options(scipen=1, digits=2)
+
+#source("save_analyses.R") # if changes have been made to any analyses run this, comment below
+load("educationpaper_environment.RData") # if no changes to analyses run this, comment above
+```
+## Todo list
+
+- *shorten introduction*
+- remove redundancies
+
+- Collapse over non-independent rows (?)
+
+
+Suggestions I am not sure how to implement:  
+- Show how infants and children are inherently a more "noisy" population  
+Would exclusion rates do the trick?
+
+
+*Re title comments: I went with the title we submitted in the proposal*
+
+
+
+Meta-analyses are built on a collection of standardized effect sizes that, in theory, tap a single, well-defined phenomenon. In the typical use of meta-analyses, the focus is on estimating the population effect and its structured variance. Here, we take a different approach. We use a collection of meta-analyses to assess the general quality of public data, as well as to assess the prevalence inappropriate experimental practices.  Our goal is not to point fingers, but instead provide developmental psychologists with a tool to diagnose the state of the empirical data emerging from a whole subfield, with a view to making principled recommendations for future research.
+
+## Data quality in empirical sciences, including developmental psychology
+
+Empirical research is built on an ever-ending conversation between theory and data, between expectations and observations. To this dance, add the consideration that for a result to make it to the public eye, it often needs to pass a certain threshold of evaluation, exhibit a certain quality. What makes for good quality data? As a first approach, the quality of data is related to the process that produced it. For instance, if one considers wet lab research, the cleanliness of the surface, the care with which reactants are measured, the choice of the reactants themselves -- all of these factors determine whether the data point can be deemed valid. Among all valid data points, only some may be deemed noteworthy -- those, for instance, that allow testing specific theories.
+
+How about data quality in psychology? Although our field does have certain quantifiers that are akin to the process-based data quality (e.g., test-retest reliability), the assessment of the value of empirical data points is by and large determined by publishability [@nosek2012scientific2].  Unfortunately, aiming for publishability leads to practices that, when ensconced, can seriously undermine the quality of the data in whole fields. In a seminal contribution, [@Ioannidis2005] has concluded that most empirical research findings are false, with the actual proportion of false findings being dependant on several features, including  the size of underlying effect sizes, the typical sample sizes,  the degree of flexibility in data collection and analysis, and the "hotness" of the research topic addressed -- factors that are all relevant to psychology -- and developmental branches in particular. According to some interpretations, inappropriate research and reporting practices may be to blame for the surprisingly high proportion of non-replicable findings in psychology [@ManyLabs1,MANYLABS2].  
+
+
+## The present paper
+
+This paper explores the use of a meta-meta-analysis to assess the prevalence of inappropriate practices, and indirectly the quality of current data, with a specific interest in developmental psychology. The following subsections introduce each dependent measure, describing how each helps us assess data quality and the presence of inappropriate practices in general as well as for developmental psychology in particular. Before proceeding, we point out that most of the meta-analyses used in the present paper bear on  language comprehension by infants aged 0 to XX, and thus our suggestions will be most relevant to this line of work. We believe that many of our findings will likely extrapolate well to other subfields of psychological science studying infants, given that the factors mentioned below are equally pressing for any other psychological phenomenon studied within this age group. It is possible that these factors are less problematic for developmental psychologists working with older age groups; for instance, it may be easier to recruit larger samples via institutional testing in schools, and older children may be more reliable and consistent in their responses [@roberts2000rank]. As a result, problems related to small sample sizes and low statistical power may be less salient in work on older children. In any case, the detailed presentation of our methods and results to the broader developmental psychology audience in this paper, together with the availability of all code in our github repository, can enable others to build similar meta-meta-analyses to diagnose the state of their specific sub-fields.  
+
+< @ChB Please check if you agree with the citation above http://www.rc.usf.edu/~jdorio/Personality/The%20Rank-Order%20Consistency%20of%20Personality%20Traits%20From%20Childhood%20to%20Old%20Age%20A%20Quantitative%20Review%20of%20Longitudinal%20Studies.pdf >
+
+### Statistical power 
+
+Power refers to the probability of detecting an effect and correctly rejecting the null hypothesis if an effect is indeed present in a population, and it is therefore dependent on the effect size and the sample size. Researchers often believe that low power is only problematic in terms of increased chances of type-II problems (i.e., failure to find a significant result when there is an underlying effect). However, it has become increasingly clear that low power is also problematic in the case of type-I, or false positive, errors. as the effects reported in such cases will be over-estimating the true effect. This makes appropriate planning for future research which aims to build on this report more difficult, as sample sizes will be too small, leading to null results due to insensitive research designs rather than the absence of the underlying effect. This poses a serious hindrance for work building on seminal studies, including replications across languages and extensions. 
+
+
+Underpowered studies  pose an additional problem for developmental researchers that interpret significant findings as indicating that a skill is "present" and non-significant findings as a sign that it is "absent". In fact, even in the most rigorous study design and execution, null results will occur ever so often; for example in a study with 80% power (a number typically deemed sufficient), every fifth result will not reflect that there is a true effect present in the population. Disentangling whether a non-significant finding indicates the absence of a skill, random measurement noise, or the lack of experimental power to detect this skill reliably and with statistical support is impossible based on *p*-values.
+
+To investigate the status quo, we first compute typical power, and explore which effect sizes are detectable with sample sizes in the included studies. Further, we investigate how researchers might determine sample sizes (for example by following the first paper in a literature), and whether they take into account sensitivity of methods used.
+
+
+### Procedural variability
+
+Improving our procedures can be considered both an economical and ethical necessity, because our population is difficult to recruit and test. For this reason, developmentalists often "tweak" paradigms and develop new ones to increase reliability and robustness, all with the aim of obtaining a clear signal. Especially given the time constraints, we aim for a maximum of data in the short time span infants and children are willing to participate in a study. Emerging technologies, such as eye-tracking and tablets, have been eagerly adopted [@tablet]. As a result, multiple ways to tap into the same phenomenon have been developed, consider for example the fact that both headturn-based paradigms and the measurement of eye movements have been employed to measure infant-directed speech preference [@IDS_MA], Manybabies1]. It remains an open question to what extent these different methods lead to comparable results. It is possible that some are more robust, but it remains difficult to extract such information based on studies that use different materials and test various age groups. Aggregating over experiment results, however, allows us to extract general patterns of higher or lower noise via comparison of effect sizes, which are directly affected by the variance of the measurement. 
+
+We will assess in how far the different methods used to test the same construct vary in their sensitivity. Further, taking possible resource limitations into account, we consider drop-out rates as a potential measure of interest and discuss whether higher exclusion rates coincide with more precise measures, yielding higher effect sizes.
+
+
+### P-hacking 
+
+Undisclosed flexibility during data collection and analysis is a problem independent of the availability of various methods to conduct infant studies. To begin with, using flexible stopping rules, where the decision to stop or continue testing depends on the result of  a statistical test, increases the likelihood to obtain a "significant" outcome well beyond the traditional 5%. As for analytic flexibility, researchers can conduct multiple significance tests with several more or less related dependent variables. In developmental research, this problematic practice encompasses computing several dependent variables (such as mean scores, difference scores, percentages, and so on) based on the same measured data as well as selectively excluding trials and re-testing the new data for statistical significance. Next, multiple conditions that selectively can be dropped from the final report increase the number of significance tests. Finally, it is problematic to post hoc introduce covariates, most prominently gender, and test for an interaction with the main effect. Finally combining two or more of these strategies again inflated the number of significant results. All these practices might seem innocuous and geared towards "bringing out" an effect  the researcher believes is real, yet they can inflate the number of significant *p*-values, effectively rendering *p*-values and the notion of statistical significance meaningless [@Ioannidis2005,positivePsychology]. 
+
+It is typically not possible to assess whether flexibility led to false positive in a given report. However, we can measure one symptom of such unsavory practices. A "symptom" of such practices is a distribution of *p*-values with increased frequency just below the significance threshold. P-curves test for this problem, but they come with some limitations and only consider statistically significant reports [p-curve citation, limitation citation]. 
+
+
+
+### Publication biases
+
+It is well established that psychological research has a strong bias against non-significant findings, with an unduly large proportion of published studies containing significant p-values (estimates ranging between .9% and 12% in psychology; manylabs2; Greenwald72; Sterling58; Sterling95) CITE. Additionally, although it is desirable for results to be surprising, it is equally if not more important that they be interpretable given current theories and previous data. As a result of the latter bias, there may be under-reporting of certain types of results depending on the direction of the result rather than its strengt. We would like to point out that in the context of developmental psychology, both of these bias may be statistically less strong. As to the first, given the field-specific habit of interpreting non-significant results as evidence of absence, it is possible that a higher proportion of results contain non-significant results. As to the second, many infant methods do not specify directions of results that are universally accepted. For instance, in preferential looking time studies infants can show a preference for familiar or for novel stimuli -- both are considered interpretable and valid. This may therefore lead to wider acceptance of a range of results. 
+
+
+# Methods
+## Source data: MetaLab
+
+The analyses in this paper are based on MetaLab, which currently contains `r length(MA_descriptives$dataset)` meta-analyses. <Since MetaLab is open to submissions and updates, current results constitute  a historical snapshot that is continually updated via the dynamic reports on the website, and by downloading the freely available data, it is continuously possible to obtain the most recent results. -- I think this is irrelevant to this paper, unless we intend to add this rmd to the reports section>
+
+In MetaLab, parts of each meta-analysis are standardized to allow for the computation of common effect size estimates and for analyses that span across different phenomena. These standardized variables include study descriptors (such as citation and peer review status), participant characteristics (including mean age, native language), methodological information (for example what dependent variable was measured), and information necessary to compute effect sizes (number of participants, if available means and standard deviations of the dependent measure, otherwise test statistics, such as t-values or F scores). This way, the analyses presented in this paper become possible.
+
+MetaLab contains datasets that address phenomena ranging from infant-directed speech preference to mutual exclusivity, sampled opportunistically based on data collected with involvement of (some) authors of this paper (n=`r length(MA_descriptives$dataset)-2` datasets) or they were extracted from previously conducted meta-analyses related to language development (n=2, i.e. @PointingMA; @IDS_MA). In the former case, we attempted to document as much detail as possible for each entered experiment (note that a paper can contain many experiments). 
+Detailed descriptions of all phenomena covered by MetaLab, including which papers and other sources have been considered, can be found on the companion website at http://metalab.stanford.edu and in the supporting information. 
+
+
+## Statistical approach
+
+As dependent measure, we report Cohen's *d*, a standardized effect size based on comparing sample means and their variance. This effect size was calculated when possible from means and standard deviations across designs with the appropriate formula. When these data were not available, we used test statistics, more precisely t-values or F scores of the test assessing the main hypothesis. We also computed effect size variance, which allows to weigh each effect size when aggregating across studies. The variance is mainly determined by the number of participants; intuitively effect sizes based on larger samples will be weighted higher. Note that for research designs testing participants in two conditions that need to be compared (for example exposing the same infants to infant- and adult-directed speech), correlations between those two measures are needed to estimate the effect size variance. This measure is usually not reported, despite being necessary for effect size calculation. Some correlations could be obtained through direct contact with the original authors (see e.g., [@InWordDB] for details), for others we estimated this factor based on the information in our database. We report all details of effect size calculation in the supplementary materials. 
+
+### Meta-analytic model
+
+To aggregate effect sizes within a phenomenon, we used a multilevel approach, which takes into account not only the effect sizes and variance of single studies, but also that effect sizes from the same paper will be based on more similar studies than effect sizes from different papers [@konstantopoulos2011],. We relied on the implementation in the metafor package [@metafor] of R [@R]. Excluded as outliers were effect sizes more than three standard deviations away from the median effect size within each dataset, thus accounting for the difference in median effect size across phenomena.
+
+### Power 
+
+Based on the meta-analytical effect size and the median number of participants, we calculated typical power (using the pwr package [@pwr]). We remind the reader that recommendations are for this value to be above 80%, which refers to a likelihood that 4 out of 5 studies show a significant outcome for an effect truly present in the population.
+
+### P-curves
+
+For analyses involving *p*-values, we re-computed *p*-values from our effect-size estimates. This is due to two main reasons: First, we did not have the same information available for all data points, even within the same meta-analysis. For example, in XXX, XXX% of the effect sizes were calculated based on t-values, XXX% based on group-level means and standard deviations, and XXX% based on F-scores. In addition, some datasets only contain effect sizes, because they are based on extant meta-analyses. Second, *p*-values are not always computed and reported correctly or consistently [@statcheck]. To ensure a consistent relationship between *p*-values and effect sizes, we thus opted for recalculation. The recalculation pipeline is as follows: We transform Cohen's *d* into Pearson's *r*, from which it is possible to calculate a *t*-value.
+
+
+### Assessing publication bias
+
+
+There are numerous ways to estimate whether the published literature is biased. The most common and straightforward is an assessment of funnel plot asymmetry. A funnel plot displays effect sizes against their variance (with 0 being plotted up). The expectation in the absence of biases is that effect sizes are equally distributed around the meta-analytic mean, and that the are spread out more the larger their variance, creating a triangle-like shape. Biases can lead to distortions in this distribution. The large the asymmetry, the more likely a bias is. We quantify funnel plot asymmetry with a rank correlation test implemented in the metafor package [@metafor].
+
+
+A second analysis pertains to the relationship between observed effect sizes in single studies and the associated sample size. The smaller the effect size, the larger the sample needed for a significant *p*-value. If sample size decisions are made before data collection and all results are published, we expect no relation between observed effect size and sample size. A significant non-parametic correlation indicates that only those studies with significant outcomes were published [@pubbias]. 
+
+
+
+# Results
+
+## Sample sizes, effect sizes, and power
+
+Table 1 provides a summary of typical sample sizes and effect sizes by phenomenon. A number of general trends are readily observable. Sample sizes are small across the board, with the overall median in the MetaLab database being `r median(all_data$n)`. As for effect sizes, they tend to fall into ranges of small to medium effects. As a result, it appears that, by and large, studies are underpowered, as follows. With such sample sizes, and assuming a paired t-test based on within-participant comparisons (the most frequent experiment design and test statistic in MetaLab) it is possible to detect an effect in 80% of all studies when Cohen's *d* = `r round(pwr.t.test(n=median(all_data$n), d=NULL, power = .8, type = "paired")$d,  digits = 2)`; in other words, these studies would be appropriate when investigating a medium to large effect. When comparing two independent groups, the effect size that would be detectable with such sample sizes increases to Cohen's *d* = `r round(pwr.t.test(n=median(all_data$n), d=NULL, power = .8, type = "two.sample")$d,  digits = 2)`, a large effect. 
+  
+
+We now integrate age into our consideration of power, sample and effect sizes. One might expect a relationship between effect sizes and infant age both for conceptual and practical reasons. As to conceptual reasons, younger infants might show smaller effects in general because they are more immature in terms of their information processing abilities, and they are not yet as experienced with, and proficient in, their native language in particular  [CITE]. As to pratical reasons, measurements might be more noisy for younger infants, as they could be a more difficult population to test [CITE or spell out?]. 
+
+There is no linear relationship between infant age and sample size, effect size, and the derived power, but there seems to be a difference between studies typically testing infants younger than one year and those testing older infants. To begin with, sample sizes are much smaller for younger infants, often below 20 infants. This is not the case for older children, with the exception of mutual exclusivity (composed primarily of samples containing 16 children). [Remove? not sure what the point is: Additionally, the number of participants tested within each dataset ranges a great deal. -- Remove? not sure what the basis for this conclusion is: This might indicate that researchers are mostly limited by their resources and participant availability in planning their studies.] As for effect sizes, studies on younger infants result in more variable effect sizes, including many which fall into the classical range of small effects (Cohen's *d* around .2), which is not the case for older children. Since power is directly related to sample size and effect size, typical power is greater for toddlers and older children than for infants. Interestingly, however, there seems to be little to no relationship between effect sizes and number of participants typically tested. 
+For phenomena tested on younger children, because sample sizes and effect sizes are both small, power is habitually very low, and the only dataset which typically achieves appropriate power near 80% is non-native vowel discrimination. For phenomena targeting older children and resulting in large effects, this means that studies are unnecessarily/appropriately? high-powered (see gaze following, online word recognition, as two examples). We also point out that, for older children, power variability is largely due to effect size variability, since samples tend to be constant. [Remove? The lack of a relationship between overall meta-analytic power and sample size might indicate that researchers' experiment planning is not impacted by the phenomenon under investigation. Studies might instead be designed and conducted with pragmatic considerations in mind, such as participant availability.] 
+
+[Recommend moving to discussion - this comment pertains ALL results, not just the ones just mentioned: Besides this very general point, we refrain here from strong conclusions based on the above-discussed observations, since the present dataset is not exhaustive and topics typically investigated in younger children are over-represented. However, we sampled in an opportunistic and thus to some degree random fashion and the phenomena covered span very different aspects of language acquisition and linguistic processing.]
+
+```{r Descriptive Information, echo = FALSE, results='asis'}
+MA_summary_table$power <- printnum(MA_summary_table$power)
+MA_summary_table$age_dataset <- printnum(MA_summary_table$age_dataset) 
+apa_table(arrange(MA_summary_table, age_dataset), col.names = c("Topic", "Age", "Sample Size (Range)", "N Effect Sizes", "N Papers", "Cohen's d (SE)", "Avg Power"), align = c("l", "r", "r", "r", "r", "r", "r"), caption = "Descriptions of meta-analyses currently in MetaLab.")
+```
+
+### How does effect size relate to *p*-values?
+
+```{r Plot comparing *p*-values to effect size, echo = FALSE, fig.pos = "T!", fig.width=4, fig.height=3.5, fig.cap="Comparison of a study's effect size and the according *p*-values. Point size reflects sample size. The typical significance threshold of .05 is indicated by a vertical line."}
+sig_plot
+```
+
+Single experiments are often evaluated by their associated *p*-value, despite the frequent criticisms and well-documented shortcomings of that measure [citations]. One of them is particularly relevant here: In the Pearson-Neyman model (implicitly) underlying most current empirical research, *p*-values should be used to inform a binary decision, namely to either reject the null hypothesis or fail to do so; in contrast, effect sizes are a continuous measure [CITE]. Researchers sometimes believe that significant *p*-values are equivalent to very high effect sizes, and that non-significant *p*-values are due to very low effect sizes near zero lead; and more generally that *p*-values have a continuous interpretation such that very low *p*-values necessarily indicate very strong evidence for differences, whereas values near .05 indicate weaker evidence for a difference [CITE]. 
+
+Figure 1 addresses these intutions by showing p-value and effect size data within MetaLab. The vertical line marks the usual binary decision threshold for *p*-values at .05. We see that, for extreme values, namely effect sizes near zero and above 2, the intuition that *p*-values will be respectively large and small is borne out. However, the majority of effect sizes we observe falls in a range that with sufficient power, in other words a sufficiently large sample, can lead to a significant outcome. Underpowered studies, in contrast, might tap into a similar sized effect but fail to reach significance. In Figure 1, the grey horizontal band illustrates such a region where both significant and non-significant results are observed. Further, 5 of the 12 meta-analytical effect sizes fall in a range where single studies are not significant, that is below d = `r min(abs(all_data$d_calc[all_data$sig==T]))`. 
+
+### Comparing meta-analytic effect size and oldest paper to estimate power
+
+As Table 1 and Figure 1 both show, experimenters are frequently not including a sufficient number of participants to observe a given effect, assuming the meta-analytic estimate is accurate. It might, however, be possible, that power has been determined based on a seminal paper to be replicated and/or built on. Initial reports tend to overestimate effect sizes [@jennions2002relationships], possibly explaining the lack of power in some datasets and studies. We extracted for each dataset the oldest paper and therein the largest reported effect size and re-calculated power accordingly, using the median sample size of a given dataset. The results are shown in the table below. It turns out that in some cases, such as native and non-native vowel discrimination, sample size choices match well with the oldest report. The difference in power, noted in the last column, can be substantial, with native vowel discrimination and phonotactic learning being the two most salient examples. Here, sample sizes match well with the oldest report and studies would be appropriately powered if this estimate were representative of the true effect. 
+
+In general, it turns out that the larger the original effect size, the more likely is an overestimation of the meta-analytic effect size. Researchers might thus be wary of reports implying a strong, robust effect with infants and toddlers in the absence of corroborating data, as is the case for online word recognition, one example where power is appropriate. There are also datasets where sample sizes seem unrelated to either seminal reports or meta-analytic effect sizes. In the next sections we consider resources as a factor in experiment design, which might also be at play here as well.
+
+```{r Compute Meta-analytic d for All Papers, echo = FALSE, results='asis'}
+#d_comparison_summary$largest_d <- printnum(d_comparison_summary$largest_d)
+d_comparison_summary$old_power <- printnum(d_comparison_summary$old_power)
+d_comparison_summary$difference <- printnum(d_comparison_summary$difference)
+apa_table(arrange(d_comparison_summary, old_power), col.names = c("Meta-analysis (MA)", "Oldest d", "Meta-analytic d", "Sample Size", "Power based on \n first report", "Difference to\n meta-analytic power"), align = c("l", "r", "r", "r", "r"), caption = "For each meta-analysis, largest d from first paper and power, along with the difference between power based on meta-analytic and oldest d.")
+```
+
+
+## Evaluation of previous literature
+
+ Due to publication biases, we might not have access to all null results using the same method, and the resulting overestimation is directly reflected in our effect size estimate. As a next step, we thus quantify the possible publication biases in our data.
+ 
+### P-hacking
+The figure below shows the distribution of p-values around the significance threshold of .05 that were recalculated based on effect sizes for consistency (see @statcheck, cite bishop, etc?). For reliability purposes, we only discuss datasets with more than 10 p-values between 0 and .2. In the absence of questionable research practices and the presence of an effect, we expect a distribution tilted towards small values. In the absence of both p-hacking and an effect, the distribution should be flat. Unexpected "bumps" towards higher p-values in contrast can indicate severe p-hacking, including adding and removing samples and/or predictors, and conducting multiple statistical analyses [@Ioannidis2005]. Out of the datasets that we could include in this analysis, the majority exhibits the expected right-skew. There are two exceptions, however, where we observe a distribution that is not expected in the absence of questionable research practices. 
+
+```{r P-value distirbutions, echo = FALSE, ig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Caption."}
+pcurve.plot
+```
+ 
+ #to be expanded
+http://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1002106#sec008 
+https://peerj.com/articles/1935/
+https://peerj.com/articles/1715/
+
+### Publication biases
+
+Funnel plots, displaying effect sizes of single studies against their variance, show whether observed results are evenly spread around their median. Across datasets, the difference in distributions and range covered in effect sizes is striking, as is the variance in observed precision (the highest points correspond to high precision and low variance). The indicated relationship between effect sizes and their variance was assessed with a nonparametric test and turnd out to be significant (see supplementary materials for details) -- indicating publication bias in favor of significant results -- for four datasets. 
+
+```{r Funnel, echo = FALSE, ig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Funnel plots of all datasets with linear regression line indicated in grey. The dashed red line indicates the median effect size, the dotted black line zero. The grey triangle denotes the expected range area of effect sizes in the absence of bias or heterogeneity."}
+funnel_grid
+#data_funnel
+```
+
+
+
+```{r Bias, echo = FALSE, ig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Caption."}
+bias_grid
+#check the results in the appendix here:
+#data_bias
+```
+
+
+[EXPLAIN METHOD -- PERHAPS INTERSPERSE METHODS WITH RESULTS, BECAUSE OTHERWISE HERE READERS MAY BE CONFUSED] Only two datasets turn out to have a significant negative relationship between sample size and effect size, indicating bias, both assessing infants' ability to discriminate vowels. As discussed in the methods section, however, a number of alternative explanations are possible. As soon as researchers are aware that they are measuring a more subtle effect (in this case for example when selecting a contrast that is acoustically more difficult to distinguish) and adjust sample sizes, we expect to observe this negative correlation. However, in both datasets, funnel plot asymmetry was also significant. Thus, we might conclude that in two out of the `r length(unique(all_data$dataset))` datasets in the present paper, we find significant publication bias. 
+
+
+
+## Practical decisions: Comparison between procedures 
+
+In this final section, we analyze our data to help our readers make an informed choice, particularly in terms of method. We first take a pragmatic, resource-oriented approach and compare methods with respect to their dropout rate. Then we compare how effect size across phenomena is relating to method choice.
+
+### Drop-out rates across procedures 
+
+Choosing a robust method can help increase the power of studies, such that more precise measurements lead to larger effects and thus require fewer participants to be tested. However, the number of participants relates to the final sample and not how many infants had to be invited into the lab. We thus first quantify whether methods differ in their typical drop-out rate, as the available participant pool might inform method choice. To this end we consider all methods across datasets in MetaLab which have more than 10 associated effect sizes and for which information on the number of dropouts was reported; this information is not always available in the published report, and in the case of the two meta-analyses we added based on published reports, the information was not added. Therefore, the following analyses only cover `r length(unique(method_exclude_data$method))` methods and `r length(method_exclude_data$method)` data points.
+
+The results of the linear mixed effect model predicting dropout rate by method and mean participant age (while accounting for the different effects being tested) are summarized in the table below. The results show that, taking the most frequently used central fixation as baseline, conditioned headturn and stimulus alternation have significantly more drop-outs. Figure XXX underlines this observation, and illustrates the relationship of drop-out rate with age. Overall, stimulus alternation leads to the highest drop-out rates, which lies at around 50% (see Figure XXX). While age is not significantly impacting drop-out rates, it interacts with the different methods. We observe an increase in drop-out rates, which is most prominent in conditioned headturn (a significant interaction) and headturn preference procedure (where the interaction approaches significance).  
+
+Interestingly, the methods with lower drop-out rates, namely central fixation and headturn preference procedure, are among the most frequent ones in MetaLab and certainly more frequent than those with higher drop-out rates, indicating that drop-out rate might inform researchers' choices. Being able to retain more participants as a factor in method choice points to the mentioned limitations regarding the participant pool, as more participants will have to be tested to arrive at the same sample size. 
+
+
+```{r Method vs excluded, echo = FALSE, results='asis'}
+#method_exclude_apa <- method_exclude.m_sum$coefficients
+#method_exclude_apa[,1] <- printnum(method_exclude_apa[,1])
+#method_exclude_apa[,2] <- printnum(method_exclude_apa[,2])
+#method_exclude_apa[,3] <- printnum(method_exclude_apa[,3])
+#apa_table(method_exclude_apa, caption = "Method vs Dropout")
+kable(coef(method_exclude.m_sum),caption = "Caption.")
+```
+
+```{r Plot of Effect of Method on Dropout Rate, echo = FALSE, ig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Percent dropout as explained by different methods."}
+method_exclude.plot
+```
+
+Methods which retain a higher percentage of participants might either be more suitable to test infants, decreasing noise as most participants are on task, or less selective, thus increasing noise as participants who for example are fussy are more likely to enter the data pool. It is thus relevant to turn to ES.
+
+### Effect sizes as a function of procedure
+
+We built a meta-analytic model with the effect size measure Cohen's *d* as the dependent variable, method and mean age centered as independent variables. The model also includes the variance of *d* for sampling variance, and paper within meta-analysis as a random effect (because we assume that within a paper experiments and thus effect sizes will be more similar to each other than across papers). We again selected central fixation as baseline method, but could include more datasets (as some had ES so included here, but not  reported drop-out rates and thus not included above). 
+
+```{r Effect of Method, echo = FALSE, results='asis'}
+#method_rma_apa <- coef(method.rma_sum)
+#No idea why this is not working when knitting, works inline
+#method_rma_apa$estimate <- printnum(method_rma_apa$estimate)
+#method_rma_apa$se <- printnum(method_rma_apa$se)
+#method_rma_apa$zval <- printnum(method_rma_apa$zval)
+#method_rma_apa$pval <- printnum(method_rma_apa$pval)
+#method_rma_apa$ci.lb <- printnum(method_rma_apa$ci.lb)
+#method_rma_apa$ci.ub <- printnum(method_rma_apa$ci.ub)
+#apa_table(method_rma_apa, caption ="Effect of d by method with central fixation as baseline method.")
+#kable(method.rma_sum, caption = "Effect of d by method with central fixation as baseline method.", digits = 3)
+```
+
+
+
+```{r Plot of Effect of Method, echo = FALSE, ig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Effect size as explained by different methods."}
+method.plot
+```
+
+The model results in Table XXX show that compared to central fixation only conditioned headturn and looking while listening yield reliably higher effect sizes, all other methods do not statistically differ from this baseline. When factoring in age, forced choice and looking while listening show significant interactions, indicating an improvement as infants mature. Age is marginally above the significance threshold, indicating that as infants mature effect sizes increase across methods -- an observation consistent with the view that infants and toddlers become more proficient language users and are increasingly able to react appropriately in the lab, yielding higher effect sizes. 
+
+[CONSIDER MOVING TO DISCUSSION OR REWRITING: Comparing our analyses (Table XXX) and Figure YY in this section with those in the previous section, it seems that high drop-out rates might be offset by high effect sizes in the case of conditioned headturn. While drop-out rates are around 40-50%, effect sizes are above 1. Stimulus alternation does not fall into this pattern of high drop-out rates being correlated with high effect sizes, as the observed outcomes are in the range typical for meta-analyses in our dataset. 
+There is an important caveat to this interpretation that some methods, specifically conditioned headturn, which have higher dropout rates, are better at generating high effect sizes due to decreased noise (e.g., by excluding infants that are not on task). Studies with fewer participants (thanks to higher drop-out rates) might simply be underpowered, and thus any significant finding is likely to over-estimate the effect.]
+
+
+# Discussion 
+
+
+## Concrete recommendations for developmental psychologists
+
+### 1. Calculate power prospectively
+
+### 2. Study planning
+
+### 3. Increase availability and use of meta-analyses
+
+ADD SOMEWHERE BELOW We will investigate publication biases in our data with standard meta-analytic tool and further discuss how meta-analyses in general, and repositories such as MetaLab in particular, can be a "home" for null results. A cumulative view can help isolate factors that systematically lead to effect sizes closer to zero, or what is often called boundary conditions. Prerequisite for such analyses is a systematic and consistent reporting of such factors; if they are relevant this should however be the case according to standard scientific practice. 
+
+
+
+To support the improvement current practices, we propose to make meta-analyses available in the form of ready-to-use online tools, dynamic reports, and as raw data. These different levels allow researchers with varying interest and expertise interests to make the best use of the extant record on infant language development, including study planning by choosing robust methods and appropriate sample sizes. There are additional advantages for interpreting single results and for theory building that emerge from our dataset. On one hand, researchers can easily check whether their study result falls within the expected range of outcomes for their research question -- indicating whether or not a potential moderator influenced the result. On the other hand, aggregating over many data points allows for the tracing of emerging abilities over time, quantifying their growth, and identifying possible trajectories and dependencies across phenomena (for a demonstration see @SynthesisPaper). Finally, by making our data and source code open, we also invite contributions and can update our data, be it by adding new results, file-drawer studies, or new datasets. Our implementation of this proposal is freely online available at metalab.stanford.edu.
+
+We have shown that power varies greatly across phenomena and that method choice is important. It turns out, however, that researchers do not choose the most robust methods. This might to be due to a lack of consideration of meta-analytic effect size estimates. One of the reasons for this is a lack of information on and experience in how to interpret effect size estimates and use them for study planning [@Mills-Smith2015]. 
+Meta-analyses on infant language development are also rare, as showcased by the fact that the present dataset relied on the authors' involvement, and only two out of XXX meta-analyses used could be extracted from the extant work, and an extensive search in the present literature did not yield additional candidates (excluding clinical contexts). Conducting a meta-analysis is a laborious process, particularly according to common practice where only a few people do the work, with little support tools and educational materials available. Incentives for creating meta-analyses are low, as public recognition is tied to a single publication. The benefits of meta-analyses for the field, for instance the possibility to conduct power analyses, are often neither evident nor accessible to individual researchers, as the data are not shared and traditional meta-analyses remain static after publication, aging quickly as new results emerge.
+
+A different application of meta-analytic tools is within a paper reporting on several studies. [expand]
+
+### 3. Report everything and ideally add anonymized supplementary materials
+
+
+A possible reason for prospective power calculations and meta-analyses being rare lies in the availability of data in published reports. To be able to draw the conclusions we did in this paper, be it in the form of reported effect sizes within paper or as ready-to-use dataset. As noted elsewhere, researchers would ideally always report effect sizes. Despite long-standing recommendations to move beyond the persistent focus on *p*-values (such as @APA2001), a shift towards effect sizes or even the reporting of them is not (yet) widely adopted [@Mills-Smith2015]. 
+A final impediment to meta-analyses in developmental science are current reporting standards, which make it difficult and at times even impossible to compute effect sizes from the published literature. 
+
+
+## Best practices when creating new meta-analyses 
+
+### Data standardization and sharing of materials
+
+### Visualization 
+
+### Community-augmented meta-analyses
+
+
+### Metalab as a model for other domains in child development research
+
+
+
+
+## Conclusion
+
+
+\newpage
+
+
+
+# References
+
+\setlength{\parindent}{-0.5in}
+\setlength{\leftskip}{0.5in}
+
+\newpage
+## Appendix  
+
+### Replication and replicability
+
+In the present paper, replication attempts are defined as experiments tapping into the same phenomenon, provided that they use conceptually comparable methods. A result that is stable despite theory-irrelevant variation (from the date on which  data were collected to the precise stimuli being used, depending on how the phenomenon is defined) can be taken as an indicator that the phenomenon under investigation is robust. If an effect does not generalize across independent attempts, including due to differences in stimuli or populations, it is possible that a previously unknown conceptual limitation has been uncovered, which needs to be specified for future replication attempts and, considered when building theories on the general effect.  
+
+
+### Effect sizes 
+
+The classical experimental result is measured in terms of a binary distinction: Was the *p*-value significant or not? Beyond answering that simple question, *p*-values cannot offer a quantification of a phenomenon nor can they directly be compared. However, both properties are desirable, especially in a developmental context. We would like to address questions such as how much children improve as they mature or when an ability emerges. Comparing significant and non-significant results to determine the onset of an ability is not a suitable use of *p*-values. The null hypothesis, for example that two groups do not differ, is in fact not being tested, so it cannot be considered confirmed when observing a high *p*-value. Instead, *p*-values can only support rejections of the null hypothesis with a certainty that the data at hand are incompatible with it below a pre-set threshold. 
+
+Effect sizes quantify a phenomenon by standardizing differences between groups (either of observations in within-participant designs or of participants) by the variance of each group.\footnote{The effect size defined here is one of three types, we focus on standardized mean differences for clarity, but note that other paradigms might require a different effect size family.} Thereby, statements such as improvements with age become statistically founded. Two counter-intuitive fact about effect sizes should be noted. First, a large effect can coincide with a non-significant *p*-value, for example in the presence of large variance around the mean and conversely a significant *p*-value might indicate a small effect, provided the estimate is sufficiently precise. Second, and somewhat related, numeric differences between group means do not determine effect sizes. Again, the variance around those means plays a crucial role, scaling the effect size accordingly. 
