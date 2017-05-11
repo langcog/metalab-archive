@@ -18,6 +18,7 @@ sig_plot <- ggplot(all_data, aes(p_calc, abs(d_calc)),group_by(sig)) +
   geom_point(size = all_data$n/20, alpha = .5) +
   xlab("Recalculated p-value") +
   ylab("Absolute value of Cohen's d") +
+  ylim(0, 2) +
   theme_classic() +
   theme(axis.line.x = element_line(), axis.line.y = element_line())
 
@@ -37,7 +38,7 @@ p_data = all_data %>%
 pcurve.plot <- ggplot(p_data, aes(p_calc)) +
   facet_wrap(~dataset, scales = "free") +
   geom_vline(xintercept = .05) +
-  geom_histogram(binwidth = .01) +
+  geom_histogram(breaks = seq(0, 0.05,by=0.01)) +
   geom_density(adjust = .5) +
   xlim(0, .05) +
   xlab("p-value (recalculated)")  +

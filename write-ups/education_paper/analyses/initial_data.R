@@ -20,7 +20,7 @@ library(lme4)
 all_data = all_data %>%
   filter(is.na(condition_type) | condition_type == "critical") %>%
   filter(dataset!="Statistical word segementation") %>%
-  filter(dataset!="Pointing and vocabulary (concurrent)") %>%
+  filter(dataset!="Pointing and vocabulary (longitudinal)") %>%
   filter(infant_type == "typical")
 
 
@@ -46,7 +46,3 @@ clean_data = all_data %>%
 #Comment out if you do not want to remove outliers
 all_data = clean_data
 
-
-#### Collapse non-indepent rows ####
-
-#TODO

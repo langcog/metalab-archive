@@ -11,5 +11,4 @@ source("analyses/funnel.R")
 source("analyses/bias.R")
 
 ## SAVE ENVIRONMENT FOR USE IN PAPER ####
-save.image("educationpaper_environment.RData") # may need to change this file path slightly
-
+save.image("educationpaper_environment.RData")

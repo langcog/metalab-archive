@@ -1,6 +1,10 @@
 ## LOAD DATA AND PACKAGES ####
 #source("analyses/initial_data.R") # only do this if running script alone, otherwise leave commented
 
+## prelims ##
+
+axislabels = c("CF", "CondHT", "FC", "HPP", "LwL", "SA")
+
 
 ## METHOD VS EXCLUDED ####
 
@@ -63,17 +67,16 @@ method_exclude.m_sum = summary(method_exclude.m)
 
 ## PLOT OF EFFECT OF METHOD ON DROPOUT RATE ####
 # Make plot
-method_exclude.plot = ggplot(method_exclude_data, aes(x = method, y = percent_dropout, color = method)) +
+method_exclude.plot = ggplot(method_exclude_data, aes(x = method, y = percent_dropout)) +
   geom_boxplot() +
-  geom_jitter(size = .5, alpha = .25) +
+  geom_jitter(size = .5, alpha = .35) +
   xlab("Method") +
   ylab("Percent Dropout") +
-  labs(color = "Method") +
-  scale_color_brewer(type = 'div', palette = 'Set2') +
+  #labs(color = "Method") +
+  #scale_color_brewer(type = 'div', palette = 'Set2') +
+  scale_x_discrete(labels = axislabels) +
   theme_classic() +
-  theme(axis.line.x = element_line(), axis.line.y = element_line(),
-        legend.position = "top", axis.text.x=element_blank(),
-        axis.ticks.x=element_blank())
+  theme(text = element_text(size=16), axis.line.x = element_line(), axis.line.y = element_line(), legend.position='none')
 
 
 ## EFFECT OF METHOD ####
@@ -88,17 +91,16 @@ method.rma_coef = coef(method.rma_sum)
 
 ## PLOT OF EFFECT OF METHOD ####
 # Make plot
-method.plot = ggplot(method_data, aes(x = method, y = d_calc, color = method)) +
+method.plot = ggplot(method_data, aes(x = method, y = d_calc)) +
   geom_hline(yintercept = 0, colour = "grey") +
   geom_boxplot() +
-  geom_jitter(size = .5, alpha = .25) +
+  geom_jitter(size = .5, alpha = .35) +
   xlab("Method") +
   ylab("Effect size (Cohen's d)") +
   #xlim(0, 40) +
-  #ylim(-1.5, 3.3) +
-  labs(color = "Method") +
-  scale_color_brewer(type = 'div', palette = 'Set2') +
+  ylim(-1.5, 3.3) +
+  #labs(color = "Method") +
+  #scale_color_brewer(type = 'div', palette = 'Set2') +
+  scale_x_discrete(labels = axislabels) +
   theme_classic() +
-  theme(axis.line.x = element_line(), axis.line.y = element_line(),
-        legend.position = "top", axis.text.x=element_blank(),
-        axis.ticks.x=element_blank())
+  theme(text = element_text(size=16), axis.line.x = element_line(), axis.line.y = element_line(), legend.position='none')

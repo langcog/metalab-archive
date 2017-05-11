@@ -1,6 +1,6 @@
 ---
-title: "MetaLab: A platform for cumulative meta-meta-analyses"
-author: Christina Bergmann, Page Piccinini, Sho Tsuji,Molly Lewis, Mika Braginsky, Michael C. Frank, and Alejandrina Cristia 
+title: "Supplementary Materials"
+author: Anonymized
 header-includes:
   - \usepackage{longtable}
   - \usepackage{caption}
@@ -11,7 +11,6 @@ output:
     code_folding: hide
     number_sections: no
     theme: cerulean
-subtitle: Supplementary Information
 toc: yes
 ---
 
@@ -28,7 +27,45 @@ options(scipen=1, digits=2)
 load("educationpaper_environment.RData") # if no changes to analyses run this, comment above
 ```
 
-The present document provides further information to accompany the paper 
+The present document provides further information to accompany the paper "Assessing methodological practices in language acquisition research through meta-analyses". 
+
+# Instructions to reproduce the analyses 
+
+To reproduce the analyses we show here, the following steps are necessary:
+1. Clone from github the metalab repository: https://github.com/langcog/metalab
+2. Download the scripts for this paper and put them in a subfolder. 
+3. Adjust the location of `global.R` in `initial_data.R` to read in the correct file. 
+4. Run the scripts. To load data, first run `initial_data.R`. 
+
+
+# Data preprocessing
+
+We preprocess the data to exclude data testing special populations, non-critical conditions, and to remove outliers. We also exclude a longitudinal dataset from these analyses, because it is not suitable for our purposes. 
+
+```{r Preprocessing, eval = FALSE}
+
+## CLEAN DATA ####
+all_data = all_data %>%
+  filter(is.na(condition_type) | condition_type == "critical") %>%
+  filter(dataset!="Pointing and vocabulary (longitudinal)") %>%
+  filter(infant_type == "typical")
+
+
+#Remove outliers
+
+clean_data = all_data %>%
+  group_by(dataset) %>%
+  mutate(mean_es = median(d_calc)) %>%
+  mutate(sd_es = sd(d_calc)) %>%
+  ungroup() %>%
+  mutate(no_outlier = ifelse(d_calc < mean_es+3*sd_es, ifelse(d_calc > mean_es-3*sd_es, TRUE, FALSE), FALSE))  %>%
+  filter(no_outlier)
+
+#Comment out if you do not want to remove outliers
+all_data = clean_data
+
+```
+
 
 # Effect size calculation
 
@@ -197,51 +234,9 @@ sig_plot
 
 Single experiments are often evaluated by their associated *p*-value, despite the frequent criticisms and well-documented shortcomings of that measure [@Ioannidis2005]. One of them is particularly relevant here: In the Pearson-Neyman model (implicitly) underlying most current empirical research, *p*-values should be used to inform a binary decision, namely to either reject the null hypothesis or fail to do so; in contrast, effect sizes are a continuous measure. Researchers sometimes believe that significant *p*-values are equivalent to very high effect sizes, and that non-significant *p*-values are due to very low effect sizes near zero lead; and more generally that *p*-values have a continuous interpretation such that very low *p*-values necessarily indicate very strong evidence for differences, whereas values near .05 indicate weaker evidence for a difference.
 
-Figure 2 addresses these intutions by showing p-value and effect size data within MetaLab. The vertical line marks the usual binary decision threshold for *p*-values at .05. We see that, for extreme values, namely effect sizes near zero and above 2, the intuition that *p*-values will be respectively large and small is borne out. However, the majority of effect sizes we observe falls in a range that with sufficient power, in other words a sufficiently large sample, can lead to a significant outcome. Underpowered studies, in contrast, might tap into a similar sized effect but fail to reach significance. In Figure 1, the grey horizontal band illustrates such a region where both significant and non-significant results are observed. Further, 5 of the 12 meta-analytical effect sizes fall in a range where single studies are not significant, that is below d = `r min(abs(all_data$d_calc[all_data$sig==T]))`. 
+Figure 2 addresses these intutions by showing p-value and effect size data within MetaLab. The vertical line marks the usual binary decision threshold for *p*-values at .05. We see that, for extreme values, namely effect sizes near zero and above 2, the intuition that *p*-values will be respectively large and small is borne out. However, the majority of effect sizes we observe falls in a range that with sufficient power, in other words a sufficiently large sample, can lead to a significant outcome. Underpowered studies, in contrast, might tap into a similar sized effect but fail to reach significance. In Figure 2, the grey horizontal band illustrates such a region where both significant and non-significant results are observed. 
 
 
-
-
-### Publication biases
-
-
-
-
-It is well established that psychological research has a strong bias against non-significant findings, with an unduly large proportion of published studies containing significant p-values (estimates ranging between .9% and 12% in psychology; manylabs2; Greenwald72; Sterling58; Sterling95) CITE. Additionally, although it is desirable for results to be surprising, it is equally if not more important that they be interpretable given current theories and previous data. As a result of the latter bias, there may be under-reporting of certain types of results depending on the direction of the result rather than its strengt. We would like to point out that in the context of developmental psychology, both of these bias may be statistically less strong. As to the first, given the field-specific habit of interpreting non-significant results as evidence of absence, it is possible that a higher proportion of results contain non-significant results. As to the second, many infant methods do not specify directions of results that are universally accepted. For instance, in preferential looking time studies infants can show a preference for familiar or for novel stimuli -- both are considered interpretable and valid. This may therefore lead to wider acceptance of a range of results. 
-
-
-
-
-There are numerous ways to estimate whether the published literature is biased. The most common and straightforward is an assessment of funnel plot asymmetry. A funnel plot displays effect sizes against their variance (with 0 being plotted up). The expectation in the absence of biases is that effect sizes are equally distributed around the meta-analytic mean, and that the are spread out more the larger their variance, creating a triangle-like shape. Biases can lead to distortions in this distribution. The large the asymmetry, the more likely a bias is. We quantify funnel plot asymmetry with a rank correlation test implemented in the metafor package [@metafor].
-
-
-
-
-Funnel plots, displaying effect sizes of single studies against their variance, show whether observed results are evenly spread around their median. Across datasets, the difference in distributions and range covered in effect sizes is striking, as is the variance in observed precision (the highest points correspond to high precision and low variance). The indicated relationship between effect sizes and their variance was assessed with a nonparametric test and turnd out to be significant  -- indicating publication bias in favor of significant results -- for four datasets. 
-
-```{r Funnel, echo = FALSE, ig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Funnel plots of all datasets with linear regression line indicated in grey. The dashed red line indicates the median effect size, the dotted black line zero. The grey triangle denotes the expected range area of effect sizes in the absence of bias or heterogeneity."}
-funnel_grid
-#data_funnel
-```
-
-
-
-```{r FunnelData}
-data_funnel
-```
-
-
-A second analysis pertains to the relationship between observed effect sizes in single studies and the associated sample size. The smaller the effect size, the larger the sample needed for a significant *p*-value. If sample size decisions are made before data collection and all results are published, we expect no relation between observed effect size and sample size. A significant non-parametic correlation indicates that only those studies with significant outcomes were published [@pubbias]. 
-
-```{r Bias, echo = FALSE, ig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Caption."}
-bias_grid
-```
-Only two datasets turn out to have a significant negative relationship between sample size and effect size, indicating bias, both assessing infants' ability to discriminate vowels. As discussed in the methods section, however, a number of alternative explanations are possible. As soon as researchers are aware that they are measuring a more subtle effect (in this case for example when selecting a contrast that is acoustically more difficult to distinguish) and adjust sample sizes, we expect to observe this negative correlation. However, in both datasets, funnel plot asymmetry was also significant. Thus, we might conclude that in two out of the `r length(unique(all_data$dataset))` datasets in the present paper, we find significant publication bias. 
-
-
-```{r BiasData}
-data_bias
-```
 
 
 ### Power over time
@@ -254,14 +249,52 @@ Across datasets we observe a general negative trend, with varied steepness. The 
 power_year.plot
 ```
 
-## Publication biases
 
 
-```{r Funnel data, echo = FALSE}
-kable(data_funnel, col.names = c("Meta-analysis (MA)", "Kendall's Tau", "p-value"), digits = 2, caption = "Non-parametric test for funnel plot assymmetry. A significant value indicates bias.")
+### Publication biases, p-hacking, etc
+
+
+It is well established that psychological research has a strong bias against non-significant findings, with an unduly large proportion of published studies containing significant p-values [estimates ranging between .9% and 12% in psychology; @manylabs2; @Greenwald72; @Sterling58; @Sterling95]. Additionally, although it is desirable for results to be surprising, it is equally if not more important that they be interpretable given current theories and previous data. As a result of the latter bias, there may be under-reporting of certain types of results depending on the direction of the result rather than its strengt. We would like to point out that in the context of developmental psychology, both of these bias may be statistically less strong. As to the first, given the field-specific habit of interpreting non-significant results as evidence of absence, it is possible that a higher proportion of results contain non-significant results. As to the second, many infant methods do not specify directions of results that are universally accepted. For instance, in preferential looking time studies infants can show a preference for familiar or for novel stimuli -- both are considered interpretable and valid. This may therefore lead to wider acceptance of a range of results. 
+
+
+
+### Funnel plot asymmetry
+
+
+There are numerous ways to estimate whether the published literature is biased. The most common and straightforward is an assessment of funnel plot asymmetry. A funnel plot displays effect sizes against their variance (with 0 being plotted up). The expectation in the absence of biases is that effect sizes are equally distributed around the meta-analytic mean, and that the are spread out more the larger their variance, creating a triangle-like shape. Biases can lead to distortions in this distribution. The large the asymmetry, the more likely a bias is. We quantify funnel plot asymmetry with a rank correlation test implemented in the metafor package [@metafor].
+
+Across datasets, the difference in distributions and range covered in effect sizes is striking, as is the variance in observed precision (the highest points correspond to high precision and low variance). The indicated relationship between effect sizes and their variance was assessed with a nonparametric test and turnd out to be significant  -- indicating publication bias in favor of significant results -- for five datasets. 
+
+```{r Funnel, echo = FALSE, ig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Funnel plots of all datasets with linear regression line indicated in grey. The dashed red line indicates the median effect size, the dotted black line zero. The grey triangle denotes the expected range area of effect sizes in the absence of bias or heterogeneity."}
+funnel_grid
 ```
 
 
-```{r Bias data, echo = FALSE}
-kable(data_bias, col.names = c("Meta-analysis (MA)", "Kendall's Tau", "p-value"), digits = 2, caption = "Non-parametric correlations between sample sizes and effect sizes for each dataset. A significant value indicates bias.")
+```{r FunnelData, echo = FALSE}
+kable(data_funnel, col.names = c("Meta-analysis", "Kendall's Tau", "p-value"), digits = 2, caption = "Non-parametric test for funnel plot assymmetry. A significant value indicates bias.")
 ```
+
+
+
+### P-curves
+
+A possible consequences of undisclosed flexibility is a distribution of *p* values with increased frequency just below the significance threshold, and/or an overall flat distribution of *p* values indicating that those results that were significant in fact represent the to be expected 5% type-I error. We will use p-curves to assess both whether there is an excess of *p* values just below the significance threshold and whether *p* values are distributed in a way that is or is not consistent with a true phenomenon being tested [@pcurve]. 
+
+
+For analyses involving *p* values, we re-computed *p* values from our effect-size estimates. This is due to the following reasons: First, we did not have the same information available for all data points, even within the same meta-analysis. Second, exact *p* values are often not reported  but rather as *p*<.05 and similar notations. In addition, two datasets only contain effect sizes, because they are based on extant meta-analyses. Finally, *p* values are not always computed, or, when they were computed, *p* values might not be reported correctly and/or consistently [@statcheck].  The recalculation pipeline is as follows: For papers where *t* values were not available, we transform Cohen's *d* into Pearson's *r*, from which it is possible to calculate a *t* value. *p* values were then computed accordingly from *t* values (either reported or re-calculated), taking into account the degrees of freedom of a specific experiment.
+
+
+
+Figure 3 shows the distribution of *p* values below the significance threshold of .05. The bars indicate counts and the line plot represents density. Note that *p* values were recalculated based on effect sizes to ensure a consistent basis for our conclusions. For reliability purposes, we only discuss datasets with more than 10 *p* values between 0 and .05. In the absence of questionable research practices and the presence of an effect, we expect a distribution biased towards small values. In the absence of both p-hacking and an effect, the distribution should be flat, as all *p* values are equally likely to occur. Unexpected "bumps" towards higher *p* values in contrast can indicate severe p-hacking, including adding and removing samples and/or predictors, and conducting multiple statistical analyses [@Ioannidis2005; @Simmons2011]. 
+
+
+```{r Pcurves, echo = FALSE, ig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "P-curves of all datasets with more than 10 significant (re-calculated) *p* values, the bars denote frequency, the lines density."}
+pcurve.plot
+```
+
+All of the datasets that could be included in this analysis display the expected right skew, but for some, *p* values just below .05 are more frequent than smaller ones between .02 and .03. For one dataset, phonotactic learning, this shape is particularly concerning. Further, the meta-analytic effect size points to an absence of an effect. Both observations have been made in the paper describing this meta-analysis in depth and are discussed there in more detail [@MetaPhon].
+In all remaining cases the most frequent *p* values were the smallest, this is in line with the expected distribution assuming there is evidential value -- an observation confirmed by the according statistical tests [see also @SynthesisPaper]. We thus conclude that the present meta-analyses largely reflect phenomena that are real and are based on reports that show no tangible symptoms of questionable research practices.  
+
+
+
+
