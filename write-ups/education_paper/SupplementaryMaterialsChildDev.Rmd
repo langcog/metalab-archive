@@ -12,6 +12,7 @@ output:
     number_sections: no
     theme: cerulean
 toc: yes
+bibliography: metalab_education.bib
 ---
 
 ```{r Preamble, echo = FALSE, warning = FALSE, message = FALSE}
@@ -27,11 +28,14 @@ options(scipen=1, digits=2)
 load("educationpaper_environment.RData") # if no changes to analyses run this, comment above
 ```
 
-The present document provides further information to accompany the paper "Assessing methodological practices in language acquisition research through meta-analyses". 
+\newpage
+
+**The present document provides further information to accompany the paper "Assessing methodological practices in language acquisition research through meta-analyses". **
 
 # Instructions to reproduce the analyses 
 
-To reproduce the analyses we show here, the following steps are necessary:
+To reproduce the analyses we show here, the following steps are necessary:  
+
 1. Clone from github the metalab repository: https://github.com/langcog/metalab
 2. Download the scripts for this paper and put them in a subfolder. 
 3. Adjust the location of `global.R` in `initial_data.R` to read in the correct file. 
@@ -69,7 +73,7 @@ all_data = clean_data
 
 # Effect size calculation
 
-Effect sizes were calculated based on standard formulae, below we showcase commented code from the MetaLab platform at http://metalab.stanford.edu and the associated github repository https://github.com/langcog/metalab. In the source script `compute_es.R` a number of special cases are also computed, we leave them out of this document for brevity. 
+Effect sizes were calculated based on standard formulae, below we showcase commented code from the MetaLab platform at http://metalab.stanford.edu and the associated github repository https://github.com/langcog/metalab. In the source script `compute_es.R` a number of special cases are also computed, we leave them out of this document for brevity. The computations are based on the following references: @Lipsey; @morris2002combining; @dunlap1996meta; @howell2012statistical; @metafor; 
 
 ```{r ESCalc, eval = FALSE}
 
@@ -132,7 +136,6 @@ Effect sizes were calculated based on standard formulae, below we showcase comme
     }
     if (complete(n_1, d_calc)) {
       #now that effect size are calculated, effect size variance is calculated
-      #d_var_calc <- ((1 / n_1) + (d_calc ^ 2 / (2 * n_1))) * 2 * (1 - corr) #we used this until 4/7/17
       d_var_calc <- (2 * (1 - corr)/ n_1) + (d_calc ^ 2 / (2 * n_1)) # Lipsey & Wilson (2001)
     } else  if (complete(r)) {
       #if r instead of d is reported, transform for standardization
@@ -158,7 +161,6 @@ Effect sizes were calculated based on standard formulae, below we showcase comme
       es_method  <- "f_one"
     }
     if (complete(n_1, d_calc)) {
-      #d_var_calc <- (2/n_1) + (d_calc ^ 2 / (4 * n_1)) #we used this until 4/7/2017
       d_var_calc <- (1 / n_1) + (d_calc ^ 2 / (2 * n_1)) #this models what is done in metafor package, escalc(measure="SMCR"() (Viechtbauer, 2010)
       
     } else if (complete(r, n_1)){ 
@@ -195,36 +197,23 @@ Readers interested in calculating effect sizes for single papers might want to t
 https://katherinemwood.shinyapps.io/lakens_effect_sizes/
 https://osf.io/ixGcd/ 
 
-## Data availability
+## Additional visualizations
 
-In this section we describe the source data, with a focus on which data were used to compute effect sizes according to the formulae above. 
+Both analyses on method choice took into account participant age; for clarity we did not visualize the interaction between method, effect size, and age. Here we provide the respective plots for the interested reader. 
 
-```{r VisESCalc}
+```{r DropoutPlot, echo = FALSE, ig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Percent dropout as explained by different methods and participant age."}
+method_exclude_age.plot
+```
 
-counts <- all_data %>%
-  select(dataset, es_method) 
-
-plot_esbasis = ggplot(counts) +
-  geom_bar(aes(x = es_method)) +
-  facet_wrap(~dataset, ncol=2) +
-  ylab("Number of effect sizes") + 
-  xlab("Method") +
-  theme(axis.text.x = element_text(angle=65, vjust=.8, hjust=.8))
-        
-plot_esbasis
+```{r MethodPlot, echo = FALSE, ig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Effect size by different methods and age."}
+method_age.plot
 ```
 
 
-
+\newpage
 
 # Additional analyses
 
-
-```{r Plot of Difference of d Values, echo = FALSE, fig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap="Correlation of largest d from oldest paper and difference between oldest d and meta-analytic d."}
-d_comparison_diff.plot
-```
-
-To illustrate the disparity between the oldest effect size and the meta-analytic effect, and consequently the difference in power, we plot the difference between both against the oldest effect. This difference is larger as oldest effect size increases, with an average of `r mean(d_comparison_full$diff_d)` compared with an average effect size of `r mean(abs(d_comparison_full$d))` (note that we based this on the absolute value). The plot showcases that researchers might want to be wary of large effects, as they are more likely to be non-representative of the true phenomenon compared to smaller initial effects being reported. Especially when making decisions about sample sizes, large effect might thus not be the best guide. Taking the above-mentioned mean values as example, a realistic sample size to ensure 80% power would be `r round(pwr.t.test(n = NULL,d = mean(abs(d_comparison_full$d)), sig.level = .05, power=.80)$n, digits = 0)` participants, instead of `r round(pwr.t.test(n = NULL,d = mean(abs(d_comparison_full$largest_d)), sig.level = .05, power=.80)$n, digits = 0)` participants suggested by the first paper. While these numbers average over research questions and methods, which all influence the specific number of participants necessary, this example showcases that experimenters should take into account as much evidence as available to be able to plan for robust and reproducible studies. 
 
 ### How does effect size relate to *p*-values?
 
@@ -234,8 +223,34 @@ sig_plot
 
 Single experiments are often evaluated by their associated *p*-value, despite the frequent criticisms and well-documented shortcomings of that measure [@Ioannidis2005]. One of them is particularly relevant here: In the Pearson-Neyman model (implicitly) underlying most current empirical research, *p*-values should be used to inform a binary decision, namely to either reject the null hypothesis or fail to do so; in contrast, effect sizes are a continuous measure. Researchers sometimes believe that significant *p*-values are equivalent to very high effect sizes, and that non-significant *p*-values are due to very low effect sizes near zero lead; and more generally that *p*-values have a continuous interpretation such that very low *p*-values necessarily indicate very strong evidence for differences, whereas values near .05 indicate weaker evidence for a difference.
 
-Figure 2 addresses these intutions by showing p-value and effect size data within MetaLab. The vertical line marks the usual binary decision threshold for *p*-values at .05. We see that, for extreme values, namely effect sizes near zero and above 2, the intuition that *p*-values will be respectively large and small is borne out. However, the majority of effect sizes we observe falls in a range that with sufficient power, in other words a sufficiently large sample, can lead to a significant outcome. Underpowered studies, in contrast, might tap into a similar sized effect but fail to reach significance. In Figure 2, the grey horizontal band illustrates such a region where both significant and non-significant results are observed. 
+Figure 2 addresses these intutions by showing *p* value and effect size data within MetaLab. The vertical line marks the usual binary decision threshold for *p*-values at .05. We see that, for extreme values, namely effect sizes near zero and above 2, the intuition that *p*-values will be respectively large and small is borne out. However, the majority of effect sizes we observe falls in a range that with sufficient power, in other words a sufficiently large sample, can lead to a significant outcome. Underpowered studies, in contrast, might tap into a similar sized effect but fail to reach significance. In Figure 2, the grey horizontal band illustrates such a region where both significant and non-significant results are observed. 
 
+
+
+\newpage
+
+
+### Power distribution in meta-analyses
+
+
+How representative is our power estimate based on median sample size compared to single studies? We calculated power on the study level and visualize the results here. 
+
+```{r Plot of power over studies, echo = FALSE, fig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap="Summary plot of power across meta-analyses"}
+power_study.plot
+```
+
+
+
+\newpage
+
+
+
+### Correlation between oldest paper effect size and meta-analytic effect size
+```{r Plot of Difference of d Values, echo = FALSE, fig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap="Correlation of largest d from oldest paper and difference between oldest d and meta-analytic d."}
+d_comparison_diff.plot
+```
+
+To illustrate the disparity between the oldest effect size and the meta-analytic effect, and consequently the difference in power, we plot the difference between both against the oldest effect. This difference is larger as oldest effect size increases, with an average of `r mean(d_comparison_full$diff_d)` compared with an average effect size of `r mean(abs(d_comparison_full$d))` (note that we based this on the absolute value). The plot showcases that researchers might want to be wary of large effects, as they are more likely to be non-representative of the true phenomenon compared to smaller initial effects being reported. Especially when making decisions about sample sizes, large effect might thus not be the best guide. Taking the above-mentioned mean values as example, a realistic sample size to ensure 80% power would be `r round(pwr.t.test(n = NULL,d = mean(abs(d_comparison_full$d)), sig.level = .05, power=.80)$n, digits = 0)` participants, instead of `r round(pwr.t.test(n = NULL,d = mean(abs(d_comparison_full$largest_d)), sig.level = .05, power=.80)$n, digits = 0)` participants suggested by the first paper. While these numbers average over research questions and methods, which all influence the specific number of participants necessary, this example showcases that experimenters should take into account as much evidence as available to be able to plan for robust and reproducible studies. 
 
 
 
@@ -245,16 +260,18 @@ The comparison of initial and meta-analytic effect size has a number of caveats,
 For a more continuous approach, we thus investigate power (which is determined by effect size and sample size) as follows. We first generate a meta-analytic model for each dataset that takes into account infant age and method and then derive the respective to be expected effect size base on those data for each entry in this dataset. Power is then estimated based on the sample size actually tested. 
 Across datasets we observe a general negative trend, with varied steepness. The only positive trends occur in the upper ranges of estimated power and for older children. 
 
-```{r Plot of power over time, echo = FALSE, fig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap="To BE UPDATED: Summary plot of power across years and meta-analyses"}
+```{r Plot of power over time, echo = FALSE, fig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap="Summary plot of power across years and meta-analyses"}
 power_year.plot
 ```
 
+
+\newpage
 
 
 ### Publication biases, p-hacking, etc
 
 
-It is well established that psychological research has a strong bias against non-significant findings, with an unduly large proportion of published studies containing significant p-values [estimates ranging between .9% and 12% in psychology; @manylabs2; @Greenwald72; @Sterling58; @Sterling95]. Additionally, although it is desirable for results to be surprising, it is equally if not more important that they be interpretable given current theories and previous data. As a result of the latter bias, there may be under-reporting of certain types of results depending on the direction of the result rather than its strengt. We would like to point out that in the context of developmental psychology, both of these bias may be statistically less strong. As to the first, given the field-specific habit of interpreting non-significant results as evidence of absence, it is possible that a higher proportion of results contain non-significant results. As to the second, many infant methods do not specify directions of results that are universally accepted. For instance, in preferential looking time studies infants can show a preference for familiar or for novel stimuli -- both are considered interpretable and valid. This may therefore lead to wider acceptance of a range of results. 
+It is well established that psychological research has a strong bias against non-significant findings, with an unduly large proportion of published studies containing significant *p* values [estimates ranging between .9% and 12% in psychology; @Manylabs2; @Greenwald72; @Sterling58; @Sterling95]. Additionally, although it is desirable for results to be surprising, it is equally if not more important that they be interpretable given current theories and previous data. As a result of the latter bias, there may be under-reporting of certain types of results depending on the direction of the result rather than its strengt. We would like to point out that in the context of developmental psychology, both of these bias may be statistically less strong. As to the first, given the field-specific habit of interpreting non-significant results as evidence of absence, it is possible that a higher proportion of results contain non-significant results. As to the second, many infant methods do not specify directions of results that are universally accepted. For instance, in preferential looking time studies infants can show a preference for familiar or for novel stimuli -- both are considered interpretable and valid. This may therefore lead to wider acceptance of a range of results. 
 
 
 
@@ -271,10 +288,12 @@ funnel_grid
 
 
 ```{r FunnelData, echo = FALSE}
-kable(data_funnel, col.names = c("Meta-analysis", "Kendall's Tau", "p-value"), digits = 2, caption = "Non-parametric test for funnel plot assymmetry. A significant value indicates bias.")
+kable(data_funnel, col.names = c("Meta-analysis", "Kendall's Tau", "*p* value"), digits = 2, caption = "Non-parametric test for funnel plot assymmetry. A significant value indicates bias.")
 ```
 
 
+
+\newpage
 
 ### P-curves
 
@@ -296,5 +315,13 @@ All of the datasets that could be included in this analysis display the expected
 In all remaining cases the most frequent *p* values were the smallest, this is in line with the expected distribution assuming there is evidential value -- an observation confirmed by the according statistical tests [see also @SynthesisPaper]. We thus conclude that the present meta-analyses largely reflect phenomena that are real and are based on reports that show no tangible symptoms of questionable research practices.  
 
 
+\newpage
+
+
+
+# References
+
+\setlength{\parindent}{-0.5in}
+\setlength{\leftskip}{0.5in}
 
 

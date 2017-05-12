@@ -72,11 +72,21 @@ method_exclude.plot = ggplot(method_exclude_data, aes(x = method, y = percent_dr
   geom_jitter(size = .5, alpha = .35) +
   xlab("Method") +
   ylab("Percent Dropout") +
-  #labs(color = "Method") +
-  #scale_color_brewer(type = 'div', palette = 'Set2') +
   scale_x_discrete(labels = axislabels) +
   theme_classic() +
   theme(text = element_text(size=16), axis.line.x = element_line(), axis.line.y = element_line(), legend.position='none')
+
+
+method_exclude_age.plot = ggplot(method_exclude_data, aes(x = mean_age_months, y = percent_dropout, color = method)) +
+  geom_smooth(method = "lm") +
+  geom_jitter(size = .5, alpha = .35) +
+  xlab("Age in Months") +
+  ylab("Percent Dropout") +
+  labs(color = "Method") +
+  scale_color_brewer(type = 'div', palette = 'Set2') +
+  xlim(0, 42) +
+  theme_classic() +
+  theme(text = element_text(size=16), axis.line.x = element_line(), axis.line.y = element_line(), legend.position='top')
 
 
 ## EFFECT OF METHOD ####
@@ -99,8 +109,19 @@ method.plot = ggplot(method_data, aes(x = method, y = d_calc)) +
   ylab("Effect size (Cohen's d)") +
   #xlim(0, 40) +
   ylim(-1.5, 3.3) +
-  #labs(color = "Method") +
-  #scale_color_brewer(type = 'div', palette = 'Set2') +
   scale_x_discrete(labels = axislabels) +
   theme_classic() +
   theme(text = element_text(size=16), axis.line.x = element_line(), axis.line.y = element_line(), legend.position='none')
+
+method_age.plot = ggplot(method_data, aes(x = mean_age_months, y = d_calc, color = method)) +
+  geom_hline(yintercept = 0, colour = "grey") +
+  geom_smooth(method = "lm") +
+  geom_jitter(size = .5, alpha = .35) +
+  xlab("Age in Months") +
+  ylab("Effect size (Cohen's d)") +
+  xlim(0, 42) +
+  ylim(-1.5, 3.3) +
+  labs(color = "Method") +
+  scale_color_brewer(type = 'div', palette = 'Set2') +
+  theme_classic() +
+  theme(text = element_text(size=16), axis.line.x = element_line(), axis.line.y = element_line(), legend.position='top')
