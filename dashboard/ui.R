@@ -376,26 +376,30 @@ person_content <- function(person) {
       )
   )
 }
-
-tab_team <- tabItem(
-  tabName = "team",
-  box(width = "100%", #status = "danger",
-      h3("Meet the MetaLab team"), br(),
-      map(split(people, ceiling(seq_along(people) / 4)),
-          function(people_row) {
-            fluidRow(
-              map(people_row[1:length(people_row)], person_content)
-            )
-          })
-  )
-)
+# 
+# tab_team <- tabItem(
+#   tabName = "team",
+#   box(width = "100%", #status = "danger",
+#       h3("Meet the MetaLab team"), br(),
+#       map(split(people, ceiling(seq_along(people) / 4)),
+#           function(people_row) {
+#             fluidRow(
+#               map(people_row[1:length(people_row)], person_content)
+#             )
+#           })
+#   )
+# )
 
 
 #############################################################################
 # DASHBOARD STRUCTURE
 
+#tabs <- c(list(tab_home, tab_visualizations, tab_power, tab_data,
+#               tab_documentation, tab_contribute, tab_team), report_tabs)
+
 tabs <- c(list(tab_home, tab_visualizations, tab_power, tab_data,
-               tab_documentation, tab_contribute, tab_team), report_tabs)
+               tab_documentation, tab_contribute), report_tabs)
+
 
 body <- dashboardBody(
   tags$head(includeScript("google_analytics.js")),
