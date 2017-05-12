@@ -51,10 +51,11 @@ d_comparison_diff.plot = ggplot(d_comparison_full, aes(x = largest_d, y = d)) +
   xlab("Largest Cohen's d for Oldest Paper") +
   ylab("Meta-analytic Cohen's d") +
   labs(color = "Meta-analysis") +
-  scale_color_brewer(type = 'div', palette = 'Paired') +
+  #scale_color_brewer(type = 'div', palette = 'Paired') +
   theme_classic() +
   theme(axis.line.x = element_line(), axis.line.y = element_line(),
         legend.position = "top")
+
 
 
 #### Power / ES over time ####
@@ -93,4 +94,22 @@ power_year.plot = ggplot(all_data , aes(x = year, y = power_estimate, color = da
   theme_classic() +
   theme(axis.line.x = element_line(), axis.line.y = element_line(),
         legend.position = "top")
+
+
+
+##### Power per study #####
+
+
+power_study.plot = ggplot(all_data , aes(x = dataset, y = power_estimate, color = dataset)) +
+  geom_hline(yintercept = .8) +
+  geom_boxplot() +
+  geom_jitter(size = .5, alpha = .35) +
+  xlab("Meta-Analysis") +
+  ylab("Estimated Power") +
+  scale_color_brewer(type = 'div', palette = 'Paired') +
+  theme_classic() +
+  theme(axis.line.x = element_line(), axis.line.y = element_line(), axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(), legend.position = "top")
+
+
 

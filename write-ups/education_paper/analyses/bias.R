@@ -9,10 +9,11 @@ bias_grid <-ggplot(all_data, aes(x = n, y = abs(d_calc))) +
   xlab("Sample size")  +
   ylab("Effect Size")  +
   geom_smooth(method = 'lm', se = F, colour = "darkgrey") +
-  geom_point(size = .5) +
-  theme_classic()
+  geom_point(size =.5, alpha = .75) +
+  theme_classic() +
+  theme(text = element_text(size=16), axis.line.x = element_line(), axis.line.y = element_line(), legend.position='none')
 
-# needs tweaking
+
 
 data_bias = all_data %>%
   nest(-dataset, .key = information) %>%

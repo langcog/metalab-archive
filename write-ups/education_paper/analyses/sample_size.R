@@ -23,6 +23,8 @@ MA_descriptives = all_data %>%
   mutate(n_total = n) %>% #ifelse(!is.na(n_2), n_1 + n_2, n_1)) %>% I think n does the same thing
   group_by(dataset) %>%
   summarise(age_dataset = median(mean_age_months),
+            age_min = min(mean_age_months),
+            age_max = max(mean_age_months),
             n_dataset = median(n_total),
             n_min = min(n_total),
             n_max = max(n_total),
@@ -43,9 +45,10 @@ MA_power = MA_descriptives %>%
 MA_summary = inner_join(MA_descriptives, MA_power) 
 
 MA_summary_table = MA_summary %>%
-  mutate(n = paste(as.character(n_dataset), " (", as.character(n_min), ", ", as.character(n_max), ")", sep = "")) %>%
+  mutate(age = paste(as.character(round(age_dataset, 0)), " (", as.character(round(age_min, 0)), "-", as.character(round(age_max, 0)), ")", sep = "")) %>%
+  mutate(n = paste(as.character(n_dataset), " (", as.character(n_min), "-", as.character(round(n_max, 0)), ")", sep = "")) %>%
   mutate(ES = paste(as.character(round(d, 2)), " (", as.character(round(se, 2)), ")", sep = "")) %>%
-  select(dataset, age_dataset, n, n_records, n_papers, ES, power)
+  select(dataset, age, n, n_records, n_papers, ES, power)
 
 
 ### DATA AVAILABLITY ####
