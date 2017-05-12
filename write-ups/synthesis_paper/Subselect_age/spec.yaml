@@ -718,3 +718,10 @@
   format:	
   example:      
   required:     no	
+
+- field:	multiple_age_groups_younger_older
+  description:  inworddb
+  type:		numeric
+  format:	
+  example:      
+  required:     no

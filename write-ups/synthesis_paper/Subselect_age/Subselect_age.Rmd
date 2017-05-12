@@ -70,21 +70,13 @@ inphondb_age <- inphondb_age%>%
   filter(stud_expt!= "Mugitani2009 2",stud_expt!= "Sato2010 4")
 
 
-#manual filtering still needs to be done on following studies:
-# MattysJusczyk2001
-# HoustonJusczyk2003
-# Nazzietal2006
-# WillitsSeidenbergSaffran2009
-# Kim2012
-# NishibayashiGoyetNazzi2014
-# HaryuKajikawa2016
-# Flocciaetal2016
-#Age rounding errors: HoustonSantelmann2004Jusczyk,ShiCutlerWerkerCruickshank2006, Kim2012
+#filtering is fine
+#done based on filtering column created by CB manually
+#count_ages only added for later rbind)
 inworddb_age <- all_data %>%
   filter(short_name=="inworddb")%>%
-  group_by(study_ID,native_lang,infant_type,Linguistic,words_to_passage,edge_alignment,familiarization_voice,familiarization_register,familiarization_affect,test_voice,test_register,indexical)%>%
   mutate(count_ages = length(unique(age_months_round))) %>%
-  filter(count_ages > 1)
+  filter(multiple_age_groups_younger_older > 0)
 
 
 #filtering is fine
@@ -162,5 +154,10 @@ word_recognition_age <- all_data %>%
   group_by(study_ID,infant_type,native_lang)%>%
   mutate(count_ages = length(unique(age_months_round))) %>%
   filter(count_ages > 1)
+
+
+subset <-bind_rows(gaze_following_age,idspref_age,inphondb_age[,1:116],inworddb_age,labadv_age[,1:116],
+               mutex_age,phonotactics_age[,1:116],pointing_concurrent_age,pointing_longitudinal_age,
+               sounds_age,symbolism_age,word_recognition_age)
 
 ```
