@@ -63,7 +63,7 @@ shinyServer(function(input, output, session) {
   
   data <- reactive({
     req(input$dataset_name)
-    all_data %>% filter(dataset == input$dataset_name)
+    all_data %>% filter(dataset == input$dataset_name, mean_age < 3000)
   })
   
   mod_data <- reactive({
