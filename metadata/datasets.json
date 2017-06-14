@@ -321,6 +321,28 @@
 		"longitudinal": "FALSE",
 		"moderators": ["label_present", "instruction_code",	"object_stimulus", "taxonomic_type"]
 	}
+	{
+		"name": "Statistical Word Segmentation",
+		"short_name": "statSeg",
+		"key": "1s9sMw6aUOaSqipPOVJMbR8UZkBv_f_fL9yD-kn8lLJQ",
+		"filename": "statSeg",
+		"citation": "Black & Bergmann (2017)",
+		"internal_citation": "(Black & Bergmann, 2017)",
+		"link": "",
+		"full_citation": "Black, A. & Bergmann, C. (2017). Quantifying infants' statistical word segmentation: A meta-analysis. In: Proceedings of the 39th Annual Conference of the Cognitive Science Society. Austin, TX: Cognitive Science Society",
+		"doi": "",
+		"systematic": "yes",
+		"search_strategy": "Expert list and strategic scholar search papers citing Saffran, Aslin, & Newport (1996) with infant/infancy, but not visual in the title. Second search with month/s and not infant/infancy or visual",
+		"source": "coded by authors",
+		"last_update": "2017-6-14",
+		"link_fields": "",
+		"short_desc": "Can infants segment words from artificial mini-languages based on syllable-level statistics?",
+		"description": "Can infants segment words from artificial mini-languages based on syllable-level statistics?",
+		"curator": "Christina Bergmann",
+		"src": "images/datasets/statistical.png",
+		"longitudinal": "FALSE",
+		"moderators": []
+	}
 ]
 
 
