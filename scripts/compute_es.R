@@ -17,7 +17,7 @@ compute_es <- function(participant_design, x_1 = NA, x_2 = NA, x_dif = NA,
                        corr_imputed = NA, r = NA, study_ID = NA, expt_num = NA,
                        special_cases_measures = NA, contrast_sampa = NA) {
 
-  assert_that(participant_design %in% c("between", "within_two", "within_one"))
+  #assert_that(participant_design %in% c("between", "within_two", "within_one"))
 
   d_calc <- NA
   d_var_calc <- NA

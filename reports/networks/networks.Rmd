@@ -1,0 +1,512 @@
+---
+title: Metalab Research Networks from WOS
+author: Molly Lewis
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    highlight: tango
+    toc_float: true
+    theme: cerulean
+    code_folding: hide
+---
+
+```{r, setup, include = FALSE}
+rm(list=ls())
+
+library(knitr)
+library(tidyr)
+library(langcog)
+library(tidyverse)
+library(stringr)
+library(bibliometrix) 
+library(ggnetwork)
+library(intergraph)
+library(igraph)
+library(broom)
+
+# load data
+knitr::opts_chunk$set(fig.width = 8, fig.height = 6, echo = TRUE,
+                      warning = FALSE, message = FALSE, cache = FALSE)
+```
+
+_Question_: Are properties of the commmunity structure of a literature predictive of measures of bias in that literature?
+
+
+***
+***
+
+Parameters:
+```{r}
+MIN_NUM_PAPERS <- 5 # per MA
+
+# Analysis-network pairs of interest
+ANALYSES <- c("co-citation", "collaboration","coupling", "co-occurrences")
+NETWORKS <- c("references", "authors", "authors", "keywords")
+```
+
+# Read and process data
+
+## (1) Web of Science data
+
+Get dois for each paper in metalab dataset
+(obtained from: https://apps.crossref.org/SimpleTextQuery/)
+```{r}
+# copy-pasting 50 at a time into search engine
+dois <- read.csv("dois.csv") %>%
+      select(study_ID, doi) %>%
+      filter(doi != "" & !is.na(doi)) %>%
+      mutate(doi = ifelse(grepl(".org/", doi),
+                          unlist(lapply(str_split(doi, ".org/"), 
+                                   function(x) {x[2]})), as.character(doi)))
+```
+
+Scrape data from web of science at paper level using bibliometrix package
+```{r, echo = FALSE}
+## copy paste this string into WOS search engine
+string = ""
+for (i in 1:length(dois$doi)) {
+  string = paste(string, dois$doi[i], sep = " OR ")
+}
+
+## search web of science-> save to marked list -> download marked list as .txt
+wos.raw <- readFiles("wos_data.txt")
+
+wos <- convert2df(wos.raw, dbsource = "isi", format = "plaintext") %>%
+  mutate(DI = tolower(DI),
+        DI = str_replace_all(DI, "//", "/"),
+        ID = str_replace_all(ID, ";;", ";")) %>%
+  arrange(DI) %>%
+  filter(!is.na(DI)) %>%
+  mutate_each(funs(as.factor), -AU, -DE, -ID)
+
+wos <- metaTagExtraction(wos, Field = "AU_CO", sep = ";")
+
+#write.csv(wos, "wos_bib1_6.csv")
+```
+
+Number of papers with dois in web of science in each MA:
+```{r}
+source("../../dashboard/global.R", chdir = TRUE) # all_data source
+
+all_mas = read.csv("ES_data_for_networks2.csv")
+
+paper.data = all_data %>%
+  select(short_name, study_ID, d_calc, d_var_calc, n_1, n_2) %>%
+  inner_join(dois, by = "study_ID") %>%
+  mutate(doi = tolower(doi)) %>%
+  group_by(doi, short_name) %>%
+  summarize(n = mean(c(n_1, n_2), na.rm = T),
+            d_calc = mean(d_calc), 
+            d_var_calc = mean(d_var_calc)) %>%
+  select(short_name, d_calc, d_var_calc, n) %>%
+  left_join(all_mas %>% select(short_name, overall.d))
+
+paper.data = all_data %>%
+  inner_join(dois, by="study_ID") %>%
+  mutate(doi = tolower(doi)) %>%
+  group_by(doi, short_name) %>%
+  select(short_name) %>%
+  slice(1)
+
+# get web of science data for domain
+ns = paper.data %>%
+  inner_join(wos, by = c("doi" = "DI")) %>%
+  group_by(short_name) %>%
+  summarize(n.papers = n()) 
+
+kable(ns)
+
+paper.data = paper.data %>%
+  left_join(ns) %>%
+  filter(n.papers > MIN_NUM_PAPERS) 
+
+n.mas = length(unique(paper.data$short_name))
+```
+
+MAs with `r MIN_NUM_PAPERS` or fewer papers are excluded. This leaves us with `r n.mas` MAs. Note that we're losing papers here in two ways - those that don't have dois (e.g. conference papers, n = approx. 40) and those with dois that are not in web of science (n = approx. 50).
+
+
+## (2) Network data
+```{r}
+getGraphData <- function (my.paper.data, 
+                          this.analysis,
+                          this.network,
+                          remove.multiple = TRUE,
+                          noloops = FALSE) {
+    
+    # FOR DEBUGGING
+     #my.paper.data = filter(paper.data, short_name == unique(paper.data$short_name)[2])
+     #this.analysis = "collaboration"
+     #this.network = "authors"
+  
+    # get web of science data for domain
+    this.wos = left_join(my.paper.data, wos, by = c("doi" = "DI")) %>%
+             as.data.frame() # necessary for biblioNetwork
+    
+    #sep = ifelse(this.analysis == "co-citation", ". ", "; ") #bibliometrix_1_5
+    sep = ifelse(this.analysis == "co-citation", ". ", ifelse(this.network == "authors", ";", "; ")) #bibliometrix_1_6
+
+    # make the network
+    this.net <- biblioNetwork(this.wos, 
+                   analysis = this.analysis, 
+                   network = this.network, 
+                   sep = sep) 
+    
+    if (length(this.net > 0)) {
+      # munge the network
+      graph <- graph.adjacency(this.net, mode = "undirected")
+      graph <- igraph::simplify(graph, remove.multiple = remove.multiple, 
+                          remove.loops = noloops)
+      
+      # make into df for plotting
+      gn = asNetwork(graph)
+    }
+    
+    cc <- try(ggnetwork(gn), silent = TRUE)  # gets rid of too-small networks
+    
+    if(!is(cc,"try-error")) {
+       return(ggnetwork(gn))
+    } 
+}
+```
+
+
+## (3) Network measures
+```{r.fig.width = 9}
+getModularity <- function (my.paper.data, 
+                        this.analysis,
+                        this.network,
+                        remove.multiple = FALSE,
+                        noloops = FALSE) {
+
+    # get web of science data for domain
+    this.wos = left_join(my.paper.data, wos, by = c("doi" = "DI")) %>%
+             as.data.frame() # necessary for biblioNetwork
+    
+    #sep = ifelse(this.analysis == "co-citation", ". ", "; ") #bibliometrix_1_5
+    sep = ifelse(this.analysis == "co-citation", ". ", ifelse(this.network == "authors", ";", "; ")) #bibliometrix_1_6
+
+    # make the network
+    this.net <- biblioNetwork(this.wos, 
+                   analysis = this.analysis, 
+                   network = this.network, 
+                   sep = sep) 
+    
+    if (length(this.net > 0)) {
+      # munge the network
+      graph <- graph.adjacency(this.net, mode = "undirected")
+      graph <- igraph::simplify(graph, remove.multiple = remove.multiple, 
+                                remove.loops = noloops)
+      
+      clustering = cluster_leading_eigen(graph, options = list(maxiter = 1000000000))
+      closeness = mean(estimate_closeness(graph, cutoff = 100))
+      betweeness = mean(estimate_betweenness(graph, cutoff = 100))
+      degree = mean(igraph::degree(graph))
+
+      data.frame(analysis = this.analysis,
+                network = this.network,
+                Q = round(clustering$modularity,4), 
+                n.groups = round(length(clustering),4),
+                closeness  = round(closeness, 4),
+                betweeness  = round(betweeness, 4),
+                degree = mean(degree))
+    }
+}
+
+# get network measures for all networks
+analyses_list <- rep(ANALYSES, each = n.mas) 
+networks_list <- rep(NETWORKS, each = n.mas)
+
+dfs <- paper.data %>% 
+  mutate_each(funs(as.factor)) %>%
+  split(.$short_name) %>%
+  rep(length(ANALYSES))
+
+args = list(dfs, analyses_list, networks_list)
+
+modularity.data = args %>%
+  pmap(getModularity) %>%
+  bind_rows(.id = "short_name")
+
+modularity.data.long = modularity.data %>%
+    mutate(closeness = log(closeness),
+            betweeness = log(betweeness),
+            degree = log(degree)) %>%
+    gather("network.measure", "network.value", 4:8) %>%
+    unite(network, analysis, network, sep = ".")
+```
+
+```{r}
+ggplot(modularity.data.long, aes(x = short_name, 
+                                 y = network.value)) +
+        geom_bar(stat = "identity", aes(fill = short_name))  +
+        facet_wrap(network.measure ~ network, 
+                   ncol = 4, scales = "free") +
+        ggtitle("Network summary statistics") +
+        theme_bw() +
+        theme(axis.text.x = element_blank()) 
+```
+
+## (4) Literature bias data
+```{r}
+mean.ns = all_data %>%
+  rowwise() %>%
+  mutate(n_total = sum(c(n_1, n_2), na.rm = TRUE)) %>%
+  group_by(short_name) %>%
+  summarize(mean_n = mean(n_total))
+
+ma.es = read.csv("ES_data_for_networks2.csv") %>%
+  #select(short_name, overall.d, overall.d.age,
+  #       fsn_string, egg.random.z, d.age, tau2, I2, H2) %>% 
+  #mutate(overall.d.age = abs(overall.d.age),
+  #       tau2 = log(tau2),
+  #       H2 = log(H2)) %>%
+  select(short_name, overall.d.age,
+         fsn_string,  tau2 ) %>% 
+  mutate(overall.d.age = abs(overall.d.age),
+         tau2 = log(tau2)) %>%
+  rename(fail_safe_n = fsn_string) %>%
+  #left_join(mean.ns) %>%
+  gather("bias.measure", "bias.value", 2:4) 
+```
+
+```{r, fig.height = 3}
+ma.es %>%
+  filter(short_name %in% modularity.data.long$short_name) %>%
+  ggplot(aes(x = short_name, y = bias.value)) +
+        geom_bar(stat = "identity", aes(fill = short_name))  +
+        facet_wrap(~bias.measure, scales = "free") +
+        ggtitle("Bias summary statistics") +
+        theme_bw() +
+        theme(axis.text.x = element_blank()) 
+```
+
+# Networks and correlations with bias
+Get model fits. We're predicting the bias value (e.g. fail-safe-n) with the network value (e.g. modularity), controlling for the number of papers in the MA. We're fitting this model for each bias-network pair, for each network type (e.g. co-citation references).
+```{r}
+net.es = left_join(modularity.data.long, ma.es) %>%
+  dplyr::as_data_frame() %>%
+  left_join(ns)
+
+corr.sigs = net.es %>%
+  filter(is.finite(network.value) & is.finite(bias.value)) %>%
+  group_by(network, bias.measure, network.measure) %>%
+  #do(tidy(cor.test(.$bias.value, .$value, na.action = "na.pass"))) %>%
+  do(tidy(lm(bias.value ~ n.papers + network.value, weights = .$n.papers, data=.))) %>%
+  filter(term == "network.value") %>%
+  mutate(sig.col = ifelse(p.value < .05, "sig", "nsig")) %>%
+  select(estimate, sig.col) %>%
+  mutate(network.value = Inf, bias.value = Inf) # this is a hack
+```
+
+```{r, eval = F}
+m = net.es %>%
+  filter(network.measure == "Q" & bias.measure == "overall.d.age") %>% 
+  filter(is.finite(network.value) & is.finite(bias.value)) %>%
+  filter(network == "co-citation.references") %>%
+  as.data.frame()  %>%
+  lm(bias.value ~ network.value, data= .) %>%
+  tidy()
+
+```
+
+Define plotting functions
+```{r}
+network_plot <- function(d, analysis, network){
+  networkname <- paste(analysis, network, sep = ".")
+  
+  d %>%
+    split(.$short_name) %>%
+    map(getGraphData, analysis, network) %>%
+    bind_rows(.id = "short_name") %>%
+    ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
+       geom_edges(color = "grey50") +
+       facet_wrap(~short_name) +
+       geom_nodes(aes(color = short_name)) +
+       ggtitle(networkname) +
+       theme_blank() +
+       theme(legend.position = "none")
+}
+
+corr_plot <- function(d, corrs, analysis, network){
+  networkname <- paste(analysis, network, sep = ".")
+  
+  ggplot(filter(d, network == networkname), 
+       aes(x = network.value, y = bias.value)) +
+     geom_rect(data = filter(corrs, network == networkname),
+              aes(fill = sig.col), 
+            xmin = -Inf, xmax = Inf,
+            ymin = -Inf, ymax = Inf, alpha = 0.2) +
+    geom_point(aes(size = n.papers, color = short_name)) +
+    geom_smooth(method= "lm", color = "black") +
+    ggtitle(networkname)+
+    facet_grid(bias.measure ~ network.measure, scales = "free") +
+    scale_fill_manual(values = c( "grey99", "red1")) +
+    theme_bw() +
+    theme(legend.position = "none")
+}
+```
+
+## Co-citation references{.tabset}
+
+Two articles are linked when both are cited in a third article.
+
+### Networks
+```{r}
+p <- 1
+network_plot(paper.data, ANALYSES[p], NETWORKS[p])
+```
+
+### Correlations
+```{r}
+corr_plot(net.es, corr.sigs, ANALYSES[p], NETWORKS[p])
+```
+
+Size of the point corresponds to number of papers in MA. Red facets indicate models where the network measure is a significant predictor of the bias value (controling for number of papers).
+
+
+## Collaboration authors{.tabset}
+
+Scientific collaboration network is a network where nodes are authors and links are co-authorships.
+
+### Networks
+```{r}
+p <- 2
+network_plot(paper.data, ANALYSES[p], NETWORKS[p])
+```
+
+### Correlations
+```{r}
+corr_plot(net.es, corr.sigs, ANALYSES[p], NETWORKS[p])
+```
+
+
+## Coupling authors{.tabset}
+
+Two articles are said to be bibliographically coupled if at least one author in a cited source appears in the bibliographies of both articles (Kessler, 1963).
+
+### Networks
+```{r}
+p <- 3
+network_plot(paper.data, ANALYSES[p], NETWORKS[p])
+```
+
+### Correlations
+```{r}
+corr_plot(net.es, corr.sigs, ANALYSES[p], NETWORKS[p])
+```
+
+## Co-occurences keywords{.tabset}
+
+A link is added between two keywords if they co-occur in the same paper.
+
+### Networks
+```{r}
+p <- 4
+network_plot(paper.data, ANALYSES[p], NETWORKS[p])
+```
+
+### Correlations
+```{r}
+corr_plot(net.es, corr.sigs, ANALYSES[p], NETWORKS[p])
+```
+
+# Session info
+```{r}
+sessionInfo()
+```
+
+```{r, eval = F}
+CS <- conceptualStructure(wos,field="ID",  k.max=10, stemming=FALSE, labelsize = 1.5, minDegree = 2)
+```
+
+
+```{r, eval = F}
+# Paper level analyses
+getModularity_paper <- function (my.paper.data, 
+                        this.analysis,
+                        this.network,
+                        remove.multiple = TRUE, 
+                        remove.isolates = FALSE,
+                        noloops = TRUE) {
+
+    # get web of science data for domain
+    my.M = left_join(my.paper.data, M, by = c("doi" = "DI")) %>%
+             as.data.frame() # necessary for biblioNetwork
+    
+    SEP = ifelse(this.analysis == "co-citation", ". ", "; ")
+  
+    # make the network
+    this.net <- biblioNetwork(my.M, 
+                   analysis = this.analysis, 
+                   network = this.network, 
+                   sep = SEP) 
+    
+    if (length(this.net > 0)) {
+      # munge the network
+      graph <- graph.adjacency(this.net, mode = "undirected")
+      data.frame(analysis = this.analysis,
+                 network = this.network,
+                 closeness = estimate_closeness(graph, cutoff = 100, normalized = TRUE),
+                 betweeness = estimate_betweenness(graph, cutoff = 100, normalized = TRUE),
+                 degree = igraph::degree(graph, normalized = TRUE))
+    }
+}
+
+dfs <- paper.data %>% 
+  mutate_each(funs(as.factor)) %>%
+  split(.$short_name) %>%
+  rep(4)
+analyses <- rep(c("co-citation", "coupling", "co-occurrences", "collaboration"), each = 14) 
+networks <- rep(c("references", "authors", "keywords", "authors"), each = 14)
+args = list(dfs, analyses, networks)
+
+modularity.data = args %>%
+  pmap(getModularity_paper) %>%
+  filter(analysis == "co-citation") %>%
+  bind_rows(.id = "short_name")
+
+```
+
+```{r, eval = F}
+k = M %>%
+    left_join(paper.data, by=c("DI"= "doi")) %>%
+    split(.$short_name) %>%
+    map(biblioAnalysis) %>%
+    bind_rows() 
+
+bibliometrix::summary(k, pause = FALSE) 
+
+S = summary(object = m, k = 10, pause = FALSE)
+```
+
+```{r, eval = F}
+TO DO: 
+  - non-significant vs. significant
+  - get summary statistics using summary function
+  - get ES controling for age, and ES error, also domain bias, n
+  - correlate everything at domain and entire dataset
+  - look at individual papers
+```
+
+
+```{r, eval = F}
+A = read.csv("wos_bib1_6.csv") %>%
+  mutate_all(as.character())
+B = read.csv("wos_bib1_5.csv")%>%
+  mutate_all(as.character())
+
+A == B
+
+d = mapply(function(x, y) all(x==y, na.rm = TRUE), A, B)
+
+i <- sapply(A, is.factor)
+A[i] <- lapply(A[i], as.character)
+
+i <- sapply(B, is.factor)
+B[i] <- lapply(B[i], as.character)
+
+d[which(!d)]
+
+```
