@@ -326,5 +326,5 @@
     "curator": "Christina Bergmann",
     "src": "images/datasets/statistical.png",
     "longitudinal": "FALSE",
-    "moderators": []
+    "moderators": ["replication","stimuli_naturalness"]
 }]
