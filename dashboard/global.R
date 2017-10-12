@@ -17,7 +17,7 @@ library(feather)
 
 fields <- yaml::yaml.load_file("../metadata/spec.yaml")
 fields_derived <- yaml::yaml.load_file("../metadata/spec_derived.yaml") %>%
-  transpose() %>%
+  purrr::transpose() %>%
   simplify_all() %>%
   dplyr::as_data_frame()
 

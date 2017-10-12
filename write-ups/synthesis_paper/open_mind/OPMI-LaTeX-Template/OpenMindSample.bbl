@@ -1,0 +1,951 @@
+\begin{thebibliography}{}
+
+\bibitem [\protect \citeauthoryear {%
+Anderson%
+}{%
+Anderson%
+}{%
+{\protect \APACyear {1983}}%
+}]{%
+anderson}
+\APACinsertmetastar {%
+anderson}%
+\begin{APACrefauthors}%
+Anderson, J\BPBI R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{1983}.
+\newblock
+\APACrefbtitle {The architecture of cognition} {The architecture of cognition}.
+\newblock
+\APACaddressPublisher{Mahwah, New Jersey}{Lawrence {E}rlbaum {A}ssociates}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+G.~Baggio%
+, Stenning%
+\BCBL {}\ \BBA {} van Lambalgen%
+}{%
+G.~Baggio%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {{\protect \BIP {}}}}%
+}]{%
+antibayes}
+\APACinsertmetastar {%
+antibayes}%
+\begin{APACrefauthors}%
+Baggio, G.%
+, Stenning, K.%
+\BCBL {}\ \BBA {} van Lambalgen, M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{{\protect \BIP {}}}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {The {C}ognitive {I}nterface} {The {C}ognitive
+  {I}nterface}.{\BBCQ}
+\newblock
+\BIn{} M.~Aloni\ \BBA {} P.~Dekker\ (\BEDS), \APACrefbtitle {Cambridge
+  {H}andbook of {F}ormal {S}emantics.} {Cambridge {H}andbook of {F}ormal
+  {S}emantics.}
+\newblock
+\APACaddressPublisher{Cambridge}{Cambridge {U}niversity {P}ress}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+R.~Baggio%
+, van Lambalgen%
+\BCBL {}\ \BBA {} Hagoort%
+}{%
+R.~Baggio%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2008}}%
+}]{%
+baggio}
+\APACinsertmetastar {%
+baggio}%
+\begin{APACrefauthors}%
+Baggio, R.%
+, van Lambalgen, M.%
+\BCBL {}\ \BBA {} Hagoort, P.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2008}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Computing and recomputing discourse models: An {ERP}
+  study} {Computing and recomputing discourse models: An {ERP} study}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of {M}emory and {L}anguage}{59}{}{36--53}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Baker%
+, Tenenbaum%
+\BCBL {}\ \BBA {} Saxe%
+}{%
+Baker%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2006}}%
+}]{%
+baker_tenenbaum_saxe06}
+\APACinsertmetastar {%
+baker_tenenbaum_saxe06}%
+\begin{APACrefauthors}%
+Baker, C\BPBI L.%
+, Tenenbaum, J.%
+\BCBL {}\ \BBA {} Saxe, R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2006}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Bayesian models of human action understanding} {Bayesian
+  models of human action understanding}.{\BBCQ}
+\newblock
+\BIn{} \APACrefbtitle {Advances in Neural Information Processing Systems}
+  {Advances in neural information processing systems}\ (\BVOL~18).
+\newblock
+\APACaddressPublisher{}{MIT Press}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Baker%
+, Tenenbaum%
+\BCBL {}\ \BBA {} Saxe%
+}{%
+Baker%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2009}}%
+}]{%
+baker_saxe_tenenbaum09}
+\APACinsertmetastar {%
+baker_saxe_tenenbaum09}%
+\begin{APACrefauthors}%
+Baker, C\BPBI L.%
+, Tenenbaum, J.%
+\BCBL {}\ \BBA {} Saxe, R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2009}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Action Understanding as Inverse Planning} {Action
+  understanding as inverse planning}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Cognition}{113}{3}{329--349}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Beller%
+}{%
+Beller%
+}{%
+{\protect \APACyear {2008}}%
+}]{%
+beller}
+\APACinsertmetastar {%
+beller}%
+\begin{APACrefauthors}%
+Beller, S.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2008}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Deontic norms, deontic reasoning, and deontic
+  conditionals} {Deontic norms, deontic reasoning, and deontic
+  conditionals}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Thinking \& Reasoning}{14}{4}{305--341}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Brass%
+, Schmitt%
+, Spengler%
+\BCBL {}\ \BBA {} Gergely%
+}{%
+Brass%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2007}}%
+}]{%
+braas}
+\APACinsertmetastar {%
+braas}%
+\begin{APACrefauthors}%
+Brass, M.%
+, Schmitt, R.%
+, Spengler, S.%
+\BCBL {}\ \BBA {} Gergely, G.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2007}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Investigating Action Understanding: Inferential
+  Processes versus Action Simulation} {Investigating action understanding:
+  Inferential processes versus action simulation}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Current {B}iology}{17}{24}{2117--2121}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Chater%
+\ \BBA {} Vitanyi%
+}{%
+Chater%
+\ \BBA {} Vitanyi%
+}{%
+{\protect \APACyear {2003}}%
+}]{%
+chater_vitany}
+\APACinsertmetastar {%
+chater_vitany}%
+\begin{APACrefauthors}%
+Chater, N.%
+\BCBT {}\ \BBA {} Vitanyi, P.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2003}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Simplicity: a unifying principle in cognitive science?}
+  {Simplicity: a unifying principle in cognitive science?}{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Trends in Cognitive Sciences}{7}{1}{19--22}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Csibra%
+\ \BBA {} Gergely%
+}{%
+Csibra%
+\ \BBA {} Gergely%
+}{%
+{\protect \APACyear {2007}}%
+}]{%
+csibra_gergely07}
+\APACinsertmetastar {%
+csibra_gergely07}%
+\begin{APACrefauthors}%
+Csibra, G.%
+\BCBT {}\ \BBA {} Gergely, G.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2007}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {`{O}bsessed with goals': Functions and mechanisms of
+  teleological interpretation of actions in humans} {`{O}bsessed with goals':
+  Functions and mechanisms of teleological interpretation of actions in
+  humans}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Acta {P}sychologica}{124}{1}{60--78}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Etzioni%
+, Golden%
+\BCBL {}\ \BBA {} Weld%
+}{%
+Etzioni%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {1997}}%
+}]{%
+etzioni_cwr}
+\APACinsertmetastar {%
+etzioni_cwr}%
+\begin{APACrefauthors}%
+Etzioni, O.%
+, Golden, K.%
+\BCBL {}\ \BBA {} Weld, D.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1997}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Sound and efficient closed-world reasoning for planning}
+  {Sound and efficient closed-world reasoning for planning}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Artificial {I}ntelligence}{89}{1--2}{113--148}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Gallese%
+\ \BBA {} Goldman%
+}{%
+Gallese%
+\ \BBA {} Goldman%
+}{%
+{\protect \APACyear {1998}}%
+}]{%
+simul2}
+\APACinsertmetastar {%
+simul2}%
+\begin{APACrefauthors}%
+Gallese, V.%
+\BCBT {}\ \BBA {} Goldman, A.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1998}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Mirror neurons and the simulation theory of
+  mind-reading} {Mirror neurons and the simulation theory of
+  mind-reading}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Trends in {C}ognitive {S}ciences}{2}{12}{493--501}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Gergely%
+, Bekkering%
+\BCBL {}\ \BBA {} Kir\'{a}ly%
+}{%
+Gergely%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2002}}%
+}]{%
+nature2002}
+\APACinsertmetastar {%
+nature2002}%
+\begin{APACrefauthors}%
+Gergely, G.%
+, Bekkering, H.%
+\BCBL {}\ \BBA {} Kir\'{a}ly, I.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2002}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Rational imitation in preverbal infants} {Rational
+  imitation in preverbal infants}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Nature}{415}{}{755}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Godfrey%
+, Grant%
+, Gryz%
+\BCBL {}\ \BBA {} Minker%
+}{%
+Godfrey%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {1998}}%
+}]{%
+integrity_const}
+\APACinsertmetastar {%
+integrity_const}%
+\begin{APACrefauthors}%
+Godfrey, P.%
+, Grant, J.%
+, Gryz, J.%
+\BCBL {}\ \BBA {} Minker, J.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1998}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Integrity Constraints: Semantics and Applications}
+  {Integrity constraints: Semantics and applications}.{\BBCQ}
+\newblock
+\BIn{} J.~Chomicki\ \BBA {} G.~Saake\ (\BEDS), \APACrefbtitle {Logics for
+  {D}atabases and {I}nformation {S}ystems} {Logics for {D}atabases and
+  {I}nformation {S}ystems}\ (\BVOL~436, \BPGS\ 265--306).
+\newblock
+\APACaddressPublisher{}{Springer {US}}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Hickok%
+}{%
+Hickok%
+}{%
+{\protect \APACyear {2009}}%
+}]{%
+hickok}
+\APACinsertmetastar {%
+hickok}%
+\begin{APACrefauthors}%
+Hickok, G.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2009}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Eight Problems for the Mirror Neuron Theory of Action
+  Understanding in Monkeys and Humans} {Eight problems for the mirror neuron
+  theory of action understanding in monkeys and humans}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Cognitive Neuroscience}{21}{7}{1229--1243}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Kir\'{a}ly%
+, Csibra%
+\BCBL {}\ \BBA {} Gergely%
+}{%
+Kir\'{a}ly%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2013}}%
+}]{%
+kiraly2013}
+\APACinsertmetastar {%
+kiraly2013}%
+\begin{APACrefauthors}%
+Kir\'{a}ly, I.%
+, Csibra, G.%
+\BCBL {}\ \BBA {} Gergely, G.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2013}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Beyond rational imitation: Learning arbitrary means
+  actions from communicative demonstrations} {Beyond rational imitation:
+  Learning arbitrary means actions from communicative demonstrations}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of {E}xperimental {C}hild
+  {P}sychology}{116}{2}{471--486}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Kowalski%
+}{%
+Kowalski%
+}{%
+{\protect \APACyear {2011}}%
+}]{%
+kowalski2011}
+\APACinsertmetastar {%
+kowalski2011}%
+\begin{APACrefauthors}%
+Kowalski, R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2011}.
+\newblock
+\APACrefbtitle {Computational Logic and Human Thinking: How to be Artificially
+  Intelligent} {Computational logic and human thinking: How to be artificially
+  intelligent}.
+\newblock
+\APACaddressPublisher{{N}ew {Y}ork}{Cambridge {U}niversity {P}ress}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Kowalski%
+\ \BBA {} Sadri%
+}{%
+Kowalski%
+\ \BBA {} Sadri%
+}{%
+{\protect \APACyear {2009}}%
+}]{%
+kowalski_sadri}
+\APACinsertmetastar {%
+kowalski_sadri}%
+\begin{APACrefauthors}%
+Kowalski, R.%
+\BCBT {}\ \BBA {} Sadri, F.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2009}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Integrating Logic Programming and Production Systems in
+  Abductive Logic Programming Agents} {Integrating logic programming and
+  production systems in abductive logic programming agents}.{\BBCQ}
+\newblock
+\BIn{} A.~Polleres\ \BBA {} T.~Swift\ (\BEDS), \APACrefbtitle {Web Reasoning
+  and Rule Systems} {Web reasoning and rule systems}\ (\BVOL\ 5837, \BPGS\
+  1--23).
+\newblock
+\APACaddressPublisher{}{Springer Berlin Heidelberg}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Lifschitz%
+}{%
+Lifschitz%
+}{%
+{\protect \APACyear {2002}}%
+}]{%
+lifschitz2002}
+\APACinsertmetastar {%
+lifschitz2002}%
+\begin{APACrefauthors}%
+Lifschitz, V.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2002}{June}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Answer set programming and plan generation} {Answer set
+  programming and plan generation}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Artificial {I}ntelligence}{138}{1--2}{39--54}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Lombrozo%
+\ \BBA {} Carey%
+}{%
+Lombrozo%
+\ \BBA {} Carey%
+}{%
+{\protect \APACyear {2006}}%
+}]{%
+lombrozo_carey}
+\APACinsertmetastar {%
+lombrozo_carey}%
+\begin{APACrefauthors}%
+Lombrozo, T.%
+\BCBT {}\ \BBA {} Carey, S.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2006}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Functional explanation and the function of explanation}
+  {Functional explanation and the function of explanation}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Cognition}{99}{2}{167--204}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Luo%
+\ \BBA {} Baillargeon%
+}{%
+Luo%
+\ \BBA {} Baillargeon%
+}{%
+{\protect \APACyear {2005}}%
+}]{%
+luo_baillargeon}
+\APACinsertmetastar {%
+luo_baillargeon}%
+\begin{APACrefauthors}%
+Luo, Y.%
+\BCBT {}\ \BBA {} Baillargeon, R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2005}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Can a Self-Propelled Box Have a Goal?: Psychological
+  Reasoning in 5-Month-Old Infants} {Can a self-propelled box have a goal?:
+  Psychological reasoning in 5-month-old infants}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Psychological {S}cience}{16}{8}{601--608}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+McCarthy%
+\ \BBA {} Hayes%
+}{%
+McCarthy%
+\ \BBA {} Hayes%
+}{%
+{\protect \APACyear {1969}}%
+}]{%
+mccarthy_hayes_philosAI}
+\APACinsertmetastar {%
+mccarthy_hayes_philosAI}%
+\begin{APACrefauthors}%
+McCarthy, J.%
+\BCBT {}\ \BBA {} Hayes, P.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1969}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Some Philosophical Problems from the Standpoint of
+  Artificial Intelligence} {Some philosophical problems from the standpoint of
+  artificial intelligence}.{\BBCQ}
+\newblock
+\BIn{} B.~Meltzer\ \BBA {} D.~Michie\ (\BEDS), \APACrefbtitle {Machine
+  {I}ntelligence} {Machine {I}ntelligence}\ (\BVOL~4, \BPGS\ 463--502).
+\newblock
+\APACaddressPublisher{}{Edinburgh {U}niversity {P}ress}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Mueller%
+}{%
+Mueller%
+}{%
+{\protect \APACyear {2006}}%
+}]{%
+mueller_commonsense}
+\APACinsertmetastar {%
+mueller_commonsense}%
+\begin{APACrefauthors}%
+Mueller, E.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2006}.
+\newblock
+\APACrefbtitle {Commonsense {R}easoning} {Commonsense {R}easoning}.
+\newblock
+\APACaddressPublisher{{S}an {F}rancisco, {CA}}{Morgan {K}aufmann {P}ublishers}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Paulus%
+\ \BBA {} Kir\'{a}ly%
+}{%
+Paulus%
+\ \BBA {} Kir\'{a}ly%
+}{%
+{\protect \APACyear {2013}}%
+}]{%
+paulus_kiraly}
+\APACinsertmetastar {%
+paulus_kiraly}%
+\begin{APACrefauthors}%
+Paulus, M.%
+\BCBT {}\ \BBA {} Kir\'{a}ly, I.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2013}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Early rationality in action perception and production? A
+  theoretical exposition} {Early rationality in action perception and
+  production? a theoretical exposition}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of {E}xperimental {C}hild
+  {P}sychology}{116}{2}{407--414}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Pijnacker%
+, Geurts%
+, van Lambalgen%
+, Buitelaar%
+\BCBL {}\ \BBA {} Hagoort%
+}{%
+Pijnacker%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2010}}%
+}]{%
+pijnacker2}
+\APACinsertmetastar {%
+pijnacker2}%
+\begin{APACrefauthors}%
+Pijnacker, J.%
+, Geurts, B.%
+, van Lambalgen, M.%
+, Buitelaar, J.%
+\BCBL {}\ \BBA {} Hagoort, P.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2010}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Reasoning with Exceptions: An Event-related Brain
+  Potentials Study} {Reasoning with exceptions: An event-related brain
+  potentials study}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of {C}ognitive
+  {N}euroscience}{23}{2}{471--480}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Pollock%
+}{%
+Pollock%
+}{%
+{\protect \APACyear {1995}}%
+}]{%
+pollock95}
+\APACinsertmetastar {%
+pollock95}%
+\begin{APACrefauthors}%
+Pollock, J.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{1995}.
+\newblock
+\APACrefbtitle {Cognitive {C}arpentry: A {B}lueprint for {H}ow to {B}uild a
+  {P}erson} {Cognitive {C}arpentry: A {B}lueprint for {H}ow to {B}uild a
+  {P}erson}.
+\newblock
+\APACaddressPublisher{{MA}, {USA}}{{MIT} {P}ress {C}ambridge}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Pollock%
+}{%
+Pollock%
+}{%
+{\protect \APACyear {1997}}%
+}]{%
+pollock97}
+\APACinsertmetastar {%
+pollock97}%
+\begin{APACrefauthors}%
+Pollock, J.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1997}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Reasoning about change and persistence: A solution to
+  the frame problem} {Reasoning about change and persistence: A solution to the
+  frame problem}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Nous}{31}{2}{143--169}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Reiter%
+}{%
+Reiter%
+}{%
+{\protect \APACyear {1988}}%
+}]{%
+reiterIC}
+\APACinsertmetastar {%
+reiterIC}%
+\begin{APACrefauthors}%
+Reiter, R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1988}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {On integrity constraints} {On integrity
+  constraints}.{\BBCQ}
+\newblock
+\BIn{} \APACrefbtitle {Proceedings of the 2nd conference on {T}heoretical
+  {A}spects of {R}easoning about {K}nowledge, {TARK}'88} {Proceedings of the
+  2nd conference on {T}heoretical {A}spects of {R}easoning about {K}nowledge,
+  {TARK}'88}\ (\BPGS\ 97--111).
+\newblock
+\APACaddressPublisher{{S}an {F}rancisco, {CA}, {USA}}{Morgan {K}aufmann
+  {P}ublishers}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Saxe%
+\ \BBA {} Carey%
+}{%
+Saxe%
+\ \BBA {} Carey%
+}{%
+{\protect \APACyear {2006}}%
+}]{%
+causality_infancy}
+\APACinsertmetastar {%
+causality_infancy}%
+\begin{APACrefauthors}%
+Saxe, R.%
+\BCBT {}\ \BBA {} Carey, S.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2006}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {The perception of causality in infancy} {The perception
+  of causality in infancy}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Acta {P}sychologica}{123}{1-2}{144--165}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Schueler%
+}{%
+Schueler%
+}{%
+{\protect \APACyear {2003}}%
+}]{%
+schueler2005}
+\APACinsertmetastar {%
+schueler2005}%
+\begin{APACrefauthors}%
+Schueler, G.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2003}.
+\newblock
+\APACrefbtitle {Reasons and Purposes: Human Rationality and the Teleological
+  Explanation of Action} {Reasons and purposes: Human rationality and the
+  teleological explanation of action}.
+\newblock
+\APACaddressPublisher{New York, NY}{Oxford University Press Inc.}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Stenning%
+\ \BBA {} van Lambalgen%
+}{%
+Stenning%
+\ \BBA {} van Lambalgen%
+}{%
+{\protect \APACyear {2008}}%
+}]{%
+HRCS}
+\APACinsertmetastar {%
+HRCS}%
+\begin{APACrefauthors}%
+Stenning, K.%
+\BCBT {}\ \BBA {} van Lambalgen, M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2008}.
+\newblock
+\APACrefbtitle {Human {R}easoning and {C}ognitive {S}cience} {Human {R}easoning
+  and {C}ognitive {S}cience}.
+\newblock
+\APACaddressPublisher{}{Bradford {B}ook, {T}he {MIT} {P}ress, {C}ambridge,
+  {M}assachussets}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+van Lambalgen%
+\ \BBA {} Hamm%
+}{%
+van Lambalgen%
+\ \BBA {} Hamm%
+}{%
+{\protect \APACyear {2005}}%
+}]{%
+PToE}
+\APACinsertmetastar {%
+PToE}%
+\begin{APACrefauthors}%
+van Lambalgen, M.%
+\BCBT {}\ \BBA {} Hamm, F.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2005}.
+\newblock
+\APACrefbtitle {The {P}roper {T}reatment of {E}vents} {The {P}roper {T}reatment
+  of {E}vents}.
+\newblock
+\APACaddressPublisher{Malden}{Blackwell {P}ublishing}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Varga%
+}{%
+Varga%
+}{%
+{\protect \APACyear {2013}}%
+{\protect \APACexlab {{\protect \BCnt {1}}}}}]{%
+ada_doc}
+\APACinsertmetastar {%
+ada_doc}%
+\begin{APACrefauthors}%
+Varga, A.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2013{\protect \BCnt {1}}}.
+\unskip\
+\newblock
+\APACrefbtitle {A Formal Model of Infants' Acquisition of Practical Knowledge
+  from Observation} {A formal model of infants' acquisition of practical
+  knowledge from observation}\ \APACtypeAddressSchool {Doctoral
+  dissertation}{}{}.
+\unskip\
+\newblock
+\APACaddressSchool {}{Department of Philosophy, Central European University,
+  Budapest}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Varga%
+}{%
+Varga%
+}{%
+{\protect \APACyear {2013}}%
+{\protect \APACexlab {{\protect \BCnt {2}}}}}]{%
+varga}
+\APACinsertmetastar {%
+varga}%
+\begin{APACrefauthors}%
+Varga, A.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2013{\protect \BCnt {2}}}.
+\unskip\
+\newblock
+\APACrefbtitle {A Formal Model of Infants' Acquisition of Practical Knowledge
+  from Observation} {A formal model of infants' acquisition of practical
+  knowledge from observation}\ \APACtypeAddressSchool {Doctoral
+  dissertation}{}{}.
+\unskip\
+\newblock
+\APACaddressSchool {}{Department of Philosophy, Central European University,
+  Budapest}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Williams%
+}{%
+Williams%
+}{%
+{\protect \APACyear {1981}}%
+}]{%
+williams81}
+\APACinsertmetastar {%
+williams81}%
+\begin{APACrefauthors}%
+Williams, B.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1981}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Internal and {E}xternal {R}easons} {Internal and
+  {E}xternal {R}easons}.{\BBCQ}
+\newblock
+\BIn{} B.~Williams\ (\BED), \APACrefbtitle {{M}oral {Lu}ck} {{M}oral {Lu}ck}\
+  (\BPGS\ 101--113).
+\newblock
+\APACaddressPublisher{Cambridge}{Cambridge {U}niversity {P}ress}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Zentgraf%
+, Munzert%
+, Bischoff%
+\BCBL {}\ \BBA {} Newman-Norlund%
+}{%
+Zentgraf%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2011}}%
+}]{%
+simul}
+\APACinsertmetastar {%
+simul}%
+\begin{APACrefauthors}%
+Zentgraf, K.%
+, Munzert, J.%
+, Bischoff, M.%
+\BCBL {}\ \BBA {} Newman-Norlund, R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2011}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Simulation during observation of human actions --
+  Theories, empirical studies, applications} {Simulation during observation of
+  human actions -- theories, empirical studies, applications}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Vision {R}esearch}{51}{}{827--835}.
+\PrintBackRefs{\CurrentBib}
+
+\end{thebibliography}

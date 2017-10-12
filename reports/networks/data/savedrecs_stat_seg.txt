@@ -1,0 +1,417 @@
+﻿FN Clarivate Analytics Web of Science
+VR 1.0
+PT J
+AU Lany, Jill
+   Shoaib, Amber
+   Thompson, Abbie
+   Estes, Katharine Graf
+TI Infant statistical-learning ability is related to real-time language
+   processing.
+SO Journal of child language
+BP 1
+EP 24
+DI 10.1017/S0305000917000253
+PD 2017-Jul-19
+PY 2017
+ZB 0
+Z8 0
+ZR 0
+ZS 0
+TC 0
+Z9 0
+EI 1469-7602
+UT MEDLINE:28720168
+PM 28720168
+ER
+
+PT J
+AU Simon, Katharine N. S.
+   Werchan, Denise
+   Goldstein, Michael R.
+   Sweeney, Lucia
+   Bootzin, Richard R.
+   Nadel, Lynn
+   Gomez, Rebecca L.
+TI Sleep confers a benefit for retention of statistical language learning
+   in 6.5 month old infants
+SO BRAIN AND LANGUAGE
+VL 167
+BP 3
+EP 12
+DI 10.1016/j.bandl.2016.05.002
+PD APR 2017
+PY 2017
+Z8 0
+ZR 0
+ZS 0
+ZB 1
+TC 1
+Z9 1
+SN 0093-934X
+EI 1090-2155
+UT WOS:000397701100002
+PM 27291337
+ER
+
+PT J
+AU Estes, Katharine Graf
+   Lew-Williams, Casey
+TI Listening Through Voices: Infant Statistical Word Segmentation Across
+   Multiple Speakers
+SO DEVELOPMENTAL PSYCHOLOGY
+VL 51
+IS 11
+BP 1517
+EP 1528
+DI 10.1037/a0039725
+PD NOV 2015
+PY 2015
+Z8 0
+ZR 0
+ZS 0
+ZB 2
+TC 4
+Z9 4
+SN 0012-1649
+EI 1939-0599
+UT WOS:000363788100001
+PM 26389607
+ER
+
+PT J
+AU Seidl, Amanda
+   Tincoff, Ruth
+   Baker, Christopher
+   Cristia, Alejandrina
+TI Why the body comes first: effects of experimenter touch on infants' word
+   finding
+SO DEVELOPMENTAL SCIENCE
+VL 18
+IS 1
+BP 155
+EP 164
+DI 10.1111/desc.12182
+PD JAN 2015
+PY 2015
+OI Tincoff, Ruth/0000-0001-7925-406X
+Z8 0
+ZR 0
+ZS 0
+ZB 2
+TC 8
+Z9 8
+SN 1363-755X
+EI 1467-7687
+UT WOS:000346986700012
+PM 24734895
+ER
+
+PT J
+AU Erickson, Lucy C.
+   Thiessen, Erik D.
+   Estes, Katharine Graf
+TI Statistically coherent labels facilitate categorization in 8-month-olds
+SO JOURNAL OF MEMORY AND LANGUAGE
+VL 72
+BP 49
+EP 58
+DI 10.1016/j.jml.2014.01.002
+PD APR 2014
+PY 2014
+Z8 0
+ZR 0
+ZS 0
+ZB 2
+TC 2
+Z9 2
+SN 0749-596X
+EI 1096-0821
+UT WOS:000334007500004
+ER
+
+PT J
+AU Lew-Williams, Casey
+   Saffran, Jenny R.
+TI All words are not created equal: Expectations about word length guide
+   infant statistical learning
+SO COGNITION
+VL 122
+IS 2
+BP 241
+EP 246
+DI 10.1016/j.cognition.2011.10.007
+PD FEB 2012
+PY 2012
+ZR 0
+ZS 0
+Z8 1
+TC 24
+ZB 7
+Z9 25
+SN 0010-0277
+UT WOS:000300744900010
+PM 22088408
+ER
+
+PT J
+AU Hay, Jessica F.
+   Saffran, Jenny R.
+TI Rhythmic Grouping Biases Constrain Infant Statistical Learning
+SO INFANCY
+VL 17
+IS 6
+BP 610
+EP 641
+DI 10.1111/j.1532-7078.2011.00110.x
+PD 2012
+PY 2012
+OI Hay, Jessica/0000-0002-0197-6713
+Z8 0
+ZR 0
+ZS 0
+TC 18
+ZB 5
+Z9 18
+SN 1525-0008
+UT WOS:000309451100002
+PM 23730217
+ER
+
+PT J
+AU Graf Estes, Katharine
+TI Infants generalize representations of statistically segmented words.
+SO Frontiers in psychology
+VL 3
+BP 447
+EP 447
+DI 10.3389/fpsyg.2012.00447
+PD 2012
+PY 2012
+ZB 0
+Z8 0
+ZR 0
+ZS 0
+TC 0
+Z9 0
+EI 1664-1078
+UT MEDLINE:23112788
+PM 23112788
+ER
+
+PT J
+AU Thiessen, Erik D.
+TI Effects of Visual Information on Adults' and Infants' Auditory
+   Statistical Learning
+SO COGNITIVE SCIENCE
+VL 34
+IS 6
+BP 1093
+EP 1106
+DI 10.1111/j.1551-6709.2010.01118.x
+PD AUG 2010
+PY 2010
+ZR 0
+ZS 0
+Z8 1
+TC 26
+ZB 9
+Z9 27
+SN 0364-0213
+UT WOS:000280630400007
+PM 21564244
+ER
+
+PT J
+AU Johnson, Elizabeth K.
+   Tyler, Michael D.
+TI Testing the limits of statistical learning for word segmentation
+SO DEVELOPMENTAL SCIENCE
+VL 13
+IS 2
+BP 339
+EP 345
+DI 10.1111/j.1467-7687.2009.00886.x
+PD MAR 2010
+PY 2010
+RI Tyler, Michael/B-2399-2013; Johnson, Elizabeth Kay/
+OI Tyler, Michael/0000-0003-1642-7941; Johnson, Elizabeth
+   Kay/0000-0002-9941-9949
+Z8 0
+ZR 0
+ZS 0
+ZB 18
+TC 57
+Z9 57
+SN 1363-755X
+EI 1467-7687
+UT WOS:000274242300009
+PM 20136930
+ER
+
+PT J
+AU Johnson, Elizabeth K.
+   Seidl, Amanda H.
+TI At 11 months, prosody still outranks statistics
+SO DEVELOPMENTAL SCIENCE
+VL 12
+IS 1
+BP 131
+EP 141
+DI 10.1111/j.1467-7687.2008.00740.x
+PD JAN 2009
+PY 2009
+OI Johnson, Elizabeth Kay/0000-0002-9941-9949
+Z8 0
+ZR 0
+ZS 0
+ZB 17
+TC 38
+Z9 38
+SN 1363-755X
+UT WOS:000261961400018
+PM 19120421
+ER
+
+PT J
+AU Thiessen, ED
+   Hill, EA
+   Saffran, JR
+TI Infant-directed speech facilitates word segmentation
+SO INFANCY
+VL 7
+IS 1
+BP 53
+EP 71
+DI 10.1207/s15327078in0701_5
+PD 2005
+PY 2005
+Z8 0
+ZR 0
+ZS 2
+TC 214
+ZB 58
+Z9 215
+SN 1525-0008
+UT WOS:000227601900005
+ER
+
+PT J
+AU Thiessen, ED
+   Saffran, JR
+TI When cues collide: Use of stress and statistical cues to word boundaries
+   by 7-to 9-month-old infants
+SO DEVELOPMENTAL PSYCHOLOGY
+VL 39
+IS 4
+BP 706
+EP 716
+DI 10.1037/0012-1649.39.4.706
+PD JUL 2003
+PY 2003
+Z8 0
+ZR 0
+ZS 1
+TC 257
+ZB 87
+Z9 258
+SN 0012-1649
+UT WOS:000183743000007
+PM 12859124
+ER
+
+PT J
+AU Saffran, JR
+TI Words in a sea of sounds: the output of infant statistical learning
+SO COGNITION
+VL 81
+IS 2
+BP 149
+EP 169
+DI 10.1016/S0010-0277(01)00132-9
+PD SEP 2001
+PY 2001
+RI Galantucci, Bruno/E-5770-2010
+ZR 0
+Z8 1
+TC 111
+ZS 2
+ZB 37
+Z9 114
+SN 0010-0277
+UT WOS:000170326400002
+PM 11376640
+ER
+
+PT J
+AU Johnson, EK
+   Jusczyk, PW
+TI Word segmentation by 8-month-olds: When speech cues count more than
+   statistics
+SO JOURNAL OF MEMORY AND LANGUAGE
+VL 44
+IS 4
+BP 548
+EP 567
+DI 10.1006/jmla.2000.2755
+PD MAY 2001
+PY 2001
+OI Johnson, Elizabeth Kay/0000-0002-9941-9949
+Z8 0
+ZR 0
+ZS 1
+TC 233
+ZB 68
+Z9 234
+SN 0749-596X
+UT WOS:000168306500003
+ER
+
+PT J
+AU Aslin, RN
+   Saffran, JR
+   Newport, EL
+TI Computation of conditional probability statistics by 8-month-old infants
+SO PSYCHOLOGICAL SCIENCE
+VL 9
+IS 4
+BP 321
+EP 324
+DI 10.1111/1467-9280.00063
+PD JUL 1998
+PY 1998
+ZR 0
+Z8 1
+ZB 144
+ZS 2
+TC 437
+Z9 440
+SN 0956-7976
+UT WOS:000080207700013
+ER
+
+PT J
+AU Saffran, JR
+   Aslin, RN
+   Newport, EL
+TI Statistical learning by 8-month-old infants
+SO SCIENCE
+VL 274
+IS 5294
+BP 1926
+EP 1928
+DI 10.1126/science.274.5294.1926
+PD DEC 13 1996
+PY 1996
+RI Galantucci, Bruno/E-5770-2010
+ZR 0
+ZS 14
+TC 1957
+Z8 6
+ZB 670
+Z9 1974
+SN 0036-8075
+UT WOS:A1996VY20000049
+PM 8943209
+ER
+
+EF

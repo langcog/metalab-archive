@@ -22,15 +22,15 @@ library(lme4)
 
 # load data
 knitr::opts_chunk$set(fig.width = 8, fig.height = 5, echo = TRUE,
-                      warning = FALSE, message = FALSE, cache = FALSE)
+                      warning = FALSE, message = FALSE, cache = TRUE)
 ggplot2::theme_set(langcog::theme_mikabr(base_family = "Ubuntu"))
-source("../dashboard/global.R", chdir = TRUE)
+source("../../dashboard/global.R", chdir = TRUE)
 ```
 
 Get all dois
 (Obtained from: https://apps.crossref.org/SimpleTextQuery/ (copy-pasting 50 at a time))
 ```{r}
-dois <- read.csv("dois2.csv") %>%
+dois <- read.csv("dois.csv") %>%
       select(study_ID, doi) %>%
       filter(doi != "" & !is.na(doi)) %>%
       mutate(doi = ifelse(grepl(".org/", doi),
@@ -63,7 +63,7 @@ all_data = left_join(all_data, doi.data, by = "study_ID")  %>%
 ```{r}
 domain.references = all_data %>%
   group_by(short_name) %>%
-  multi_boot_standard(column = "reference.count", na.rm =T)
+  multi_boot_standard(col = "reference.count", na.rm =T)
 
 ggplot(domain.references, aes(x = reorder(short_name,mean) ,y = mean, fill = short_name)) +
   xlab("phenomenon") +
@@ -79,7 +79,7 @@ ggplot(domain.references, aes(x = reorder(short_name,mean) ,y = mean, fill = sho
 ```{r}
 method.references = all_data %>%
   group_by(method) %>%
-  multi_boot_standard(column = "reference.count", na.rm =T)
+  multi_boot_standard(col = "reference.count", na.rm =T)
 
 ggplot(method.references, aes(x = reorder(method,mean) ,y = mean, fill = method)) +
   xlab("method") +
@@ -97,7 +97,7 @@ summary(lmer(reference.count ~ method + as.numeric(date) + (1|dataset) , data = 
 ```{r}
 response.references = all_data %>%
   group_by(response_mode) %>%
-  multi_boot_standard(column = "reference.count", na.rm =T)
+  multi_boot_standard(col = "reference.count", na.rm =T)
 
 ggplot(response.references, aes(x = reorder(response_mode,mean) ,y = mean, fill = response_mode)) +
   xlab("response mode") +
@@ -192,7 +192,7 @@ citation.data = doi.meta.paper %>%
   select(is_free_to_read, n, reference.count, d_calc) %>%
   gather("measure", "value", -1) %>%
   group_by(is_free_to_read, measure)  %>%
-  multi_boot_standard(column = "value", na.rm = T)
+  multi_boot_standard(col = "value", na.rm = T)
   
 ggplot(citation.data, aes(x = is_free_to_read ,y = mean, fill = measure)) +
   geom_bar(stat ="identity") +

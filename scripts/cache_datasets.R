@@ -1,4 +1,4 @@
-
+# TO RUN: Rscript scripts/cache_datasets.R
 suppressMessages(suppressWarnings({
   library(dplyr)
   library(purrr)

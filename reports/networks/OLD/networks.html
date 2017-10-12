@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Molly Lewis" />
+
+<meta name="date" content="2017-09-29" />
+
+<title>Metalab Research Networks from WOS</title>
+
+<script src="out/libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="out/libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="out/libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="out/libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="out/libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="out/libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="out/libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="out/libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="out/libs/navigation-1.1/tabsets.js"></script>
+<script src="out/libs/navigation-1.1/codefolding.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+pre, code { background-color: #f8f8f8; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+div.sourceCode {
+  overflow-x: visible;
+}
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Metalab Research Networks from WOS</h1>
+<h4 class="author"><em>Molly Lewis</em></h4>
+<h4 class="date"><em>2017-09-29</em></h4>
+
+</div>
+
+
+<div id="get-data" class="section level1">
+<h1>Get data</h1>
+<div id="web-of-science-data" class="section level2">
+<h2>(1) Web of science data</h2>
+<p>Get dois (Obtained from: <a href="https://apps.crossref.org/SimpleTextQuery/" class="uri">https://apps.crossref.org/SimpleTextQuery/</a> (copy-pasting 50 at a time))</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dois &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;networks/dois2.csv&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">      </span><span class="kw">select</span>(study_ID, doi) <span class="op">%&gt;%</span>
+<span class="st">      </span><span class="kw">filter</span>(doi <span class="op">!=</span><span class="st"> &quot;&quot;</span> <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(doi)) <span class="op">%&gt;%</span>
+<span class="st">      </span><span class="kw">mutate</span>(<span class="dt">doi =</span> <span class="kw">ifelse</span>(<span class="kw">grepl</span>(<span class="st">&quot;.org/&quot;</span>, doi),
+                          <span class="kw">unlist</span>(<span class="kw">lapply</span>(<span class="kw">str_split</span>(doi, <span class="st">&quot;.org/&quot;</span>), 
+                                   <span class="cf">function</span>(x) {x[<span class="dv">2</span>]})), <span class="kw">as.character</span>(doi)))</code></pre></div>
+<p>Scrape data from web of science at paper level using bibliometrix package</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">string =<span class="st"> &quot;&quot;</span>
+<span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(dois<span class="op">$</span>doi)) {
+  string =<span class="st"> </span><span class="kw">paste</span>(string, dois<span class="op">$</span>doi[i], <span class="dt">sep =</span> <span class="st">&quot; OR &quot;</span>)
+}
+
+## search web of science-&gt; save to marked list -&gt; download marked list as .txt
+D &lt;-<span class="st"> </span><span class="kw">readFiles</span>(<span class="st">&quot;savedrecs (3).txt&quot;</span>)
+M &lt;-<span class="st"> </span><span class="kw">convert2df</span>(D, <span class="dt">dbsource =</span> <span class="st">&quot;isi&quot;</span>, <span class="dt">format =</span> <span class="st">&quot;plaintext&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">DI =</span> <span class="kw">tolower</span>(DI),
+         <span class="dt">DI =</span> <span class="kw">str_replace</span>(DI, <span class="st">&quot;//&quot;</span>, <span class="st">&quot;/&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">arrange</span>(DI) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(DI)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate_each</span>(<span class="kw">funs</span>(as.factor), <span class="op">-</span>AU, <span class="op">-</span>DE, <span class="op">-</span>ID)</code></pre></div>
+<pre><code>## Articles extracted   100 
+## Articles extracted   163</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">M &lt;-<span class="st"> </span><span class="kw">metaTagExtraction</span>(M, <span class="dt">Field =</span> <span class="st">&quot;AU_CO&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;;&quot;</span>)</code></pre></div>
+<p>Get ES and ns at paper level</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">paper.data =<span class="st"> </span>all_data <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">inner_join</span>(dois, <span class="dt">by=</span><span class="st">&quot;study_ID&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">doi =</span> <span class="kw">tolower</span>(doi)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(doi) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">d_calc =</span> <span class="kw">mean</span>(d_calc, <span class="dt">na.rm =</span> T),
+            <span class="dt">short_name =</span> short_name[<span class="dv">1</span>], 
+            <span class="dt">n =</span> <span class="kw">sum</span>(n_<span class="dv">1</span>, <span class="dt">na.rm =</span> T) <span class="op">+</span><span class="st"> </span><span class="kw">sum</span>(n_<span class="dv">2</span>, <span class="dt">na.rm =</span> T)) 
+
+<span class="co"># get web of science data for domain</span>
+ns =<span class="st"> </span>paper.data <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">inner_join</span>(M, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;doi&quot;</span> =<span class="st"> &quot;DI&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(short_name) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">n.papers =</span> <span class="kw">n</span>()) 
+
+<span class="kw">kable</span>(ns)</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">short_name</th>
+<th align="right">n.papers</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">catBias</td>
+<td align="right">7</td>
+</tr>
+<tr class="even">
+<td align="left">gaze_following</td>
+<td align="right">12</td>
+</tr>
+<tr class="odd">
+<td align="left">idspref</td>
+<td align="right">13</td>
+</tr>
+<tr class="even">
+<td align="left">inphondb-native</td>
+<td align="right">23</td>
+</tr>
+<tr class="odd">
+<td align="left">inphondb-nonnative</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">inworddb</td>
+<td align="right">49</td>
+</tr>
+<tr class="odd">
+<td align="left">labadv</td>
+<td align="right">13</td>
+</tr>
+<tr class="even">
+<td align="left">mutex</td>
+<td align="right">16</td>
+</tr>
+<tr class="odd">
+<td align="left">phonotactics</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">pointing_concurrent</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">pointing_longitudinal</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">sounds</td>
+<td align="right">6</td>
+</tr>
+<tr class="odd">
+<td align="left">symbolism</td>
+<td align="right">5</td>
+</tr>
+<tr class="even">
+<td align="left">word_recognition</td>
+<td align="right">6</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">paper.data =<span class="st"> </span>paper.data <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">left_join</span>(ns) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(n.papers <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(short_name <span class="op">!=</span><span class="st"> &quot;pointing_longitudinal&quot;</span>)
+
+n.mas =<span class="st"> </span><span class="kw">length</span>(<span class="kw">unique</span>(paper.data<span class="op">$</span>short_name))</code></pre></div>
+</div>
+<div id="network-plot-data" class="section level2">
+<h2>(2) network plot data</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">getGraphData &lt;-<span class="st"> </span><span class="cf">function</span> (my.paper.data, 
+                        this.analysis,
+                        this.network,
+                        <span class="dt">remove.multiple =</span> <span class="ot">FALSE</span>, 
+                        <span class="dt">remove.isolates =</span> <span class="ot">FALSE</span>,
+                        <span class="dt">noloops =</span> <span class="ot">FALSE</span>) {
+    
+    <span class="co"># FOR DEBUGGING</span>
+      <span class="co">#my.paper.data = filter(paper.data, short_name == unique(paper.data$short_name)[2])</span>
+    <span class="co"># this.analysis = &quot;co-occurrences&quot;</span>
+    <span class="co"># this.network = &quot;keywords&quot;</span>
+  
+    <span class="co"># get web of science data for domain</span>
+    my.M =<span class="st"> </span><span class="kw">left_join</span>(my.paper.data, M, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;doi&quot;</span> =<span class="st"> &quot;DI&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">             </span><span class="kw">as.data.frame</span>() <span class="co"># necessary for biblioNetwork</span>
+    
+    SEP =<span class="st"> </span><span class="kw">ifelse</span>(this.analysis <span class="op">==</span><span class="st"> &quot;co-citation&quot;</span>, <span class="st">&quot;. &quot;</span>, <span class="st">&quot;; &quot;</span>)
+  
+    <span class="co"># make the network</span>
+    this.net &lt;-<span class="st"> </span><span class="kw">biblioNetwork</span>(my.M, 
+                   <span class="dt">analysis =</span> this.analysis, 
+                   <span class="dt">network =</span> this.network, 
+                   <span class="dt">sep =</span> SEP) 
+    
+    <span class="cf">if</span> (<span class="kw">length</span>(this.net <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>)) {
+      <span class="co"># munge the network</span>
+      bsk.network &lt;-<span class="st"> </span><span class="kw">graph.adjacency</span>(this.net, <span class="dt">mode =</span> <span class="st">&quot;undirected&quot;</span>)
+      <span class="kw">V</span>(bsk.network)<span class="op">$</span>id &lt;-<span class="st"> </span><span class="kw">colnames</span>(this.net)
+      deg &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">degree</span>(bsk.network, <span class="dt">mode =</span> <span class="st">&quot;all&quot;</span>)
+      <span class="kw">V</span>(bsk.network)<span class="op">$</span>size =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">5</span>, <span class="kw">length</span>(<span class="kw">V</span>(bsk.network)))
+  
+      n =<span class="st"> </span><span class="kw">dim</span>(this.net)[<span class="dv">1</span>]
+      NetDegree &lt;-<span class="st"> </span><span class="kw">unname</span>(<span class="kw">sort</span>(deg, <span class="dt">decreasing =</span> <span class="ot">TRUE</span>)[n])
+      bsk.network &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">delete.vertices</span>(bsk.network,
+                                     <span class="kw">which</span>(igraph<span class="op">::</span><span class="kw">degree</span>(bsk.network) <span class="op">&lt;</span><span class="st"> </span>
+<span class="st">          </span>NetDegree))
+      bsk.network &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">simplify</span>(bsk.network, 
+                              <span class="dt">remove.multiple =</span> remove.multiple, 
+          <span class="dt">remove.loops =</span> noloops)
+      <span class="cf">if</span> (<span class="kw">isTRUE</span>(remove.isolates)) {
+          bsk.network &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">delete.isolates</span>(bsk.network, <span class="dt">mode =</span> <span class="st">&quot;in&quot;</span>)
+      }
+      
+      <span class="co"># make into df for plotting</span>
+      gn =<span class="st"> </span><span class="kw">asNetwork</span>(bsk.network)
+    }
+    
+    cc &lt;-<span class="st"> </span><span class="kw">try</span>(<span class="kw">ggnetwork</span>(gn), <span class="dt">silent =</span> <span class="ot">TRUE</span>)  <span class="co"># gets rid of too-small networks</span>
+    <span class="cf">if</span>(<span class="op">!</span><span class="kw">is</span>(cc,<span class="st">&quot;try-error&quot;</span>)) {
+       <span class="kw">return</span>(<span class="kw">ggnetwork</span>(gn))
+    } 
+}</code></pre></div>
+</div>
+<div id="network-measures-data" class="section level2">
+<h2>(3) network measures data</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">getModularity &lt;-<span class="st"> </span><span class="cf">function</span> (my.paper.data, 
+                        this.analysis,
+                        this.network,
+                        <span class="dt">remove.multiple =</span> <span class="ot">FALSE</span>, 
+                        <span class="dt">remove.isolates =</span> <span class="ot">FALSE</span>,
+                        <span class="dt">noloops =</span> <span class="ot">FALSE</span>) {
+
+    <span class="co"># get web of science data for domain</span>
+    my.M =<span class="st"> </span><span class="kw">left_join</span>(my.paper.data, M, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;doi&quot;</span> =<span class="st"> &quot;DI&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">             </span><span class="kw">as.data.frame</span>() <span class="co"># necessary for biblioNetwork</span>
+    
+    SEP =<span class="st"> </span><span class="kw">ifelse</span>(this.analysis <span class="op">==</span><span class="st"> &quot;co-citation&quot;</span>, <span class="st">&quot;. &quot;</span>, <span class="st">&quot;; &quot;</span>)
+  
+    <span class="co"># make the network</span>
+    this.net &lt;-<span class="st"> </span><span class="kw">biblioNetwork</span>(my.M, 
+                   <span class="dt">analysis =</span> this.analysis, 
+                   <span class="dt">network =</span> this.network, 
+                   <span class="dt">sep =</span> SEP) 
+    
+    <span class="cf">if</span> (<span class="kw">length</span>(this.net <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>)) {
+      <span class="co"># munge the network</span>
+      graph &lt;-<span class="st"> </span><span class="kw">graph.adjacency</span>(this.net, <span class="dt">mode =</span> <span class="st">&quot;undirected&quot;</span>)
+      clustering =<span class="st"> </span><span class="kw">cluster_leading_eigen</span>(graph, 
+                              <span class="dt">options =</span> <span class="kw">list</span>(<span class="dt">maxiter=</span><span class="dv">1000000</span>))
+    
+      closeness =<span class="st"> </span><span class="kw">mean</span>(<span class="kw">estimate_closeness</span>(graph, <span class="dt">cutoff=</span> <span class="dv">100</span>))
+      betweeness =<span class="st"> </span><span class="kw">mean</span>(<span class="kw">estimate_betweenness</span>(graph, <span class="dt">cutoff=</span> <span class="dv">100</span>))
+      degree =<span class="st"> </span><span class="kw">mean</span>(igraph<span class="op">::</span><span class="kw">degree</span>(graph))
+
+      <span class="kw">data.frame</span>(<span class="dt">analysis =</span> this.analysis,
+                <span class="dt">network =</span> this.network,
+                <span class="dt">Q =</span> <span class="kw">round</span>(clustering<span class="op">$</span>modularity,<span class="dv">4</span>), 
+                <span class="dt">n.groups =</span> <span class="kw">round</span>(<span class="kw">length</span>(clustering),<span class="dv">4</span>),
+                <span class="dt">closeness  =</span> <span class="kw">round</span>(closeness, <span class="dv">4</span>),
+                <span class="dt">betweeness  =</span> <span class="kw">round</span>(betweeness, <span class="dv">4</span>),
+                <span class="dt">degree =</span> <span class="kw">mean</span>(degree))
+    }
+}
+
+<span class="co"># get network measures for all networks</span>
+analyses &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;co-citation&quot;</span>, <span class="st">&quot;coupling&quot;</span>, <span class="st">&quot;co-occurrences&quot;</span>, <span class="st">&quot;collaboration&quot;</span>), <span class="dt">each =</span> n.mas) 
+networks &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;references&quot;</span>, <span class="st">&quot;authors&quot;</span>, <span class="st">&quot;keywords&quot;</span>, <span class="st">&quot;authors&quot;</span>), <span class="dt">each =</span> n.mas)
+
+dfs &lt;-<span class="st"> </span>paper.data <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate_each</span>(<span class="kw">funs</span>(as.factor)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">split</span>(.<span class="op">$</span>short_name) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">rep</span>(<span class="dv">4</span>)
+
+args =<span class="st"> </span><span class="kw">list</span>(dfs, analyses, networks)
+
+modularity.data =<span class="st"> </span>args <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">pmap</span>(getModularity) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">bind_rows</span>(<span class="dt">.id =</span> <span class="st">&quot;short_name&quot;</span>)
+
+modularity.data.long =<span class="st"> </span>modularity.data <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">closeness =</span> <span class="kw">log</span>(closeness),
+            <span class="dt">betweeness =</span> <span class="kw">log</span>(betweeness),
+            <span class="dt">degree =</span> <span class="kw">log</span>(degree)) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">gather</span>(<span class="st">&quot;network.measure&quot;</span>, <span class="st">&quot;network.value&quot;</span>, <span class="dv">4</span><span class="op">:</span><span class="dv">8</span>) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">unite</span>(network, analysis, network, <span class="dt">sep =</span> <span class="st">&quot;.&quot;</span>)
+  
+<span class="kw">ggplot</span>(modularity.data.long, <span class="kw">aes</span>(<span class="dt">x =</span> short_name, <span class="dt">y =</span> network.value)) <span class="op">+</span>
+<span class="st">        </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>, <span class="kw">aes</span>(<span class="dt">fill =</span> short_name))  <span class="op">+</span>
+<span class="st">        </span><span class="kw">facet_wrap</span>(network.measure <span class="op">~</span><span class="st"> </span>network, 
+                   <span class="dt">ncol =</span> <span class="dv">4</span>, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>) <span class="op">+</span>
+<span class="st">        </span><span class="kw">theme_bw</span>() <span class="op">+</span>
+<span class="st">        </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_blank</span>()) </code></pre></div>
+<p><img src="networks_files/figure-html/unnamed-chunk-5-1.png" width="768" /></p>
+</div>
+<div id="literature-bias-data" class="section level2">
+<h2>(4) literature bias data</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ma.es =<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;ES_data_for_networks.csv&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st"> </span><span class="co"># mutate(d_var = ci_upper-ci_lower)%&gt;%</span>
+<span class="st">  </span><span class="kw">select</span>(short_name, overall.d, overall.d.age,
+         fsn_string, egg.random.z, stouffer.Z.pp) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">gather</span>(<span class="st">&quot;bias.measure&quot;</span>, <span class="st">&quot;bias.value&quot;</span>, <span class="dv">2</span><span class="op">:</span><span class="dv">6</span>) 
+  <span class="co">#filter(bias.measure %in% c(&quot;egg.random.z&quot;, &quot;fsn_string&quot;))</span></code></pre></div>
+</div>
+</div>
+<div id="networks-and-correlations-with-bias" class="section level1">
+<h1>Networks and correlations with bias</h1>
+<p>Get model fits</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">d =<span class="st"> </span><span class="kw">left_join</span>(modularity.data.long, ma.es) <span class="op">%&gt;%</span>
+<span class="st">  </span>dplyr<span class="op">::</span><span class="kw">as_data_frame</span>() <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">left_join</span>(ns)
+
+corrs =<span class="st"> </span>d <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(<span class="kw">is.finite</span>(network.value) <span class="op">&amp;</span><span class="st"> </span><span class="kw">is.finite</span>(bias.value)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(network, bias.measure, network.measure) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="co">#do(tidy(cor.test(.$bias.value, .$value, na.action = &quot;na.pass&quot;))) %&gt;%</span>
+<span class="st">  </span><span class="kw">do</span>(<span class="kw">tidy</span>(<span class="kw">lm</span>(bias.value <span class="op">~</span><span class="st"> </span>n.papers <span class="op">+</span><span class="st"> </span>network.value, <span class="dt">data=</span>.))) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(term <span class="op">==</span><span class="st"> &quot;network.value&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">sig.col =</span> <span class="kw">ifelse</span>(p.value <span class="op">&lt;</span><span class="st"> </span>.<span class="dv">05</span>, <span class="st">&quot;sig&quot;</span>, <span class="st">&quot;nsig&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">select</span>(estimate, sig.col) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">network.value =</span> <span class="ot">Inf</span>, <span class="dt">bias.value =</span> <span class="ot">Inf</span>)  <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># this is a hack</span>
+<span class="st">  </span><span class="kw">as.data.frame</span>()</code></pre></div>
+<div id="collaboration-authors" class="section level2 tabset">
+<h2>Collaboration authors</h2>
+<div id="networks" class="section level3">
+<h3>Networks</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ANALYSIS &lt;-<span class="st">  &quot;collaboration&quot;</span>
+paper.data <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">split</span>(.<span class="op">$</span>short_name) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">map</span>(getGraphData, ANALYSIS , <span class="st">&quot;authors&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">bind_rows</span>(<span class="dt">.id =</span> <span class="st">&quot;short_name&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y, <span class="dt">xend =</span> xend, <span class="dt">yend =</span> yend)) <span class="op">+</span>
+<span class="st">     </span><span class="kw">geom_edges</span>(<span class="dt">color =</span> <span class="st">&quot;grey50&quot;</span>) <span class="op">+</span>
+<span class="st">     </span><span class="kw">facet_wrap</span>(<span class="op">~</span>short_name) <span class="op">+</span>
+<span class="st">     </span><span class="kw">geom_nodes</span>(<span class="kw">aes</span>(<span class="dt">color =</span> short_name)) <span class="op">+</span>
+<span class="st">     </span><span class="kw">ggtitle</span>(<span class="st">&quot;authors&quot;</span>) <span class="op">+</span>
+<span class="st">     </span><span class="kw">theme_blank</span>() <span class="op">+</span>
+<span class="st">     </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)</code></pre></div>
+<p><img src="networks_files/figure-html/unnamed-chunk-8-1.png" width="768" /></p>
+</div>
+<div id="correlations" class="section level3">
+<h3>Correlations</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="kw">filter</span>(d, network <span class="op">==</span><span class="st"> &quot;collaboration.authors&quot;</span>), 
+       <span class="kw">aes</span>(<span class="dt">x =</span> network.value, <span class="dt">y =</span> bias.value)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_rect</span>(<span class="dt">data =</span> <span class="kw">filter</span>(corrs, network <span class="op">==</span><span class="st"> &quot;collaboration.authors&quot;</span>),
+            <span class="kw">aes</span>(<span class="dt">fill =</span> sig.col), 
+          <span class="dt">xmin =</span> <span class="op">-</span><span class="ot">Inf</span>, <span class="dt">xmax =</span> <span class="ot">Inf</span>,
+          <span class="dt">ymin =</span> <span class="op">-</span><span class="ot">Inf</span>, <span class="dt">ymax =</span> <span class="ot">Inf</span>, <span class="dt">alpha =</span> <span class="fl">0.2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> n.papers, <span class="dt">color =</span> short_name)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method=</span> <span class="st">&quot;lm&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;collaboration.authors&quot;</span>)<span class="op">+</span>
+<span class="st">  </span><span class="kw">facet_grid</span>(bias.measure <span class="op">~</span><span class="st"> </span>network.measure, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_fill_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>( <span class="st">&quot;grey99&quot;</span>, <span class="st">&quot;red1&quot;</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)</code></pre></div>
+<p><img src="networks_files/figure-html/unnamed-chunk-9-1.png" width="768" /></p>
+</div>
+</div>
+<div id="co-citation-references" class="section level2 tabset">
+<h2>Co-citation references</h2>
+<div id="networks-1" class="section level3">
+<h3>Networks</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ANALYSIS &lt;-<span class="st">  &quot;co-citation&quot;</span>
+paper.data <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">split</span>(.<span class="op">$</span>short_name) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">map</span>(getGraphData, ANALYSIS, <span class="st">&quot;references&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">bind_rows</span>(<span class="dt">.id =</span> <span class="st">&quot;short_name&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y, <span class="dt">xend =</span> xend, <span class="dt">yend =</span> yend)) <span class="op">+</span>
+<span class="st">     </span><span class="kw">geom_edges</span>(<span class="dt">color =</span> <span class="st">&quot;grey50&quot;</span>) <span class="op">+</span>
+<span class="st">     </span><span class="kw">facet_wrap</span>(<span class="op">~</span>short_name) <span class="op">+</span>
+<span class="st">     </span><span class="kw">geom_nodes</span>(<span class="kw">aes</span>(<span class="dt">color =</span> short_name)) <span class="op">+</span>
+<span class="st">     </span><span class="kw">ggtitle</span>(<span class="st">&quot;references&quot;</span>) <span class="op">+</span>
+<span class="st">     </span><span class="kw">theme_blank</span>() <span class="op">+</span>
+<span class="st">     </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)</code></pre></div>
+<p><img src="networks_files/figure-html/unnamed-chunk-10-1.png" width="768" /></p>
+</div>
+<div id="correlations-1" class="section level3">
+<h3>Correlations</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="kw">filter</span>(d, network <span class="op">==</span><span class="st"> &quot;co-citation.references&quot;</span>), 
+       <span class="kw">aes</span>(<span class="dt">x =</span> network.value, <span class="dt">y =</span> bias.value)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> n.papers, <span class="dt">color =</span> short_name)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method=</span> <span class="st">&quot;lm&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;co-citation.references&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">facet_grid</span>(bias.measure <span class="op">~</span><span class="st"> </span>network.measure, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_rect</span>(<span class="dt">data =</span> <span class="kw">filter</span>(corrs, network <span class="op">==</span><span class="st"> &quot;co-citation.references&quot;</span>),
+            <span class="kw">aes</span>(<span class="dt">fill =</span> sig.col), 
+          <span class="dt">xmin =</span> <span class="op">-</span><span class="ot">Inf</span>, <span class="dt">xmax =</span> <span class="ot">Inf</span>,
+          <span class="dt">ymin =</span> <span class="op">-</span><span class="ot">Inf</span>, <span class="dt">ymax =</span> <span class="ot">Inf</span>, <span class="dt">alpha =</span> <span class="fl">0.2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_fill_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>( <span class="st">&quot;grey99&quot;</span>, <span class="st">&quot;red1&quot;</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)</code></pre></div>
+<p><img src="networks_files/figure-html/unnamed-chunk-11-1.png" width="768" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Coupling references{.tabset}
+### Networks
+ANALYSIS &lt;-<span class="st">  &quot;coupling&quot;</span>
+paper.data <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">split</span>(.<span class="op">$</span>short_name) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">map</span>(getGraphData, ANALYSIS, <span class="st">&quot;references&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">bind_rows</span>(<span class="dt">.id =</span> <span class="st">&quot;short_name&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y, <span class="dt">xend =</span> xend, <span class="dt">yend =</span> yend)) <span class="op">+</span>
+<span class="st">     </span><span class="kw">geom_edges</span>(<span class="dt">color =</span> <span class="st">&quot;grey50&quot;</span>) <span class="op">+</span>
+<span class="st">     </span><span class="kw">facet_wrap</span>(<span class="op">~</span>short_name) <span class="op">+</span>
+<span class="st">     </span><span class="kw">geom_nodes</span>(<span class="kw">aes</span>(<span class="dt">color =</span> short_name)) <span class="op">+</span>
+<span class="st">     </span><span class="kw">ggtitle</span>(<span class="st">&quot;references&quot;</span>) <span class="op">+</span>
+<span class="st">     </span><span class="kw">theme_blank</span>() <span class="op">+</span>
+<span class="st">     </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)</code></pre></div>
+</div>
+</div>
+<div id="coupling-authors" class="section level2 tabset">
+<h2>Coupling authors</h2>
+<div id="networks-2" class="section level3">
+<h3>Networks</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ANALYSIS &lt;-<span class="st">  &quot;coupling&quot;</span>
+paper.data <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">split</span>(.<span class="op">$</span>short_name) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">map</span>(getGraphData, ANALYSIS, <span class="st">&quot;authors&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">bind_rows</span>(<span class="dt">.id =</span> <span class="st">&quot;short_name&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y, <span class="dt">xend =</span> xend, <span class="dt">yend =</span> yend)) <span class="op">+</span>
+<span class="st">     </span><span class="kw">geom_edges</span>(<span class="dt">color =</span> <span class="st">&quot;grey50&quot;</span>) <span class="op">+</span>
+<span class="st">     </span><span class="kw">facet_wrap</span>(<span class="op">~</span>short_name) <span class="op">+</span>
+<span class="st">     </span><span class="kw">geom_nodes</span>(<span class="kw">aes</span>(<span class="dt">color =</span> short_name)) <span class="op">+</span>
+<span class="st">     </span><span class="kw">ggtitle</span>(<span class="st">&quot;authors&quot;</span>) <span class="op">+</span>
+<span class="st">     </span><span class="kw">theme_blank</span>() <span class="op">+</span>
+<span class="st">     </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)</code></pre></div>
+<p><img src="networks_files/figure-html/unnamed-chunk-13-1.png" width="768" /></p>
+</div>
+<div id="correlations-2" class="section level3">
+<h3>Correlations</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="kw">filter</span>(d, network <span class="op">==</span><span class="st"> &quot;coupling.authors&quot;</span>), 
+       <span class="kw">aes</span>(<span class="dt">x =</span> network.value, <span class="dt">y =</span> bias.value)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_rect</span>(<span class="dt">data =</span> <span class="kw">filter</span>(corrs, network <span class="op">==</span><span class="st"> &quot;coupling.authors&quot;</span>),
+            <span class="kw">aes</span>(<span class="dt">fill =</span> sig.col), 
+          <span class="dt">xmin =</span> <span class="op">-</span><span class="ot">Inf</span>, <span class="dt">xmax =</span> <span class="ot">Inf</span>,
+          <span class="dt">ymin =</span> <span class="op">-</span><span class="ot">Inf</span>, <span class="dt">ymax =</span> <span class="ot">Inf</span>, <span class="dt">alpha =</span> <span class="fl">0.2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> n.papers, <span class="dt">color =</span> short_name)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method=</span> <span class="st">&quot;lm&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;coupling.authors&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">facet_grid</span>(bias.measure <span class="op">~</span><span class="st"> </span>network.measure, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>) <span class="op">+</span>
+
+<span class="st">  </span><span class="kw">scale_fill_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>( <span class="st">&quot;grey99&quot;</span>, <span class="st">&quot;red1&quot;</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)</code></pre></div>
+<p><img src="networks_files/figure-html/unnamed-chunk-14-1.png" width="768" /></p>
+</div>
+</div>
+<div id="co-occurences-keywords" class="section level2 tabset">
+<h2>Co-occurences keywords</h2>
+<div id="networks-3" class="section level3">
+<h3>Networks</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ANALYSIS &lt;-<span class="st">  &quot;co-occurrences&quot;</span>
+paper.data <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">split</span>(.<span class="op">$</span>short_name) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">map</span>(getGraphData, ANALYSIS, <span class="st">&quot;keywords&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">bind_rows</span>(<span class="dt">.id =</span> <span class="st">&quot;short_name&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y, <span class="dt">xend =</span> xend, <span class="dt">yend =</span> yend)) <span class="op">+</span>
+<span class="st">     </span><span class="kw">geom_edges</span>(<span class="dt">color =</span> <span class="st">&quot;grey50&quot;</span>) <span class="op">+</span>
+<span class="st">     </span><span class="kw">facet_wrap</span>(<span class="op">~</span>short_name) <span class="op">+</span>
+<span class="st">     </span><span class="kw">ggtitle</span>(<span class="st">&quot;keywords&quot;</span>) <span class="op">+</span>
+<span class="st">     </span><span class="kw">geom_nodes</span>(<span class="kw">aes</span>(<span class="dt">color =</span> short_name)) <span class="op">+</span>
+<span class="st">     </span><span class="kw">theme_blank</span>() <span class="op">+</span>
+<span class="st">     </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)</code></pre></div>
+<p><img src="networks_files/figure-html/unnamed-chunk-15-1.png" width="768" /></p>
+</div>
+<div id="correlations-3" class="section level3">
+<h3>Correlations</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="kw">filter</span>(d, network <span class="op">==</span><span class="st"> &quot;co-occurrences.keywords&quot;</span>), 
+       <span class="kw">aes</span>(<span class="dt">x =</span> network.value, <span class="dt">y =</span> bias.value)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> n.papers, <span class="dt">color =</span> short_name)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method=</span> <span class="st">&quot;lm&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;co-occurrences.keywords&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">facet_grid</span>(bias.measure <span class="op">~</span><span class="st"> </span>network.measure, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_rect</span>(<span class="dt">data =</span> <span class="kw">filter</span>(corrs, network <span class="op">==</span><span class="st"> &quot;co-occurrences.keywords&quot;</span>),
+            <span class="kw">aes</span>(<span class="dt">fill =</span> sig.col), 
+          <span class="dt">xmin =</span> <span class="op">-</span><span class="ot">Inf</span>, <span class="dt">xmax =</span> <span class="ot">Inf</span>,
+          <span class="dt">ymin =</span> <span class="op">-</span><span class="ot">Inf</span>, <span class="dt">ymax =</span> <span class="ot">Inf</span>, <span class="dt">alpha =</span> <span class="fl">0.2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_fill_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>( <span class="st">&quot;grey99&quot;</span>, <span class="st">&quot;red1&quot;</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_bw</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)</code></pre></div>
+<p><img src="networks_files/figure-html/unnamed-chunk-16-1.png" width="768" /></p>
+<p>Paper level analyses</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">getModularity_paper &lt;-<span class="st"> </span><span class="cf">function</span> (my.paper.data, 
+                        this.analysis,
+                        this.network,
+                        <span class="dt">remove.multiple =</span> <span class="ot">FALSE</span>, 
+                        <span class="dt">remove.isolates =</span> <span class="ot">FALSE</span>,
+                        <span class="dt">noloops =</span> <span class="ot">FALSE</span>) {
+
+    <span class="co"># get web of science data for domain</span>
+    my.M =<span class="st"> </span><span class="kw">left_join</span>(my.paper.data, M, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;doi&quot;</span> =<span class="st"> &quot;DI&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">             </span><span class="kw">as.data.frame</span>() <span class="co"># necessary for biblioNetwork</span>
+    
+    SEP =<span class="st"> </span><span class="kw">ifelse</span>(this.analysis <span class="op">==</span><span class="st"> &quot;co-citation&quot;</span>, <span class="st">&quot;. &quot;</span>, <span class="st">&quot;; &quot;</span>)
+  
+    <span class="co"># make the network</span>
+    this.net &lt;-<span class="st"> </span><span class="kw">biblioNetwork</span>(my.M, 
+                   <span class="dt">analysis =</span> this.analysis, 
+                   <span class="dt">network =</span> this.network, 
+                   <span class="dt">sep =</span> SEP) 
+    
+    <span class="cf">if</span> (<span class="kw">length</span>(this.net <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>)) {
+      <span class="co"># munge the network</span>
+      graph &lt;-<span class="st"> </span><span class="kw">graph.adjacency</span>(this.net, <span class="dt">mode =</span> <span class="st">&quot;undirected&quot;</span>)
+      <span class="kw">data.frame</span>(<span class="dt">analysis =</span> this.analysis,
+                 <span class="dt">network =</span> this.network,
+                 <span class="dt">closeness =</span> <span class="kw">estimate_closeness</span>(graph, <span class="dt">cutoff=</span> <span class="dv">100</span>),
+                 <span class="dt">betweeness =</span> <span class="kw">estimate_betweenness</span>(graph, <span class="dt">cutoff=</span> <span class="dv">100</span>),
+                 <span class="dt">degree =</span> igraph<span class="op">::</span><span class="kw">degree</span>(graph))
+    }
+}
+
+dfs &lt;-<span class="st"> </span>paper.data <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate_each</span>(<span class="kw">funs</span>(as.factor)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">split</span>(.<span class="op">$</span>short_name) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">rep</span>(<span class="dv">4</span>)
+analyses &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;co-citation&quot;</span>, <span class="st">&quot;coupling&quot;</span>, <span class="st">&quot;co-occurrences&quot;</span>, <span class="st">&quot;collaboration&quot;</span>), <span class="dt">each =</span> <span class="dv">14</span>) 
+networks &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;references&quot;</span>, <span class="st">&quot;authors&quot;</span>, <span class="st">&quot;keywords&quot;</span>, <span class="st">&quot;authors&quot;</span>), <span class="dt">each =</span> <span class="dv">14</span>)
+args =<span class="st"> </span><span class="kw">list</span>(dfs, analyses, networks)
+
+modularity.data =<span class="st"> </span>args <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">pmap</span>(getModularity_paper) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(analysis <span class="op">==</span><span class="st"> &quot;co-citation&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">bind_rows</span>(<span class="dt">.id =</span> <span class="st">&quot;short_name&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">k =<span class="st"> </span>M <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">left_join</span>(paper.data, <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&quot;DI&quot;</span>=<span class="st"> &quot;doi&quot;</span>)) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">split</span>(.<span class="op">$</span>short_name) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">map</span>(biblioAnalysis) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">bind_rows</span>() 
+
+bibliometrix<span class="op">::</span><span class="kw">summary</span>(k, <span class="dt">pause =</span> <span class="ot">FALSE</span>) 
+
+
+S =<span class="st"> </span><span class="kw">summary</span>(<span class="dt">object =</span> m, <span class="dt">k =</span> <span class="dv">10</span>, <span class="dt">pause =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<p>TO DO:</p>
+<ul>
+<li>get summary statistics using summary function</li>
+<li>get ES controling for age, and ES error, also domain bias, n</li>
+<li>correlate everything at domain and entire dataset</li>
+<li>look at individual papers</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

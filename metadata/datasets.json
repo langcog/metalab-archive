@@ -191,7 +191,7 @@
 		"filename": "word_recognition",
 		"citation": "Frank, Lewis, & MacDonald (2016)",
 		"internal_citation": "(Frank, Lewis, & MacDonald, 2016)",
-		"link": "http://langcog.stanford.edu/papers_new/frank-2016-underrev.pdf",
+		"link": "http://langcog.stanford.edu/papers_new/frank-2016-cogsci.pdf",
 		"full_citation": "Frank, M. C., Lewis, M., & MacDonald, K. (2016). A performance model for early wordlearning. In Proceedings of the 38th Annual Conference of the Cognitive Science Society.",
 		"doi": "",
 		"systematic": "no",
@@ -314,15 +314,15 @@
 		"source": "coded by authors",
 		"last_update": "2017-3-01",
 		"link_fields": "",
-		"short_desc": "In a triad-task, bias to generalize to taxonomic as opposed to thematic alternative.",
-		"description": "In a triad-task, bias to generalize to taxonomic as opposed to thematic alternative.",
+		"short_desc": "Bias to generalize to taxonomic as opposed to thematic alternative in a triad task.",
+		"description": "Bias to generalize to taxonomic as opposed to thematic alternative in a triad task.",
 		"curator": "Molly Lewis",
 		"src": "images/datasets/catBias.png",
 		"longitudinal": "FALSE",
 		"moderators": ["label_present", "instruction_code",	"object_stimulus", "taxonomic_type"]
-	}
+	},
 	{
-		"name": "Statistical Word Segmentation",
+		"name": "Statistical word segmentation",
 		"short_name": "statSeg",
 		"key": "1s9sMw6aUOaSqipPOVJMbR8UZkBv_f_fL9yD-kn8lLJQ",
 		"filename": "statSeg",
