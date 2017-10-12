@@ -478,250 +478,266 @@
   description:  is the speech stimulus a natural recording, a processed natural recording, or synthesized?
   type:         string
   format:	natural, natural_processed, synthetic
-  example:      
+  example:
   required:     no
 
 - field:        contrast_pseudoIPA
   description:  phonetic contrast in pseudo-IPA
   type:         string
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:        sampa_comments
   description:  comments about sampa coding
   type:         string
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:	counterbalanced
   description:  were auditory stimuli counterbalanced?
   type:         numeric
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:        backness
   description:  phonological difference in backness
   type:         numeric
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:        height
   description:  phonological difference in height
   type:         numeric
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:        nasality
   description:  phonological difference in nasality
   type:         numeric
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:        roundness
   description:  phonological difference in roundness
   type:         numeric
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:        tenseness
   description:  phonological difference in tenseness
   type:         numeric
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:        length
   description:  phonological difference in length
   type:         numeric
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:        F1_1
   description:  First formant of vowel or consonant 1
   type:         numeric
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:        F2_1
   description:  Second formant of vowel or consonant 1
   type:         numeric
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:        F1_2
   description:  First formant of vowel or consonant 2
   type:         numeric
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:        F2_2
   description:  Second formant of vowel or consonant 2
   type:         numeric
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:        duration_word_1
   description:  Duration of word 1
   type:         numeric
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:        duration_word_2
   description:  Duration of word 2
   type:         numeric
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:        duration_vowel_1
   description:  Duration of vowel 1
   type:         numeric
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:        duration_vowel_2
   description:  Duration of vowel 2
   type:         numeric
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:        peripherality
   description:  1 = vowel 2 is peripheral to vowel 1, if 0 = vowel 1 is peripheral to vowel 2
   type:         numeric
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:	Linguistic
   description:  Linguistic manipulation of words in passages
   type:		string
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:	words_to_passage
   description:  is testing conducted from words to passages or vice versa?
   type:		string
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:	edge_alignment
   description:  Edge alignment of words in passages
   type:		numeric
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:	familiarization_voice
   description:  Gender of voice used in familiarization
   type:		string
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:	familiarization_register
   description:  IDS or ADS used in familiarization
   type:		string
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:	familiarization_affect
   description:  Affect used in familiarization
   type:		string
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:	test_voice
   description:  Gender of voice used in test
   type:		string
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:	test_register
   description:  IDS or ADS used in test
   type:		string
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:	indexical
   description:  Indexical features varied
   type:		string
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:	rule.type
-  description:  
+  description:
   type:		string
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:	repetitions
   description:  phonotactics
   type:		string
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:	types
   description:  phonotactics
   type:		string
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:	tokens
   description:  phonotactics
   type:		string
-  format:	
-  example:      
-  required:     no	
+  format:
+  example:
+  required:     no
 
 - field:	expt_condition2
-  description:  
+  description:
   type:		string
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
 - field:	word_round
   description:  symbolism
   type:		string
-  format:	
-  example:      
+  format:
+  example:
   required:     no
 
-- field:	word_spiky
+- field:	      word_spiky
   description:  symbolism
-  type:		string
-  format:	
-  example:      
-  required:     no	
+  type:         string
+  format:
+  example:
+  required:     no
 
-- field:	multiple_age_groups_younger_older
+- field:	      multiple_age_groups_younger_older
   description:  inworddb
-  type:		numeric
-  format:	
-  example:      
+  type:		      numeric
+  format:
+  example:
+  required:     no
+
+- field:        replication
+  description:  statSeg
+  type:         string
+  format:       options
+  example:
+      - "yes"
+      - "no"
+  required:     no
+
+- field:        stimuli_naturalness
+  description:  statSeg
+  type:         string
+  format:
+  example:      natural
   required:     no
