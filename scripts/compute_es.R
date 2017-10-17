@@ -23,13 +23,17 @@ compute_es <- function(participant_design, x_1 = NA, x_2 = NA, x_dif = NA,
 
   assert_that(participant_design %in% c("between", "within_two", "within_one"))
   
-  #we introduce variables calles d_calc and d_var_calc to distiguish them from the fields d and d_var, which are fields where effect sizes were already available from the source of the data
+  # we introduce variables calles d_calc and d_var_calc to distiguish them from the fields d and d_var, 
+  # which are fields where effect sizes were already available from the source of the data
   d_calc <- NA
   d_var_calc <- NA
   es_method <- "missing"
 
-  #start of decision tree where effect sizes are calculated differently based on participant design
-  #depending on which data is available, effect sizes are calculated differently
+  # start of decision tree where effect sizes are calculated differently based on participant design
+  # depending on which data is available, effect sizes are calculated differently
+  # switches on participant_design = "between", "within_two", or "within_one"
+  
+  ####### BETWEEN ########
   if (participant_design == "between") {
     es_method  <- "between"
     #effect size calculation
@@ -37,9 +41,9 @@ compute_es <- function(participant_design, x_1 = NA, x_2 = NA, x_dif = NA,
       pooled_SD <- sqrt(((n_1 - 1) * SD_1 ^ 2 + (n_2 - 1) * SD_2 ^ 2) / (n_1 + n_2 - 2)) # Lipsey & Wilson, 3.14
       d_calc <- (x_1 - x_2) / pooled_SD # Lipsey & Wilson (2001)
     } else if (complete(t)) {
-      d_calc <- t * sqrt((n_1 + n_2) / (n_1 * n_2)) # Lipsey & Wilson, (2001)
+      d_calc <- t * sqrt((n_1 + n_2) / (n_1 * n_2)) # Lipsey & Wilson (2001)
     } else if (complete(f)) {
-      d_calc <- sqrt(f * (n_1 + n_2) / (n_1 * n_2)) # Lipsey & Wilson, (2001)
+      d_calc <- sqrt(f * (n_1 + n_2) / (n_1 * n_2)) # Lipsey & Wilson (2001)
     }
     if (complete(n_1, n_2, d_calc)) {
       #now that effect size are calculated, effect size variance is calculated
@@ -54,6 +58,7 @@ compute_es <- function(participant_design, x_1 = NA, x_2 = NA, x_dif = NA,
       d_var_calc <- d_var
     }
 
+  ####### WITHIN_TWO ########
   } else if (participant_design == "within_two") {
     if (is.na(corr)) {
       #if correlation between two measures is not reported, use an imputed correlation value
@@ -101,6 +106,7 @@ compute_es <- function(participant_design, x_1 = NA, x_2 = NA, x_dif = NA,
       es_method  <- "d_two"
     }
 
+  ####### WITHIN_ONE ########
   } else if (participant_design == "within_one") {
     if (complete(x_1, x_2, SD_1)) {
       d_calc <- (x_1 - x_2) / SD_1
@@ -113,8 +119,8 @@ compute_es <- function(participant_design, x_1 = NA, x_2 = NA, x_dif = NA,
       es_method  <- "f_one"
     }
     if (complete(n_1, d_calc)) {
-      #d_var_calc <- (2/n_1) + (d_calc ^ 2 / (4 * n_1)) #we used this until 4/7/2017
-      d_var_calc <- (1 / n_1) + (d_calc ^ 2 / (2 * n_1)) #this models what is done in metafor package, escalc(measure="SMCR"() (Viechtbauer, 2010)
+      #d_var_calc <- (2/n_1) + (d_calc ^ 2 / (4 * n_1)) # we used this until 4/7/2017
+      d_var_calc <- (1 / n_1) + (d_calc ^ 2 / (2 * n_1)) # this models what is done in metafor package, escalc(measure="SMCR"() (Viechtbauer, 2010)
       
     } else if (complete(r, n_1)){ 
       # this deals with pointing and vocabulary 
@@ -146,7 +152,7 @@ compute_es <- function(participant_design, x_1 = NA, x_2 = NA, x_dif = NA,
     }
   }
 
-  # SPECIAL CASES for which an unusual subset of measures was reported
+  ####### SPECIAL CASES ######## (for which an unusual subset of measures was reported)
   if (!complete(d_calc, d_var_calc)) {
     es_method <- "special_case"
     
