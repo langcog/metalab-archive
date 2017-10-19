@@ -10,23 +10,25 @@ author:
   - name: Sho Tsuji
     affiliation: 3
   - name: Christina Bergmann
-    affiliation: 3
+    affiliation: 3,4
   - name: Page Piccinini
-    affiliation: 4
+    affiliation: 5
   - name: Alejandrina Cristia
     affiliation: 3
   - name: Michael C. Frank
-    affiliation: 5
+    affiliation: 6
 affiliation:
   - id: 1
     institution: Computation Institute, University of Chicago
   - id: 2
     institution: Department of Brain and Cognitive Sciences, MIT
   - id: 3
-    institution: Laboratoire de Sciences Cognitives et Psycholinguistique, ENS
+    institution: Ecole Normale Superieure, PSL Research University, Departement d'Etudes Cognitives, Laboratoire de Sciences Cognitives et Psycholinguistique (ENS, EHESS, CNRS) 
   - id: 4
-    institution: NeuroPsychologie Interventionnelle, ENS
+    institution: Max Planck Institute for Psycholinguistics, Language Development Department
   - id: 5
+    institution: NeuroPsychologie Interventionnelle, ENS
+  - id: 6
     institution: Department of Psychology, Stanford University
     
 abstract: To acquire a language, children must learn a range of skills, from the sounds of their language to the meanings of words. These skills are typically studied in isolation in separate research programs, but a growing body of evidence points to interdependencies across skills in the acquisition process. Here, we suggest that the meta-analytic method can support the process of building systems-level theories, as well as provide a tool for detecting bias in a literature. We present meta-analyses of 12 phenomena in language acquisition with over 700 effect sizes. We find that the language acquisition literature overall has a high degree of evidential value. We then present a quantitative synthesis of language acquisition phenomena that is consistent with interactivity in skills across the system.
@@ -322,8 +324,8 @@ eggers.data = all_data %>%
 
 ## P-curves
 ```{r get_pcurves}
-ALPHA = .05
-P_INCREMENT = .01 
+ALPHA <- .05
+P_INCREMENT <- .01 
 
 pc.data <- get_all_pc_data(all_data, ALPHA, P_INCREMENT, transform = TRUE) 
 # transform flag determines whether p-values are calculated from descriptive statistics 
