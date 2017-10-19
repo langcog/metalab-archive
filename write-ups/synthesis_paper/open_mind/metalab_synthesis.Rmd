@@ -10,7 +10,7 @@ author:
   - name: Sho Tsuji
     affiliation: 3
   - name: Christina Bergmann
-    affiliation: 3,4
+    affiliation: 3, 4
   - name: Page Piccinini
     affiliation: 5
   - name: Alejandrina Cristia
@@ -58,7 +58,10 @@ output: papaja::apa6_pdf
 ---
 
 ```{r message = FALSE, warning = FALSE}
-knitr::opts_chunk$set(warning = FALSE, message = FALSE, cache = FALSE, fig.pos = "T!")
+knitr::opts_chunk$set(warning = FALSE, 
+                      message = FALSE, 
+                      cache = FALSE, 
+                      fig.pos = "T!")
 require("papaja")
 ```
 
@@ -86,6 +89,7 @@ We take as our ultimate goal a broad theory of language acquisition that can exp
 # Method
 source("../../../dashboard/global.R", chdir = TRUE)
 source("../paper_analyses/pcurve.R")
+source("../paper_analyses/synthesis_helpers.R")
 library(knitr)
 library(metafor)
 library(forcats)
@@ -165,22 +169,13 @@ To assess the replicability of language acquisition phenomena, we conducted seve
 
 ## Meta-Analytic Effect Size
 ```{r, overall_d}
-overall_es <- function(ma_data){
-    model = rma(d_calc, d_var_calc, data = ma_data)
-    data.frame(dataset = ma_data$short_name[1],
-               overall.d = model$b,
-               ci_lower = model$ci.lb,
-               ci_upper = model$ci.ub)
-}
-
-all_ds = all_data %>%
+all_ds <- all_data %>%
   split(.$short_name) %>%
-  map(function(ma_data) overall_es(ma_data)) %>%
-  bind_rows() %>%
-  mutate_each_(funs(round(., digits = 2)), 
-               vars = c("overall.d", "ci_lower", "ci_upper")) %>%
-  mutate(d_string = paste0(overall.d, " [", ci_lower, ", ",ci_upper, "]")) %>%
-  mutate(short_name = dataset)
+  map_df(function(ma_data) overall_es(ma_data, multilevel = TRUE)) %>%
+  mutate_at(c("overall.d", "ci_lower", "ci_upper"), 
+            funs(round(., digits = 2))) %>%
+  mutate(d_string = paste0(overall.d, " [", ci_lower, ", ",ci_upper, "]"),
+         short_name = dataset)
 ```
 To estimate the overall effect size of a literature, effect sizes are pooled across papers to obtain a single meta-analytic estimate. This meta-analytic effect-size can be thought of as the "best estimate" of the effect size for a phenomenon given all the available data in the literature. Table 2, column 2 presents meta-analytic effect size estimates for each of our phenomena. We find evidence for a non-zero effect size in 10 out of 12 of the phenomena in our dataset, suggesting these literatures describe non-zero effects. In the case of phonotactic learning, however, we find that the meta-analytic effect size estimate does not differ from zero, indicating that this literature does not describe robust effects (as first reported in Cristia, in prep.). 
 
@@ -191,34 +186,32 @@ We next turn to methods of assessing evidential value that describe the degree t
 \begin{tabular}{lrrrr}
 \toprule
 \textbf{Phenomenon} & \textbf{\textit{d}} & \textbf{fail-safe-N} & \textbf{funnel skew} & \textbf{p-curve skew}\\
-IDS preference & 0.7 [0.52, 0.88] & 3507 & 1.5 & -10.4*\\
-Phonotactic learning & 0.04 [-0.09, 0.16] & 45 & -1.36 & -1.52\\
-Vowel discrim. (native) & 0.66 [0.54, 0.77] & 8866 & 10.3* & -9.96*\\
-Vowel discrim. (non-native) & 0.61 [0.39, 0.83] & 3393 & 8.19* & -8.89*\\
-Statistical sound learning & 0.19 [-0.09, 0.47] & 661 & 3.27* & -1.46\\
-Word segmentation & 0.18 [0.14, 0.23] & 5326 & 2.9* & -9.4*\\
-Mutual exclusivity & 0.93 [0.65, 1.21] & 6443 & 10.86* & -12.87*\\
-Sound symbolism & 0.12 [-0.01, 0.25] & 526 & 0.78 & -5.56*\\
-Concept-label advantage & 0.46 [0.33, 0.6] & 2337 & 2.8* & -4.79*\\
-Online word recognition & 1.34 [0.83, 1.84] & 1934 & 4.47* & -14.51*\\
-Gaze following & 1.23 [0.91, 1.56] & 4277 & 6.11* & -18.66*\\
+IDS preference & 0.74 [0.47, 1.01] & 3507 & 1.5 & -10.4*\\
+Phonotactic learning & 0.12 [-0.02, 0.25] & 45 & -1.36 & -1.52\\
+Vowel discrim.\ (native) & 0.64 [0.48, 0.8] & 8866 & 10.3* & -9.96*\\
+Vowel discrim.\ (non-native) & 0.89 [0.35, 1.43] & 3393 & 8.19* & -8.89*\\
+Statistical sound learning & 0.35 [0.03, 0.67] & 667 & 1.2 & -2.77*\\
+Word segmentation & 0.16 [0.11, 0.21] & 5326 & 2.9* & -9.4*\\
+Mutual exclusivity & 0.77 [0.52, 1.03] & 6443 & 10.86* & -12.87*\\
+Sound symbolism & 0.23 [0.01, 0.45] & 526 & 0.78 & -5.56*\\
+Concept-label advantage & 0.38 [0.23, 0.53] & 2337 & 2.8* & -4.79*\\
+Online word recognition & 1.12 [0.6, 1.65] & 1934 & 4.47* & -14.51*\\
+Gaze following & 1.06 [0.71, 1.42] & 4277 & 6.11* & -18.66*\\
 Pointing and vocabulary & 0.98 [0.62, 1.34] & 1617 & 1.25 & -6.33*\\
 \bottomrule
 \end{tabular}
-\caption{Summary of replicability analyses. \textit{d} = Effect size (Cohen's {\it d}) estimated from a random-effect model; fail-safe-N = number of missing studies that would have to exist in order for the overall effect size to be {\it d} = 0; funnel skew = test of asymmetry in funnel plot using the random-effect Egger's test (Sterne \& Egger, 2005); p-curve skew = test of the right skew of the p-curve using the Stouffer method (Simonsohn, Simmons, \& Nelson, 2015); Brackets give 95\% confidence intervals.}
+\caption{Summary of replicability analyses. \textit{d} = Effect size (Cohen's {\it d}) estimated from a random-effect model; fail-safe-N = number of missing studies that would have to exist in order for the overall effect size to be {\it d} = 0; funnel skew = test of asymmetry in funnel plot using the random-effect Egger's test (Sterne \& Egger, 2005); p-curve skew = test of the right skew of the p-curve using the Stouffer method (Simonsohn, Simmons, \& Nelson, 2015); Brackets give 95\% confidence intervals. Asterisks indicate {\it p} < .05.}
 \end{table}
 
 
 ## Fail-safe-N
 ```{r, fail_safe_N}
-get_fail_safe_N <- function(dataset, MA_data) {
-  fsn_string = fsn(d_calc, d_var_calc, data = MA_data, target = .01, type="Orwin")$fsnum 
-  data.frame(dataset = dataset, fsn_string  = fsn_string)
-}
-fsn.package.data = all_data %>%
-  nest(-dataset, .key = "MA_data") %>%
+CRIT_ES_VALUE <- .01 # must be > 0 
+
+fsn.package.data <- all_data %>%
+  nest(-dataset, .key = "ma_data") %>%
   mutate(dataset = as.character(dataset)) %>%
-  pmap_df(get_fail_safe_N) %>%
+  pmap_df(get_fail_safe_N, CRIT_ES_VALUE) %>%
   left_join(datasets %>% select(name, short_name), by = c("dataset" = "name"))
 ```
 
@@ -233,18 +226,20 @@ This analysis provides a quantitative estimate of the size of an effect in an in
 
 ```{r,  fig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Funnel plots for each meta-analysis. Each effect size estimate is represented by a point, and the mean effect size is shown as a red dashed line. The grey dashed line shows an effect size of zero. The funnel corresponds to a 95%  CI around this mean. In the absence of true heterogeneity in effect sizes (no moderators) and bias, we should expect all points to fall inside the funnel."}
 
-CRIT_95 = 1.96 
+CRIT_95 <- 1.96 
 
-funnel.es.data = all_data %>%
-  mutate(dataset = as.factor(dataset),
-         dataset= gdata::reorder.factor(dataset, 
-                                    new.order = c(2,6,10,11,9,12,4,8,3,5,1,7)),
-         dataset = plyr::revalue(dataset, 
-                                 c("Infant directed speech preference"="IDS preference",
-                                   "Statistical sound category learning"="Statistical sound learning", 
-                                   "Label advantage in concept learning"="Concept-label advantage",
-                                   "Vowel discrimination (native)"="Vowel discrimination\n(native)",
-                                   "Vowel discrimination (non-native)"="Vowel discrimination\n(non-native)"))) %>%
+funnel.es.data <- all_data %>%
+    mutate(dataset = fct_relevel(dataset, 
+                                  "Infant directed speech preference","Phonotactic learning", "Vowel discrimination (native)", 
+                                 "Vowel discrimination (non-native)","Statistical sound category learning", "Word segmentation",
+                                 "Mutual exclusivity", "Sound symbolism", "Label advantage in concept learning","Online word recognition",
+                                 "Gaze following",  "Pointing and vocabulary"),
+           dataset = fct_recode(dataset,
+                                "IDS preference" = "Infant directed speech preference",
+                                "Statistical sound learning" = "Statistical sound category learning", 
+                                "Concept-label advantage" = "Label advantage in concept learning",
+                                "Vowel discrimination\n(native)" = "Vowel discrimination (native)",
+                                "Vowel discrimination\n(non-native)" = "Vowel discrimination (non-native)")) %>%
   group_by(dataset) %>%
   mutate(se = sqrt(d_var_calc), 
          es = d_calc, 
@@ -263,19 +258,19 @@ funnel95.data.wide <- funnel.es.data %>%
                           y2 =  0, 
                           y3 = -lower_lim[1]) 
 
-funnel95.data.x = funnel95.data.wide  %>%
+funnel95.data.x <- funnel95.data.wide  %>%
                   select(dataset,  dplyr::contains("x")) %>%
                   gather("coordx", "x", 2:4) %>%
                   arrange(dataset, coordx) %>%
                   select(-coordx)
 
-funnel95.data.y = funnel95.data.wide  %>%
+funnel95.data.y <- funnel95.data.wide  %>%
                   select(dataset, dplyr::contains("y")) %>%
                   gather("coordy", "y", 2:4) %>%
                   arrange(dataset, coordy) %>%
                   select(-coordy)
 
-funnel95.data = bind_cols(funnel95.data.x, funnel95.data.y)
+funnel95.data <- bind_cols(funnel95.data.x, funnel95.data.y)
 
 ggplot(funnel.es.data, aes(x = es, y = -se)) +
   facet_wrap(~dataset, scales = "free") +
@@ -301,23 +296,14 @@ Figure 1 presents funnel plots for each of our `r nrow(datasets)` meta-analyses.
 
 
 ```{r, funnel_skew}
-eggers_tests <- function(ma_data){
-    model = rma(d_calc, d_var_calc, data = ma_data) # model
-    egg.random = regtest(model) # Egger's test
-    data.frame(dataset = ma_data$short_name[1],
-               egg.random.z = egg.random$zval,
-               egg.random.p = egg.random$pval)
-}
-
-eggers.data = all_data %>%
+eggers.data <- all_data %>%
   ungroup() %>%
   split(.$short_name) %>%
-  map(function(ma_data) eggers_tests(ma_data)) %>%
-  bind_rows() %>%
-  mutate(egg.random.z = round(egg.random.z, digits = 2)) %>%
-  mutate(egg.random.p = round(egg.random.p, digits = 2)) %>%
-  #mutate(egg_string = paste0(egg.random.z, " (", egg.random.p, ")")) %>%
-  mutate(egg_string = ifelse(egg.random.p < .05, paste0(egg.random.z, "*"),egg.random.z))  %>%
+  map_df(function(ma_data) eggers_tests(ma_data)) %>%
+  mutate(egg.random.z = round(egg.random.z, digits = 2),
+         egg.random.p = round(egg.random.p, digits = 2),
+         egg_string = ifelse(egg.random.p < .05, 
+                             paste0(egg.random.z, "*"),egg.random.z))  %>%
   rename(short_name = dataset) %>%
   select(short_name, egg_string)
 ```
@@ -330,46 +316,42 @@ P_INCREMENT <- .01
 pc.data <- get_all_pc_data(all_data, ALPHA, P_INCREMENT, transform = TRUE) 
 # transform flag determines whether p-values are calculated from descriptive statistics 
 
-p.source = pc.data %>%
+p.source <- pc.data %>%
   select(f.transform, f.value, dataset, study_ID, p_round) %>%
   group_by(dataset) %>%
   summarise(n.total = n(),
             n.transform = length(which(!is.na(f.transform))),
             sig.p = length(which(p_round < ALPHA))) %>%
-  mutate(dataset = fct_relevel(dataset, "Infant directed speech preference", "Phonotactic learning",
-                               "Vowel discrimination (native)", "Vowel discrimination (non-native)",
-                               "Statistical sound category learning", "Word segmentation", "Mutual exclusivity", 
-                               "Sound symbolism", "Label advantage in concept learning",
-                               "Online word recognition", "Gaze following",  "Pointing and vocabulary"),
-         dataset = fct_recode(dataset,"IDS preference" = "Infant directed speech preference",
-                                   "Statistical sound learning" = "Statistical sound category learning", 
-                                   "Concept-label advantage" = "Label advantage in concept learning",
-                                   "Vowel discrimination\n(native)" = "Vowel discrimination (native)",
-                                   "Vowel discrimination\n(non-native)" = "Vowel discrimination (non-native)"))  %>%
-  mutate(stat_only = ifelse(n.total > n.transform, 1, 0)) %>%
-  arrange(-stat_only) %>%
-  mutate(prop.ts = 1-n.transform/n.total,
+  mutate(dataset = fct_relevel(dataset,
+                               "Infant directed speech preference",
+                               "Phonotactic learning", 
+                               "Vowel discrimination (native)",
+                               "Vowel discrimination (non-native)",
+                               "Statistical sound category learning", 
+                               "Word segmentation", 
+                               "Mutual exclusivity",
+                               "Sound symbolism", 
+                               "Label advantage in concept learning",
+                               "Online word recognition",
+                               "Gaze following",  
+                               "Pointing and vocabulary"),
+         dataset = fct_recode(dataset,
+                              "IDS preference" = "Infant directed speech preference",
+                              "Statistical sound learning" = "Statistical sound category learning", 
+                              "Concept-label advantage" = "Label advantage in concept learning", 
+                              "Vowel discrimination\n(native)" = "Vowel discrimination (native)",
+                              "Vowel discrimination\n(non-native)" = "Vowel discrimination (non-native)"))  %>%
+  mutate(stat_only = ifelse(n.total > n.transform, 1, 0),
+         prop.ts = 1-n.transform/n.total,
          prop.ts.string = as.character(round(prop.ts, digits = 2))) %>%
+  arrange(-stat_only) %>%
   as.data.frame()
 ```
 
 ```{r pcurve_CIS}
-get.all.CIS.multi <- function(df) {
-  ps <-  seq(P_INCREMENT, ALPHA, P_INCREMENT)
-  props = ps %>%
-    map(function(p,d){sum(d == p)}, df$p_round) %>%
-    unlist()
-  cis = MultinomialCI::multinomialCI(props, alpha = ALPHA)
-  data.frame(dataset = df$dataset[1],
-             p = ps,
-             ci.lower = cis[,1],
-             ci.upper = cis[,2])
-}
-
-ci.data = pc.data %>%
+ci.data <- pc.data %>%
   split(.$dataset) %>%
-  map(function(data) get.all.CIS.multi(data)) %>%
-  bind_rows() %>%
+  map_df(function(data) get_all_CIS_multi(data, ALPHA, P_INCREMENT)) %>%
   mutate(dataset = fct_recode(dataset,"IDS preference" = "Infant directed speech preference",
                                    "Statistical sound learning" = "Statistical sound category learning", 
                                    "Concept-label advantage" = "Label advantage in concept learning",
@@ -379,7 +361,7 @@ ci.data = pc.data %>%
 
 ```{r p_curve_plots,  fig.pos = "T!",  fig.width = 7.5, fig.height=6, fig.cap = "P-curve for each meta-analysis (Simonsohn, Nelson, & Simmons, 2014). In the absence of p-hacking, we should expect the observed p-curve (blue) to be right-skewed (more small values). The red dashed line shows the expected distribution of p-values when the effect is non-existent (the null is true). The green dashed line shows the expected distribution if the effect is real, but studies only have 33% power. Grey ribbons show 95% confidence intervals estimated from a multinomial distribution. Text on each plot shows the number of p-values for each dataset that are less than .05 and thus are represented in each p-curve (\"sig.\ ps\"), relative to the total number of conditions for that phenomenon. Each plot also shows the proportion of p-values that were derived from test statistics reported in the paper (\"prop.\ test stat.\"); all others were derived by conducting analyses on the descriptive statistics or transforming reported effect sizes."}
 
-pc.data %>%
+pc_plot_data <- pc.data %>%
   group_by(dataset) %>%
   do(get_p_curve_df(., ALPHA, P_INCREMENT)) %>%
   ungroup() %>%
@@ -392,8 +374,9 @@ pc.data %>%
                                    "Statistical sound learning" = "Statistical sound category learning", 
                                    "Concept-label advantage" = "Label advantage in concept learning",
                                    "Vowel discrimination\n(native)" = "Vowel discrimination (native)",
-                                   "Vowel discrimination\n(non-native)" = "Vowel discrimination (non-native)")) %>%
-  ggplot() + 
+                                   "Vowel discrimination\n(non-native)" = "Vowel discrimination (non-native)")) 
+
+ggplot(pc_plot_data) + 
   facet_wrap(~ dataset, nrow = 3) +
   geom_ribbon(aes(ymin = ci.lower, ymax = ci.upper, x = p), fill = "grey87", data = ci.data) +
   geom_line(size = 1, aes(x = p, y = value, linetype = measure, color = measure)) +
@@ -415,33 +398,35 @@ pc.data %>%
 ```
 
 ```{r, p_curve_skew}
-stouffer.data = pc.data %>%
+stouffer.data <- pc.data %>%
   group_by(dataset) %>%
   do(data.frame(stouffer = stouffer_test(., ALPHA))) %>%
   filter(stouffer.pp.measure == "ppr.full") %>%
-  full_join(datasets %>% select(name, short_name), by= c("dataset" = "name")) %>%
+  full_join(datasets %>% select(name, short_name), by = c("dataset" = "name")) %>%
   select(short_name,stouffer.Z.pp, stouffer.p.Z.pp) %>%
   mutate_at(funs(round(., digits = 2)), .vars = c("stouffer.p.Z.pp", "stouffer.Z.pp")) %>%
-  #mutate(stouff_string = ifelse(is.na(as.character(stouffer.Z.pp)), "",
-  #                              paste0(stouffer.Z.pp, " (", stouffer.p.Z.pp,")"))) %>%
-  mutate(stouff_string = ifelse(is.na(as.character(stouffer.Z.pp)), "",ifelse(stouffer.p.Z.pp < .05, paste0(as.character(stouffer.Z.pp), "*"),as.character(stouffer.Z.pp))))  %>%
+  mutate(stouff_string = ifelse(is.na(as.character(stouffer.Z.pp)), "",
+                                ifelse(stouffer.p.Z.pp < .05, 
+                                       paste0(as.character(stouffer.Z.pp), "*"), as.character(stouffer.Z.pp))))  %>%
   select(short_name, stouff_string)
 ```
 
 A p-curve is the distribution of p-values for the statistical test of the main hypothesis across a literature [@simonsohn2014p; @simonsohn2014power; @simonsohn2015better]. Critically, if there is a robust effect in the literature, the shape of the p-curve should reflect this. In particular, we should expect the p-curve to be right-skewed with more small values (e.g., .01) than large values (e.g., .04). An important property of this analysis is that that the should be skew independent of any true heterogeneity in the data, such as age. Evidence that the curve is in fact right-skewed would suggest that the literature is not biased, and that it provides evidential value for theory building. 
 
 ```{r, make_table}
-table_data = left_join(select(all_ds, c(short_name, d_string)), fsn.package.data) %>%
+table_data <- left_join(select(all_ds, c(short_name, d_string)), fsn.package.data) %>%
              left_join(eggers.data) %>%
              left_join(stouffer.data) %>%
              select(dataset, dplyr::contains("string")) %>%
              ungroup() %>%
              .[c(2,8,3,4,10,5,7,11,6,12,1,9),]  %>% # reorder rows 
-             mutate(dataset = fct_recode(dataset,"IDS preference" = "Infant directed speech preference",
-                                   "Statistical sound learning" = "Statistical sound category learning", 
-                                   "Concept-label advantage" = "Label advantage in concept learning",
-                                   "Vowel discrim.\ (native)" = "Vowel discrimination (native)",
-                                   "Vowel discrim.\ (non-native)" = "Vowel discrimination (non-native)")) 
+             mutate(dataset = fct_recode(dataset,
+                                         "IDS preference" = "Infant directed speech preference",
+                                         "Statistical sound learning" = "Statistical sound category learning", 
+                                         "Concept-label advantage" = "Label advantage in concept learning",
+                                         "Vowel discrim.\ (native)" = "Vowel discrimination (native)",
+                                         "Vowel discrim.\ (non-native)" = "Vowel discrimination (non-native)")) 
+
 # paste above (so can edit latex - remove \addlinespace, fix header and row formatting):
 # kable(table_data, format = "latex", booktabs = TRUE) 
 ```
@@ -461,7 +446,7 @@ Meta-analytic methods provide a precise, quantitative description of the develop
 
 ```{r, level.plot.data}
 # make levels df
-ld.df = data.frame(dataset = datasets$name,
+ld.df <- data.frame(dataset = datasets$name,
                    domain = c("Prosody", "Words", "Communication", "Sounds",
                               "Sounds", "Sounds", "Sounds", "Sounds", "Words",
                               "Words", "Communication", "Words"))
@@ -475,38 +460,40 @@ single_method_datasets = all_data %>%
   .[["dataset"]]
 
 # get model fits
-all_data.resid = data.frame()
+all_data.resid <- data.frame()
 for (i in 1:length(datasets$name)) {
-    d = filter(all_data, dataset == datasets$name[i])
+    d <- filter(all_data, dataset == datasets$name[i])
     if (datasets$name[i] %in% single_method_datasets) {
       full.model = rma(d_calc, vi = d_var_calc, data = d)
     } else {
       full.model = rma(d_calc ~ method, vi = d_var_calc, data = d)
     }
   
-  d = as.data.frame(rstandard(full.model)$resid) %>%
+  d <- as.data.frame(rstandard(full.model)$resid) %>%
        cbind(d) %>%
        rename(residual.d = `rstandard(full.model)$resid`) %>%
        mutate(residual.d = residual.d + full.model$b[1]) %>% # add in intercept term
        inner_join(all_data) 
   
-  all_data.resid = rbind(all_data.resid,d)
+  all_data.resid <- rbind(all_data.resid,d)
 }
 
 # merge in levels
-residualized.es = all_data.resid %>%
+residualized.es <- all_data.resid %>%
           left_join(ld.df) %>%
           #filter(dataset != "Statistical sound category learning") %>%
-          filter(dataset != "Phonotactic learning") %>%
-          mutate(age.years = mean_age/365) %>%
-          filter(age.years < 3)
+         mutate(age.years = mean_age/365) %>%
+         filter(dataset != "Phonotactic learning",
+                 age.years < 3) 
 ```
 
 ```{r, eval = F}
 fs = 16
-level.plot = ggplot(residualized.es, aes(x = age.years, y = residual.d, col = dataset)) +
+
+level.plot <- ggplot(residualized.es, aes(x = age.years, y = residual.d, col = dataset)) +
   facet_grid(~ domain) +
-  geom_point(aes(size = n), alpha = .1, data = filter(residualized.es, residual.d > -.5 & residual.d < 2.5 )) +
+  geom_point(aes(size = n), alpha = .1, 
+             data = filter(residualized.es, residual.d > -.5 & residual.d < 2.5 )) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   geom_line(stat="smooth", method="lm", se = FALSE, size = 1, formula = y ~ log(x)) +
   coord_cartesian(ylim = c(-.5, 2.5), xlim = c(0, 3.1)) +  # doesn't remove data from geom_smooth
@@ -527,7 +514,7 @@ level.plot
 dev.off()
 
 #legend text (for illustrator)
-legend.desc = residualized.es %>%
+legend.desc <- residualized.es %>%
   group_by(dataset) %>%
   slice(1) %>%
   ungroup() %>%
@@ -554,37 +541,37 @@ In addition, meta-analytic methods provide an approach for synthesizing across d
 ```{r, fig.pos = "T!", fig.width=8, fig.height=3.5, fig.cap = "Method-residualized effect size plotted as a function of age across the 10 meta-analyses in our dataset shown to have evidential value (excluding phonotactic learning). Lines show logarithmic model fits. Each point corresponds to a condition, with the size of the point indicating the number of participants."}
 #include_graphics("figs/fig3_lab.pdf")
 include_graphics("figs/fig3.pdf")
-
 ```
 We first consider two broad theories of learning dependencies that have been articulated in a number of forms, and which we will clearly separate for the purposes of exposition. At one extreme, there is the stage-like theory which posits that linguistic skills are acquired in a strictly sequential manner, beginning with skills at the lowest level of the linguistic hierarchy and working their way up. Under this theory, once a skill is mastered, and only then, can it be used to support the acquisition of skills higher in the linguistic hierarchy. In this way, a child sequentially acquires the skills of language, "bootstrapping" from existing knowledge at lower levels to new knowledge at higher levels. Consistent with this theory, there is evidence that prosody supports the acquisition of sound categories [e.g., @werker2007infant], word boundaries [e.g., @jusczyk1999beginnings], grammatical categories [e.g., @shi1999newborn], and even word learning [e.g., @shukla2011prosody]. 
 
 ```{r, synthesis.plot.data}
 ## real data
-all_data.f = residualized.es %>%
+all_data.f <- residualized.es %>%
   select(age.years, dataset, residual.d, n) %>%
   mutate(model = "Observed")
 
 ## simulated data
 # bottom-up
-x = seq(0, 3, .01)
-slope = 1.1
-y1 = ifelse((log(x - 1) * slope) < 0, NA, log(x - 1) * slope)
-y2 = ifelse((log(x) * slope) < 0, NA, log(x) * slope)
-y3 = ifelse((log(x + 1) * slope) < 0, NA, log(x + 1) * slope)
+x <- seq(0, 3, .01)
+slope <- 1.1
+y1 <- ifelse((log(x - 1) * slope) < 0, NA, log(x - 1) * slope)
+y2 <- ifelse((log(x) * slope) < 0, NA, log(x) * slope)
+y3 <- ifelse((log(x + 1) * slope) < 0, NA, log(x + 1) * slope)
 
 # interactive 
-y4 = log((x + 1)) * .2
-y5 = log((x + 1)) * .5
-y6 = log((x + 1)) * 1.1
+y4 <- log((x + 1)) * .2
+y5 <- log((x + 1)) * .5
+y6 <- log((x + 1)) * 1.1
 
 # ad hoc 
-y7 = .2 * x
-y8 = dnorm(x, mean = 1.7, sd = .5) 
-y9 = log(x + .0001, base = .02) + .3
-y9[1] = 1.47 
+y7 <- .2 * x
+y8 <- dnorm(x, mean = 1.7, sd = .5) 
+y9 <- log(x + .0001, base = .02) + .3
+y9[1] <- 1.47 
+
 
 # merge together simulated data
-simulated.development = data.frame(age.years = c(x,x,x,x,x,x,x,x,x),
+simulated.development  <-  data.frame(age.years = c(x,x,x,x,x,x,x,x,x),
                                    residual.d = c(y3, y2, y1, y6, y5, y4, y9, y8, y7),
                                    dataset = c(rep(1:3, each = length(x)), rep(1:3, each = length(x)),
                                                rep(1:3, each = length(x))),
@@ -592,7 +579,7 @@ simulated.development = data.frame(age.years = c(x,x,x,x,x,x,x,x,x),
                                    n = 1)
 
 ## merge together simulated and real
-simulated.development.all = mutate(simulated.development, dataset = as.factor(dataset)) %>%
+simulated.development.all  <-  mutate(simulated.development, dataset = as.factor(dataset)) %>%
   rbind(all_data.f) %>%
   mutate(model = ordered(model, levels = c("Sequential", "Simultaneous", "Ad hoc", "Observed")),
          level = ifelse(model != "Observed", dataset, 
@@ -600,17 +587,18 @@ simulated.development.all = mutate(simulated.development, dataset = as.factor(da
                                ifelse(dataset == "Pointing and vocabulary" | dataset == "Gaze following", 4, 
                                       ifelse(dataset == "Word segmentation" | dataset == "Vowel discrimination (native)" | dataset == "Vowel discrimination (non-native)", 2, 3)))))
 
-real.levels = levels(simulated.development.all$dataset)
-fake.levels = c("1", "2", "3") 
+real.levels <- levels(simulated.development.all$dataset)
+fake.levels <- c("1", "2", "3") 
 
 simulated.development.all = simulated.development.all %>%
-  mutate(dataset.label = as.factor(dataset)) %>%
-  mutate(dataset.label = plyr::mapvalues(dataset.label, from = c("1", "2", "3", "Gaze following",  "Infant directed speech preference", "Label advantage in concept learning", "Mutual exclusivity", "Vowel discrimination (native)", "Vowel discrimination (non-native)", "Sound symbolism" , "Online word recognition" , "Word segmentation", "Pointing and vocabulary"), to = c("","","", "GF", "IDS", "LA", "ME", "VD-N", "VD-NN", "SS", "WR", "WS", "PV")))
+  mutate(dataset.label = as.factor(dataset),
+         dataset.label = plyr::mapvalues(dataset.label, from = c("1", "2", "3", "Gaze following","Infant directed speech preference", "Label advantage in concept learning", "Mutual exclusivity", "Vowel discrimination (native)", "Vowel discrimination (non-native)", "Sound symbolism" , "Online word recognition" , "Word segmentation", "Pointing and vocabulary"), to = c("","","", "GF", "IDS", "LA", "ME", "VD-N", "VD-NN", "SS", "WR", "WS", "PV"))) # fct_recode won't let you have empty variable names
+                               
 ```
 
 ```{r, eval = F}
 ## plot
-synthesis.plot = ggplot(simulated.development.all,
+synthesis.plot  <-  ggplot(simulated.development.all,
        aes(x = age.years, y = residual.d, col = dataset)) + 
   geom_line(data = filter(simulated.development.all, model != "Observed"), 
             size = 1) +
@@ -645,11 +633,11 @@ synthesis.plot
 dev.off()
 
 #legend text (for illustrator)
-legend.desc2 = simulated.development.all %>%
+legend.desc2  <-  simulated.development.all %>%
   filter(model == "Observed") %>%
   mutate(dataset.label = droplevels.factor(dataset.label),
-  dataset.label = gdata::reorder.factor(dataset.label, 
-                                    new.order = rev(c(6,5,4,10,9,7,8,2,1,3))))%>%
+        dataset.label= gdata::reorder.factor(dataset.label,
+                                               c(2, 6, 10, 11, 9, 12, 4, 8, 3, 5, 1, 7))) %>%
   group_by(dataset.label) %>%
   slice(1) %>%
   ungroup() %>%
@@ -663,7 +651,7 @@ legend.desc2 = simulated.development.all %>%
         legend.key = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-      panel.background = element_blank())
+        panel.background = element_blank())
 
 pdf("figs/fig4legend.pdf")
 direct.label(legend.desc2)
@@ -709,13 +697,9 @@ The data and code reported in this paper have been deposited in GitHub, a web-ba
 #### Supplementary Information
 This article contains supporting information online at [http://rpubs.com/mll/synthesisSI](http://rpubs.com/mll/synthesisSI)
 
-
 \newpage
 
-
-
 ### References 
-
 
 ---
 nocite: | 
