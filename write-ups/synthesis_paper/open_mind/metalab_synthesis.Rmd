@@ -86,78 +86,78 @@ We take as our ultimate goal a broad theory of language acquisition that can exp
 
 
 ```{r load data}
-# Method
-source("../../../dashboard/global.R", chdir = TRUE)
-source("../paper_analyses/pcurve.R")
-source("../paper_analyses/synthesis_helpers.R")
+source("../paper_scripts/pcurve.R")
+source("../paper_scripts/synthesis_helpers.R")
 library(knitr)
+library(purrr)
+library(langcog)
 library(metafor)
 library(forcats)
+library(feather)
 library(directlabels)
+library(tidyverse)
 
-MAS <- c("idspref", "labadv", "gaze_following", "inphondb-native", 
-         "inphondb-nonnative", "phonotactics", "word_recognition",
-         "mutex", "pointing_concurrent", "sounds", "inworddb", "symbolism")
-
-# remove inappropriate conditions and rename MAs
-all_data <- filter(all_data, short_name %in% MAS) %>%
-            filter(is.na(condition_type) | condition_type == "critical") %>% # remove control conditions from labadv
-            filter(infant_type == "typical") %>%
-            filter(coder != "Alvaro Iturralde") %>% # can update this later
-            mutate(dataset = fct_recode(dataset,
-                           "Pointing and vocabulary" =
-                             "Pointing and vocabulary (concurrent)"))
-
-# need to recompute datasets summary data, based on filtered all_data
-studies <- all_data %>%
-  group_by(dataset) %>%
-  summarise(num_experiments = n(),
-            num_papers = length(unique(study_ID)))
-
-subjects <- all_data %>%
-  rowwise() %>%
-  mutate(n_total = sum(c(n_1, n_2), na.rm = TRUE)) %>%
-  group_by(dataset, study_ID, same_infant) %>% # we want all unique participants (i.e. exclude those who are in more than 1 condition (same same_infant value), but include conditions where is.na(same_infant))
-  mutate(id = 1:n()) %>%
-  filter(is.na(same_infant) | id == 1) %>%
-  select(-id) %>%
-  group_by(dataset) %>%
-  summarise(num_subjects = sum(n_total))
-
-datasets <- datasets %>%
-  rename(dataset = name) %>%
-  select(-num_experiments, -num_papers, -num_subjects) %>%
-  filter(short_name %in% MAS) %>% 
-  mutate(dataset = fct_recode(dataset, "Pointing and vocabulary" =
-                             "Pointing and vocabulary (concurrent)")) %>%
-  left_join(studies) %>% # merge in filtered meta-data
-  left_join(subjects) %>%
-  rename(name = dataset)
+# this data is cached by scripts/cache_script_data.R
+synthesis_meta_data <- read_feather("../paper_data/synthesis_paper_datasets.feather")
+synthesis_all_data <- read_feather("../paper_data/synthesis_paper_all_data.feather")
 ```
 
 
+```{r, ma metadata}
+id_meta <- filter(synthesis_meta_data, short_name == "idspref")
+ph_meta <- filter(synthesis_meta_data, short_name == "phonotactics")
+vn_meta <- filter(synthesis_meta_data, short_name == "inphondb-native")
+vx_meta <- filter(synthesis_meta_data, short_name == "inphondb-nonnative")
+sd_meta <- filter(synthesis_meta_data, short_name == "sounds")
+wd_meta <- filter(synthesis_meta_data, short_name == "inworddb")
+mx_meta <- filter(synthesis_meta_data, short_name == "mutex")
+ss_meta <- filter(synthesis_meta_data, short_name == "symbolism")
+la_meta <- filter(synthesis_meta_data, short_name == "labadv")
+wr_meta <- filter(synthesis_meta_data, short_name == "word_recognition")
+gf_meta <- filter(synthesis_meta_data, short_name == "gaze_following")
+pc_meta <- filter(synthesis_meta_data, short_name == "pointing_concurrent")
+```
 \renewcommand{\arraystretch}{1.5}
 \begin{table}[h!]
 	\footnotesize
 	\begin{tabular}{lp{4cm} p{5cm}r}
 		\toprule
-		\textbf{Level} & \textbf{Phenomenon}                                                               & \textbf{Description}                                                                    & \textbf{N papers (conditions)}                                                                                                                           \\
+		\textbf{Level} & \textbf{Phenomenon} & \textbf{Description} & \textbf{N papers (conditions)} \\
 		\midrule
-		
-		Prosody        & IDS  preference  \newline  {\scriptsize (Dunst, Gorman, \& Hamby, 2012)}          & {\scriptsize  `r datasets[datasets$short_name == "idspref", "short_desc"]`}             & `r datasets[datasets$short_name == "idspref", "num_papers"]` (`r datasets[datasets$short_name == "idspref", "num_experiments"]`)                         \\
-		Sounds         & Phonotactic learning  \newline {\scriptsize (Cristia, in prep.)}                  & {\scriptsize `r datasets[datasets$short_name == "phonotactics", "short_desc"]`  }       & `r datasets[datasets$short_name == "phonotactics", "num_papers"]` (`r datasets[datasets$short_name == "phonotactics", "num_experiments"]`)               \\
-		~              & Vowel discrimination (native) \newline {\scriptsize (Tsuji \& Cristia, 2014)}     & {\scriptsize `r datasets[datasets$short_name == "inphondb-native", "short_desc"]`  }    & `r datasets[datasets$short_name == "inphondb-native", "num_papers"]` (`r datasets[datasets$short_name == "inphondb-native", "num_experiments"]`)         \\ 
-		~              & Vowel discrimination (non-native) \newline {\scriptsize (Tsuji \& Cristia, 2014)} & {\scriptsize `r datasets[datasets$short_name == "inphondb-nonnative", "short_desc"]`  } & `r datasets[datasets$short_name == "inphondb-nonnative", "num_papers"]` (`r datasets[datasets$short_name == "inphondb-nonnative", "num_experiments"]`)   \\
-		               & Statistical sound learning  \newline {\scriptsize (Cristia, in prep.)}            & {\scriptsize `r datasets[datasets$short_name == "sounds", "short_desc"]`   }            & `r datasets[datasets$short_name == "sounds", "num_papers"]` (`r datasets[datasets$short_name == "sounds", "num_experiments"]`)                           \\ 
-		               & Word segmentation \newline {\scriptsize  (Bergmann \& Cristia, 2015) }            & {\scriptsize `r datasets[datasets$short_name == "inworddb", "short_desc"]`  }           & `r datasets[datasets$short_name == "inworddb", "num_papers"]` (`r datasets[datasets$short_name == "inworddb", "num_experiments"]`)                       \\
-		Words     &   Mutual exclusivity \newline {\scriptsize (Lewis \& Frank, in prep.)} &{\scriptsize  `r datasets[datasets$short_name == "mutex", "short_desc"]`}
-		& `r datasets[datasets$short_name == "mutex", "num_papers"]` (`r datasets[datasets$short_name == "mutex", "num_experiments"]`)             \\
-		~ &   Sound Symbolism \newline {\scriptsize (Lammertink et al., 2016)} &{\scriptsize  `r datasets[datasets$short_name == "symbolism", "short_desc"]`}
-		& `r datasets[datasets$short_name == "symbolism", "num_papers"]` (`r datasets[datasets$short_name == "symbolism", "num_experiments"]`)             \\
-		~              & Concept-label advantage   \newline {\scriptsize (Lewis \& Long, unpublished)}     & {\scriptsize `r datasets[datasets$short_name == "labadv", "short_desc"]`    }           & `r datasets[datasets$short_name == "labadv", "num_papers"]` (`r datasets[datasets$short_name == "labadv", "num_experiments"]`)                           \\
-		~              & Online word recognition \newline {\scriptsize (Frank, Lewis, \& MacDonald, 2016)} & {\scriptsize `r datasets[datasets$short_name == "word_recognition", "short_desc"]`   }  & `r datasets[datasets$short_name == "word_recognition", "num_papers"]` (`r datasets[datasets$short_name == "word_recognition", "num_experiments"]`)       \\
-		Communication  & Gaze following  \newline {\scriptsize  (Frank, Lewis, \& MacDonald, 2016)}        & {\scriptsize `r datasets[datasets$short_name == "gaze_following", "short_desc"]`   }    & `r datasets[datasets$short_name == "gaze_following", "num_papers"]` (`r datasets[datasets$short_name == "gaze_following", "num_experiments"]`)           \\
-		~              & Pointing and vocabulary  \newline {\scriptsize (Colonnesi et al., 2010)}          & {\scriptsize `r datasets[datasets$short_name == "pointing_concurrent", "short_desc"]`}  & `r datasets[datasets$short_name == "pointing_concurrent", "num_papers"]` (`r datasets[datasets$short_name == "pointing_concurrent", "num_experiments"]`) \\ 
+		Prosody       & IDS  preference  \newline  {\scriptsize (Dunst, Gorman, \& Hamby, 2012)} & 
+	              	{\scriptsize  `r id_meta[,"short_desc"][[1]][1]`} & `r id_meta[,"num_papers"][[1]][1]` 
+		              (`r id_meta[,"num_experiments"][[1]][1]`) \\
+		Sounds        & Phonotactic learning  \newline {\scriptsize (Cristia, in prep.)} & 
+	              	{\scriptsize  `r ph_meta[,"short_desc"][[1]][1]`} & `r ph_meta[,"num_papers"][[1]][1]` 
+		              (`r ph_meta[,"num_experiments"][[1]][1]`) \\
+		~             & Vowel discrimination (native) \newline {\scriptsize (Tsuji \& Cristia, 2014)} & 
+		              {\scriptsize  `r vn_meta[,"short_desc"][[1]][1]`} & `r vn_meta[,"num_papers"][[1]][1]` 
+		              (`r vn_meta[,"num_experiments"][[1]][1]`)   \\ 
+		~             & Vowel discrimination (non-native) \newline {\scriptsize (Tsuji \& Cristia, 2014)} & 
+		              {\scriptsize  `r vx_meta[,"short_desc"][[1]][1]`} & `r vx_meta[,"num_papers"][[1]][1]` 
+		              (`r vx_meta[,"num_experiments"][[1]][1]`)  \\
+		~             & Statistical sound learning  \newline {\scriptsize (Cristia, in prep.)} & 
+		              {\scriptsize  `r sd_meta[,"short_desc"][[1]][1]`} & `r sd_meta[,"num_papers"][[1]][1]` 
+		              (`r sd_meta[,"num_experiments"][[1]][1]`)  \\                         
+		~             & Word segmentation \newline {\scriptsize  (Bergmann \& Cristia, 2015) } & 
+		              {\scriptsize  `r wd_meta[,"short_desc"][[1]][1]`} & `r wd_meta[,"num_papers"][[1]][1]` 
+		              (`r wd_meta[,"num_experiments"][[1]][1]`)  \\                     
+	 Words          & Mutual exclusivity \newline {\scriptsize (Lewis \& Frank, in prep.)} & 
+		              {\scriptsize  `r mx_meta[,"short_desc"][[1]][1]`} & `r mx_meta[,"num_papers"][[1]][1]` 
+		              (`r mx_meta[,"num_experiments"][[1]][1]`)  \\  
+		~             & Sound Symbolism \newline {\scriptsize (Lammertink et al., 2016)} &
+                  {\scriptsize  `r ss_meta[,"short_desc"][[1]][1]`} & `r ss_meta[,"num_papers"][[1]][1]` 
+		              (`r ss_meta[,"num_experiments"][[1]][1]`)  \\  
+		~             & Concept-label advantage   \newline {\scriptsize (Lewis \& Long, unpublished)} &    
+		              {\scriptsize  `r la_meta[,"short_desc"][[1]][1]`} & `r la_meta[,"num_papers"][[1]][1]` 
+		              (`r la_meta[,"num_experiments"][[1]][1]`)  \\                   
+		~             & Online word recognition \newline {\scriptsize (Frank, Lewis, \& MacDonald, 2016)} &                          {\scriptsize  `r wr_meta[,"short_desc"][[1]][1]`} & `r wr_meta[,"num_papers"][[1]][1]` 
+		              (`r wr_meta[,"num_experiments"][[1]][1]`)  \\ \\
+	  ~	            & Communication  & Gaze following  \newline {\scriptsize  (Frank, Lewis, \& MacDonald, 2016)}                   {\scriptsize  `r gf_meta[,"short_desc"][[1]][1]`} & `r gf_meta[,"num_papers"][[1]][1]` 
+		              (`r gf_meta[,"num_experiments"][[1]][1]`)  \\   \\
+	  ~             & Pointing and vocabulary  \newline {\scriptsize (Colonnesi et al., 2010)} & 
+		              {\scriptsize  `r pc_meta[,"short_desc"][[1]][1]`} & `r pc_meta[,"num_papers"][[1]][1]` 
+		              (`r pc_meta[,"num_experiments"][[1]][1]`)  \\
 		\bottomrule
 	\end{tabular}
 	\caption{Overview of meta-analyses in dataset.}
@@ -169,15 +169,15 @@ To assess the replicability of language acquisition phenomena, we conducted seve
 
 ## Meta-Analytic Effect Size
 ```{r, overall_d}
-all_ds <- all_data %>%
+all_ds <- synthesis_all_data %>%
   split(.$short_name) %>%
   map_df(function(ma_data) overall_es(ma_data, multilevel = TRUE)) %>%
   mutate_at(c("overall.d", "ci_lower", "ci_upper"), 
-            funs(round(., digits = 2))) %>%
+            funs(formatC(round(., 2), format = 'f', digits = 2))) %>%
   mutate(d_string = paste0(overall.d, " [", ci_lower, ", ",ci_upper, "]"),
          short_name = dataset)
 ```
-To estimate the overall effect size of a literature, effect sizes are pooled across papers to obtain a single meta-analytic estimate. This meta-analytic effect-size can be thought of as the "best estimate" of the effect size for a phenomenon given all the available data in the literature. Table 2, column 2 presents meta-analytic effect size estimates for each of our phenomena. We find evidence for a non-zero effect size in 10 out of 12 of the phenomena in our dataset, suggesting these literatures describe non-zero effects. In the case of phonotactic learning, however, we find that the meta-analytic effect size estimate does not differ from zero, indicating that this literature does not describe robust effects (as first reported in Cristia, in prep.). 
+To estimate the overall effect size of a literature, effect sizes are pooled across papers to obtain a single meta-analytic estimate. This meta-analytic effect-size can be thought of as the "best estimate" of the effect size for a phenomenon given all the available data in the literature. Table 2, column 2 presents meta-analytic effect size estimates for each of our phenomena. We find evidence for a non-zero effect size in 11 out of 12 of the phenomena in our dataset, suggesting these literatures describe non-zero effects. In the case of phonotactic learning, however, we find that the meta-analytic effect size estimate does not differ from zero, indicating that this literature does not describe robust effects (as first reported in Cristia, in prep.). 
 
 We next turn to methods of assessing evidential value that describe the degree to which a literature has evidential value, and thus the degree to which it should constrain our theory building. In the following three analyses---fail-safe-N, funnel plots, and p-curves---we attempt to quantify the evidential value of these literatures.
 
@@ -186,21 +186,22 @@ We next turn to methods of assessing evidential value that describe the degree t
 \begin{tabular}{lrrrr}
 \toprule
 \textbf{Phenomenon} & \textbf{\textit{d}} & \textbf{fail-safe-N} & \textbf{funnel skew} & \textbf{p-curve skew}\\
-IDS preference & 0.74 [0.47, 1.01] & 3507 & 1.5 & -10.4*\\
-Phonotactic learning & 0.12 [-0.02, 0.25] & 45 & -1.36 & -1.52\\
-Vowel discrim.\ (native) & 0.64 [0.48, 0.8] & 8866 & 10.3* & -9.96*\\
-Vowel discrim.\ (non-native) & 0.89 [0.35, 1.43] & 3393 & 8.19* & -8.89*\\
-Statistical sound learning & 0.35 [0.03, 0.67] & 667 & 1.2 & -2.77*\\
-Word segmentation & 0.16 [0.11, 0.21] & 5326 & 2.9* & -9.4*\\
+IDS preference & 0.74 [0.47, 1.01] & 3507 & 1.50 & -10.40*\\
+Phonotactic learning & 0.12 [-0.02, 0.25] & 45 & -1.36 & -1.52	\\\textvisiblespace\\
+Vowel discrim. (native) & 0.64 [0.48, 0.80] & 8866 & 10.30* & -9.96*\\
+Vowel discrim. (non-native) & 0.89 [0.35, 1.43] & 3393 & 8.19* & -8.89*\\
+Statistical sound learning & 0.29 [0.01, 0.57] & 465 & -0.13 & -2.96*\\
+\addlinespace
+Word segmentation & 0.16 [0.11, 0.21] & 5326 & 2.90* & -9.40*\\
 Mutual exclusivity & 0.77 [0.52, 1.03] & 6443 & 10.86* & -12.87*\\
 Sound symbolism & 0.23 [0.01, 0.45] & 526 & 0.78 & -5.56*\\
-Concept-label advantage & 0.38 [0.23, 0.53] & 2337 & 2.8* & -4.79*\\
-Online word recognition & 1.12 [0.6, 1.65] & 1934 & 4.47* & -14.51*\\
+Concept-label advantage & 0.38 [0.23, 0.53] & 2337 & 2.80* & -4.79*\\
+Online word recognition & 1.12 [0.60, 1.65] & 1934 & 4.47* & -14.51*\\
+\addlinespace
 Gaze following & 1.06 [0.71, 1.42] & 4277 & 6.11* & -18.66*\\
 Pointing and vocabulary & 0.98 [0.62, 1.34] & 1617 & 1.25 & -6.33*\\
-\bottomrule
 \end{tabular}
-\caption{Summary of replicability analyses. \textit{d} = Effect size (Cohen's {\it d}) estimated from a random-effect model; fail-safe-N = number of missing studies that would have to exist in order for the overall effect size to be {\it d} = 0; funnel skew = test of asymmetry in funnel plot using the random-effect Egger's test (Sterne \& Egger, 2005); p-curve skew = test of the right skew of the p-curve using the Stouffer method (Simonsohn, Simmons, \& Nelson, 2015); Brackets give 95\% confidence intervals. Asterisks indicate {\it p} < .05.}
+\caption{Summary of replicability analyses. \textit{d} = Effect size (Cohen's {\it d}) estimated from a random-effect model; fail-safe-N = number of missing studies that would have to exist in order for the overall effect size to be {\it d} = 0; funnel skew = test of asymmetry in funnel plot using the random-effect Egger's test (Sterne \& Egger, 2005); p-curve skew = test of the right skew of the p-curve using the Stouffer method (Simonsohn, Simmons, \& Nelson, 2015). Brackets give 95\% confidence intervals and asterisks indicate {\it p} < .05.}
 \end{table}
 
 
@@ -208,11 +209,11 @@ Pointing and vocabulary & 0.98 [0.62, 1.34] & 1617 & 1.25 & -6.33*\\
 ```{r, fail_safe_N}
 CRIT_ES_VALUE <- .01 # must be > 0 
 
-fsn.package.data <- all_data %>%
+fsn.package.data <- synthesis_all_data %>%
   nest(-dataset, .key = "ma_data") %>%
   mutate(dataset = as.character(dataset)) %>%
   pmap_df(get_fail_safe_N, CRIT_ES_VALUE) %>%
-  left_join(datasets %>% select(name, short_name), by = c("dataset" = "name"))
+  left_join(synthesis_meta_data %>% select(name, short_name), by = c("dataset" = "name"))
 ```
 
 One approach for quantifying the reliability of a literature is to ask, How many missing studies with null effects would have to exist in the "file drawer" in order for the overall effect size to be zero? This is called the "fail-safe" number of studies [@orwin1983fail]. This number provides an  estimate of the size and variance of an effect using the intuitive unit of number of studies. To calculate this effect, we estimated the overall effect size for each phenomenon (Table 2, column 2), and then used this to estimate the fail-safe-N (Table 2, column 3). 
@@ -228,7 +229,7 @@ This analysis provides a quantitative estimate of the size of an effect in an in
 
 CRIT_95 <- 1.96 
 
-funnel.es.data <- all_data %>%
+funnel.es.data <- synthesis_all_data %>%
     mutate(dataset = fct_relevel(dataset, 
                                   "Infant directed speech preference","Phonotactic learning", "Vowel discrimination (native)", 
                                  "Vowel discrimination (non-native)","Statistical sound category learning", "Word segmentation",
@@ -292,18 +293,19 @@ ggplot(funnel.es.data, aes(x = es, y = -se)) +
 ```
 
 Funnel plots provide a visual method for evaluating whether variability in effect sizes is due  only to differences in sample size. A funnel plot shows effect sizes versus a metric of sample size, standard error. If there is no bias in a literature, we should expect studies to be randomly sampled around the mean, with more variability for less precise studies. 
-Figure 1 presents funnel plots for each of our `r nrow(datasets)` meta-analyses. These plots show evidence of asymmetry (bias) for several of our phenomena (Table 2, column 4). An important limitation of this method, however, is that it is difficult to determine the source of this bias. One possibility is that this asymmetry reflects true heterogeneity in phenomena affecting both effect size and precision (e.g., a test of older infants may require fewer participants because their performance is more stable and yields a larger effect).\footnote{The role of moderators such as age can be interactively explored on the Metalab website (http://metalab.stanford.edu).} P-curve analyses provide one method for addressing this issue, which we turn to next.
+Figure 1 presents funnel plots for each of our `r nrow(synthesis_meta_data)` meta-analyses. These plots show evidence of asymmetry (bias) for several of our phenomena (Table 2, column 4). An important limitation of this method, however, is that it is difficult to determine the source of this bias. One possibility is that this asymmetry reflects true heterogeneity in phenomena affecting both effect size and precision (e.g., a test of older infants may require fewer participants because their performance is more stable and yields a larger effect).\footnote{The role of moderators such as age can be interactively explored on the Metalab website (http://metalab.stanford.edu).} P-curve analyses provide one method for addressing this issue, which we turn to next.
 
 
 ```{r, funnel_skew}
-eggers.data <- all_data %>%
+eggers.data <- synthesis_all_data %>%
   ungroup() %>%
   split(.$short_name) %>%
   map_df(function(ma_data) eggers_tests(ma_data)) %>%
-  mutate(egg.random.z = round(egg.random.z, digits = 2),
+  mutate(egg.random.z = formatC(round(egg.random.z, 2), 
+                                format='f', digits=2),
          egg.random.p = round(egg.random.p, digits = 2),
          egg_string = ifelse(egg.random.p < .05, 
-                             paste0(egg.random.z, "*"),egg.random.z))  %>%
+                             paste0(egg.random.z, "*"),paste0(egg.random.z, " ")))  %>%
   rename(short_name = dataset) %>%
   select(short_name, egg_string)
 ```
@@ -313,7 +315,7 @@ eggers.data <- all_data %>%
 ALPHA <- .05
 P_INCREMENT <- .01 
 
-pc.data <- get_all_pc_data(all_data, ALPHA, P_INCREMENT, transform = TRUE) 
+pc.data <- get_all_pc_data(synthesis_all_data, ALPHA, P_INCREMENT, transform = TRUE) 
 # transform flag determines whether p-values are calculated from descriptive statistics 
 
 p.source <- pc.data %>%
@@ -343,7 +345,8 @@ p.source <- pc.data %>%
                               "Vowel discrimination\n(non-native)" = "Vowel discrimination (non-native)"))  %>%
   mutate(stat_only = ifelse(n.total > n.transform, 1, 0),
          prop.ts = 1-n.transform/n.total,
-         prop.ts.string = as.character(round(prop.ts, digits = 2))) %>%
+         prop.ts.string = formatC(round(prop.ts, 2), 
+                                format='f', digits = 2)) %>%
   arrange(-stat_only) %>%
   as.data.frame()
 ```
@@ -402,12 +405,13 @@ stouffer.data <- pc.data %>%
   group_by(dataset) %>%
   do(data.frame(stouffer = stouffer_test(., ALPHA))) %>%
   filter(stouffer.pp.measure == "ppr.full") %>%
-  full_join(datasets %>% select(name, short_name), by = c("dataset" = "name")) %>%
+  full_join(synthesis_meta_data %>% select(name, short_name), by = c("dataset" = "name")) %>%
   select(short_name,stouffer.Z.pp, stouffer.p.Z.pp) %>%
-  mutate_at(funs(round(., digits = 2)), .vars = c("stouffer.p.Z.pp", "stouffer.Z.pp")) %>%
+  mutate_at(funs(formatC(round(., 2), format = 'f', digits = 2)), 
+            .vars = c("stouffer.p.Z.pp", "stouffer.Z.pp")) %>%
   mutate(stouff_string = ifelse(is.na(as.character(stouffer.Z.pp)), "",
                                 ifelse(stouffer.p.Z.pp < .05, 
-                                       paste0(as.character(stouffer.Z.pp), "*"), as.character(stouffer.Z.pp))))  %>%
+                                       paste0(as.character(stouffer.Z.pp), "*"), paste0(as.character(stouffer.Z.pp), "\textvisiblespace")))) %>%
   select(short_name, stouff_string)
 ```
 
@@ -415,12 +419,12 @@ A p-curve is the distribution of p-values for the statistical test of the main h
 
 ```{r, make_table}
 table_data <- left_join(select(all_ds, c(short_name, d_string)), fsn.package.data) %>%
-             left_join(eggers.data) %>%
-             left_join(stouffer.data) %>%
-             select(dataset, dplyr::contains("string")) %>%
-             ungroup() %>%
-             .[c(2,8,3,4,10,5,7,11,6,12,1,9),]  %>% # reorder rows 
-             mutate(dataset = fct_recode(dataset,
+              left_join(eggers.data) %>%
+              left_join(stouffer.data) %>%
+              select(dataset, dplyr::contains("string")) %>%
+              ungroup() %>%
+              .[c(2,8,3,4,10,5,7,11,6,12,1,9),]  %>% # reorder rows 
+              mutate(dataset = fct_recode(dataset,
                                          "IDS preference" = "Infant directed speech preference",
                                          "Statistical sound learning" = "Statistical sound category learning", 
                                          "Concept-label advantage" = "Label advantage in concept learning",
@@ -433,7 +437,7 @@ table_data <- left_join(select(all_ds, c(short_name, d_string)), fsn.package.dat
 
 P-values for each condition were calculated based on the reported test statistic. However, test statistics were not available for many conditions, either because they were not reported or because they were not coded. To remedy this, we also calculated p-values indirectly based on descriptive statistics (means and standard deviations; see SI for details). 
 
-Figure 2 shows p-curves for each of our `r nrow(datasets)` meta-analyses. All p-curves show evidence of right skew, with the exception of phonotactic learning and statistical sound learning (Table 2, column 5). This pattern did not differ when only reported test-statistics were used to calculate p-curves (see SI).
+Figure 2 shows p-curves for each of our `r nrow(synthesis_meta_data)` meta-analyses. All p-curves show evidence of right skew, with the exception of phonotactic learning and statistical sound learning (Table 2, column 5). This pattern did not differ when only reported test-statistics were used to calculate p-curves (see SI).
 
 In sum, then, meta-analytic methods, along with our dataset of effect sizes, provide an opportunity to assess the replicability of the field of language acquisition. Across a range of analyses, we find that this literature shows some evidence for bias, but overall, it is quite robust.
 
@@ -446,14 +450,14 @@ Meta-analytic methods provide a precise, quantitative description of the develop
 
 ```{r, level.plot.data}
 # make levels df
-ld.df <- data.frame(dataset = datasets$name,
-                   domain = c("Prosody", "Words", "Communication", "Sounds",
+ld.df <- data.frame(dataset = synthesis_meta_data$name,
+                    domain = c("Prosody", "Words", "Communication", "Sounds",
                               "Sounds", "Sounds", "Sounds", "Sounds", "Words",
                               "Words", "Communication", "Words"))
 
 ld.df$domain = factor(ld.df$domain, levels = c("Prosody","Sounds", "Words", "Communication"))
 
-single_method_datasets = all_data %>%
+single_method_datasets = synthesis_all_data %>%
   group_by(dataset) %>%
   summarise(n_methods = length(levels(as.factor(method)))) %>%
   filter(n_methods == 1) %>%
@@ -461,9 +465,9 @@ single_method_datasets = all_data %>%
 
 # get model fits
 all_data.resid <- data.frame()
-for (i in 1:length(datasets$name)) {
-    d <- filter(all_data, dataset == datasets$name[i])
-    if (datasets$name[i] %in% single_method_datasets) {
+for (i in 1:length(synthesis_meta_data$name)) {
+    d <- filter(synthesis_all_data, dataset == synthesis_meta_data$name[i])
+    if (synthesis_meta_data$name[i] %in% single_method_datasets) {
       full.model = rma(d_calc, vi = d_var_calc, data = d)
     } else {
       full.model = rma(d_calc ~ method, vi = d_var_calc, data = d)
@@ -473,7 +477,7 @@ for (i in 1:length(datasets$name)) {
        cbind(d) %>%
        rename(residual.d = `rstandard(full.model)$resid`) %>%
        mutate(residual.d = residual.d + full.model$b[1]) %>% # add in intercept term
-       inner_join(all_data) 
+       inner_join(synthesis_all_data) 
   
   all_data.resid <- rbind(all_data.resid,d)
 }
@@ -688,7 +692,7 @@ In sum, understanding the psychological mechanisms underlying complex phenomena 
 # Methods
 We analyzed 12 different phenomena in language acquisition. We selected these particular phenomena because of their theoretical importance or because a previously-published meta-analysis already existed.
 
-To obtain estimates of effect size, we either coded or adapted others' coding of papers reporting experimental data (see SI for details). Within each paper, we calculated a separate effect size estimate for each experiment and age group (we refer to each measurement separated by age as a \enquote{condition}). In total, our sample includes estimates from `r sum(datasets$num_papers)` papers, `r sum(datasets$num_experiments)` different conditions and `r format(floor(sum(datasets$num_subject)), big.mark=",", scientific=FALSE)` participants. The process for selecting papers from the literature differed by domain, with some individual meta-analyses using more systematic approaches than others (see SI for specific search strategies). Nevertheless, meta-analytic methods for aggregating even the smallest sample of studies are likely to be less biased than qualitative methods [@valentine2010many].
+To obtain estimates of effect size, we either coded or adapted others' coding of papers reporting experimental data (see SI for details). Within each paper, we calculated a separate effect size estimate for each experiment and age group (we refer to each measurement separated by age as a \enquote{condition}). In total, our sample includes estimates from `r sum(synthesis_meta_data$num_papers)` papers, `r sum(synthesis_meta_data$num_experiments)` different conditions and `r format(floor(sum(synthesis_meta_data$num_subject)), big.mark=",", scientific=FALSE)` participants. The process for selecting papers from the literature differed by domain, with some individual meta-analyses using more systematic approaches than others (see SI for specific search strategies). Nevertheless, meta-analytic methods for aggregating even the smallest sample of studies are likely to be less biased than qualitative methods [@valentine2010many].
 
 #### Data and Code Availability
 The data and code reported in this paper have been deposited in GitHub, a web-based repository hosting service, 
