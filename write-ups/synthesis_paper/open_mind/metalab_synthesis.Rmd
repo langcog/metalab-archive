@@ -227,9 +227,7 @@ Because of the large number of positive studies in many of the meta-analyses we 
 This analysis provides a quantitative estimate of the size of an effect in an intuitive unit, but it does not assess analytical or publication bias [@scargle1999publication]. Importantly, if experimenters are selectively reporting results, then the number and magnitude of observed true effects in the literature may be greatly inflated. In the next analysis, we assess the presence of bias through funnel plots.
 
 ## Funnel Plots 
-
-
-```{r,  fig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Funnel plots for each meta-analysis. Each effect size estimate is represented by a point, and the mean effect size is shown as a red dashed line. The grey dashed line shows an effect size of zero. The funnel corresponds to a 95%  CI around this mean. In the absence of true heterogeneity in effect sizes (no moderators) and bias, we should expect all points to fall inside the funnel."}
+```{r,  fig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Funnel plots for each meta-analysis. Each effect size estimate is represented by a point, and the mean effect size is shown as a red dashed line. The grey dashed line shows an effect size of zero. The funnel corresponds to a 95%  CI around this mean (with zero at the top). In the absence of true heterogeneity in effect sizes (no moderators) and bias, we should expect all points to fall inside the funnel."}
 
 CRIT_95 <- 1.96 
 
@@ -489,10 +487,10 @@ for (i in 1:length(synthesis_meta_data$name)) {
 # merge in levels
 residualized.es <- all_data.resid %>%
           left_join(ld.df) %>%
-          #filter(dataset != "Statistical sound category learning") %>%
-         mutate(age.years = mean_age/365) %>%
-         filter(dataset != "Phonotactic learning",
-                 age.years < 3) 
+          mutate(age.years = mean_age/365) %>%
+          dplyr::filter(dataset != "Phonotactic learning",
+                 age.years < 3)  %>%
+          mutate(dataset = droplevels.factor(dataset))
 ```
 
 ```{r, eval = F}
@@ -526,7 +524,7 @@ legend.desc <- residualized.es %>%
   group_by(dataset) %>%
   slice(1) %>%
   ungroup() %>%
-  mutate(x = 1, y = seq(1,20,2)) %>%
+  mutate(x = 1, y = seq(1,22,2)) %>%
   select(dataset,x,y) %>%
   ggplot(aes(x = x, y = y, col = dataset)) +
   geom_point() +
@@ -536,7 +534,7 @@ legend.desc <- residualized.es %>%
         legend.key = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-      panel.background = element_blank())
+       panel.background = element_blank())
 
 pdf("figs/fig3legend.pdf")
 direct.label(legend.desc)
@@ -583,24 +581,26 @@ simulated.development  <-  data.frame(age.years = c(x,x,x,x,x,x,x,x,x),
                                    residual.d = c(y3, y2, y1, y6, y5, y4, y9, y8, y7),
                                    dataset = c(rep(1:3, each = length(x)), rep(1:3, each = length(x)),
                                                rep(1:3, each = length(x))),
-                                   model = rep(c("Sequential", "Simultaneous", "Ad hoc"), each = length(x) * 3),
+                                   model = rep(c("Sequential", "Simultaneous", "Ad hoc"), 
+                                               ach = length(x) * 3),
                                    n = 1)
 
 ## merge together simulated and real
-simulated.development.all  <-  mutate(simulated.development, dataset = as.factor(dataset)) %>%
-  rbind(all_data.f) %>%
+simulated.development.all  <-  simulated.development %>%
+  mutate(dataset = as.factor(dataset)) %>%
+  bind_rows(all_data.f) %>%
   mutate(model = ordered(model, levels = c("Sequential", "Simultaneous", "Ad hoc", "Observed")),
          level = ifelse(model != "Observed", dataset, 
                         ifelse(dataset == "Infant directed speech preference", 1,
                                ifelse(dataset == "Pointing and vocabulary" | dataset == "Gaze following", 4, 
-                                      ifelse(dataset == "Word segmentation" | dataset == "Vowel discrimination (native)" | dataset == "Vowel discrimination (non-native)", 2, 3)))))
+                                      ifelse(dataset == "Word segmentation" | dataset == "Vowel discrimination (native)" | dataset == "Vowel discrimination (non-native)" | dataset == "Statistical sound category learning", 2, 3)))))
 
-real.levels <- levels(simulated.development.all$dataset)
+real.levels <- unique(simulated.development.all$dataset)
 fake.levels <- c("1", "2", "3") 
 
-simulated.development.all = simulated.development.all %>%
+simulated.development.all <- simulated.development.all %>%
   mutate(dataset.label = as.factor(dataset),
-         dataset.label = plyr::mapvalues(dataset.label, from = c("1", "2", "3", "Gaze following","Infant directed speech preference", "Label advantage in concept learning", "Mutual exclusivity", "Vowel discrimination (native)", "Vowel discrimination (non-native)", "Sound symbolism" , "Online word recognition" , "Word segmentation", "Pointing and vocabulary"), to = c("","","", "GF", "IDS", "LA", "ME", "VD-N", "VD-NN", "SS", "WR", "WS", "PV"))) # fct_recode won't let you have empty variable names
+         dataset.label = plyr::mapvalues(dataset.label, from = c("1", "2", "3", "Gaze following","Infant directed speech preference", "Label advantage in concept learning", "Mutual exclusivity", "Vowel discrimination (native)", "Vowel discrimination (non-native)", "Sound symbolism" , "Online word recognition" , "Word segmentation", "Pointing and vocabulary", "Statistical sound category learning"), to = c("","","", "GF", "IDS", "LA", "ME", "VD-N", "VD-NN", "SS", "WR", "WS", "PV", "SSC"))) # fct_recode won't let you have empty variable names
                                
 ```
 
@@ -621,7 +621,7 @@ synthesis.plot  <-  ggplot(simulated.development.all,
   facet_grid(.~model) +
   scale_colour_manual(values=c( "grey70", "grey35", "grey20", "#d33682", 
                                 "#dc322f" ,"#cb4b16", "#b58900", "#859900" ,"#2aa198",
-                                "#268bd2" ,"#6c71c4", "#993399" ,"#268bd2"),
+                                "#268bd2" ,"#6c71c4", "#993399" ,"#268bd2", "#657b83"),
                       breaks = real.levels[real.levels!=fake.levels]) +
   xlab("Age (years)") +
   ylab("Method-residualized\neffect size") + 
