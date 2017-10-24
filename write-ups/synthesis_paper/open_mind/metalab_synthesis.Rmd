@@ -65,6 +65,27 @@ knitr::opts_chunk$set(warning = FALSE,
 require("papaja")
 ```
 
+```{r analysis setup}
+rm(list = ls())
+
+# load functions
+source("../paper_scripts/pcurve.R")
+source("../paper_scripts/synthesis_helpers.R")
+
+# load libraries
+library(knitr)
+library(purrr)
+library(langcog)
+library(metafor)
+library(forcats)
+library(feather)
+library(tidyverse)
+
+# load data (cached by scripts/cache_script_data.R)
+synthesis_meta_data <- read_feather("../paper_data/synthesis_paper_datasets.feather")
+synthesis_all_data <- read_feather("../paper_data/synthesis_paper_all_data.feather")
+```
+
 # Introduction
 Children beginning to acquire a language must learn its sounds, its word forms, and their meanings, and a number of other component skills of language understanding and use. A synthetic theory that explains the inputs, mechanisms, and timeline of this process is an aspirational goal for the field of early language learning. One important aspect of such a theory is an account of how the acquisition of individual skills depends on others. For example, to what extent must the sounds of a language be mastered prior to learning word meanings? Although a huge body of research addresses individual aspects of early language learning  [see e.g., @kuhl2004early for review], only a small amount of work addresses the question of relationships between different skills [e.g., @feldman2013word; @johnson2010synergies; @shukla2011prosody]. Yet if such relationships exist, they should play a central role in our theories. 
 
@@ -82,28 +103,7 @@ Finally, effect size estimates provide a common language for comparing across ph
 
 Although the same advantages for a meta-analytic-driven method of theory building can be drawn from any literature, language acquisition research provides a particularly clear case. One reason is that developmental studies may be uniquely vulnerable to false findings because collecting data from children is expensive, and thus sample sizes are often small and studies are underpowered. In addition, the high cost and practical difficulties associated with collecting large developmental datasets means that replications are relatively rare in the field. Meta-analysis provides a method for addressing these issues by harnessing existing data to estimate effect sizes and developmental trends.
 
-We take as our ultimate goal a broad theory of language acquisition that can explain and predict the range of linguistic skills a child acquires. As a first step toward this end, we collected a dataset of effect sizes in the language acquisition literature across 12 phenomena (Metalab; [ http://metalab.stanford.edu](http://metalab.stanford.edu)). We use this dataset to demonstrate how meta-analysis supports building this theory in two ways. We first use meta-analytic techniques to evaluate the evidential value of the empirical landscape in language acquisition research. We find broadly that this literature has strong evidential value, and thus that the effects reported in the literature should constrain our theorizing of language acquisition. We then turn toward the task of synthesizing these findings across phenomena and offer a preliminary, quantitative synthesis.
-
-
-```{r setup}
-rm(list = ls())
-
-# load functions and packages
-source("../paper_scripts/pcurve.R")
-source("../paper_scripts/synthesis_helpers.R")
-library(knitr)
-library(purrr)
-library(langcog)
-library(metafor)
-library(forcats)
-library(feather)
-library(directlabels)
-library(tidyverse)
-
-# load data (cached by scripts/cache_script_data.R)
-synthesis_meta_data <- read_feather("../paper_data/synthesis_paper_datasets.feather")
-synthesis_all_data <- read_feather("../paper_data/synthesis_paper_all_data.feather")
-```
+We take as our ultimate goal a broad theory of language acquisition that can explain and predict the range of linguistic skills a child acquires. As a first step toward this end, we collected a dataset of effect sizes in the language acquisition literature across 12 phenomena (Metalab; [ http://metalab.stanford.edu](http://metalab.stanford.edu); see Table 1 for description of phenomena). We use this dataset to demonstrate how meta-analysis supports building this theory in two ways. We first use meta-analytic techniques to evaluate the evidential value of the empirical landscape in language acquisition research. We find broadly that this literature has strong evidential value, and thus that the effects reported in the literature should constrain our theorizing of language acquisition. We then turn toward the task of synthesizing these findings across phenomena and offer a preliminary, quantitative synthesis.
 
 
 ```{r, ma metadata}
@@ -182,6 +182,7 @@ all_ds <- synthesis_all_data %>%
   mutate(d_string = paste0(overall.d, " [", ci_lower, ", ",ci_upper, "]"),
          short_name = dataset)
 ```
+
 To estimate the overall effect size of a literature, effect sizes are pooled across papers to obtain a single meta-analytic estimate. This meta-analytic effect-size can be thought of as the "best estimate" of the effect size for a phenomenon given all the available data in the literature. Table 2, column 2 presents meta-analytic effect size estimates for each of our phenomena. We find evidence for a non-zero effect size in 11 out of 12 of the phenomena in our dataset, suggesting these literatures describe non-zero effects. In the case of phonotactic learning, however, we find that the meta-analytic effect size estimate does not differ from zero, indicating that this literature does not describe robust effects (as first reported in Cristia, in prep.). 
 
 We next turn to methods of assessing evidential value that describe the degree to which a literature has evidential value, and thus the degree to which it should constrain our theory building. In the following three analyses---fail-safe-N, funnel plots, and p-curves---we attempt to quantify the evidential value of these literatures.
@@ -191,10 +192,11 @@ We next turn to methods of assessing evidential value that describe the degree t
 \begin{tabular}{lrrrr}
 \toprule
 \textbf{Phenomenon} & \textbf{\textit{d}} & \textbf{fail-safe-N} & \textbf{funnel skew} & \textbf{p-curve skew}\\
+\midrule
 IDS preference & 0.74 [0.47, 1.01] & 3507 & 1.50 & -10.40*\\
 Phonotactic learning & 0.12 [-0.02, 0.25] & 45 & -1.36 & -1.52\\
-Vowel discrim. (native) & 0.64 [0.48, 0.80] & 8866 & 10.30* & -9.96*\\
-Vowel discrim. (non-native) & 0.89 [0.35, 1.43] & 3393 & 8.19* & -8.89*\\
+Vowel discrim.\ (native) & 0.64 [0.48, 0.80] & 8866 & 10.30* & -9.96*\\
+Vowel discrim.\ (non-native) & 0.89 [0.35, 1.43] & 3393 & 8.19* & -8.89*\\
 Statistical sound learning & 0.29 [0.01, 0.57] & 465 & -0.13 & -2.96*\\
 Word segmentation & 0.16 [0.11, 0.21] & 5326 & 2.90* & -9.40*\\
 Mutual exclusivity & 0.77 [0.52, 1.03] & 6443 & 10.86* & -12.87*\\
@@ -219,15 +221,7 @@ fsn.package.data <- synthesis_all_data %>%
   pmap_df(get_fail_safe_N, CRIT_ES_VALUE) %>%
   left_join(synthesis_meta_data %>% select(name, short_name), by = c("dataset" = "name"))
 ```
-
-One approach for quantifying the reliability of a literature is to ask, How many missing studies with null effects would have to exist in the "file drawer" in order for the overall effect size to be zero? This is called the "fail-safe" number of studies [@orwin1983fail]. This number provides an  estimate of the size and variance of an effect using the intuitive unit of number of studies. To calculate this effect, we estimated the overall effect size for each phenomenon (Table 2, column 2), and then used this to estimate the fail-safe-N (Table 2, column 3). 
-
-Because of the large number of positive studies in many of the meta-analyses we assessed, this analysis suggests a very large number of studies would have to be "missing" in each literature ($M$ = `r format(round(mean(fsn.package.data$fsn_string[is.finite(fsn.package.data$fsn_string)])), big.mark=",", scientific=FALSE)`) in order for the overall effect sizes to be 0. Thus, while it is possible that some reporting bias is present in the literature, the overall large fail-safe-N suggests that the literature nonetheless likely describes robust effects. 
-
-This analysis provides a quantitative estimate of the size of an effect in an intuitive unit, but it does not assess analytical or publication bias [@scargle1999publication]. Importantly, if experimenters are selectively reporting results, then the number and magnitude of observed true effects in the literature may be greatly inflated. In the next analysis, we assess the presence of bias through funnel plots.
-
-## Funnel Plots 
-```{r,  fig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Funnel plots for each meta-analysis. Each effect size estimate is represented by a point, and the mean effect size is shown as a red dashed line. The grey dashed line shows an effect size of zero. The funnel corresponds to a 95%  CI around this mean (with zero at the top). In the absence of true heterogeneity in effect sizes (no moderators) and bias, we should expect all points to fall inside the funnel."}
+```{r,  fig.pos = 'T!', fig.width=8, fig.height=5.5, fig.cap = "Funnel plots for each meta-analysis. Each effect size estimate is represented by a point, and the mean effect size is shown as a red dashed line. The grey dashed line shows an effect size of zero. The funnel corresponds to a 95%  CI around this mean (with zero at the top). In the absence of true heterogeneity in effect sizes (no moderators) and bias, we should expect all points to fall inside the funnel."}
 
 CRIT_95 <- 1.96 
 
@@ -294,9 +288,17 @@ ggplot(funnel.es.data, aes(x = es, y = -se)) +
         strip.background = element_rect(fill="grey")) 
 ```
 
-Funnel plots provide a visual method for evaluating whether variability in effect sizes is due  only to differences in sample size. A funnel plot shows effect sizes versus a metric of sample size, standard error. If there is no bias in a literature, we should expect studies to be randomly sampled around the mean, with more variability for less precise studies. 
-Figure 1 presents funnel plots for each of our `r nrow(synthesis_meta_data)` meta-analyses. These plots show evidence of asymmetry (bias) for several of our phenomena (Table 2, column 4). An important limitation of this method, however, is that it is difficult to determine the source of this bias. One possibility is that this asymmetry reflects true heterogeneity in phenomena affecting both effect size and precision (e.g., a test of older infants may require fewer participants because their performance is more stable and yields a larger effect).\footnote{The role of moderators such as age can be interactively explored on the Metalab website (http://metalab.stanford.edu).} P-curve analyses provide one method for addressing this issue, which we turn to next.
+One approach for quantifying the reliability of a literature is to ask, How many missing studies with null effects would have to exist in the "file drawer" in order for the overall effect size to be zero? This is called the "fail-safe" number of studies [@orwin1983fail]. This number provides an  estimate of the size and variance of an effect using the intuitive unit of number of studies. To calculate this effect, we estimated the overall effect size for each phenomenon (Table 2, column 2), and then used this to estimate the fail-safe-N (Table 2, column 3). 
 
+Because of the large number of positive studies in many of the meta-analyses we assessed, this analysis suggests a very large number of studies would have to be "missing" in each literature ($M$ = `r format(round(mean(fsn.package.data$fsn_string[is.finite(fsn.package.data$fsn_string)])), big.mark=",", scientific=FALSE)`) in order for the overall effect sizes to be 0. Thus, while it is possible that some reporting bias is present in the literature, the overall large fail-safe-N suggests that the literature nonetheless likely describes robust effects. 
+
+This analysis provides a quantitative estimate of the size of an effect in an intuitive unit, but it does not assess analytical or publication bias [@scargle1999publication]. Importantly, if experimenters are selectively reporting results, then the number and magnitude of observed true effects in the literature may be greatly inflated. In the next analysis, we assess the presence of bias through funnel plots.
+
+## Funnel Plots 
+
+Funnel plots provide a visual method for evaluating whether variability in effect sizes is due  only to differences in sample size. A funnel plot shows effect sizes versus a metric of sample size, standard error. If there is no bias in a literature, we should expect studies to be randomly sampled around the mean, with more variability for less precise studies. 
+
+Figure 1 presents funnel plots for each of our `r nrow(synthesis_meta_data)` meta-analyses. These plots show evidence of asymmetry (bias) for many of our phenomena (Table 2, column 4). An important limitation of this method, however, is that it is difficult to determine the source of this bias. One possibility is that this asymmetry reflects true heterogeneity in phenomena affecting both effect size and precision (e.g., a test of older infants may require fewer participants because their performance is more stable and yields a larger effect).\footnote{The role of moderators such as age can be interactively explored on the Metalab website (http://metalab.stanford.edu).} P-curve analyses provide one method for addressing this issue, which we turn to next.
 
 ```{r, funnel_skew}
 eggers.data <- synthesis_all_data %>%
@@ -311,6 +313,7 @@ eggers.data <- synthesis_all_data %>%
   rename(short_name = dataset) %>%
   select(short_name, egg_string)
 ```
+
 
 ## P-curves
 ```{r get_pcurves}
@@ -364,7 +367,8 @@ ci.data <- pc.data %>%
                                    "Vowel discrimination\n(non-native)" = "Vowel discrimination (non-native)"))
 ```
 
-```{r p_curve_plots,  fig.pos = "T!",  fig.width = 7.5, fig.height=6, fig.cap = "P-curve for each meta-analysis (Simonsohn, Nelson, & Simmons, 2014). In the absence of p-hacking, we should expect the observed p-curve (blue) to be right-skewed (more small values). The red dashed line shows the expected distribution of p-values when the effect is non-existent (the null is true). The green dashed line shows the expected distribution if the effect is real, but studies only have 33% power. Grey ribbons show 95% confidence intervals estimated from a multinomial distribution. Text on each plot shows the number of p-values for each dataset that are less than .05 and thus are represented in each p-curve (\"sig.\ ps\"), relative to the total number of conditions for that phenomenon. Each plot also shows the proportion of p-values that were derived from test statistics reported in the paper (\"prop.\ test stat.\"); all others were derived by conducting analyses on the descriptive statistics or transforming reported effect sizes."}
+A p-curve is the distribution of p-values for the statistical test of the main hypothesis across a literature [@simonsohn2014p; @simonsohn2014power; @simonsohn2015better]. Critically, if there is a robust effect in the literature, the shape of the p-curve should reflect this. In particular, we should expect the p-curve to be right-skewed with more small values (e.g., .01) than large values (e.g., .04). 
+```{r, fig.pos = 'T!',  fig.width = 7.5, fig.height=6, fig.cap = "P-curve for each meta-analysis (Simonsohn, Nelson, & Simmons, 2014). In the absence of p-hacking, we should expect the observed p-curve (blue) to be right-skewed (more small values). The red dashed line shows the expected distribution of p-values when the effect is non-existent (the null is true). The green dashed line shows the expected distribution if the effect is real, but studies only have 33% power. Grey ribbons show 95% confidence intervals estimated from a multinomial distribution. Text on each plot shows the number of p-values for each dataset that are less than .05 and thus are represented in each p-curve (\"sig.\ ps\"), relative to the total number of conditions for that phenomenon. Each plot also shows the proportion of p-values that were derived from test statistics reported in the paper (\"prop.\ test stat.\"); all others were derived by conducting analyses on the descriptive statistics or transforming reported effect sizes."}
 
 pc_plot_data <- pc.data %>%
   group_by(dataset) %>%
@@ -401,7 +405,7 @@ ggplot(pc_plot_data) +
         panel.margin = unit(.65, "lines"),
         strip.background = element_rect(fill="grey"))
 ```
-
+An important property of this analysis is that the should be skew independent of any true heterogeneity in the data, such as age. Evidence that the curve is in fact right-skewed would suggest that the literature is not biased, and that it provides evidential value for theory building. 
 ```{r, p_curve_skew}
 stouffer.data <- pc.data %>%
   group_by(dataset) %>%
@@ -417,7 +421,6 @@ stouffer.data <- pc.data %>%
   select(short_name, stouff_string)
 ```
 
-A p-curve is the distribution of p-values for the statistical test of the main hypothesis across a literature [@simonsohn2014p; @simonsohn2014power; @simonsohn2015better]. Critically, if there is a robust effect in the literature, the shape of the p-curve should reflect this. In particular, we should expect the p-curve to be right-skewed with more small values (e.g., .01) than large values (e.g., .04). An important property of this analysis is that the should be skew independent of any true heterogeneity in the data, such as age. Evidence that the curve is in fact right-skewed would suggest that the literature is not biased, and that it provides evidential value for theory building. 
 
 ```{r, make_table}
 table_data <- left_join(select(all_ds, c(short_name, d_string)), fsn.package.data) %>%
@@ -439,7 +442,7 @@ table_data <- left_join(select(all_ds, c(short_name, d_string)), fsn.package.dat
 
 P-values for each condition were calculated based on the reported test statistic. However, test statistics were not available for many conditions, either because they were not reported or because they were not coded. To remedy this, we also calculated p-values indirectly based on descriptive statistics (means and standard deviations; see SI for details). 
 
-Figure 2 shows p-curves for each of our `r nrow(synthesis_meta_data)` meta-analyses. All p-curves show evidence of right skew, with the exception of phonotactic learning and statistical sound learning (Table 2, column 5). This pattern did not differ when only reported test-statistics were used to calculate p-curves (see SI).
+Figure 2 shows p-curves for each of our `r nrow(synthesis_meta_data)` meta-analyses. All p-curves show evidence of right skew, except for phonotactic learning (Table 2, column 5). This pattern did not differ when only reported test-statistics were used to calculate p-curves (see SI).
 
 In sum, then, meta-analytic methods, along with our dataset of effect sizes, provide an opportunity to assess the replicability of the field of language acquisition. Across a range of analyses, we find that this literature shows some evidence for bias, but overall, it is quite robust.
 
@@ -494,7 +497,8 @@ residualized.es <- all_data.resid %>%
 ```
 
 ```{r, eval = F}
-fs = 16
+# Figs. 3 and 4 are edited in illustrator for the final version
+fs <- 16
 
 level.plot <- ggplot(residualized.es, aes(x = age.years, y = residual.d, col = dataset)) +
   facet_grid(~ domain) +
@@ -507,7 +511,7 @@ level.plot <- ggplot(residualized.es, aes(x = age.years, y = residual.d, col = d
   ylab("Method-residualized\n effect size") +
   theme_bw() +
   scale_color_solarized() +
-  theme(#legend.position = "none",
+  theme(legend.position = "none",
         legend.key = element_blank(),
         #axis.line= element_line(size = .6),
         axis.text = element_text(colour = "black", size = fs),
@@ -520,37 +524,39 @@ level.plot
 dev.off()
 
 #legend text (for illustrator)
-legend.desc <- residualized.es %>%
+legend.desc1 <- residualized.es %>%
   group_by(dataset) %>%
   slice(1) %>%
   ungroup() %>%
-  mutate(x = 1, y = seq(1,22,2)) %>%
+  mutate(x = 1, y = seq(1,44,4)) %>%
   select(dataset,x,y) %>%
   ggplot(aes(x = x, y = y, col = dataset)) +
-  geom_point() +
+  geom_text(aes(label = dataset)) +
+  #geom_point() +
   theme_bw() +
   scale_color_solarized() +
   theme(legend.position = "none",
         legend.key = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-       panel.background = element_blank())
+        panel.background = element_blank())
 
 pdf("figs/fig3legend.pdf")
-direct.label(legend.desc)
+legend.desc1
 dev.off()
 ```
 
 
 In addition, meta-analytic methods provide an approach for synthesizing across different linguistic skills via the common metric of effect sizes. The ultimate goal is to use meta-analytic data to build a single, quantitative model of the language acquisition system, much like those developed for individual language acquisition phenomena, like word learning. Developing a single quantitative model is a lofty goal, however, and will likely require much more precise description of the phenomena than is available in our dataset. Nevertheless, we can use our data to distinguish between broad classes of theories about the interdependency of skills.
 
-```{r, fig.pos = "T!", fig.width=8, fig.height=3.5, fig.cap = "Method-residualized effect size plotted as a function of age across the 10 meta-analyses in our dataset shown to have evidential value (excluding phonotactic learning). Lines show logarithmic model fits. Each point corresponds to a condition, with the size of the point indicating the number of participants."}
-#include_graphics("figs/fig3_lab.pdf")
-include_graphics("figs/fig3.pdf")
+```{r, fig.width=8, fig.height=3.5,  fig.pos = 'T!', fig.cap = "Method-residualized effect size plotted as a function of age across the 11 meta-analyses in our dataset shown to have evidential value (excluding phonotactic learning). Lines show logarithmic model fits. Each point corresponds to a condition, with the size of the point indicating the number of participants."}
+
+include_graphics("figs/fig3_lab.pdf")
 ```
+
 We first consider two broad theories of learning dependencies that have been articulated in a number of forms, and which we will clearly separate for the purposes of exposition. At one extreme, there is the stage-like theory which posits that linguistic skills are acquired in a strictly sequential manner, beginning with skills at the lowest level of the linguistic hierarchy and working their way up. Under this theory, once a skill is mastered, and only then, can it be used to support the acquisition of skills higher in the linguistic hierarchy. In this way, a child sequentially acquires the skills of language, "bootstrapping" from existing knowledge at lower levels to new knowledge at higher levels. Consistent with this theory, there is evidence that prosody supports the acquisition of sound categories [e.g., @werker2007infant], word boundaries [e.g., @jusczyk1999beginnings], grammatical categories [e.g., @shi1999newborn], and even word learning [e.g., @shukla2011prosody]. 
 
-```{r, synthesis.plot.data}
+```{r, synthesis.plot.data, eval = F}
 ## real data
 all_data.f <- residualized.es %>%
   select(age.years, dataset, residual.d, n) %>%
@@ -573,40 +579,38 @@ y6 <- log((x + 1)) * 1.1
 y7 <- .2 * x
 y8 <- dnorm(x, mean = 1.7, sd = .5) 
 y9 <- log(x + .0001, base = .02) + .3
-y9[1] <- 1.47 
-
+y9[1 <- 1.47 
 
 # merge together simulated data
-simulated.development  <-  data.frame(age.years = c(x,x,x,x,x,x,x,x,x),
+simulated.development <- data.frame(age.years = c(x,x,x,x,x,x,x,x,x),
                                    residual.d = c(y3, y2, y1, y6, y5, y4, y9, y8, y7),
                                    dataset = c(rep(1:3, each = length(x)), rep(1:3, each = length(x)),
                                                rep(1:3, each = length(x))),
                                    model = rep(c("Sequential", "Simultaneous", "Ad hoc"), 
-                                               ach = length(x) * 3),
+                                               each = length(x) * 3),
                                    n = 1)
 
 ## merge together simulated and real
-simulated.development.all  <-  simulated.development %>%
-  mutate(dataset = as.factor(dataset)) %>%
-  bind_rows(all_data.f) %>%
+simulated.development.all <- mutate(simulated.development, dataset = as.factor(dataset)) %>%
+  rbind(all_data.f) %>%
   mutate(model = ordered(model, levels = c("Sequential", "Simultaneous", "Ad hoc", "Observed")),
          level = ifelse(model != "Observed", dataset, 
                         ifelse(dataset == "Infant directed speech preference", 1,
                                ifelse(dataset == "Pointing and vocabulary" | dataset == "Gaze following", 4, 
-                                      ifelse(dataset == "Word segmentation" | dataset == "Vowel discrimination (native)" | dataset == "Vowel discrimination (non-native)" | dataset == "Statistical sound category learning", 2, 3)))))
+                                      ifelse(dataset == "Word segmentation" | dataset == "Vowel discrimination (native)" | dataset == "Vowel discrimination (non-native)", 2, 3)))))
 
-real.levels <- unique(simulated.development.all$dataset)
+real.levels <- levels(simulated.development.all$dataset)
 fake.levels <- c("1", "2", "3") 
 
 simulated.development.all <- simulated.development.all %>%
-  mutate(dataset.label = as.factor(dataset),
-         dataset.label = plyr::mapvalues(dataset.label, from = c("1", "2", "3", "Gaze following","Infant directed speech preference", "Label advantage in concept learning", "Mutual exclusivity", "Vowel discrimination (native)", "Vowel discrimination (non-native)", "Sound symbolism" , "Online word recognition" , "Word segmentation", "Pointing and vocabulary", "Statistical sound category learning"), to = c("","","", "GF", "IDS", "LA", "ME", "VD-N", "VD-NN", "SS", "WR", "WS", "PV", "SSC"))) # fct_recode won't let you have empty variable names
-                               
+  mutate(dataset.label = as.factor(dataset)) %>%
+  mutate(dataset.label = plyr::mapvalues(dataset.label, from = c("1", "2", "3", "Gaze following",  "Infant directed speech preference", "Label advantage in concept learning", "Mutual exclusivity", "Vowel discrimination (native)", "Vowel discrimination (non-native)", "Sound symbolism" , "Online word recognition" , "Word segmentation", "Pointing and vocabulary", "Statistical sound category learning"), to = c("","","", "GF", "IDS", "LA", "ME", "VD-N", "VD-NN", "SS", "WR", "WS", "PV", "SC")))
 ```
+
 
 ```{r, eval = F}
 ## plot
-synthesis.plot  <-  ggplot(simulated.development.all,
+synthesis.plot <- ggplot(simulated.development.all,
        aes(x = age.years, y = residual.d, col = dataset)) + 
   geom_line(data = filter(simulated.development.all, model != "Observed"), 
             size = 1) +
@@ -634,41 +638,38 @@ synthesis.plot  <-  ggplot(simulated.development.all,
         axis.text = element_text(colour = "black", size = fs),
         strip.text.x = element_text(size = 14),
         axis.title = element_text(colour = "black", size = fs),
-        strip.background = element_rect(fill="grey"))
+        strip.background = element_rect(fill = "grey"))
 
-pdf("figs/fig4.pdf", width=8, height=3.5)
+pdf("figs/fig4.pdf", width = 8, height = 3.5)
 synthesis.plot
 dev.off()
 
-#legend text (for illustrator)
+# legend text (for illustrator)
 legend.desc2  <-  simulated.development.all %>%
   filter(model == "Observed") %>%
-  mutate(dataset.label = droplevels.factor(dataset.label),
-        dataset.label= gdata::reorder.factor(dataset.label,
-                                               c(2, 6, 10, 11, 9, 12, 4, 8, 3, 5, 1, 7))) %>%
   group_by(dataset.label) %>%
   slice(1) %>%
   ungroup() %>%
-  mutate(x = 1, y = seq(1,20,2)) %>%
+  mutate(x = 1, y = seq(1,22,2)) %>%
   select(dataset.label,x,y) %>%
   ggplot(aes(x = x, y = y, col = dataset.label)) +
-  geom_point() +
+  geom_text(aes(label = dataset.label)) +
   theme_bw() +
   scale_color_solarized() +
   theme(legend.position = "none",
-        legend.key = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         panel.background = element_blank())
+### NOTE! I manually changed two colors that were out of order in illustrator (SSL and VW-NN)
 
 pdf("figs/fig4legend.pdf")
-direct.label(legend.desc2)
+legend.desc2
 dev.off()
 ```
 
-```{r, fig.width=8, fig.height=3.5,  fig.pos = 'T', fig.cap="The left two panels show the developmental trajectories predicted under different meta-theories of language acquisition. The stage-like theory predicts that a child will not begin learning the next skill in the linguistic hierarchy until the previous skill has been mastered. The interactive theory predicts that multiple skills may be simultaneously acquired. The third panel shows other possible developmental trajectories (decreasing, linear, and non-monotonic). The fourth panel shows the observed meta-analytic data. Effect size is plotted as a function of age from 0-3 years, across 10 different phenomena (excluding phonotactic learning and sound category learning). Model fits are the same as in Figure 3. These developmental curves suggest there is interactivity across language skills, rather than stage-like learning of the linguistic hierarchy. GF: Gaze following; IDS: IDS preference; LA: Concept -label advantage; ME: Mutual exclusivity; VD-(N)N: Vowel discrimination (non-)native; PV: Pointing-vocabulary correlations; SS: Sound symbolism; WR: Word recognition."}
+```{r, fig.width=8, fig.height=3.5,  fig.pos = 'T!', fig.cap="The left two panels show the developmental trajectories predicted under different meta-theories of language acquisition. The stage-like theory predicts that a child will not begin learning the next skill in the linguistic hierarchy until the previous skill has been mastered. The interactive theory predicts that multiple skills may be simultaneously acquired. The third panel shows other possible developmental trajectories (decreasing, linear, and non-monotonic). The fourth panel shows the observed meta-analytic data. Effect size is plotted as a function of age from 0-3 years, across 11 different phenomena (excluding phonotactic learning). Model fits are the same as in Figure 3. These developmental curves suggest there is interactivity across language skills, rather than stage-like learning of the linguistic hierarchy. GF: Gaze following; IDS: IDS preference; LA: Concept -label advantage; ME: Mutual exclusivity; VD-(N)N: Vowel discrimination (non-)native; PV: Pointing-vocabulary correlations; SS: Sound symbolism; WR: Word recognition; SSL: Statistical sound category learning."}
 
-#include_graphics("figs/fig4_lab.pdf")
+include_graphics("figs/fig4_lab.pdf")
 ```
 
 Alternatively, multiple skills may be learned simultaneously across the system regardless of their place in the hierarchy, and potentially with top-down effects. There is evidence that higher-level skills like word learning may be acquired relatively early in development, likely before phonological learning has been completed [e.g., @bergelson2016; @tincoff1999some].  The possibility that higher levels may be learned concurrently or even previous to lower levels is consistent with predictions of a class of hierarchical Bayesian models that suggest that more abstract knowledge may be acquired quickly, before lower-level information, and may in turn support the acquisition of lower information ["blessing of abstraction," @goodman2011learning]. There is evidence for this proposal from work that suggests word learning supports the acquisition of lower-level information like phonemes [@feldman2013word].
@@ -696,14 +697,14 @@ In sum, understanding the psychological mechanisms underlying complex phenomena 
 # Methods
 We analyzed 12 different phenomena in language acquisition. We selected these particular phenomena because of their theoretical importance or because a previously-published meta-analysis already existed.
 
-To obtain estimates of effect size, we either coded or adapted others' coding of papers reporting experimental data (see SI for details). Within each paper, we calculated a separate effect size estimate for each experiment and age group (we refer to each measurement separated by age as a \enquote{condition}). In total, our sample includes estimates from `r sum(synthesis_meta_data$num_papers)` papers, `r sum(synthesis_meta_data$num_experiments)` different conditions and `r format(floor(sum(synthesis_meta_data$num_subject)), big.mark=",", scientific=FALSE)` participants. The process for selecting papers from the literature differed by domain, with some individual meta-analyses using more systematic approaches than others (see SI for specific search strategies). Nevertheless, meta-analytic methods for aggregating even the smallest sample of studies are likely to be less biased than qualitative methods [@valentine2010many].
+To obtain estimates of effect size, we either coded or adapted others' coding of papers reporting experimental data (see SI for details). Within each paper, we calculated a separate effect size estimate for each experiment and age group (we refer to each measurement separated by age as a \enquote{condition}). In total, our sample includes estimates from `r sum(synthesis_meta_data$num_papers)` papers, `r sum(synthesis_meta_data$num_experiments)` different conditions and `r format(floor(sum(synthesis_meta_data$num_subjects)), big.mark=",", scientific=FALSE)` participants. The process for selecting papers from the literature differed by domain, with some individual meta-analyses using more systematic approaches than others (see SI for specific search strategies). Nevertheless, meta-analytic methods for aggregating even the smallest sample of studies are likely to be less biased than qualitative methods [@valentine2010many].
 
 #### Data and Code Availability
 The data and code reported in this paper have been deposited in GitHub, a web-based repository hosting service, 
 [https://github.com/langcog/metalab/](https://github.com/langcog/metalab/).
 
 #### Supplementary Information
-This article contains supporting information online at [http://rpubs.com/mll/synthesisSI](http://rpubs.com/mll/synthesisSI)
+This article contains supporting information online at [http://rpubs.com/mll/synthesis_SI](http://rpubs.com/mll/synthesis_SI)
 
 \newpage
 

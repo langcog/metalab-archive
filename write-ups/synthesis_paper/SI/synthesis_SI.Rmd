@@ -3,7 +3,7 @@ title: "A Quantitative Synthesis of Early Language Acquisition Using Meta-Analys
 author: Molly Lewis, Mika Braginsky, Sho Tsuji, Christina Bergmann, Page Piccinini, Alejandrina Cristia, and Michael C. Frank
 header-includes:
   - \usepackage{longtable}
-  - \usepackage{caption}
+  - \usepackage{figurecaption}
 date: '`r Sys.Date()`'
 output:
   html_document:
@@ -42,11 +42,12 @@ synthesis_all_data <- read_feather("../paper_data/synthesis_paper_all_data.feath
 \vspace{30pt}
 \captionsetup[figure]{labelformat=empty}
 
-This document was created from an [R markdown file](http://github.com/langcog/metalab/blob/master/write-ups/synthesis_paper/SI/synthesis_SI.Rmd). Data from the paper can be interactively explored on the [Metalab website, http://metalab.stanford.edu/](http://metalab.stanford.edu/). The manuscript itself was also produced from an  [R markdown file](http://github.com/langcog/metalab/blob/master/write-ups/synthesis_paper/metalab_synthesis.Rmd), and thus all analyses presented in the paper can be reproduced from that document. Supplementary materials can also be viewed online:  [http://rpubs.com/mll/synthesisSI](http://rpubs.com/mll/synthesisSI).
+This document was created from an [R markdown file](http://github.com/langcog/metalab/blob/master/write-ups/synthesis_paper/SI/synthesis_SI.Rmd). Data from the paper can be interactively explored on the [Metalab website, http://metalab.stanford.edu/](http://metalab.stanford.edu/). The manuscript itself was also produced from an  [R markdown file](http://github.com/langcog/metalab/blob/master/write-ups/synthesis_paper/metalab_synthesis.Rmd), and thus all analyses presented in the paper can be reproduced from that document. Supplementary materials can also be viewed online:  [http://rpubs.com/mll/synthesis_SI](http://rpubs.com/mll/synthesis_SI).
 
 
 ## Search strategies
-Meta-analyses were conducted by the authors for all but two phenomena (IDS preference and Pointing and Vocabulary). Data for these two phenomena were obtained by adapting effect size estimates from existing, published meta-analyses (Dunst, Gorman, & Hamby, 2012; Colonnesi et al., 2010). Across phenomena, meta-analyses varied in their degree of systematicty in selecting papers. In the table below, we describe the search strategy for each phenomenon. Quoted descriptions are taken directly from the published source.
+Meta-analyses were conducted by the authors for all but two phenomena (IDS preference and Pointing and Vocabulary). Data for these two phenomena were obtained by adapting effect size estimates from existing, published meta-analyses (Dunst, Gorman, & Hamby, 2012; Colonnesi et al., 2010). Across phenomena, meta-analyses varied in their degree of systematicty in selecting papers. In the table below, we describe the search strategy for each phenomenon. Quoted descriptions are taken directly from the published source. Note that across all meta-analyses, we included only those conditions that tested typically-developing monolinguals. 
+
 
 ```{r}
 methods.table <- synthesis_meta_data %>%
@@ -61,7 +62,7 @@ methods.table <- synthesis_meta_data %>%
 
 ```
 
-```{r, results = 'asis', echo = F, include = T}
+```{r, results = 'asis', echo = F, include = F}
 print(xtable(methods.table,
              align = "lp{3cm}|p{12cm}"),
       comment = F, include.rownames = F, table.placement="h!",
@@ -70,9 +71,10 @@ print(xtable(methods.table,
       hline.after = seq(-1,nrow(methods.table),1))
 ```
 
-```{r, include = F}
+```{r, include = T}
 kable(methods.table, row.names = F)
 ```
+
 
 ## Statistical approach
 Effect sizes were computed by a script, [compute_es.R](https://github.com/langcog/metalab/blob/master/scripts/compute_es.R), available in the Github repository. We calculated effect sizes from reported means and standard deviations where available, otherwise we relied on reported test-statistics (*t* and *F*). Several pre-existing MAs deal with special cases, and these are listed in the script. Except where noted, formulas are from <a href="http://www.amazon.com/Statistical-Methods-Meta-Analysis-Larry-Hedges/dp/0123363802" target= "_top"> Hedges & Olkin's textbook</a> (2014). All analyses were conducted with the [metafor](http://www.metafor-project.org/doku.php) package (Viechtbauer, 2010) using mixed-effect models, with the exception funnel-skew (Egger's) test. The funnel-skew test is not implemented in metafor for mixed-effect models, and so we used random-effect models for these analyses. Below is the formula used for our mixed-effect meta-analytic effect size estimates.
@@ -80,7 +82,6 @@ Effect sizes were computed by a script, [compute_es.R](https://github.com/langco
 ```
  model <- metafor::rma.mv(yi = d_calc, V = d_var_calc, random = ~ 1 | short_cite, data = ma_data)
 ```
-Note that for Label Advantage effect sizes are calculated with chance (.5) as baseline, since the nature of the "control" conditions vary dramatically across experiments.
 
 ## Funnel plots
 ```{r}
@@ -158,7 +159,7 @@ ggplot(funnel.es.data, aes(x = es, y = -se)) +
 
 We next compare the results of funnel skew (Egger's test) for the dataset with outliers excluded to the full dataset (which is reported in the main text). There is a difference in significance for only Statistical Sound Learning: With outliers excluded, these meta-analyses no longer show evidence for skew.
 
-```{r, funnel_skew,}
+```{r, funnel_skew}
 eggers.data.f = synthesis_all_data %>%
   group_by(dataset) %>%
   mutate(outlier = ifelse(d_calc > mean(d_calc)  + (3 * sd(d_calc)) |
@@ -205,7 +206,7 @@ kable(eggers_df, col.names = c("Phenomenon", "funnel skew (all conditions)",
 ## P-curves
 When available,  we calculated p-values based on test statistics reported in the paper. However, when unavailable, we calculated p-values based on raw descriptive statistics (means and standard deviations) or reported effect sizes (the method used for IDS Preference). The main text shows the results of the p-curve analysis based on p-values derived by both approaches. Here, we compare these results to the same analysis on the subset of p-values derived only from reported test statistics. Presented below are p-curves calculated from this subset.
 
-```{r get_pcurves, fig.height = 6, fig.cap = "Figure S2: In the main text, we calculate p-curves based on all conditions in the dataset. In cases where a p-value was not directly available from the reported test statistic, we calculated a p-value based on a significance test using the reported means and standard deviations. The table compares the test of right-skew (Stouffer method) for this full dataset, as reported in the main text, to the subset of conditions for which  p-values were directly available. Error bars are 95% confidence intervals calculated from a multinomial distribution."}
+```{r}
 ALPHA <- .05
 P_INCREMENT <- .01 
 
@@ -246,7 +247,7 @@ ci.data = pc.data %>%
 ci.data[ci.data$dataset == "Sound symbolism" & ci.data$p == .01, "ci.lower"] = 0 # there's only one datapoint for this dataset
 ```
 
-```{r}
+```{r, fig.height = 5.5, fig.width = 5.5, fig.cap = "Figure S2: In the main text, we calculate p-curves based on all conditions in the dataset. In cases where a p-value was not directly available from the reported test statistic, we calculated a p-value based on a significance test using the reported means and standard deviations. The table compares the test of right-skew (Stouffer method) for this full dataset, as reported in the main text, to the subset of conditions for which  p-values were directly available. Error bars are 95% confidence intervals calculated from a multinomial distribution."}
 pc_plot_data <- pc.data %>%
   group_by(dataset) %>%
   do(get_p_curve_df(., ALPHA, P_INCREMENT)) %>%
@@ -370,7 +371,7 @@ ggplot(method.betas, aes(x = dataset, y = betas, ymin = ci.lb,
 
 The plot below presents the developmental trajectory of each phenomenon, with a separate color for each method. Lines show log-linear model fits. Word Segmentation shows the most notable interaction between age and method: Effect sizes increase with age for head-turn preference procedure, but decrease for central fixation.
 
-```{r, fig.height = 10, fig.width = 10}
+```{r, fig.height = 9, fig.width = 10}
   synthesis_all_data %>%
     filter(mean_age_1/365 < 3) %>%
   mutate(dataset = as.factor(dataset),

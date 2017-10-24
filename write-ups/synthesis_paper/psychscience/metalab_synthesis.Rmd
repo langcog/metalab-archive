@@ -645,7 +645,7 @@ synthesis.plot = ggplot(simulated.development.all,
   facet_grid(.~model) +
   scale_colour_manual(values=c( "grey70", "grey35", "grey20", "#d33682", 
                                 "#dc322f" ,"#cb4b16", "#b58900", "#859900" ,"#2aa198",
-                                "#268bd2" ,"#6c71c4", "#993399" ,"#268bd2"),
+                                "#268bd2" ,"#6c71c4", "#993399" ,"#268bd2", "#268bd2"),
                       breaks = real.levels[real.levels!=fake.levels]) +
   xlab("Age (years)") +
   ylab("Method-residualized\neffect size") + 
