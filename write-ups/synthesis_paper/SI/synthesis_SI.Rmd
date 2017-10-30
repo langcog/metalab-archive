@@ -42,12 +42,11 @@ synthesis_all_data <- read_feather("../paper_data/synthesis_paper_all_data.feath
 \vspace{30pt}
 \captionsetup[figure]{labelformat=empty}
 
-This document was created from an [R markdown file](http://github.com/langcog/metalab/blob/master/write-ups/synthesis_paper/SI/synthesis_SI.Rmd). Data from the paper can be interactively explored on the [Metalab website, http://metalab.stanford.edu/](http://metalab.stanford.edu/). The manuscript itself was also produced from an  [R markdown file](http://github.com/langcog/metalab/blob/master/write-ups/synthesis_paper/metalab_synthesis.Rmd), and thus all analyses presented in the paper can be reproduced from that document. Supplementary materials can also be viewed online:  [http://rpubs.com/mll/synthesis_SI](http://rpubs.com/mll/synthesis_SI).
+This document was created from an [R markdown file](http://github.com/langcog/metalab/blob/master/write-ups/synthesis_paper/SI/synthesis_SI.Rmd). Data from the paper can be interactively explored on the [Metalab website, http://metalab.stanford.edu/](http://metalab.stanford.edu/). The manuscript itself was also produced from an  [R markdown file](https://github.com/langcog/metalab/blob/master/write-ups/synthesis_paper/open_mind/metalab_synthesis.Rmd), and thus all analyses presented in the paper can be reproduced from that document.
 
 
 ## Search strategies
 Meta-analyses were conducted by the authors for all but two phenomena (IDS preference and Pointing and Vocabulary). Data for these two phenomena were obtained by adapting effect size estimates from existing, published meta-analyses (Dunst, Gorman, & Hamby, 2012; Colonnesi et al., 2010). Across phenomena, meta-analyses varied in their degree of systematicty in selecting papers. In the table below, we describe the search strategy for each phenomenon. Quoted descriptions are taken directly from the published source. Note that across all meta-analyses, we included only those conditions that tested typically-developing monolinguals. 
-
 
 ```{r}
 methods.table <- synthesis_meta_data %>%
@@ -206,7 +205,8 @@ kable(eggers_df, col.names = c("Phenomenon", "funnel skew (all conditions)",
 ## P-curves
 When available,  we calculated p-values based on test statistics reported in the paper. However, when unavailable, we calculated p-values based on raw descriptive statistics (means and standard deviations) or reported effect sizes (the method used for IDS Preference). The main text shows the results of the p-curve analysis based on p-values derived by both approaches. Here, we compare these results to the same analysis on the subset of p-values derived only from reported test statistics. Presented below are p-curves calculated from this subset.
 
-```{r}
+```{r, fig.height = 5.5, fig.width = 5.5, fig.cap = "Figure S2: In the main text, we calculate p-curves based on all conditions in the dataset. In cases where a p-value was not directly available from the reported test statistic, we calculated a p-value based on a significance test using the reported means and standard deviations. The table compares the test of right-skew (Stouffer method) for this full dataset, as reported in the main text, to the subset of conditions for which  p-values were directly available. Error bars are 95% confidence intervals calculated from a multinomial distribution."}
+
 ALPHA <- .05
 P_INCREMENT <- .01 
 
@@ -232,9 +232,7 @@ p.source <- pc.data %>%
                                    "Vowel discrimination\n(native)" = "Vowel discrimination (native)",
                                    "Vowel discrimination\n(non-native)" = "Vowel discrimination (non-native)")) %>%
   as.data.frame()
-```
 
-```{r}
 ci.data = pc.data %>%
   split(.$dataset, drop = TRUE) %>%
   map_df(function(data) get_all_CIS_multi(data, ALPHA, P_INCREMENT)) %>%
@@ -245,9 +243,7 @@ ci.data = pc.data %>%
                                    "Vowel discrimination\n(non-native)" = "Vowel discrimination (non-native)"))
 
 ci.data[ci.data$dataset == "Sound symbolism" & ci.data$p == .01, "ci.lower"] = 0 # there's only one datapoint for this dataset
-```
 
-```{r, fig.height = 5.5, fig.width = 5.5, fig.cap = "Figure S2: In the main text, we calculate p-curves based on all conditions in the dataset. In cases where a p-value was not directly available from the reported test statistic, we calculated a p-value based on a significance test using the reported means and standard deviations. The table compares the test of right-skew (Stouffer method) for this full dataset, as reported in the main text, to the subset of conditions for which  p-values were directly available. Error bars are 95% confidence intervals calculated from a multinomial distribution."}
 pc_plot_data <- pc.data %>%
   group_by(dataset) %>%
   do(get_p_curve_df(., ALPHA, P_INCREMENT)) %>%
@@ -302,6 +298,7 @@ stouffer.data <- pc.data %>%
   mutate(stouff_string = sub("(0)", "(< .01)", stouff_string, fixed = T)) %>%
   select(dataset, stouff_string)
 
+# p-curve data using from all conditions (same as reported in paper)
 stouffer.data_all <- get_all_pc_data(synthesis_all_data, ALPHA, P_INCREMENT, transform = TRUE) %>%
   group_by(dataset) %>%
   do(data.frame(stouffer = stouffer_test(., ALPHA))) %>%
@@ -315,9 +312,6 @@ stouffer.data_all <- get_all_pc_data(synthesis_all_data, ALPHA, P_INCREMENT, tra
          stouff_string = sub("(0)", "(< .01)", stouff_string, fixed = T)) %>%
   select(dataset, stouff_string)
 
-# p-curve data using from all conditions (same as reported in paper)
-pc.data.all <- get_all_pc_data(synthesis_all_data, ALPHA, P_INCREMENT, transform = TRUE)
-
 stouffer_df <- left_join(stouffer.data_all, stouffer.data, by = "dataset") %>%
   .[c(2,6,10,11,9,12,4,8,3,5,1,7),]  
   
@@ -329,47 +323,7 @@ kable(stouffer_df,
 
 
 ## Method heterogeneity
-The plot below presents model coefficients for method for datasets with more than one method. Coefficients are estimated from random-effects meta-analytic models. For the most part, we see that method only has a small influence on the effect size within a given phenomenon. There are exceptions, however: For example, for Sound Symbolism the forced choice method has an overall larger effect size than other methods.
-
-```{r, fig.height = 5.5, fig.width = 10}
-single_method_datasets <- synthesis_all_data %>%
-  group_by(dataset) %>%
-  summarise(n_methods = length(levels(as.factor(method)))) %>%
-  filter(n_methods == 1) %>%
-  .[["dataset"]]
-
-method.betas <- data.frame()
-for (i in 1:length(synthesis_meta_data$name)) {
-    
-    if (!(synthesis_meta_data$name[i] %in% single_method_datasets)) {
-        d <- filter(synthesis_all_data, dataset == synthesis_meta_data$name[i])
-        model <- metafor::rma.mv(d_calc ~ method - 1, V = d_var_calc, random = ~ 1 | short_cite, data = d)
-  
-        d <- data.frame(dataset = synthesis_meta_data$name[i], 
-                       method = row.names(model$b),
-                       betas = model$b,
-                       ci.lb = model$ci.lb,
-                       ci.ub= model$ci.ub,
-                       row.names = NULL) 
-        
-        method.betas = rbind(method.betas,d)
-    }
-}
-
-method.betas <- method.betas %>%
-         mutate(dataset = fct_recode(dataset, 
-                                     "IDS preference" = "Infant directed speech preference"), 
-                method = gsub("method", "", method))
-
-ggplot(method.betas, aes(x = dataset, y = betas, ymin = ci.lb, 
-                             ymax = ci.ub, color = method)) +
-  geom_hline(aes(yintercept = 0), linetype = "dashed") +
-  geom_pointrange(position = position_jitter(0.5)) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1.1))
-```
-
-The plot below presents the developmental trajectory of each phenomenon, with a separate color for each method. Lines show log-linear model fits. Word Segmentation shows the most notable interaction between age and method: Effect sizes increase with age for head-turn preference procedure, but decrease for central fixation.
+The plot below presents the developmental trajectory of each phenomenon, with a separate color for each method. Lines show log-linear model fits. Word Segmentation shows the most notable interaction between age and method: Effect sizes increase with age for head-turn preference procedure, but decrease for central fixation (see Bergmann, et al., in press for a more complete report of method heterogenity in the dataset).
 
 ```{r, fig.height = 9, fig.width = 10}
   synthesis_all_data %>%
@@ -400,13 +354,15 @@ The plot below presents the developmental trajectory of each phenomenon, with a 
 ## References
 Bergmann, C., & Cristia, A. (in press). Development of infants’ segmentation of words from native speech: A meta-analytic approach. _Developmental Science_.    
 
+Bergmann, C., Tsuji, S., Piccinini, P., Lewis, M., Braginsky, M., Frank, M., & Cristia, A. (in press). Promoting replicability in developmental research through meta-analyses:Insights from language acquisition research. _Child Development_.
+
 Colonnesi, C., Stamsa, G. J., Kostera, I., & Noomb, M. J. (2010). The relation between pointing and language development: A meta-analysis. _Developmental Review_, 30, 352–366.
                                                 
-Cristia, A. (in prep.). Infants' phonology learning in the lab.    
+Cristia, A. (in press). Can infants learn phonology in the lab? A meta-analytic answer. _Cognition_.   
 
 Dunst, C. J., Gorman, E., & Hamby, D. W. (2012). Preference for infant-directed speech in preverbal young children. _Center for Early Literacy Learning_, _5_(1).                
 
-Frank, M. C., Lewis, M., & MacDonald, K. (2016). A performance model for early wordlearning. In _Proceedings of the 38th Annual Conference of the Cognitive Science Society_.
+Frank, M. C., Lewis, M., & MacDonald, K. (2016). A performance model for early word learning. In _Proceedings of the 38th Annual Conference of the Cognitive Science Society_.
 
 Hedges, L. V., & Olkin, I. (2014). _Statistical methods for meta-analysis_. Academic Press.
 

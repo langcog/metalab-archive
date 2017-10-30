@@ -242,7 +242,6 @@ This analysis provides a quantitative estimate of the size of an effect in an in
 
 ## Funnel Plots 
 
-
 ```{r,  fig.pos = "T!", fig.width=8, fig.height=5.5, fig.cap = "Funnel plots for each meta-analysis. Each effect size estimate is represented by a point, and the mean effect size is shown as a red dashed line. The grey dashed line shows an effect size of zero. The funnel corresponds to a 95%  CI around this mean. In the absence of true heterogeneity in effect sizes (no moderators) and bias, we should expect all points to fall inside the funnel."}
 
 CRIT_95 = 1.96 
