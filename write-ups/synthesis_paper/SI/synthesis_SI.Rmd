@@ -1,6 +1,5 @@
 ---
 title: "A Quantitative Synthesis of Early Language Acquisition Using Meta-Analysis"
-author: Molly Lewis, Mika Braginsky, Sho Tsuji, Christina Bergmann, Page Piccinini, Alejandrina Cristia, and Michael C. Frank
 header-includes:
   - \usepackage{longtable}
   - \usepackage{figurecaption}
