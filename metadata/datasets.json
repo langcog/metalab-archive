@@ -179,7 +179,7 @@
     "name": "Function word segmentation",
     "short_name": "inworddb_function",
     "key": "1v9xAvhniLVsFkqJebJfMXRkQGLljoUvy3duQxawpBf0",
-    "filename": "word_segmentation",
+    "filename": "function_word_segmentation",
     "citation": "Bergmann & Cristia (2016)",
     "internal_citation": "(Bergmann & Cristia, 2016)",
     "link": "https://sites.google.com/site/inworddb/",
