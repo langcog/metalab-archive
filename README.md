@@ -1,3 +1,3 @@
-[![Stories in Ready](https://badge.waffle.io/langcog/metalab.png?label=ready&title=Ready)](https://waffle.io/langcog/metalab)
-# MetaLab
-Visualizations and tools for meta-analyses
+# THIS REPO IS OUT OF DATE! 
+
+# GO TO: [metalab2](https://github.com/langcog/metalab2)
